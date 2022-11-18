@@ -4,7 +4,7 @@ const typescript = require("rollup-plugin-typescript");
 const vue = require("rollup-plugin-vue");
 const rebaseAssets = require("rollup-plugin-rebase");
 const svg = require("rollup-plugin-svg");
-const minify = require("rollup-plugin-babel-minify");
+// const minify = require("rollup-plugin-babel-minify");
 
 import { terser } from "rollup-plugin-terser";
 
