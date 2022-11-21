@@ -29,10 +29,10 @@ components: {
         <DemoSection title="Custom" :code="demoCode">
           <template #components>
             <CallToAction
-              bgcolor="#31c3a2"
+              bgColor="#31c3a2"
               titleColor="#ffffff"
               subTitleColor="#ffffff"
-              :thumbnail="require('./../assets/imgs/logo.svg')"
+              :thumbnail="logo"
               :thumbnailWidth="120"
               :thumbnailHeight="80"
               thumbnailBg="#ffffff"
@@ -245,8 +245,9 @@ components: {
 import { Component, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
 import CallToAction from "./../components/CallToAction.vue";
-import CallToActionCode from "!!raw-loader!./CallToActions.vue";
+import CallToActionCode from "./CallToActions.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
+import logo from './../assets/imgs/logo.svg';
 
 @Component({
   components: {
@@ -257,6 +258,8 @@ import DemoSection from "./../components/DemoSection.vue";
 })
 export default class CallToActions extends Vue {
   demoCode = CallToActionCode;
+
+  logo = logo;
 
   test() {
     alert("test");

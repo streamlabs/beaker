@@ -28,7 +28,7 @@ components: {
               v-model="textInputValue"
               name="textExample"
               :placeholder="textInputPlaceholder"
-              autocomplete="on"
+              autoComplete="on"
             />
 
             <TextInput
@@ -543,7 +543,7 @@ import Checkbox from "./../components/Checkbox.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import FormGroup from "./../components/FormGroup.vue";
 import ImagePickerInput from "./../components/ImagePickerInput.vue";
-import InputsCode from "!!raw-loader!./Inputs.vue";
+import InputsCode from "./Inputs.vue?raw";
 import Radio from "./../components/Radio.vue";
 import Selector from "./../components/Selector.vue";
 import StatusSwitch from "./../components/StatusSwitch.vue";

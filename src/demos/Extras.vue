@@ -62,7 +62,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 import DemoSection from "./../components/DemoSection.vue";
-import ExtrasCode from "!!raw-loader!./Extras.vue";
+import ExtrasCode from "./Extras.vue?raw";
 import FakeAlert from "./../components/FakeAlert.vue";
 
 @Component({

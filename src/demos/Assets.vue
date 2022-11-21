@@ -66,7 +66,7 @@ export default class Assets extends Vue {}
 
 .logo-demos {
   display: grid;
-  grid-template-row: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-rows: repeat(auto-fit, minmax(400px, 1fr));
   grid-gap: 24px;
 }
 

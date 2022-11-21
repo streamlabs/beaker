@@ -195,7 +195,7 @@ components: {
 import { Component, Vue } from "vue-property-decorator";
 import DemoSection from "./../components/DemoSection.vue";
 import PaneDropdown from "./../components/PaneDropdown.vue";
-import PaneDropdownsCode from "!!raw-loader!./PaneDropdowns.vue";
+import PaneDropdownsCode from "./PaneDropdowns.vue?raw";
 
 @Component({
   components: {

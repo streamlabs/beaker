@@ -29,26 +29,25 @@ components: {
                 title="Default"
                 tag="a"
                 href="https://laravel.com/docs/5.8/routing"
-                @click="reportSlobsDownloads"
               />
 
               <Button
                 variation="action"
                 title="Action"
-                @click="buttonActionClick"
+                @click="buttonClick('Action')"
               />
 
               <Button
                 variation="warning"
                 title="Warning"
-                @click="buttonActionClick"
+                @click="buttonClick('Warning')"
               />
 
               <Button
                 variation="default"
-                title="with icon"
+                title="With icon"
                 icon="add-circle"
-                @click="buttonActionClick"
+                @click="buttonClick('With icon')"
               />
 
               <Button
@@ -56,31 +55,31 @@ components: {
                 title="Custom Colors"
                 bg-color="pink"
                 text-color="red"
-                @click="buttonActionClick"
+                @click="buttonClick('Custom Colors')"
               />
 
               <Button
                 variation="prime"
                 title="Join Prime"
                 icon="prime"
-                @click="buttonActionClick"
+                @click="buttonClick('Join Prime')"
               />
 
               <Button
                 variation="prime-white"
                 title="Join Prime"
                 icon="prime"
-                @click="buttonActionClick"
+                @click="buttonClick('Join Prime')"
               />
 
                <Button
                 variation="ultra"
                 title="Join Ultra"
                 icon="ultra"
-                @click="buttonActionClick"
+                @click="buttonClick('Join Ultra')"
               />
 
-              <Button variation="action">
+              <Button variation="action" @click="buttonClick('Custom Slot')">
                 <div slot="custom" class="custom-html">
                   <i class="icon-add-circle"></i>
                   <span>Custom Slot</span>
@@ -715,7 +714,8 @@ import { Component, Vue } from "vue-property-decorator";
 import Accordion from "./../components/Accordion.vue";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
-import ButtonCode from "!!raw-loader!./Buttons.vue";
+import ButtonCode from "./Buttons.vue?raw";
+import { EventBus } from "./../plugins/event-bus";
 
 @Component({
   components: {
@@ -729,8 +729,8 @@ export default class Forms extends Vue {
   isLoadingExample = false;
   demoCode = ButtonCode;
 
-  buttonClick() {
-    alert("Button clicked");
+  buttonClick(buttonType) {
+    EventBus.$emit("copy-success", `"${buttonType}" button clicked`);
   }
 }
 </script>

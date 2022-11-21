@@ -175,7 +175,7 @@ import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import ModalComp from "./../components/ModalComp.vue";
 import NavCallToAction from "./../components/NavCallToAction.vue";
-import PrimeCode from "!!raw-loader!./Prime.vue";
+import PrimeCode from "./Prime.vue?raw";
 import PrimeSection from "./../components/PrimeSection.vue";
 import WelcomePrime from "./../components/WelcomePrime.vue";
 

@@ -31,22 +31,22 @@
             <OnboardingStep slot="1">
               <span slot="title">Getting Started</span>
               <span slot="desc">Slot 1</span>
-              <SSProSimulator :username="username" :domain="domain" />
+              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
             </OnboardingStep>
             <OnboardingStep slot="2">
               <span slot="title">A Few More Things</span>
               <span slot="desc">Slot 2</span>
-              <SSProSimulator :username="username" :domain="domain" />
+              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
             </OnboardingStep>
             <OnboardingStep slot="3">
               <span slot="title">Almost There</span>
               <span slot="desc">Slot 3</span>
-              <SSProSimulator :username="username" :domain="domain" />
+              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
             </OnboardingStep>
             <OnboardingStep slot="4">
               <span slot="title">Getting Started</span>
               <span slot="desc">Slot 4</span>
-              <SSProSimulator :username="username" :domain="domain" />
+              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
             </OnboardingStep>
           </Onboarding>
         </template>
@@ -69,22 +69,22 @@
             <OnboardingStep slot="1">
               <span slot="title">Getting Started</span>
               <span slot="desc">Slot 1</span>
-              <SSProSimulator :username="username" :domain="domain" />
+              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
             </OnboardingStep>
             <OnboardingStep slot="2">
               <span slot="title">A Few More Things</span>
               <span slot="desc">Slot 2</span>
-              <SSProSimulator :username="username" :domain="domain" />
+              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
             </OnboardingStep>
             <OnboardingStep slot="3">
               <span slot="title">Almost There</span>
               <span slot="desc">Slot 3</span>
-              <SSProSimulator :username="username" :domain="domain" />
+              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
             </OnboardingStep>
             <OnboardingStep slot="4">
               <span slot="title">Getting Started</span>
               <span slot="desc">Slot 4</span>
-              <SSProSimulator :username="username" :domain="domain" />
+              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
             </OnboardingStep>
           </Onboarding>
         </template>
@@ -174,7 +174,7 @@ import { Component, Vue } from "vue-property-decorator";
 import DemoSection from "./../components/DemoSection.vue";
 import Onboarding from "./../components/Onboarding.vue";
 import OnboardingStep from "./../components/OnboardingStep.vue";
-import OnboardingsCode from "!!raw-loader!./Onboardings.vue";
+import OnboardingsCode from "./Onboardings.vue?raw";
 import SSProSimulator from "./../components/SSProSimulator.vue";
 
 @Component({

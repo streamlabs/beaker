@@ -187,7 +187,7 @@ import { Component, Vue } from "vue-property-decorator";
 import Slider from "./../components/Slider.vue";
 import SliderTwo from "./../components/SliderTwo.vue";
 import Accordion from "./../components/Accordion.vue";
-import SlidersCode from "!!raw-loader!./Sliders.vue";
+import SlidersCode from "./Sliders.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 @Component({
   components: {

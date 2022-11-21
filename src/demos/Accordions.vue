@@ -216,7 +216,7 @@ components: {
 import { Component, Vue } from "vue-property-decorator";
 
 import Accordion from "./../components/Accordion.vue";
-import AccordionCode from "!!raw-loader!./Accordions.vue";
+import AccordionCode from "./Accordions.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
 @Component({

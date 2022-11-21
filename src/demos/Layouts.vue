@@ -119,7 +119,7 @@ components: {
 import { Component, Vue } from "vue-property-decorator";
 import ContentRow from "./../components/ContentRow.vue";
 import DemoSection from "./../components/DemoSection.vue";
-import LayoutsCode from "!!raw-loader!./Layouts.vue";
+import LayoutsCode from "./Layouts.vue?raw";
 
 @Component({
   components: {

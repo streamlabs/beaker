@@ -86,7 +86,7 @@ import { Component, Vue } from "vue-property-decorator";
 
 import DemoSection from "./../components/DemoSection.vue";
 import Toggle from "./../components/Toggle.vue";
-import TogglesCode from "!!raw-loader!./Toggles.vue";
+import TogglesCode from "./Toggles.vue?raw";
 
 @Component({
   components: {

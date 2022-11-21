@@ -221,7 +221,7 @@ import { Component, Vue } from "vue-property-decorator";
 
 import Accordion from "./../components/Accordion.vue";
 import Button from "./../components/Button.vue";
-import LoadersCode from "!!raw-loader!./Loaders.vue";
+import LoadersCode from "./Loaders.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 import Loading from "./../components/Loading.vue";
 import Spinner from "./../components/Spinner.vue";

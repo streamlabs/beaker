@@ -212,7 +212,7 @@ components: {
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import Callout from "./../components/Callout.vue";
-import CalloutsCode from "!!raw-loader!./Callouts.vue";
+import CalloutsCode from "./Callouts.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
 @Component({

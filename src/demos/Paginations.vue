@@ -90,7 +90,7 @@
 import { Component, Vue } from "vue-property-decorator";
 
 import Pagination from "./../components/Pagination.vue";
-import PaginationsCode from "!!raw-loader!./Paginations.vue";
+import PaginationsCode from "./Paginations.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
 @Component({

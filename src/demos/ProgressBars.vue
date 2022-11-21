@@ -40,7 +40,7 @@ components: {
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import ProgressBar from "./../components/ProgressBar.vue";
-import ProgressBarsCode from "!!raw-loader!./ProgressBars.vue";
+import ProgressBarsCode from "./ProgressBars.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 @Component({
   components: {

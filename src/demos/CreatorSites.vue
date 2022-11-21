@@ -114,7 +114,7 @@ components: {
 import { Component, Vue } from "vue-property-decorator";
 
 import Accordion from "./../components/Accordion.vue";
-import CreatorSitesCode from "!!raw-loader!./CreatorSites.vue";
+import CreatorSitesCode from "./CreatorSites.vue?raw";
 import CSLayoutPicker from "./../components/CSLayoutPicker.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import SSProSimulator from "./../components/SSProSimulator.vue";

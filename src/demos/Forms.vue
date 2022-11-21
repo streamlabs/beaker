@@ -90,7 +90,7 @@ components: {
 import { Component, Vue } from "vue-property-decorator";
 
 import DemoSection from "./../components/DemoSection.vue";
-import FormsCode from "!!raw-loader!./Forms.vue";
+import FormsCode from "./Forms.vue?raw";
 import FormGroup from "./../components/FormGroup.vue";
 import FormGroupH from "./../components/FormGroupH.vue";
 import FormGroupV from "./../components/FormGroupV.vue";

@@ -7,29 +7,26 @@
     }"
     :width="width"
     :height="8"
-    :dotHeight="16"
-    :dotWidth="24"
+    :dot-size="[24, 16]"
     :tooltip="tooltip"
-    :tooltip-dir="'bottom'"
+    tooltip-placement="bottom"
     :min="min"
     :max="max"
     :interval="interval"
     :value="displayValue"
-    :prefix="prefix"
-    :suffix="suffix"
-    :formatter="prefix + '{value}' + suffix"
+    :tooltip-formatter="prefix + '{value}' + suffix"
     :data="data"
     :disabled="disabled"
-    @callback="value => emitInput(value)"
-    :simpleTheme="simpleTheme"
+    @change="value => emitInput(value)"
     ref="slider"
-  ></vue-slider-component>
+  />
 </template>
 
 <script lang="ts">
 import { Component, Prop, Watch, Vue } from "vue-property-decorator";
 import VueSliderComponent from "vue-slider-component";
 import ResizeObserver from "resize-observer-polyfill";
+import 'vue-slider-component/theme/default.css'
 
 @Component({
   components: {
@@ -79,27 +76,30 @@ export default class Slider extends Vue {
   @Prop({ default: false })
   simpleTheme!: boolean;
 
-  displayValue: number | string | Array<number> | Array<string> = this.value;
+  displayValue: number | string | Array<number> | Array<string> = 1;
   private debounced: boolean = false;
-  private ro = new ResizeObserver((entries, observer) => {
-    for (let entry of entries) {
-      let { left, top, width, height } = entry.contentRect;
-      if (!this.debounced) {
-        this.debounce().then(() => {
-          if (this.$refs.slider) {
-            this.$refs.slider.refresh();
-          }
-        });
-      }
-    }
-  });
+  private ro: any;
 
   created() {
     this.$on("input", this.setValue);
   }
 
   mounted() {
+    this.ro = new ResizeObserver((entries, observer) => {
+      for (let entry of entries) {
+        let { left, top, width, height } = entry.contentRect;
+        if (!this.debounced) {
+          this.debounce().then(() => {
+            if (this.$refs?.slider) {
+              // this.$refs.slider.refresh();
+            }
+          });
+        }
+      }
+    });
+
     this.ro.observe(this.$refs.slider.$el);
+    this.displayValue = this.value;
   }
 
   beforeDestroy() {
@@ -134,6 +134,7 @@ export default class Slider extends Vue {
 
 <style lang="less">
 @import (reference) "./../styles/Imports";
+
 .s-slider {
   width: 100%;
   flex: 1;
@@ -141,96 +142,127 @@ export default class Slider extends Vue {
 
   .vue-slider {
     background-color: @light-3;
-  }
 
-  .vue-slider-process {
-    background-color: @dark-teal;
-  }
+    &-process {
+      background-color: @dark-teal;
+    }
 
-  .vue-slider-dot {
-    .vue-slider-dot-handle {
-      background-color: @dark-2;
-      box-shadow: none;
-      .radius(3);
-      position: relative;
+    &-dot {
+      &-handle {
+        background-color: @dark-2;
+        box-shadow: none;
+        .radius(3);
+        position: relative;
 
-      &:before,
-      &:after {
-        border: none;
-        font-family: "icomoon";
-        font-weight: 900;
-        position: absolute;
-        top: 0px;
-        color: @light-3;
-        font-size: 11px;
-        line-height: 15px;
-        content: "\e996";
-        display: inline-block;
+        &:before,
+        &:after {
+          border: none;
+          font-family: "icomoon";
+          font-weight: 900;
+          position: absolute;
+          top: 0px;
+          color: @light-4;
+          font-size: 11px;
+          line-height: 15px;
+          content: "\e996";
+          display: inline-block;
+        }
+
+        &:before {
+          transform: rotate(90deg);
+          left: 2px;
+        }
+
+        &:after {
+          transform: rotate(-90deg);
+          right: 2px;
+        }
+      }
+    }
+
+    &-dot-tooltip {
+      &-bottom {
+        bottom: -8px;
+        background-color: transparent;
+        border: 1px solid @light-4;
+        border-radius: 4px;
+        color: @day-title;
+        padding: 0;
+
+        &:before {
+          border: 0 !important;
+        }
       }
 
-      &:before {
-        transform: rotate(90deg);
-        left: 2px;
-      }
+      &-inner {
+        font-size: 14px;
+        line-height: 1.5;
+        background-color: transparent;
+        color: @dark-5;
 
-      &:after {
-        transform: rotate(-90deg);
-        right: 2px;
+        &-bottom {
+          &::after {
+            border: none;
+          }
+        }
       }
     }
   }
 
-  .vue-slider-tooltip {
-    background-color: transparent;
-    border: 0;
-    color: @day-title;
-    padding: 0;
-
-    &:before {
-      border: 0 !important;
+  &--simple {
+    .vue-slider-process {
+      background-color: @selected;
     }
   }
-}
 
-.s-slider--simple {
-  .vue-slider-process {
-    background-color: @selected;
+  &--has-tooltip {
+    padding: 4px 0px 26px !important;
   }
-}
-
-.s-slider--has-tooltip {
-  padding: 4px 0px 26px !important;
 }
 
 .night,
 .night-theme {
   .s-slider {
     .vue-slider {
-      background-color: @dark-4;
-    }
+      &-rail {
+        background-color: @dark-5;
+      }
 
-    .vue-slider-process {
-      background-color: @teal;
-    }
+      &-process {
+        background-color: @teal;
+      }
 
-    .vue-slider-dot {
-      .vue-slider-dot-handle {
-        background-color: @light-1;
-        &:before,
-        &:after {
-          color: @dark-5;
+      &-dot {
+        &-handle {
+          background-color: @light-1;
+          &:before,
+          &:after {
+            color: @dark-5;
+          }
+        }
+      }
+
+      &-dot-tooltip {
+        &-bottom {
+          border-color: @dark-5;
+        }
+
+        &-inner {
+          color: @light-4;
         }
       }
     }
 
-    .vue-slider-tooltip {
-      color: @night-title;
-    }
-  }
+    &--simple {
+      .vue-slider {
+        &-rail {
+          background-color: @dark-5;
+        }
 
-  .s-slider--simple {
-    .vue-slider-process {
-      background-color: @dark-5;
+        &-process {
+          background-color: @light-4;
+        }
+      }
     }
   }
 }

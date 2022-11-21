@@ -55,9 +55,11 @@ export default class Icons extends Vue {
   }
 
   onCopySuccess(e) {
+    let msg: string = typeof e === 'string' ? e : e.text;
+
     this.setCopyMsg({
       id: this.setCopyMsgId(),
-      msg: `Copied "${e.text}" to clipboard`,
+      msg,
       status: "success",
       timerStarted: false
     });
@@ -114,6 +116,7 @@ export default class Icons extends Vue {
 .night {
   .notification-msg {
     background-color: @teal;
+    color: @dark-2;
 
     &--error {
       background-color: @red;

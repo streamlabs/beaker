@@ -351,7 +351,7 @@ import { Component, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import ModalComp from "./../components/ModalComp.vue";
-import ModalsCode from "!!raw-loader!./Modals.vue";
+import ModalsCode from "./Modals.vue?raw";
 
 @Component({
   components: {

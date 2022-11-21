@@ -16,7 +16,7 @@ components: {
         <template #components>
           <EmptySection
             variation="search"
-            title="No results found for ‘sadasdasd’"
+            title="No results found for 'sadasdasd'"
             subtitle="Try another search term."
           />
         </template>
@@ -29,7 +29,7 @@ components: {
       <DemoSection title="Text Variation" :code="demoCode">
         <template #components>
           <EmptySection
-            title="You don’t have any pending users yet"
+            title="You don't have any pending users yet"
             subtitle="Open a queue to get started."
           />
         </template>
@@ -87,7 +87,7 @@ components: {
 import { Component, Vue } from "vue-property-decorator";
 
 import EmptySection from "./../components/EmptySection.vue";
-import EmptySectionsCode from "!!raw-loader!./EmptySections.vue";
+import EmptySectionsCode from "./EmptySections.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
 @Component({

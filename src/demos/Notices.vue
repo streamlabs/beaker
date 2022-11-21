@@ -118,7 +118,7 @@
 import { Component, Vue } from "vue-property-decorator";
 
 import DemoSection from "./../components/DemoSection.vue";
-import NoticesCode from "!!raw-loader!./Notices.vue";
+import NoticesCode from "./Notices.vue?raw";
 import TooltipNotice from "./../components/TooltipNotice.vue";
 
 @Component({

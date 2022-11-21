@@ -167,7 +167,7 @@ components: {
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import AnnouncementsCode from "!!raw-loader!./Announcements.vue";
+import AnnouncementsCode from "./Announcements.vue?raw";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import NewFeatureOverlay from "./../components/NewFeatureOverlay.vue";

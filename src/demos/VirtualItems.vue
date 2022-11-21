@@ -17,7 +17,7 @@ components: {
           <template #components>
             <div class="container">
               <VirtualItem
-                preview="https://streamlabs.com/imgs/facemasks/robot-mask.png"
+                :preview="itemImage"
                 rarity="Enter Giveaway"
                 name="4x VIP Tickets to PAX, TwitchCon and SXSW"
                 remainingTime="2h left"
@@ -25,7 +25,7 @@ components: {
               />
 
               <VirtualItem
-                preview="https://streamlabs.com/imgs/facemasks/robot-mask.png"
+                :preview="itemImage"
                 rarity="Entered"
                 name="$5K Custom High-Spec Streaming Desktop PC"
                 remainingTime="5d left"
@@ -148,7 +148,7 @@ import { Component, Vue } from "vue-property-decorator";
 import DemoSection from "./../components/DemoSection.vue";
 import ItemGrid from "./../components/ItemGrid.vue";
 import VirtualItem from "./../components/VirtualItem.vue";
-import VirtualItemsCode from "!!raw-loader!./VirtualItems.vue";
+import VirtualItemsCode from "./VirtualItems.vue?raw";
 
 @Component({
   components: {
@@ -158,51 +158,52 @@ import VirtualItemsCode from "!!raw-loader!./VirtualItems.vue";
   }
 })
 export default class VirtualItems extends Vue {
+  itemImage = 'https://www.pngmart.com/files/21/3D-Download-PNG-Image.png';
   demoCode = VirtualItemsCode;
   masks = [
     {
-      preview: "https://streamlabs.com/imgs/facemasks/robot-mask.png",
+      preview: this.itemImage,
       name: "Robot",
       rarity: "Common",
       selectionCount: "1",
       selected: true
     },
     {
-      preview: "https://streamlabs.com/imgs/facemasks/robot-mask.png",
+      preview: this.itemImage,
       name: "Robot",
       rarity: "Common",
       selectionCount: "2",
       selected: true
     },
     {
-      preview: "https://streamlabs.com/imgs/facemasks/robot-mask.png",
+      preview: this.itemImage,
       name: "Robot",
       rarity: "Common",
       selectionCount: "3",
       selected: true
     },
     {
-      preview: "https://streamlabs.com/imgs/facemasks/robot-mask.png",
+      preview: this.itemImage,
       name: "Robot",
       rarity: "Common"
     },
     {
-      preview: "https://streamlabs.com/imgs/facemasks/robot-mask.png",
+      preview: this.itemImage,
       name: "Robot",
       rarity: "Common"
     },
     {
-      preview: "https://streamlabs.com/imgs/facemasks/robot-mask.png",
+      preview: this.itemImage,
       name: "Robot",
       rarity: "Common"
     },
     {
-      preview: "https://streamlabs.com/imgs/facemasks/robot-mask.png",
+      preview: this.itemImage,
       name: "Robot",
       rarity: "Common"
     },
     {
-      preview: "https://streamlabs.com/imgs/facemasks/robot-mask.png",
+      preview: this.itemImage,
       name: "Robot",
       rarity: "Common"
     }

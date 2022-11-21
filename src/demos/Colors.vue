@@ -17,9 +17,6 @@
         v-for="color in colorGroup"
         :key="color.color"
         class="side-by-side"
-        v-clipboard:copy="color.name"
-        v-clipboard:success="emitCopySuccess"
-        v-clipboard:error="emitCopyError"
       >
         <div class="nospace-flex">
           <div
@@ -28,12 +25,22 @@
           ></div>
           <div class="subtitle">
             {{ color.color }}
-            <i class="icon-copy"></i>
+            <!-- <i class="icon-copy"></i> -->
           </div>
         </div>
         <div>
-          <span class="name">{{ color.name }}</span>
-          <span class="hex">{{ color.hex }}</span>
+          <span
+            class="name color-code"
+            v-clipboard:copy="color.name"
+            v-clipboard:success="emitCopySuccess"
+            v-clipboard:error="emitCopyError"
+          >{{ color.name }}</span>
+          <span
+            class="hex color-code"
+            v-clipboard:copy="color.hex"
+            v-clipboard:success="emitCopySuccess"
+            v-clipboard:error="emitCopyError"
+          >{{ color.hex }}</span>
         </div>
       </div>
     </div>
@@ -139,7 +146,7 @@ export default class Colors extends Vue {
   }
 
   emitCopySuccess(e) {
-    EventBus.$emit("copy-success", e);
+    EventBus.$emit("copy-success", `${e.text} copied`);
   }
 
   emitCopyError(e) {
@@ -165,7 +172,6 @@ export default class Colors extends Vue {
   padding: 4px;
   .radius();
   font-size: 12px;
-  cursor: pointer;
 
   &:hover {
     .icon-copy {
@@ -185,7 +191,6 @@ export default class Colors extends Vue {
 
 .hex {
   .margin-left(2);
-  color: @light-5;
 }
 
 .nospace-flex {
@@ -207,8 +212,18 @@ export default class Colors extends Vue {
 .icon-copy {
   margin-left: 6px;
   opacity: 0;
-  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.color-code {
+    cursor: pointer;
+    color: @light-5;
+    transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      color: @dark-2;
+    }
+  }
 
 .notifications {
   position: absolute;
@@ -242,8 +257,12 @@ export default class Colors extends Vue {
     color: @white;
   }
 
-  .hex {
+  .color-code {
     color: @light-4;
+
+    &:hover {
+      color: @light-2;
+    }
   }
 
   .notification-msg {

@@ -304,7 +304,7 @@ export default class Icons extends Vue {
   }
 
   emitCopySuccess(e) {
-    EventBus.$emit("copy-success", e);
+    EventBus.$emit("copy-success", `Copied "${e.text}" to clipboard`);
   }
 
   emitCopyError(e) {
@@ -347,7 +347,7 @@ export default class Icons extends Vue {
       right: -18px;
       font-size: 14px;
       opacity: 0;
-      transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     }
   }
 

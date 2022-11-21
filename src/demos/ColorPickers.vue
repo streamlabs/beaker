@@ -117,7 +117,7 @@ components: {
 import { Component, Vue } from "vue-property-decorator";
 
 import ColorPicker from "./../components/ColorPicker.vue";
-import ColorPickersCode from "!!raw-loader!./ColorPickers.vue";
+import ColorPickersCode from "./ColorPickers.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
 @Component({

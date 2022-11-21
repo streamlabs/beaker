@@ -85,7 +85,7 @@ export default class GuardNew extends Vue {
     color: @dark-2;
     opacity: 0;
     user-select: none;
-    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 
     .icon-lock {
       margin-right: 4px;
@@ -104,8 +104,8 @@ export default class GuardNew extends Vue {
       width: ~"calc(100% - 4px)";
       height: ~"calc(100% - 4px)";
       backdrop-filter: blur(0);
-      transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-        backdrop-filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+        backdrop-filter 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .s-form-field__input {

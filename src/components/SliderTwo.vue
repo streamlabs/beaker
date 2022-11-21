@@ -365,7 +365,7 @@ export default class SliderTwo extends Vue {
   }
 
   createMarks() {
-    if (this.data !== []) {
+    if (Array.isArray(this.data)) {
       let ticks = this.data.length;
       for (let i = 0; i < ticks; i++) {
         this.range.push(this.data[i]);
@@ -639,30 +639,30 @@ export default class SliderTwo extends Vue {
 }
 
 .s-slider--ani__ticks-enter-active {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 1;
 }
 
 .s-slider--ani__ticks-leave-active {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   position: absolute;
   opacity: 0;
 }
 
 .s-slider--ani__ticks-enter {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateY(-5px);
   opacity: 0;
 }
 
 .s-slider--ani__ticks-leave-to {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
   transform: translateY(-5px);
 }
 
 .s-slider--ani__ticks-move {
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .night,

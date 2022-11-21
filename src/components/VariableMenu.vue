@@ -314,7 +314,7 @@ export default class VariableMenu extends Vue {
   display: block;
   transform-origin: bottom;
   .margin-bottom(2);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 
   &.s-variablemenu--phase-one {
     background-color: @day-bg;
@@ -348,7 +348,7 @@ export default class VariableMenu extends Vue {
     overflow-y: scroll;
     overflow-x: hidden;
     position: absolute;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid @day-input-border;
     z-index: 9;
     background-color: @day-bg;
@@ -406,23 +406,23 @@ export default class VariableMenu extends Vue {
   }
 
   .s-variablemenu--fadeX-enter-active {
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 1;
   }
 
   .s-variablemenu--fadeX-leave-active {
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     position: absolute;
     opacity: 0;
   }
 
   .s-variablemenu--fadeX-enter {
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
   }
 
   .s-variablemenu--fadeX-leave-to {
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
   }
 
@@ -433,7 +433,7 @@ export default class VariableMenu extends Vue {
 
 .expand-enter-active,
 .expand-leave-active {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
 .expand-enter,

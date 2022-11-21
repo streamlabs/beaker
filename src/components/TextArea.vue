@@ -168,49 +168,49 @@ export default class TextArea extends Vue {
     .s-form-area__input {
       &:focus {
         &::placeholder {
-          transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
           color: @light-5;
         }
 
         &::-webkit-input-placeholder {
           /* Chrome/Opera/Safari */
-          transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
           color: @light-5;
         }
 
         &::-moz-placeholder {
           /* Firefox 19+ */
-          transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
           color: @light-5;
         }
 
         &:-ms-input-placeholder {
           /* IE 10+ */
-          transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
           color: @light-5;
         }
       }
 
       &::placeholder {
-        transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         color: transparent;
       }
 
       &::-webkit-input-placeholder {
         /* Chrome/Opera/Safari */
-        transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         color: transparent;
       }
 
       &::-moz-placeholder {
         /* Firefox 19+ */
-        transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         color: transparent;
       }
 
       &:-ms-input-placeholder {
         /* IE 10+ */
-        transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         color: transparent;
       }
     }

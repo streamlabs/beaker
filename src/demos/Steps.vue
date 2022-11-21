@@ -122,7 +122,7 @@ import { Component, Vue } from "vue-property-decorator";
 import DemoSection from "./../components/DemoSection.vue";
 import FormGroup from "./../components/FormGroup.vue";
 import Step from "./../components/Step.vue";
-import StepsCode from "!!raw-loader!./Steps.vue";
+import StepsCode from "./Steps.vue?raw";
 
 @Component({
   components: {

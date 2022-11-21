@@ -1,17 +1,17 @@
-const demos = require.context("../demos", true, /\.vue$/);
+const demos = import.meta.glob('../demos/*.vue');
 
-export default demos.keys().map(key => {
+const components = Object.keys(demos).map(key => {
   const componentName = key.slice(2, -4);
   const label = componentName.split(/(?=[A-Z])/).join(" ");
   const name = label.replace(/ /g, "-").toLowerCase();
-  const context = demos(key);
+  const component = demos[key];
 
   return {
-    // component: () =>
-    //   import(/* webpackChunkName: "view-[request]" */ `@/demos/${componentName}.vue`),
-    component: context.default,
+    component,
     name,
     componentName,
     label
   };
 });
+
+export default components;

@@ -86,7 +86,7 @@ import { Component, Vue } from "vue-property-decorator";
 import DemoSection from "./../components/DemoSection.vue";
 import Guard from "./../components/Guard.vue";
 import GuardNew from "./../components/GuardNew.vue";
-import GuardsCode from "!!raw-loader!./Guards.vue";
+import GuardsCode from "./Guards.vue?raw";
 import TextInput from "./../components/TextInput.vue";
 
 @Component({

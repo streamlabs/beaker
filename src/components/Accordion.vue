@@ -232,7 +232,7 @@ export default class Accordian extends Vue {
     display: flex;
     flex-direction: row;
     align-items: center;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 
     &.is-open {
       .margin-bottom(2);
@@ -307,7 +307,7 @@ export default class Accordian extends Vue {
 
 .expand-enter-active,
 .expand-leave-active {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
 .expand-enter,
