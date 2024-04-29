@@ -31,53 +31,54 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component({})
-export default class BannerSale extends Vue {
-  @Prop({ required: true })
-  title!: string;
+export default defineComponent({
+    computed: {
+        daysDone() {
+            return this.days === "00";
+        },
+        hoursDone() {
+            return this.daysDone && this.hours === "00";
+        },
+        minutesDone() {
+            return this.hoursDone && this.minutes === "00";
+        },
+        secondsDone() {
+            return this.minutesDone && this.seconds === "00";
+        }
+    },
+    props: {
+        title: { required: true,
+            type: String
+        },
+        desc: { required: true,
+            type: String
+        },
+        days: { default: "00", required: true,
+            type: String
+        },
+        hours: { default: "00", required: true,
+            type: String
+        },
+        minutes: { default: "00", required: true,
+            type: String
+        },
+        seconds: { default: "00", required: true,
+            type: String
+        },
+        timeDesc: {
+            type: String
+        },
+        borderColor: { default: "rgba(248, 86, 64, 0.33)",
+            type: String
+        },
+        backgroundColor: { default: "rgba(248, 86, 64, 0.08)",
+            type: String
+        }
+    }
+})
 
-  @Prop({ required: true })
-  desc!: string;
-
-  @Prop({ default: "00", required: true })
-  days!: string;
-
-  @Prop({ default: "00", required: true })
-  hours!: string;
-
-  @Prop({ default: "00", required: true })
-  minutes!: string;
-
-  @Prop({ default: "00", required: true })
-  seconds!: string;
-
-  @Prop()
-  timeDesc!: string;
-
-  @Prop({ default: "rgba(248, 86, 64, 0.33)" })
-  borderColor!: string;
-
-  @Prop({ default: "rgba(248, 86, 64, 0.08)" })
-  backgroundColor!: string;
-
-  get daysDone() {
-    return this.days === "00";
-  }
-
-  get hoursDone() {
-    return this.daysDone && this.hours === "00";
-  }
-
-  get minutesDone() {
-    return this.hoursDone && this.minutes === "00";
-  }
-
-  get secondsDone() {
-    return this.minutesDone && this.seconds === "00";
-  }
-}
 </script>
 
 <style lang="less">

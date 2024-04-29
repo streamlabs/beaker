@@ -65,108 +65,117 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Prop, Vue } from "vue-property-decorator";
-@Component({})
-export default class Tabs extends Vue {
-  @Prop()
-  tabs!: [
-    {
-      name: string;
-      value: string;
-      icon: string;
+import { defineComponent, PropType } from "vue";
+
+export default defineComponent({
+    data() {
+        const selectedTab: string = "";
+        const tabsContainer: HTMLDivElement = null as any;
+        const $refs: {
+                scrollable_tabs: HTMLDivElement;
+              } = undefined;
+
+        return {
+            $refs,
+            isMounted: false,
+            tabsContainer,
+            canScroll: false,
+            hasNext: false,
+            hasPrev: false,
+            scrollIncrement: 100,
+            selectedTab,
+            selectTabSize: {
+                    fontSize: this.tabSize
+                  }
+        };
+    },
+    computed: {
+        tabSize() {
+            if (this.size === "small") {
+              return "14px";
+            } else if (this.size === "large") {
+              return "16px";
+            } else {
+              return "14px";
+            }
+        }
+    },
+    created() {
+        window.addEventListener("resize", this.calculateScrolls);
+    },
+    mounted() {
+        this.isMounted = true;
+        this.tabsContainer = this.$refs.scrollable_tabs;
+        this.calculateScrolls();
+        if (this.selected) {
+          this.selectedTab = this.selected;
+        } else {
+          this.selectedTab = this.tabs[0].value;
+        }
+    },
+    destroyed() {
+        window.removeEventListener("resize", this.calculateScrolls);
+    },
+    methods: {
+        scrollLeft() {
+            this.tabsContainer.scrollLeft =
+            this.tabsContainer.scrollLeft - this.scrollIncrement;
+        },
+        scrollRight() {
+            this.tabsContainer.scrollLeft =
+            this.tabsContainer.scrollLeft + this.scrollIncrement;
+        },
+        calculateScrolls() {
+            if (!this.isMounted) return false;
+            this.canScroll =
+              this.tabsContainer.scrollWidth > this.tabsContainer.clientWidth;
+            this.hasPrev = this.tabsContainer.scrollLeft > 0;
+            const scrollRight =
+              this.tabsContainer.scrollWidth -
+              (this.tabsContainer.scrollLeft + this.tabsContainer.clientWidth);
+            this.hasNext = scrollRight > 0;
+        },
+        showTab(tab: string) {
+            this.selectedTab = tab;
+            this.$emit("tab-selected", tab);
+        },
+        onTabsChange() {
+            this.$nextTick(() => this.calculateScrolls());
+        }
+    },
+    props: {
+        tabs: {
+            type: Object as PropType<[
+                    {
+                      name: string;
+                      value: string;
+                      icon: string;
+                    }
+                  ]>
+        },
+        size: {
+            type: String
+        },
+        selected: {
+            type: String
+        },
+        className: {
+            type: String
+        },
+        hideContent: {
+            type: Boolean
+        },
+        updateRoute: { default: true,
+            type: Boolean
+        }
+    },
+    watch: {
+        "tabs": [{ deep: true,
+            handler: "onTabsChange"
+        }]
     }
-  ];
+})
 
-  @Watch("tabs", { deep: true })
-  onTabsChange() {
-    this.$nextTick(() => this.calculateScrolls());
-  }
-
-  @Prop()
-  size!: string;
-
-  @Prop()
-  selected!: string;
-
-  @Prop()
-  className!: string;
-
-  @Prop()
-  hideContent!: boolean;
-
-  @Prop({ default: true })
-  updateRoute!: boolean;
-
-  $refs!: {
-    scrollable_tabs: HTMLDivElement;
-  };
-
-  isMounted = false;
-  tabsContainer: HTMLDivElement = null as any;
-  canScroll = false;
-  hasNext = false;
-  hasPrev = false;
-  private scrollIncrement = 100;
-  selectedTab: string = "";
-  selectTabSize = {
-    fontSize: this.tabSize
-  };
-
-  get tabSize() {
-    if (this.size === "small") {
-      return "14px";
-    } else if (this.size === "large") {
-      return "16px";
-    } else {
-      return "14px";
-    }
-  }
-
-  created() {
-    window.addEventListener("resize", this.calculateScrolls);
-  }
-
-  destroyed() {
-    window.removeEventListener("resize", this.calculateScrolls);
-  }
-
-  mounted() {
-    this.isMounted = true;
-    this.tabsContainer = this.$refs.scrollable_tabs;
-    this.calculateScrolls();
-    if (this.selected) {
-      this.selectedTab = this.selected;
-    } else {
-      this.selectedTab = this.tabs[0].value;
-    }
-  }
-
-  scrollLeft() {
-    this.tabsContainer.scrollLeft =
-      this.tabsContainer.scrollLeft - this.scrollIncrement;
-  }
-
-  scrollRight() {
-    this.tabsContainer.scrollLeft =
-      this.tabsContainer.scrollLeft + this.scrollIncrement;
-  }
-
-  calculateScrolls() {
-    if (!this.isMounted) return false;
-    this.canScroll =
-      this.tabsContainer.scrollWidth > this.tabsContainer.clientWidth;
-    this.hasPrev = this.tabsContainer.scrollLeft > 0;
-    const scrollRight =
-      this.tabsContainer.scrollWidth -
-      (this.tabsContainer.scrollLeft + this.tabsContainer.clientWidth);
-    this.hasNext = scrollRight > 0;
-  }
-
-  showTab(tab: string) {
-    this.selectedTab = tab;
-    this.$emit("tab-selected", tab);
-  }
-}
 </script>
 
 <style lang="less" scoped>

@@ -24,9 +24,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
 import VueMq from "vue-mq";
+import { defineComponent, PropType } from "vue";
 
 Vue.use(VueMq, {
   breakpoints: {
@@ -38,52 +38,56 @@ Vue.use(VueMq, {
   defaultBreakpoint: "sm" // customize this for SSR
 });
 
-@Component({
+export default defineComponent({
   components: {
     Button
-  }
+  },
+    data() {
+        const $mq: any = undefined;
+
+        return {
+            $mq
+        };
+    },
+    computed: {
+        contentRowMq() {
+            return this.$mq === "sm" ? "s-content-row-mq" : "";
+        },
+        contentBoxMq() {
+            return this.$mq === "sm" ? "s-content-box-mq" : "";
+        },
+        bannerIconMq() {
+            return this.$mq === "sm" ? "s-banner__icon-mq" : "";
+        },
+        contentTitleMq() {
+            return this.$mq === "sm" ? "s-content__title-mq" : "";
+        },
+        contentTextMq() {
+            return this.$mq === "sm" ? "s-content__text-mq" : "";
+        }
+    },
+    props: {
+        icon: {
+            type: String
+        },
+        btnVariation: { default: "default",
+            type: String
+        },
+        btnTitle: { default: "Default",
+            type: String
+        },
+        buttonHref: {
+            type: Object as PropType<String>
+        },
+        buttonTo: {
+            type: Object as PropType<String>
+        },
+        buttonTag: { default: "button",
+            type: Object as PropType<String>
+        }
+    }
 })
-export default class ContentRow extends Vue {
-  @Prop()
-  icon!: string;
 
-  @Prop({ default: "default" })
-  btnVariation!: string;
-
-  @Prop({ default: "Default" })
-  btnTitle!: string;
-
-  @Prop()
-  buttonHref!: String;
-
-  @Prop()
-  buttonTo!: String;
-
-  @Prop({ default: "button" })
-  buttonTag!: String;
-
-  $mq: any;
-
-  get contentRowMq() {
-    return this.$mq === "sm" ? "s-content-row-mq" : "";
-  }
-
-  get contentBoxMq() {
-    return this.$mq === "sm" ? "s-content-box-mq" : "";
-  }
-
-  get bannerIconMq() {
-    return this.$mq === "sm" ? "s-banner__icon-mq" : "";
-  }
-
-  get contentTitleMq() {
-    return this.$mq === "sm" ? "s-content__title-mq" : "";
-  }
-
-  get contentTextMq() {
-    return this.$mq === "sm" ? "s-content__text-mq" : "";
-  }
-}
 </script>
 
 <style lang="less">

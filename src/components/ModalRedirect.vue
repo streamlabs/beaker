@@ -21,32 +21,34 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
 import Spinner from "./../components/Spinner.vue";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     Button,
     Spinner
-  }
+  },
+    props: {
+        name: {
+            type: String
+        },
+        width: { default: 600,
+            type: Number
+        },
+        minWidth: { default: 600,
+            type: Number
+        },
+        title: {
+            type: String
+        },
+        text: {
+            type: String
+        }
+    }
 })
-export default class ModalRedirect extends Vue {
-  @Prop()
-  name!: string;
 
-  @Prop({ default: 600 })
-  width!: number;
-
-  @Prop({ default: 600 })
-  minWidth!: number;
-
-  @Prop()
-  title!: string;
-
-  @Prop()
-  text!: string;
-}
 </script>
 
 <style lang="less" scoped>

@@ -68,142 +68,117 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { omit, isNil } from "lodash-es";
+import { defineComponent } from "vue";
 
-@Component({})
-export default class TextInput extends Vue {
-  $refs!: {
-    input: HTMLInputElement;
-  };
+export default defineComponent({
+    data() {
+        const content: string = "";
+        const $refs: {
+                input: HTMLInputElement;
+              } = undefined;
 
-  @Prop({ type: String })
-  name!: string;
+        return {
+            $refs,
+            content
+        };
+    },
+    computed: {
+        filteredListeners() {
+            return omit(this.$listeners, ["input"]);
+        },
+        isMaxReached() {
+            return (
+              this.type === "number" &&
+              !isNil(this.max) &&
+              Number(this.value) >= this.max
+            );
+        },
+        isMinReached() {
+            return (
+              this.type === "number" &&
+              !isNil(this.min) &&
+              Number(this.value) <= this.min
+            );
+        }
+    },
+    created() {
+        this.content =
+          this.value !== undefined && this.value !== null
+            ? this.value.toString()
+            : "";
+        this.$parent.$on("update", this.updateValue);
+    },
+    methods: {
+        focus() {
+            this.$refs.input.focus();
+        },
+        handleInput(event: { target: HTMLInputElement }) {
+            this.update(
+              this.type === "number" ? Number(event.target.value) : event.target.value
+            );
+        },
+        updateValue(val) {
+            this.$refs.input.value = val;
+        },
+        onKeyUp(event: { target: HTMLTextAreaElement }) {
+            this.$emit("keyup", event);
+        },
+        onFocus(event: { target: HTMLTextAreaElement }) {
+            this.$emit("focus", event);
+        },
+        onClick(event: { target: HTMLTextAreaElement }) {
+            this.$emit("click", event);
+        },
+        increment() {
+            if (this.isMaxReached) return;
 
-  @Prop({ type: [String, Number] })
-  value!: string;
+                this.update(Number(this.content) + this.step);
+        },
+        decrement() {
+            if (this.isMinReached) return;
 
-  @Prop({ type: String })
-  error!: string;
+                this.update(Number(this.content) - this.step);
+        },
+        mouseWheel(event: WheelEvent) {
+            if (this.type === "number") {
+                  if (event.deltaY > 0) this.decrement();
+                  else this.increment();
 
-  @Prop({ type: Number })
-  min!: number;
-
-  @Prop({ type: Number })
-  max!: number;
-
-  @Prop({ type: Number, default: 1 })
-  step!: number;
-
-  @Prop({ type: String })
-  helpText!: string;
-
-  @Prop({ type: String, default: "text" })
-  type!: string;
-
-  @Prop({ type: String })
-  placeholder!: string;
-
-  @Prop({ type: Boolean })
-  disabled!: boolean;
-
-  @Prop({ type: String })
-  label!: string;
-
-  @Prop({ type: Boolean })
-  readonly!: boolean;
-
-  @Prop({ type: String, default: "off" })
-  autoComplete!: string;
-
-  @Prop({ type: Boolean })
-  autofocus!: boolean;
-
-  content: string = "";
-
-  created() {
-    this.content =
-      this.value !== undefined && this.value !== null
-        ? this.value.toString()
-        : "";
-    this.$parent.$on("update", this.updateValue);
-  }
-
-  focus() {
-    this.$refs.input.focus();
-  }
-
-  get filteredListeners() {
-    return omit(this.$listeners, ["input"]);
-  }
-
-  get isMaxReached() {
-    return (
-      this.type === "number" &&
-      !isNil(this.max) &&
-      Number(this.value) >= this.max
-    );
-  }
-
-  get isMinReached() {
-    return (
-      this.type === "number" &&
-      !isNil(this.min) &&
-      Number(this.value) <= this.min
-    );
-  }
-
-  @Watch("value")
-  valueChanged(newValue: string) {
-    this.content = newValue.toString();
-    this.$emit("onChange", newValue);
-  }
-
-  handleInput(event: { target: HTMLInputElement }) {
-    this.update(
-      this.type === "number" ? Number(event.target.value) : event.target.value
-    );
-  }
-
-  updateValue(val) {
-    this.$refs.input.value = val;
-  }
-
-  onKeyUp(event: { target: HTMLTextAreaElement }) {
-    this.$emit("keyup", event);
-  }
-  onFocus(event: { target: HTMLTextAreaElement }) {
-    this.$emit("focus", event);
-  }
-  onClick(event: { target: HTMLTextAreaElement }) {
-    this.$emit("click", event);
-  }
-
-  increment() {
-    if (this.isMaxReached) return;
-
-    this.update(Number(this.content) + this.step);
-  }
-
-  decrement() {
-    if (this.isMinReached) return;
-
-    this.update(Number(this.content) - this.step);
-  }
-
-  mouseWheel(event: WheelEvent) {
-    if (this.type === "number") {
-      if (event.deltaY > 0) this.decrement();
-      else this.increment();
-
-      event.preventDefault();
+                  event.preventDefault();
+                }
+        },
+        update(value) {
+            this.$emit("input", value);
+        },
+        valueChanged(newValue: string) {
+            this.content = newValue.toString();
+            this.$emit("onChange", newValue);
+        }
+    },
+    props: {
+        name: { type: String },
+        value: { type: [String, Number] },
+        error: { type: String },
+        min: { type: Number },
+        max: { type: Number },
+        step: { type: Number, default: 1 },
+        helpText: { type: String },
+        type: { type: String, default: "text" },
+        placeholder: { type: String },
+        disabled: { type: Boolean },
+        label: { type: String },
+        readonly: { type: Boolean },
+        autoComplete: { type: String, default: "off" },
+        autofocus: { type: Boolean }
+    },
+    watch: {
+        "value": [{
+            handler: "valueChanged"
+        }]
     }
-  }
+})
 
-  update(value) {
-    this.$emit("input", value);
-  }
-}
 </script>
 
 <style lang="less">

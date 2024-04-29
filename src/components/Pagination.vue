@@ -25,58 +25,66 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import ResizeObserver from "resize-observer-polyfill";
 import VuePaginateComponent from "vuejs-paginate";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     VuePaginateComponent
-  }
+  },
+    data() {
+        const $refs: {
+                pagination: HTMLDivElement;
+              } = undefined;
+        const pageRange: number = 3;
+
+        return {
+            pageRange,
+            $refs
+        };
+    },
+    computed: {
+        pageCount() {
+            if (this.totalPageCount && this.totalPageCount > 0)
+                  return this.totalPageCount;
+
+                let remainder = this.totalItemCount % this.itemsPerPage > 0 ? 1 : 0;
+                return Math.floor(this.totalItemCount / this.itemsPerPage) + remainder;
+        }
+    },
+    mounted() {
+        const ro = new ResizeObserver((entries, observer) => {
+              for (const entry of entries) {
+                const { left, top, width, height } = entry.contentRect;
+
+                if (width < 456) this.pageRange = 1;
+              }
+            });
+
+            ro.observe(this.$refs.pagination);
+    },
+    methods: {
+        selectPage(page: number) {
+            this.$emit("page-selected", page);
+        }
+    },
+    props: {
+        nightBg: { default: false,
+            type: Boolean
+        },
+        itemsPerPage: {
+            type: Number
+        },
+        totalItemCount: {
+            type: Number
+        },
+        totalPageCount: { default: 0,
+            type: Number
+        }
+    }
 })
-export default class Pagination extends Vue {
-  pageRange: number = 3;
 
-  $refs!: {
-    pagination: HTMLDivElement;
-  };
-
-  @Prop({ default: false })
-  nightBg!: boolean;
-
-  @Prop()
-  itemsPerPage!: number;
-
-  @Prop()
-  totalItemCount!: number;
-
-  @Prop({ default: 0 })
-  totalPageCount!: number;
-
-  mounted() {
-    const ro = new ResizeObserver((entries, observer) => {
-      for (const entry of entries) {
-        const { left, top, width, height } = entry.contentRect;
-
-        if (width < 456) this.pageRange = 1;
-      }
-    });
-
-    ro.observe(this.$refs.pagination);
-  }
-
-  get pageCount() {
-    if (this.totalPageCount && this.totalPageCount > 0)
-      return this.totalPageCount;
-
-    let remainder = this.totalItemCount % this.itemsPerPage > 0 ? 1 : 0;
-    return Math.floor(this.totalItemCount / this.itemsPerPage) + remainder;
-  }
-
-  selectPage(page: number) {
-    this.$emit("page-selected", page);
-  }
-}
 </script>
 
 <style lang="less">

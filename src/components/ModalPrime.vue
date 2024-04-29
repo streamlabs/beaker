@@ -18,30 +18,32 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import WelcomePrime from "./../components/WelcomePrime.vue";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     WelcomePrime
-  }
+  },
+    props: {
+        name: { default: "modal-welcome-prime",
+            type: String
+        },
+        width: {
+            type: Number
+        },
+        minWidth: {
+            type: Number
+        },
+        hasPrimeCloseButton: { default: false,
+            type: Boolean
+        },
+        primeButtonText: { default: "Continue",
+            type: String
+        }
+    }
 })
-export default class ModalPrime extends Vue {
-  @Prop({ default: "modal-welcome-prime" })
-  name!: string;
 
-  @Prop()
-  width!: number;
-
-  @Prop()
-  minWidth!: number;
-
-  @Prop({ default: false })
-  hasPrimeCloseButton!: boolean;
-
-  @Prop({ default: "Continue" })
-  primeButtonText!: string;
-}
 </script>
 
 <style lang="less" scoped>

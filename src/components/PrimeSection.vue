@@ -23,30 +23,32 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Badge from "./Badge.vue";
 import Button from "./Button.vue";
 import EmptySection from "./EmptySection.vue";
+import { defineComponent, PropType } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     Badge,
     Button,
     EmptySection
-  }
+  },
+    props: {
+        subtitle: {
+            type: String
+        },
+        href: {
+            type: String
+        },
+        onClick: {
+            type: Object as PropType<{
+                    type: Function;
+                  }>
+        }
+    }
 })
-export default class PrimeSection extends Vue {
-  @Prop({})
-  subtitle!: string;
 
-  @Prop({})
-  href!: string;
-
-  @Prop()
-  onClick!: {
-    type: Function;
-  };
-}
 </script>
 
 <style lang="less">

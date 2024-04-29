@@ -56,10 +56,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
 import VueMq from "vue-mq";
 import VModal from "vue-js-modal";
+import { defineComponent, PropType } from "vue";
 
 Vue.use(VModal);
 
@@ -73,94 +73,98 @@ Vue.use(VueMq, {
   defaultBreakpoint: "sm" // customize this for SSR
 });
 
-@Component({
+export default defineComponent({
   components: {
     Button
-  }
-})
-export default class NewFeatureOverlay extends Vue {
-  @Prop({ default: "100%" })
-  width!: string | number;
+  },
+    data() {
+        const $mq: string | string[] = undefined;
+        const isImage: boolean = true;
 
-  @Prop({ default: "auto" })
-  height!: string | number;
-
-  @Prop()
-  label!: string;
-
-  @Prop()
-  title!: string;
-
-  @Prop()
-  media!: string;
-
-  @Prop()
-  buttonTitle!: string;
-
-  @Prop({ default: "/" })
-  buttonRoute!: string;
-
-  @Prop({ default: "router-link" })
-  buttonTag!: String;
-
-  @Prop()
-  buttonHref!: String;
-
-  @Prop()
-  buttonTarget!: String;
-
-  @Prop({ default: "/" })
-  dismissRoute!: string;
-
-  @Prop({ default: "Go to Dashboard" })
-  dismissText!: string;
-
-  @Prop()
-  onOpen!: Function;
-
-  @Prop()
-  onAction!: Function;
-
-  @Prop({ default: false })
-  videoControls!: boolean;
-
-  isImage: boolean = true;
-
-  get overlayImage() {
-    return this.media;
-  }
-
-  $mq!: string | string[];
-
-  get containerMq() {
-    return this.$mq === "sm" ? "s-overlay__container--mq" : "";
-  }
-
-  get overlay__imageBlockMq() {
-    return this.$mq === "sm" ? "s-overlay__image-block--mq" : "";
-  }
-
-  mounted() {
-    if (this.media.includes("mp4") || this.media.includes("webm")) {
-      this.isImage = false;
-    } else {
-      this.isImage = true;
+        return {
+            isImage,
+            $mq
+        };
+    },
+    computed: {
+        overlayImage() {
+            return this.media;
+        },
+        containerMq() {
+            return this.$mq === "sm" ? "s-overlay__container--mq" : "";
+        },
+        overlay__imageBlockMq() {
+            return this.$mq === "sm" ? "s-overlay__image-block--mq" : "";
+        }
+    },
+    mounted() {
+        if (this.media.includes("mp4") || this.media.includes("webm")) {
+          this.isImage = false;
+        } else {
+          this.isImage = true;
+        }
+    },
+    methods: {
+        opened(event) {
+            typeof this.onOpen === "function" && this.onOpen();
+        },
+        onPrimaryAction() {
+            typeof this.onAction === "function" && this.onAction();
+            this.onDismiss();
+        },
+        onDismiss() {
+            this.$modal.hide("new-feature");
+        }
+    },
+    props: {
+        width: { default: "100%",
+            type: Object as PropType<string | number>
+        },
+        height: { default: "auto",
+            type: Object as PropType<string | number>
+        },
+        label: {
+            type: String
+        },
+        title: {
+            type: String
+        },
+        media: {
+            type: String
+        },
+        buttonTitle: {
+            type: String
+        },
+        buttonRoute: { default: "/",
+            type: String
+        },
+        buttonTag: { default: "router-link",
+            type: Object as PropType<String>
+        },
+        buttonHref: {
+            type: Object as PropType<String>
+        },
+        buttonTarget: {
+            type: Object as PropType<String>
+        },
+        dismissRoute: { default: "/",
+            type: String
+        },
+        dismissText: { default: "Go to Dashboard",
+            type: String
+        },
+        onOpen: {
+            type: Object as PropType<Function>
+        },
+        onAction: {
+            type: Object as PropType<Function>
+        },
+        videoControls: { default: false,
+            type: Boolean
+        }
     }
-  }
+})
 
-  opened(event) {
-    typeof this.onOpen === "function" && this.onOpen();
-  }
-
-  onPrimaryAction() {
-    typeof this.onAction === "function" && this.onAction();
-    this.onDismiss();
-  }
-
-  onDismiss() {
-    this.$modal.hide("new-feature");
-  }
-}
 </script>
 
 <style lang="less" scoped>

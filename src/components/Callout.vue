@@ -23,64 +23,72 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Badge from "./../components/Badge.vue";
+import { defineComponent, PropType } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     Badge
-  }
-})
-export default class Callout extends Vue {
-  @Prop({ default: "success" })
-  variation!: string;
+  },
+    data() {
+        const calloutClosedClass: string = "";
+        const closed: boolean = false;
 
-  @Prop({ default: true })
-  icon!: boolean;
-
-  @Prop()
-  customIcon!: string;
-
-  @Prop({ default: false })
-  closeable!: boolean;
-
-  @Prop()
-  onClose!: Function;
-
-  closed: boolean = false;
-  calloutClosedClass: string = "";
-
-  closeCallout() {
-    this.calloutClosedClass = "callout--closed";
-    setTimeout(() => {
-      typeof this.onClose === "function" && this.onClose();
-    }, 275);
-  }
-
-  get calloutClass() {
-    return `s-callout--${this.variation}`;
-  }
-
-  get calloutIcon() {
-    if (this.customIcon) return this.customIcon;
-    switch (this.variation) {
-      case "success":
-      case "success-alt":
-        return "icon-check";
-      case "warning":
-      case "warning-alt":
-        return "icon-error";
-      case "info":
-        return "icon-information";
-      case "cookies":
-        return "icon-information";
+        return {
+            closed,
+            calloutClosedClass
+        };
+    },
+    computed: {
+        calloutClass() {
+            return `s-callout--${this.variation}`;
+        },
+        calloutIcon() {
+            if (this.customIcon) return this.customIcon;
+            switch (this.variation) {
+              case "success":
+              case "success-alt":
+                return "icon-check";
+              case "warning":
+              case "warning-alt":
+                return "icon-error";
+              case "info":
+                return "icon-information";
+              case "cookies":
+                return "icon-information";
+            }
+        },
+        isPrime() {
+            return this.variation === "prime";
+        }
+    },
+    methods: {
+        closeCallout() {
+            this.calloutClosedClass = "callout--closed";
+            setTimeout(() => {
+              typeof this.onClose === "function" && this.onClose();
+            }, 275);
+        }
+    },
+    props: {
+        variation: { default: "success",
+            type: String
+        },
+        icon: { default: true,
+            type: Boolean
+        },
+        customIcon: {
+            type: String
+        },
+        closeable: { default: false,
+            type: Boolean
+        },
+        onClose: {
+            type: Object as PropType<Function>
+        }
     }
-  }
+})
 
-  get isPrime() {
-    return this.variation === "prime";
-  }
-}
 </script>
 
 <style lang="less">

@@ -20,28 +20,30 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import PrimeIntro from "./PrimeIntro.vue";
+import { defineComponent } from "vue";
 
-@Component({
-  components: { PrimeIntro }
+export default defineComponent({
+  components: { PrimeIntro },
+    props: {
+        name: { default: "modal-prime-intro",
+            type: String
+        },
+        width: {
+            type: Number
+        },
+        minWidth: {
+            type: Number
+        },
+        hasPrimeCloseButton: { default: false,
+            type: Boolean
+        },
+        primeButtonText: { default: "Join Ultra",
+            type: String
+        }
+    }
 })
-export default class ModalPrimeIntro extends Vue {
-  @Prop({ default: "modal-prime-intro" })
-  name!: string;
 
-  @Prop()
-  width!: number;
-
-  @Prop()
-  minWidth!: number;
-
-  @Prop({ default: false })
-  hasPrimeCloseButton!: boolean;
-
-  @Prop({ default: "Join Ultra" })
-  primeButtonText!: string;
-}
 </script>
 
 <style lang="less" scoped>

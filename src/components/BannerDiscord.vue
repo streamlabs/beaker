@@ -17,20 +17,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     Button
-  }
+  },
+    props: {
+        title: {
+                default: "Join the Streamlabs OBS Discussion on <span>Discord</span>",
+            type: String
+        }
+    }
 })
-export default class BannerDiscord extends Vue {
-  @Prop({
-    default: "Join the Streamlabs OBS Discussion on <span>Discord</span>"
-  })
-  title!: string;
-}
+
 </script>
 
 <style lang="less">

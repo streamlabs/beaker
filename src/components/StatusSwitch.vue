@@ -17,19 +17,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component({})
-export default class StatusSwitch extends Vue {
-  @Prop()
-  label?: string;
+export default defineComponent({
+    props: {
+        label: {
+            type: String
+        },
+        size: {
+            type: String
+        },
+        value: { default: false,
+            type: Boolean
+        }
+    }
+})
 
-  @Prop()
-  size?: string;
-
-  @Prop({ default: false })
-  value?: boolean;
-}
 </script>
 
 <style lang="less">

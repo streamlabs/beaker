@@ -22,43 +22,48 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import TextInput from "./TextInput.vue";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     TextInput
-  }
+  },
+    data() {
+        return {
+            visible: false
+        };
+    },
+    methods: {
+        showText(e) {
+            if (!this.visible) {
+                  this.visible = true;
+                } else {
+                  this.$emit("click");
+                }
+
+                if (e.type === "keydown") {
+                  setTimeout(() => e.target.select(), 200);
+                }
+        },
+        checkSelectedText(e) {
+            const target = e.target;
+
+                if (!this.visible) target.setSelectionRange(0, 0);
+
+                target.focus();
+        }
+    },
+    props: {
+        value: {
+            type: String
+        },
+        placeholder: { default: "Click to show",
+            type: String
+        }
+    }
 })
-export default class GuardNew extends Vue {
-  @Prop()
-  value?: string;
 
-  @Prop({ default: "Click to show" })
-  placeholder!: string;
-
-  visible = false;
-
-  showText(e) {
-    if (!this.visible) {
-      this.visible = true;
-    } else {
-      this.$emit("click");
-    }
-
-    if (e.type === "keydown") {
-      setTimeout(() => e.target.select(), 200);
-    }
-  }
-
-  checkSelectedText(e) {
-    const target = e.target;
-
-    if (!this.visible) target.setSelectionRange(0, 0);
-
-    target.focus();
-  }
-}
 </script>
 
 <style lang="less">

@@ -10,15 +10,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, PropType } from "vue";
 
-@Component({})
-export default class UrlBar extends Vue {
-  @Prop({
-    default: "https://awkwardraccoon.com"
-  })
-  domain!: String;
-}
+export default defineComponent({
+    props: {
+        domain: {
+                default: "https://awkwardraccoon.com",
+            type: Object as PropType<String>
+        }
+    }
+})
+
 </script>
 
 <style lang="less">

@@ -19,25 +19,28 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, PropType } from "vue";
 
-@Component({})
-export default class Spinner extends Vue {
-  @Prop({ default: "text" })
-  variation!: String;
+export default defineComponent({
+    props: {
+        variation: { default: "text",
+            type: Object as PropType<String>
+        },
+        title: { default: "Streamlabs.com",
+            type: Object as PropType<String>
+        },
+        subtitle: { default: "",
+            type: Object as PropType<String>
+        },
+        titleSlot: { default: false,
+            type: Object as PropType<Boolean>
+        },
+        hasLink: { default: false,
+            type: Object as PropType<Boolean>
+        }
+    }
+})
 
-  @Prop({ default: "Streamlabs.com" })
-  title!: String;
-
-  @Prop({ default: "" })
-  subtitle!: String;
-
-  @Prop({ default: false })
-  titleSlot!: Boolean;
-
-  @Prop({ default: false })
-  hasLink!: Boolean;
-}
 </script>
 
 <style lang="less">

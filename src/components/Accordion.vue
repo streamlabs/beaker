@@ -62,125 +62,93 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import { escape } from "lodash-es";
+<script setup lang="ts">
+import { computed, onMounted, ref, useSlots, watch } from "vue";
 
-@Component({})
-export default class Accordian extends Vue {
-  @Prop()
-  openedTitle!: string;
+const isOpen = ref(false);
+const focused = ref(false);
+const defaultBorder = ref(false);
 
-  @Prop()
-  closedTitle!: string;
+const emit = defineEmits(["content-opened", "input"]);
 
-  @Prop()
-  title!: string;
+const props = defineProps({
+  openedTitle: { type: String },
+  closedTitle: { type: String },
+  title: { type: String },
+  isOpened: { type: Boolean },
+  noBorder: { type: Boolean },
+  leftNav: { type: Boolean },
+  value: { type: Boolean },
+});
 
-  @Prop()
-  isOpened!: boolean;
+const accordionTitle = computed(() => {
+  if (props.title !== undefined) return props.title;
 
-  @Prop()
-  noBorder!: boolean;
+  return isOpen.value ? props.openedTitle : props.closedTitle;
+});
 
-  @Prop()
-  leftNav!: boolean;
+const slots = useSlots();
+const hasTitleSlot = computed(() => !!slots.title);
 
-  @Prop()
-  value!: boolean;
+const accordionClasses = computed(() => {
+  const noBorder = props.noBorder ? "no-border" : "";
+  const leftNav = props.leftNav ? "left-nav" : "";
 
-  private isOpen = false;
-  private focused = false;
-  private defaultBorder = false;
+  return `${noBorder} ${leftNav}`;
+});
 
-  @Watch("value")
-  handleIsOpened(val) {
-    this.isOpen = val;
+watch(() => props.value, handleIsOpened);
+watch(isOpen, handleIsOpen);
+
+onMounted(() => {
+  if (props.value) {
+    isOpen.value = props.value;
   }
+});
 
-  @Watch("isOpen")
-  handleIsOpen(val) {
-    this.$emit("input", val);
+function openContent(event: any) {
+  let blockedNodes = ["INPUT", "BUTTON", "LABEL"];
+  if (
+    blockedNodes.indexOf(event.target.nodeName) !== -1 ||
+    blockedNodes.indexOf(event.target.parentNode.parentNode.nodeName) !== -1
+  ) {
+    return;
   }
-
-  get accordionTitle() {
-    if (this.title !== undefined) {
-      return this.title;
-    } else {
-      if (this.isOpen) {
-        return this.openedTitle;
-      } else {
-        return this.closedTitle;
-      }
-    }
-  }
-
-  get hasTitleSlot() {
-    return !!this.$slots.title;
-  }
-
-  get accordionClasses() {
-    let classes: any = [];
-    if (this.noBorder) {
-      classes.push("no-border");
-    }
-    if (this.leftNav) {
-      classes.push("left-nav");
-    }
-    return classes.join(" ");
-  }
-
-  isKeyFocused(event) {
-    console.log("TCL: Accordian -> isKeyFocused -> event", event);
-  }
-
-  openContent(event: any) {
-    let blockedNodes = ["INPUT", "BUTTON", "LABEL"];
-    if (
-      blockedNodes.indexOf(event.target.nodeName) !== -1 ||
-      blockedNodes.indexOf(event.target.parentNode.parentNode.nodeName) !== -1
-    ) {
-      return;
-    }
-    this.isOpen = !this.isOpen;
-    this.$emit("content-opened", { isOpen: this.isOpen, event });
-  }
-
-  afterOpen(element) {
-    element.style.height = "auto";
-  }
-
-  open(element) {
-    let width = getComputedStyle(element).width;
-    element.style.width = width;
-    element.style.position = `absolute`;
-    element.style.visibility = `hidden`;
-    element.style.height = `auto`;
-    let height = getComputedStyle(element).height;
-    element.style.width = null;
-    element.style.position = null;
-    element.style.visibility = null;
-    element.style.height = 0;
-    getComputedStyle(element).height;
-    setTimeout(() => {
-      element.style.height = height;
-    });
-  }
-
-  close(element) {
-    let height = getComputedStyle(element).height;
+  isOpen.value = !isOpen.value;
+  emit("content-opened", { isOpen: isOpen.value, event });
+}
+function afterOpen(element: HTMLElement) {
+  element.style.height = "auto";
+}
+function open(element: HTMLElement) {
+  let width = getComputedStyle(element).width;
+  element.style.width = width;
+  element.style.position = `absolute`;
+  element.style.visibility = `hidden`;
+  element.style.height = `auto`;
+  let height = getComputedStyle(element).height;
+  element.style.width = "unset";
+  element.style.position = "unset";
+  element.style.visibility = "unset";
+  element.style.height = "0";
+  getComputedStyle(element).height;
+  setTimeout(() => {
     element.style.height = height;
-    getComputedStyle(element).height;
-    setTimeout(() => {
-      element.style.height = 0;
-    });
-  }
-
-  mounted() {
-    if (this.value) {
-      this.isOpen = this.value;
-    }
-  }
+  });
+}
+function close(element: HTMLElement) {
+  let height = getComputedStyle(element).height;
+  element.style.height = height;
+  getComputedStyle(element).height;
+  setTimeout(() => {
+    element.style.height = "0";
+  });
+}
+function handleIsOpened(val: boolean) {
+  isOpen.value = val;
+}
+function handleIsOpen(val) {
+  emit("input", val);
 }
 </script>
 

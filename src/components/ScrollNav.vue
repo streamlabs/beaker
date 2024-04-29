@@ -41,74 +41,74 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import Vue, { defineComponent, PropType } from "vue";
+export default defineComponent({
+    data() {
+        const appTabsContainer: HTMLDivElement = undefined;
+        const $refs: {
+                scrollable_nav: HTMLDivElement;
+              } = undefined;
 
-@Component({})
-export default class AppsNav extends Vue {
-  $refs!: {
-    scrollable_nav: HTMLDivElement;
-  };
+        return {
+            $refs,
+            isMounted: false,
+            appTabsContainer,
+            canScroll: false,
+            hasNext: false,
+            hasPrev: false,
+            scrollIncrement: 100
+        };
+    },
+    created() {
+        window.addEventListener("resize", this.calculateScrolls);
+    },
+    mounted() {
+        this.isMounted = true;
+        this.appTabsContainer = this.$refs.scrollable_nav;
+        this.calculateScrolls();
+    },
+    destroyed() {
+        window.removeEventListener("resize", this.calculateScrolls);
+    },
+    methods: {
+        scrollLeft() {
+            this.appTabsContainer.scrollLeft =
+            this.appTabsContainer.scrollLeft - this.scrollIncrement;
+        },
+        scrollRight() {
+            this.appTabsContainer.scrollLeft =
+            this.appTabsContainer.scrollLeft + this.scrollIncrement;
+        },
+        calculateScrolls() {
+            if (!this.isMounted) return false;
+                this.canScroll =
+                  this.appTabsContainer.scrollWidth > this.appTabsContainer.clientWidth;
+                this.hasPrev = this.appTabsContainer.scrollLeft > 0;
+                let scrollRight =
+                  this.appTabsContainer.scrollWidth -
+                  (this.appTabsContainer.scrollLeft + this.appTabsContainer.clientWidth);
 
-  @Prop()
-  items!: [
-    {
-      name: string;
-      value: string;
+                this.hasNext = scrollRight > 0;
+        },
+        navigateItem(item: string) {
+            this.$emit("input", item);
+        }
+    },
+    props: {
+        items: {
+            type: Object as PropType<[
+                    {
+                      name: string;
+                      value: string;
+                    }
+                  ]>
+        },
+        value: {
+            type: String
+        }
     }
-  ];
+})
 
-  @Prop()
-  value!: string;
-
-  isMounted = false;
-  appTabsContainer!: HTMLDivElement;
-  canScroll = false;
-  hasNext = false;
-  hasPrev = false;
-
-  private scrollIncrement = 100;
-
-  created() {
-    window.addEventListener("resize", this.calculateScrolls);
-  }
-
-  destroyed() {
-    window.removeEventListener("resize", this.calculateScrolls);
-  }
-
-  mounted() {
-    this.isMounted = true;
-    this.appTabsContainer = this.$refs.scrollable_nav;
-    this.calculateScrolls();
-  }
-
-  scrollLeft() {
-    this.appTabsContainer.scrollLeft =
-      this.appTabsContainer.scrollLeft - this.scrollIncrement;
-  }
-
-  scrollRight() {
-    this.appTabsContainer.scrollLeft =
-      this.appTabsContainer.scrollLeft + this.scrollIncrement;
-  }
-
-  calculateScrolls() {
-    if (!this.isMounted) return false;
-    this.canScroll =
-      this.appTabsContainer.scrollWidth > this.appTabsContainer.clientWidth;
-    this.hasPrev = this.appTabsContainer.scrollLeft > 0;
-    let scrollRight =
-      this.appTabsContainer.scrollWidth -
-      (this.appTabsContainer.scrollLeft + this.appTabsContainer.clientWidth);
-
-    this.hasNext = scrollRight > 0;
-  }
-
-  navigateItem(item: string) {
-    this.$emit("input", item);
-  }
-}
 </script>
 
 <style lang="less">

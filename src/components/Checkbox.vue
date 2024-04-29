@@ -13,26 +13,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component({})
-export default class Checkbox extends Vue {
-  @Prop({ type: String, required: true })
-  label!: string;
+export default defineComponent({
+    methods: {
+        toggleCheck() {
+            this.$emit("input", !this.value);
+        }
+    },
+    props: {
+        label: { type: String, required: true },
+        id: { type: String, required: true },
+        name: { type: String },
+        value: { type: Boolean, required: true }
+    }
+})
 
-  @Prop({ type: String, required: true })
-  id!: string;
-
-  @Prop({ type: String })
-  name!: string;
-
-  @Prop({ type: Boolean, required: true })
-  value!: boolean;
-
-  toggleCheck() {
-    this.$emit("input", !this.value);
-  }
-}
 </script>
 
 <style lang="less">

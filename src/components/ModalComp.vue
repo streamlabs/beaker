@@ -97,7 +97,6 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
 import ModalBasic from "./../components/ModalBasic.vue";
 import ModalSubscribe from "./../components/ModalSubscribe.vue";
@@ -106,10 +105,11 @@ import ModalConfirmation from "./../components/ModalConfirmation.vue";
 import ModalPrime from "./../components/ModalPrime.vue";
 import ModalPrimeIntro from "./../components/ModalPrimeIntro.vue";
 import VModal from "vue-js-modal";
+import { defineComponent } from "vue";
 
 Vue.use(VModal);
 
-@Component({
+export default defineComponent({
   components: {
     Button,
     ModalBasic,
@@ -118,131 +118,138 @@ Vue.use(VModal);
     ModalConfirmation,
     ModalPrime,
     ModalPrimeIntro
-  }
-})
-export default class ModalComp extends Vue {
-  @Prop()
-  name!: string;
+  },
+    data() {
+        const modalName: string = "";
 
-  @Prop({ default: 600 })
-  width!: number;
+        return {
+            modalName
+        };
+    },
+    mounted() {
+        this.selectName();
+    },
+    methods: {
+        selectName() {
+            switch (this.type) {
+                  case "basic":
+                    if (this.name) {
+                      this.modalName = this.name;
+                    } else {
+                      this.modalName = "modal-basic";
+                    }
+                    break;
 
-  @Prop({ default: 600 })
-  minWidth!: number;
+                  case "subscribe":
+                    if (this.name) {
+                      this.modalName = this.name;
+                    } else {
+                      this.modalName = "modal-subscribe";
+                    }
+                    break;
 
-  @Prop()
-  scrollable!: boolean;
+                  case "redirect":
+                    if (this.name) {
+                      this.modalName = this.name;
+                    } else {
+                      this.modalName = "modal-redirect";
+                    }
+                    break;
 
-  @Prop()
-  type!: string;
+                  case "confirmation":
+                    if (this.name) {
+                      this.modalName = this.name;
+                    } else {
+                      this.modalName = "modal-confirmation";
+                    }
+                    break;
 
-  @Prop()
-  title!: string;
+                  case "welcome-prime":
+                    if (this.name) {
+                      this.modalName = this.name;
+                    } else {
+                      this.modalName = "modal-welcome-prime";
+                    }
+                    break;
 
-  @Prop()
-  subTitle!: string;
-
-  @Prop()
-  text!: string;
-
-  @Prop()
-  subscribeText!: string;
-
-  @Prop()
-  subscribeMessage!: string;
-
-  @Prop()
-  notes!: string;
-
-  @Prop()
-  proBadge!: boolean;
-
-  @Prop()
-  customPreview!: boolean;
-
-  @Prop()
-  confirmButtonText!: string;
-
-  @Prop()
-  buttonVariation!: string;
-
-  @Prop()
-  buttonTitle!: string;
-
-  @Prop()
-  buttonPrice!: string;
-
-  @Prop()
-  cancelTitle!: string;
-
-  @Prop()
-  primeButtonText!: string;
-
-  @Prop()
-  hasPrimeCloseButton!: boolean;
-
-  @Prop()
-  hideActionButtons!: string;
-
-  @Prop()
-  clickToClose!: boolean;
-
-  modalName: string = "";
-
-  mounted() {
-    this.selectName();
-  }
-
-  selectName() {
-    switch (this.type) {
-      case "basic":
-        if (this.name) {
-          this.modalName = this.name;
-        } else {
-          this.modalName = "modal-basic";
+                  case "prime-intro":
+                    if (this.name) {
+                      this.modalName = this.name;
+                    } else {
+                      this.modalName = "modal-prime-intro";
+                    }
+                    break;
+                }
         }
-        break;
-
-      case "subscribe":
-        if (this.name) {
-          this.modalName = this.name;
-        } else {
-          this.modalName = "modal-subscribe";
+    },
+    props: {
+        name: {
+            type: String
+        },
+        width: { default: 600,
+            type: Number
+        },
+        minWidth: { default: 600,
+            type: Number
+        },
+        scrollable: {
+            type: Boolean
+        },
+        type: {
+            type: String
+        },
+        title: {
+            type: String
+        },
+        subTitle: {
+            type: String
+        },
+        text: {
+            type: String
+        },
+        subscribeText: {
+            type: String
+        },
+        subscribeMessage: {
+            type: String
+        },
+        notes: {
+            type: String
+        },
+        proBadge: {
+            type: Boolean
+        },
+        customPreview: {
+            type: Boolean
+        },
+        confirmButtonText: {
+            type: String
+        },
+        buttonVariation: {
+            type: String
+        },
+        buttonTitle: {
+            type: String
+        },
+        buttonPrice: {
+            type: String
+        },
+        cancelTitle: {
+            type: String
+        },
+        primeButtonText: {
+            type: String
+        },
+        hasPrimeCloseButton: {
+            type: Boolean
+        },
+        hideActionButtons: {
+            type: String
+        },
+        clickToClose: {
+            type: Boolean
         }
-        break;
-
-      case "redirect":
-        if (this.name) {
-          this.modalName = this.name;
-        } else {
-          this.modalName = "modal-redirect";
-        }
-        break;
-
-      case "confirmation":
-        if (this.name) {
-          this.modalName = this.name;
-        } else {
-          this.modalName = "modal-confirmation";
-        }
-        break;
-
-      case "welcome-prime":
-        if (this.name) {
-          this.modalName = this.name;
-        } else {
-          this.modalName = "modal-welcome-prime";
-        }
-        break;
-
-      case "prime-intro":
-        if (this.name) {
-          this.modalName = this.name;
-        } else {
-          this.modalName = "modal-prime-intro";
-        }
-        break;
     }
-  }
-}
+})
+
 </script>

@@ -23,113 +23,120 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue } from "vue-property-decorator";
 import VueSliderComponent from "vue-slider-component";
 import ResizeObserver from "resize-observer-polyfill";
 import 'vue-slider-component/theme/default.css'
+import { defineComponent, PropType } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     VueSliderComponent
-  }
-})
-export default class Slider extends Vue {
-  $refs!: {
-    slider: any;
-  };
+  },
+    data() {
+        const ro: any = undefined;
+        const debounced: boolean = false;
+        const displayValue: number | string | Array<number> | Array<string> = 1;
+        const $refs: {
+                slider: any;
+              } = undefined;
 
-  @Watch("value")
-  updateLocalValue() {
-    this.displayValue = this.value;
-  }
+        return {
+            $refs,
+            displayValue,
+            debounced,
+            ro
+        };
+    },
+    created() {
+        this.$on("input", this.setValue);
+    },
+    mounted() {
+        this.ro = new ResizeObserver((entries, observer) => {
+              for (let entry of entries) {
+                let { left, top, width, height } = entry.contentRect;
+                if (!this.debounced) {
+                  this.debounce().then(() => {
+                    if (this.$refs?.slider) {
+                      // this.$refs.slider.refresh();
+                    }
+                  });
+                }
+              }
+            });
 
-  @Prop()
-  width!: number | string;
-
-  @Prop({ default: 1 })
-  value!: number | string | Array<number> | Array<string>;
-
-  @Prop({ default: 0 })
-  min!: number;
-
-  @Prop({ default: 100 })
-  max!: number;
-
-  @Prop({ default: 1 })
-  interval!: number;
-
-  @Prop({ default: "always" })
-  tooltip!: "always" | false;
-
-  @Prop({ default: "" })
-  prefix!: string;
-
-  @Prop({ default: "" })
-  suffix!: string;
-
-  @Prop({ default: false })
-  disabled!: boolean;
-
-  @Prop()
-  data!: Array<number> | Array<string>;
-
-  @Prop({ default: false })
-  simpleTheme!: boolean;
-
-  displayValue: number | string | Array<number> | Array<string> = 1;
-  private debounced: boolean = false;
-  private ro: any;
-
-  created() {
-    this.$on("input", this.setValue);
-  }
-
-  mounted() {
-    this.ro = new ResizeObserver((entries, observer) => {
-      for (let entry of entries) {
-        let { left, top, width, height } = entry.contentRect;
-        if (!this.debounced) {
-          this.debounce().then(() => {
-            if (this.$refs?.slider) {
-              // this.$refs.slider.refresh();
-            }
-          });
+            this.ro.observe(this.$refs.slider.$el);
+            this.displayValue = this.value;
+    },
+    destroyed() {
+        this.$off("input", this.setValue);
+    },
+    methods: {
+        beforeDestroy() {
+            this.ro.unobserve(this.$refs.slider.$el);
+        },
+        emitInput(val) {
+            this.$emit("input", val);
+        },
+        setValue(val) {
+            this.displayValue = val;
+        },
+        debounce() {
+            return new Promise(resolve => {
+              if (!this.debounced) {
+                this.debounced = true;
+                setTimeout(() => {
+                  this.debounced = false;
+                  resolve();
+                }, 500);
+              }
+            });
+        },
+        updateLocalValue() {
+            this.displayValue = this.value;
         }
-      }
-    });
+    },
+    props: {
+        width: {
+            type: Object as PropType<number | string>
+        },
+        value: { default: 1,
+            type: Object as PropType<number | string | Array<number> | Array<string>>
+        },
+        min: { default: 0,
+            type: Number
+        },
+        max: { default: 100,
+            type: Number
+        },
+        interval: { default: 1,
+            type: Number
+        },
+        tooltip: { default: "always",
+            type: Object as PropType<"always" | false>
+        },
+        prefix: { default: "",
+            type: String
+        },
+        suffix: { default: "",
+            type: String
+        },
+        disabled: { default: false,
+            type: Boolean
+        },
+        data: {
+            type: Object as PropType<Array<number> | Array<string>>
+        },
+        simpleTheme: { default: false,
+            type: Boolean
+        }
+    },
+    watch: {
+        "value": [{
+            handler: "updateLocalValue"
+        }]
+    }
+})
 
-    this.ro.observe(this.$refs.slider.$el);
-    this.displayValue = this.value;
-  }
-
-  beforeDestroy() {
-    this.ro.unobserve(this.$refs.slider.$el);
-  }
-
-  destroyed() {
-    this.$off("input", this.setValue);
-  }
-
-  emitInput(val) {
-    this.$emit("input", val);
-  }
-
-  setValue(val) {
-    this.displayValue = val;
-  }
-
-  debounce() {
-    return new Promise(resolve => {
-      if (!this.debounced) {
-        this.debounced = true;
-        setTimeout(() => {
-          this.debounced = false;
-          resolve();
-        }, 500);
-      }
-    });
-  }
-}
 </script>
 
 <style lang="less">

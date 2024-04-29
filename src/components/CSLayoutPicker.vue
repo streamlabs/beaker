@@ -18,33 +18,35 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import ClickOutside from "vue-click-outside";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   directives: {
     ClickOutside
-  }
+  },
+    data() {
+        return {
+            addLayout: true,
+            chooseLayout: false
+        };
+    },
+    methods: {
+        showChooseLayout() {
+            this.chooseLayout = true;
+            this.addLayout = false;
+        },
+        showAddLayout() {
+            this.chooseLayout = false;
+            this.addLayout = true;
+        },
+        closeChooseLayout() {
+            this.chooseLayout = false;
+            this.addLayout = true;
+        }
+    }
 })
-export default class CSLayoutPicker extends Vue {
-  addLayout = true;
-  chooseLayout = false;
 
-  showChooseLayout() {
-    this.chooseLayout = true;
-    this.addLayout = false;
-  }
-
-  showAddLayout() {
-    this.chooseLayout = false;
-    this.addLayout = true;
-  }
-
-  closeChooseLayout() {
-    this.chooseLayout = false;
-    this.addLayout = true;
-  }
-}
 </script>
 
 <style lang="less">

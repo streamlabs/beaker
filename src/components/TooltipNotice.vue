@@ -28,57 +28,60 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "./Button.vue";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     Button
-  }
-})
-export default class TooltipNotice extends Vue {
-  @Prop({ required: true })
-  title!: string;
+  },
+    computed: {
+        arrowClasses() {
+            let classes: string[] = [];
 
-  @Prop({ default: "Got it" })
-  buttonTitle!: string;
+                if (this.arrowPosition) {
+                  classes.push(`s-tooltip-notice__arrow--${this.arrowPosition}`);
+                }
 
-  @Prop({ default: "Learn More" })
-  secondaryActionTitle!: string;
-
-  @Prop({ required: true })
-  desc!: string;
-
-  @Prop({ default: "left" })
-  arrowPosition!: string;
-
-  @Prop({ default: true })
-  hasButton!: boolean;
-
-  @Prop({ default: false })
-  hasSecondaryAction!: boolean;
-
-  @Prop({ default: 200 })
-  width!: number;
-
-  clickHandler() {
-    this.$emit("handle-tooltip");
-  }
-
-  secondaryClickHandler() {
-    this.$emit("handle-tooltip-secondary");
-  }
-
-  get arrowClasses() {
-    let classes: string[] = [];
-
-    if (this.arrowPosition) {
-      classes.push(`s-tooltip-notice__arrow--${this.arrowPosition}`);
+                return classes;
+        }
+    },
+    methods: {
+        clickHandler() {
+            this.$emit("handle-tooltip");
+        },
+        secondaryClickHandler() {
+            this.$emit("handle-tooltip-secondary");
+        }
+    },
+    props: {
+        title: { required: true,
+            type: String
+        },
+        buttonTitle: { default: "Got it",
+            type: String
+        },
+        secondaryActionTitle: { default: "Learn More",
+            type: String
+        },
+        desc: { required: true,
+            type: String
+        },
+        arrowPosition: { default: "left",
+            type: String
+        },
+        hasButton: { default: true,
+            type: Boolean
+        },
+        hasSecondaryAction: { default: false,
+            type: Boolean
+        },
+        width: { default: 200,
+            type: Number
+        }
     }
+})
 
-    return classes;
-  }
-}
 </script>
 
 <style lang="less">

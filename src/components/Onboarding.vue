@@ -69,51 +69,75 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import OnboardingStep from "./../components/OnboardingStep.vue";
 import Button from "./../components/Button.vue";
+import { defineComponent, PropType } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     OnboardingStep,
     Button
-  }
+  },
+    computed: {
+        location() {
+            if (this.stepLocation === "left") return "s-onboarding__left";
+            if (this.stepLocation === "top") return "s-onboarding__top";
+        },
+        namedSteps() {
+            return this.steps.every(step => !!step.name);
+        },
+        isCompleted() {
+            return this.steps.every(step => step.complete);
+        }
+    },
+    methods: {
+        currentStepStyle(index) {
+            return index + 1 === this.currentStep;
+        },
+        checkmarkStyle(index) {
+            return this.steps[index].complete;
+        }
+    },
+    props: {
+        steps: {
+            type: Array as PropType<{ name?: string; complete: boolean }[]>
+        },
+        stepLocation: { default: "left",
+            type: String
+        },
+        currentStep: {
+            type: Number
+        },
+        completeHandler: {
+            type: Object as PropType<Function>
+        },
+        continueHandler: {
+            type: Object as PropType<Function>
+        },
+        skipHandler: {
+            type: Object as PropType<Function>
+        },
+        prevHandler: {
+            type: Object as PropType<Function>
+        },
+        skippable: {
+            type: Boolean
+        },
+        disableControls: { default: false,
+            type: Boolean
+        },
+        hideSkip: { default: false,
+            type: Boolean
+        },
+        hideBack: { default: false,
+            type: Boolean
+        },
+        hideButton: { default: false,
+            type: Boolean
+        }
+    }
 })
-export default class Onboarding extends Vue {
-  @Prop() steps!: { name?: string; complete: boolean }[];
-  @Prop({ default: "left" }) stepLocation!: string;
-  @Prop() currentStep!: number;
-  @Prop() completeHandler!: Function;
-  @Prop() continueHandler!: Function;
-  @Prop() skipHandler!: Function;
-  @Prop() prevHandler!: Function;
-  @Prop() skippable!: boolean;
-  @Prop({ default: false }) disableControls!: boolean;
-  @Prop({ default: false }) hideSkip!: boolean;
-  @Prop({ default: false }) hideBack!: boolean;
-  @Prop({ default: false }) hideButton!: boolean;
 
-  get location() {
-    if (this.stepLocation === "left") return "s-onboarding__left";
-    if (this.stepLocation === "top") return "s-onboarding__top";
-  }
-
-  get namedSteps() {
-    return this.steps.every(step => !!step.name);
-  }
-
-  get isCompleted() {
-    return this.steps.every(step => step.complete);
-  }
-
-  currentStepStyle(index) {
-    return index + 1 === this.currentStep;
-  }
-
-  checkmarkStyle(index) {
-    return this.steps[index].complete;
-  }
-}
 </script>
 
 <style lang="less">

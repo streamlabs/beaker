@@ -32,41 +32,44 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     Button
-  }
+  },
+    methods: {
+        onConfirmHandler() {
+            this.$emit("confirm");
+            this.$modal.hide(this.name);
+        }
+    },
+    props: {
+        name: { default: "modal-confirmation",
+            type: String
+        },
+        width: { default: 600,
+            type: Number
+        },
+        minWidth: { default: 600,
+            type: Number
+        },
+        subTitle: {
+            type: String
+        },
+        text: {
+            type: String
+        },
+        confirmButtonText: { default: "Confirm",
+            type: String
+        },
+        buttonVariation: { default: "warning",
+            type: String
+        }
+    }
 })
-export default class ModalConfirmation extends Vue {
-  @Prop({ default: "modal-confirmation" })
-  name!: string;
 
-  @Prop({ default: 600 })
-  width!: number;
-
-  @Prop({ default: 600 })
-  minWidth!: number;
-
-  @Prop()
-  subTitle!: string;
-
-  @Prop()
-  text!: string;
-
-  @Prop({ default: "Confirm" })
-  confirmButtonText!: string;
-
-  @Prop({ default: "warning" })
-  buttonVariation!: string;
-
-  onConfirmHandler() {
-    this.$emit("confirm");
-    this.$modal.hide(this.name);
-  }
-}
 </script>
 
 <style lang="less" scoped>

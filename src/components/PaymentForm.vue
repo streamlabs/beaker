@@ -46,23 +46,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Checkbox from "./Checkbox.vue";
 import Radio from "./Radio.vue";
 import Selector from "./Selector.vue";
 import TextInput from "./TextInput.vue";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     Checkbox,
     Radio,
     Selector,
     TextInput
-  }
+  },
+    data() {
+        return {
+            savePaymentMethod: true
+        };
+    }
 })
-export default class PaymentForm extends Vue {
-  savePaymentMethod = true;
-}
+
 </script>
 
 <style lang="less">

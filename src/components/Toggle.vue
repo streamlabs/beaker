@@ -18,33 +18,36 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, PropType } from "vue";
 
-@Component({
+export default defineComponent({
   filters: {
     capitalize(value: string) {
       if (!value) return "";
       value = value.toString();
       return value.charAt(0).toUpperCase() + value.slice(1);
     }
-  }
-})
-export default class Toggle extends Vue {
-  @Prop()
-  values!: object;
-
-  @Prop()
-  value!: string;
-
-  @Prop()
-  variation!: string;
-
-  get toggleClass() {
-    if (this.variation) {
-      return `s-toggle--${this.variation}`;
+  },
+    computed: {
+        toggleClass() {
+            if (this.variation) {
+              return `s-toggle--${this.variation}`;
+            }
+        }
+    },
+    props: {
+        values: {
+            type: Object as PropType<object>
+        },
+        value: {
+            type: String
+        },
+        variation: {
+            type: String
+        }
     }
-  }
-}
+})
+
 </script>
 
 <style lang="less">

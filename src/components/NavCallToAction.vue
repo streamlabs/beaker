@@ -20,48 +20,54 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
+import { defineComponent, PropType } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     Button
-  }
+  },
+    data() {
+        const callToActionBg: object = {
+                backgroundColor: this.bgColor
+              };
+
+        return {
+            callToActionBg
+        };
+    },
+    props: {
+        bgColor: {
+            type: Object as PropType<String>
+        },
+        description: {
+                default:
+                  "Over 800k creators use Streamlabs OBS daily, delivering entertainment.",
+            type: Object as PropType<String>
+        },
+        buttonVariation: { default: "slobs-download",
+            type: Object as PropType<String>
+        },
+        buttonTitle: { default: "Download Streamlabs OBS",
+            type: Object as PropType<String>
+        },
+        buttonHref: {
+            type: Object as PropType<String>
+        },
+        buttonTo: {
+            type: Object as PropType<String>
+        },
+        buttonTag: {
+            type: Object as PropType<String>
+        },
+        onClick: {
+            type: Object as PropType<{
+                    type: Function;
+                  }>
+        }
+    }
 })
-export default class NavCallToAction extends Vue {
-  @Prop()
-  bgColor!: String;
 
-  @Prop({
-    default:
-      "Over 800k creators use Streamlabs OBS daily, delivering entertainment."
-  })
-  description!: String;
-
-  @Prop({ default: "slobs-download" })
-  buttonVariation!: String;
-
-  @Prop({ default: "Download Streamlabs OBS" })
-  buttonTitle!: String;
-
-  @Prop()
-  buttonHref!: String;
-
-  @Prop()
-  buttonTo!: String;
-
-  @Prop()
-  buttonTag!: String;
-
-  @Prop()
-  onClick!: {
-    type: Function;
-  };
-
-  callToActionBg: object = {
-    backgroundColor: this.bgColor
-  };
-}
 </script>
 
 <style lang="less">

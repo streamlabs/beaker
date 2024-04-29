@@ -60,65 +60,67 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
 import Badge from "./../components/Badge.vue";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     Button,
     Badge
-  }
+  },
+    props: {
+        name: {
+            type: String
+        },
+        width: { default: 600,
+            type: Number
+        },
+        minWidth: { default: 600,
+            type: Number
+        },
+        scrollable: { default: false,
+            type: Boolean
+        },
+        title: {
+            type: String
+        },
+        subTitle: {
+            type: String
+        },
+        text: {
+            type: String
+        },
+        notes: {
+            type: String
+        },
+        subscribeText: {
+            type: String
+        },
+        subscribeMessage: {
+            type: String
+        },
+        proBadge: { default: true,
+            type: Boolean
+        },
+        customPreview: { default: false,
+            type: Boolean
+        },
+        buttonTitle: { default: "Subscribe with PayPal",
+            type: String
+        },
+        buttonPrice: { default: "$5.99/mo",
+            type: String
+        },
+        buttonVariation: { default: "subscribe",
+            type: String
+        },
+        cancelTitle: { default: "Cancel",
+            type: String
+        }
+    }
 })
-export default class ModalSubscribe extends Vue {
-  @Prop()
-  name!: string;
 
-  @Prop({ default: 600 })
-  width!: number;
-
-  @Prop({ default: 600 })
-  minWidth!: number;
-
-  @Prop({ default: false })
-  scrollable!: boolean;
-
-  @Prop()
-  title!: string;
-
-  @Prop()
-  subTitle!: string;
-
-  @Prop()
-  text!: string;
-
-  @Prop()
-  notes!: string;
-
-  @Prop()
-  subscribeText!: string;
-
-  @Prop()
-  subscribeMessage!: string;
-
-  @Prop({ default: true })
-  proBadge!: boolean;
-
-  @Prop({ default: false })
-  customPreview!: boolean;
-
-  @Prop({ default: "Subscribe with PayPal" })
-  buttonTitle!: string;
-
-  @Prop({ default: "$5.99/mo" })
-  buttonPrice!: string;
-
-  @Prop({ default: "subscribe" })
-  buttonVariation!: string;
-
-  @Prop({ default: "Cancel" })
-  cancelTitle!: string;
-}
 </script>
 
 <style lang="less" scoped>

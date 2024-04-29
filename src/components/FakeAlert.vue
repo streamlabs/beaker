@@ -11,21 +11,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component({})
-export default class FakeAlert extends Vue {
-  @Prop({ default: "galazy83 donated $50.00" })
-  alertText!: string;
+export default defineComponent({
+    props: {
+        alertText: { default: "galazy83 donated $50.00",
+            type: String
+        },
+        alertMessage: { default: "Thanks for the stream. Go CivRyan!",
+            type: String
+        },
+        alertImage: {
+                default: "https://thumbs.gfycat.com/PleasedIcyCod-size_restricted.gif",
+            type: String
+        }
+    }
+})
 
-  @Prop({ default: "Thanks for the stream. Go CivRyan!" })
-  alertMessage!: string;
-
-  @Prop({
-    default: "https://thumbs.gfycat.com/PleasedIcyCod-size_restricted.gif"
-  })
-  alertImage!: string;
-}
 </script>
 
 <style lang="less">

@@ -65,89 +65,94 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import { Chrome } from "vue-color";
+import { defineComponent, PropType } from "vue";
 
-@Component({
+export default defineComponent({
   inheritAttrs: false,
   components: {
     picker: Chrome
-  }
+  },
+    data() {
+      const colors: object = {};
+      const backgroundColor: String = "";
+      const displayPicker: Boolean = false;
+      const $refs: {
+              colorpicker: HTMLElement;
+            } = undefined;
+
+        return {
+            $refs,
+            displayPicker,
+            backgroundColor,
+            colors
+        };
+    },
+    computed: {
+        alphaClass() {
+            return this.hasAlpha
+            ? this.colors["a"] === 1
+            ? "nonAlpha"
+            : "alpha"
+            : false;
+        }
+    },
+    created() {
+        this.colors = Object.assign({}, this.colors, {
+          hex: this.value
+        });
+    },
+    methods: {
+        updateFromPicker(value: any) {
+            this.colors = value;
+            if (this.alphaClass === "alpha") {
+              this.$emit("input", value.hex8);
+            } else {
+              this.$emit("input", value.hex);
+            }
+        },
+        updateFromInput(event: any) {
+            this.colors = event.target.value;
+            this.$emit("input", event.target.value);
+        },
+        hidePicker() {
+            document.removeEventListener("click", this.documentClick);
+            this.displayPicker = false;
+        },
+        showPicker() {
+            document.addEventListener("click", this.documentClick);
+            this.displayPicker = true;
+        },
+        documentClick(e: any) {
+            let el = this.$refs.colorpicker;
+            let target = e.target;
+            if (el && el !== target && !el.contains(target)) {
+              this.hidePicker();
+            }
+        }
+    },
+    props: {
+        value: {
+            type: Object as PropType<any>
+        },
+        placeholder: { default: "#31c3a2",
+            type: String
+        },
+        hasAlpha: { default: false,
+            type: Boolean
+        },
+        isMini: { default: false,
+            type: Boolean
+        },
+        icon: {
+            type: String
+        },
+        error: {
+            type: String
+        }
+    }
 })
-export default class ColorPicker extends Vue {
-  $refs!: {
-    colorpicker: HTMLElement;
-  };
 
-  @Prop()
-  value!: any;
-
-  @Prop({ default: "#31c3a2" })
-  placeholder!: string;
-
-  @Prop({ default: false })
-  hasAlpha!: boolean;
-
-  @Prop({ default: false })
-  isMini!: boolean;
-
-  @Prop()
-  icon!: string;
-
-  @Prop()
-  error!: string;
-
-  private displayPicker: Boolean = false;
-  private backgroundColor: String = "";
-
-  colors: object = {};
-
-  get alphaClass() {
-    return this.hasAlpha
-      ? this.colors["a"] === 1
-        ? "nonAlpha"
-        : "alpha"
-      : false;
-  }
-
-  created() {
-    this.colors = Object.assign({}, this.colors, {
-      hex: this.value
-    });
-  }
-
-  updateFromPicker(value: any) {
-    this.colors = value;
-    if (this.alphaClass === "alpha") {
-      this.$emit("input", value.hex8);
-    } else {
-      this.$emit("input", value.hex);
-    }
-  }
-
-  updateFromInput(event: any) {
-    this.colors = event.target.value;
-    this.$emit("input", event.target.value);
-  }
-
-  hidePicker() {
-    document.removeEventListener("click", this.documentClick);
-    this.displayPicker = false;
-  }
-
-  showPicker() {
-    document.addEventListener("click", this.documentClick);
-    this.displayPicker = true;
-  }
-
-  documentClick(e: any) {
-    let el = this.$refs.colorpicker;
-    let target = e.target;
-    if (el && el !== target && !el.contains(target)) {
-      this.hidePicker();
-    }
-  }
-}
 </script>
 
 <style lang="less">

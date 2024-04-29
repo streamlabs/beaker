@@ -24,28 +24,32 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component({})
-export default class FormGroupV extends Vue {
-  @Prop()
-  helpText!: string;
+export default defineComponent({
+    computed: {
+        titleLayoutStyle() {
+            return {
+              "justify-content": this.titleLayout
+            };
+        }
+    },
+    props: {
+        helpText: {
+            type: String
+        },
+        title: {
+            type: String
+        },
+        tooltip: { default: "",
+            type: String
+        },
+        titleLayout: { default: "space-between",
+            type: String
+        }
+    }
+})
 
-  @Prop()
-  title!: string;
-
-  @Prop({ default: "" })
-  tooltip!: string;
-
-  @Prop({ default: "space-between" })
-  titleLayout!: string;
-
-  get titleLayoutStyle() {
-    return {
-      "justify-content": this.titleLayout
-    };
-  }
-}
 </script>
 
 <style lang="less">

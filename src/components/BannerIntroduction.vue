@@ -16,13 +16,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component({})
-export default class BannerIntroduction extends Vue {
-  @Prop(String)
-  bgColor!: string;
-}
+export default defineComponent({
+    props: {
+        bgColor: {
+            type: String
+        }
+    }
+})
+
 </script>
 
 <style lang="less">

@@ -18,54 +18,63 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component({})
-export default class Guard extends Vue {
-  @Prop()
-  value?: string;
+export default defineComponent({
+    data() {
+        const visible: boolean = true;
 
-  @Prop({ default: "Click to show" })
-  placeholder!: string;
+        return {
+            visible
+        };
+    },
+    computed: {
+        prefix() {
+            return this.type === "input" ? "s-input-guard" : "s-text-guard";
+        },
+        guardClasses() {
+            const classes: string[] = [];
+                if (this.visible) {
+                  classes.push(this.prefix);
+                } else {
+                  classes.push(`${this.prefix}--readable`);
+                }
 
-  @Prop({ default: true })
-  showOnClick!: boolean;
+                if (this.variation === "alt") {
+                  classes.push(`${this.prefix}--alt`);
+                }
 
-  @Prop({ default: "normal" })
-  variation!: string;
-
-  @Prop({ default: "text" })
-  type!: string;
-
-  visible: boolean = true;
-
-  get prefix() {
-    return this.type === "input" ? "s-input-guard" : "s-text-guard";
-  }
-
-  showText() {
-    if (this.showOnClick) {
-      this.visible = false;
-    } else {
-      this.$emit("click");
+                return classes;
+        }
+    },
+    methods: {
+        showText() {
+            if (this.showOnClick) {
+              this.visible = false;
+            } else {
+              this.$emit("click");
+            }
+        }
+    },
+    props: {
+        value: {
+            type: String
+        },
+        placeholder: { default: "Click to show",
+            type: String
+        },
+        showOnClick: { default: true,
+            type: Boolean
+        },
+        variation: { default: "normal",
+            type: String
+        },
+        type: { default: "text",
+            type: String
+        }
     }
-  }
+})
 
-  get guardClasses() {
-    const classes: string[] = [];
-    if (this.visible) {
-      classes.push(this.prefix);
-    } else {
-      classes.push(`${this.prefix}--readable`);
-    }
-
-    if (this.variation === "alt") {
-      classes.push(`${this.prefix}--alt`);
-    }
-
-    return classes;
-  }
-}
 </script>
 
 <style lang="less">

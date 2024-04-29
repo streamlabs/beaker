@@ -31,69 +31,77 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component({})
-export default class VitualItem extends Vue {
-  @Prop(String)
-  name!: string;
+export default defineComponent({
+    data() {
+        const isClickable: boolean = false;
 
-  @Prop(String)
-  value!: string;
+        return {
+            isClickable
+        };
+    },
+    computed: {
+        virtualItemClasses() {
+            const classes: any = [];
 
-  @Prop(String)
-  preview!: string;
+                if (this.rarity) {
+                  classes.push(`s-virtual-item--${this.rarity}`);
+                }
 
-  @Prop(Number)
-  quantity!: number;
+                if (this.selected) {
+                  classes.push("is-selected");
+                }
 
-  @Prop(String)
-  rarity!: string;
+                if (this.isClickable) {
+                  classes.push("clickable");
+                }
 
-  @Prop({ default: false })
-  selected!: boolean;
-
-  @Prop(String)
-  selectionCount!: string;
-
-  @Prop(String)
-  remainingTime!: string;
-
-  @Prop({ default: false })
-  hasWarning!: boolean;
-
-  @Prop({ default: false })
-  isGiveaway!: boolean;
-
-  @Prop(String)
-  type!: string;
-
-  isClickable: boolean = false;
-
-  mounted() {
-    if (this.$listeners.click) {
-      this.isClickable = true;
+                return classes.join(" ");
+        }
+    },
+    mounted() {
+        if (this.$listeners.click) {
+          this.isClickable = true;
+        }
+    },
+    props: {
+        name: {
+            type: String
+        },
+        value: {
+            type: String
+        },
+        preview: {
+            type: String
+        },
+        quantity: {
+            type: Number
+        },
+        rarity: {
+            type: String
+        },
+        selected: { default: false,
+            type: Boolean
+        },
+        selectionCount: {
+            type: String
+        },
+        remainingTime: {
+            type: String
+        },
+        hasWarning: { default: false,
+            type: Boolean
+        },
+        isGiveaway: { default: false,
+            type: Boolean
+        },
+        type: {
+            type: String
+        }
     }
-  }
+})
 
-  get virtualItemClasses() {
-    const classes: any = [];
-
-    if (this.rarity) {
-      classes.push(`s-virtual-item--${this.rarity}`);
-    }
-
-    if (this.selected) {
-      classes.push("is-selected");
-    }
-
-    if (this.isClickable) {
-      classes.push("clickable");
-    }
-
-    return classes.join(" ");
-  }
-}
 </script>
 
 <style lang="less">

@@ -60,112 +60,122 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { defineComponent, PropType } from "vue";
 
-@Component({})
-export default class BannerMarketing extends Vue {
-  $refs!: {
-    banner: HTMLDivElement;
-    bottomWrapper: HTMLDivElement;
-  };
+export default defineComponent({
+    data() {
+        const closed: boolean = false;
+        const $refs: {
+                banner: HTMLDivElement;
+                bottomWrapper: HTMLDivElement;
+              } = undefined;
 
-  @Prop()
-  bgImageNight!: {
-    type: string;
-  };
+        return {
+            $refs,
+            closed
+        };
+    },
+    mounted() {
+        this.closed = this.bannerClosed;
+        this.updateBannerHeight();
+    },
+    methods: {
+        toggleBanner() {
+            typeof this.onToggle === "function" && this.onToggle();
+                this.closed = !this.closed;
+                this.updateBannerHeight();
 
-  @Prop()
-  bgImage!: {
-    type: string;
-    required: true;
-  };
+                /*
+                  For keyboard accessibility
+                */
+                if (this.$whatInput.ask() === "keyboard") {
+                  const icons = this.$refs.banner.querySelectorAll(".icon-down");
+                  let icon!: HTMLLIElement;
 
-  @Prop()
-  label!: {
-    type: string;
-    required: true;
-  };
+                  if (this.closed) {
+                    icon = icons[1] as HTMLLIElement;
+                  } else {
+                    icon = icons[0] as HTMLLIElement;
+                  }
 
-  @Prop()
-  iconName!: {
-    type: string;
-  };
+                  let tabindex = parseInt(icon.getAttribute("tabindex") as string);
+                  this.$nextTick(() => icon.focus());
+                }
+        },
+        updateBannerHeight() {
+            let banner = this.$refs.banner;
+                let bannerWrapper = this.$refs.bottomWrapper;
 
-  @Prop()
-  iconImage!: {
-    type: string;
-  };
-
-  @Prop()
-  title!: {
-    type: string;
-    required: true;
-  };
-
-  @Prop()
-  desc!: {
-    type: string;
-    required: false;
-  };
-
-  @Prop()
-  linkDesc!: string;
-
-  @Prop({ default: false })
-  bannerClosed!: boolean;
-
-  @Prop()
-  onToggle!: Function;
-
-  @Watch("bannerClosed")
-  onBannerCloseStateChanged(val: boolean, oldVal: boolean) {
-    this.closed = val;
-    this.updateBannerHeight();
-  }
-
-  closed: boolean = false;
-
-  mounted() {
-    this.closed = this.bannerClosed;
-    this.updateBannerHeight();
-  }
-
-  toggleBanner() {
-    typeof this.onToggle === "function" && this.onToggle();
-    this.closed = !this.closed;
-    this.updateBannerHeight();
-
-    /*
-      For keyboard accessibility
-    */
-    if (this.$whatInput.ask() === "keyboard") {
-      const icons = this.$refs.banner.querySelectorAll(".icon-down");
-      let icon!: HTMLLIElement;
-
-      if (this.closed) {
-        icon = icons[1] as HTMLLIElement;
-      } else {
-        icon = icons[0] as HTMLLIElement;
-      }
-
-      let tabindex = parseInt(icon.getAttribute("tabindex") as string);
-      this.$nextTick(() => icon.focus());
+                if (!this.closed) {
+                  banner.style.maxHeight = "240px";
+                } else {
+                  setTimeout(() => {
+                    banner.style.maxHeight = `${bannerWrapper.scrollHeight + 32}px`;
+                  }, 1);
+                }
+        },
+        onBannerCloseStateChanged(val: boolean, oldVal: boolean) {
+            this.closed = val;
+            this.updateBannerHeight();
+        }
+    },
+    props: {
+        bgImageNight: {
+            type: Object as PropType<{
+                    type: string;
+                  }>
+        },
+        bgImage: {
+            type: Object as PropType<{
+                    type: string;
+                    required: true;
+                  }>
+        },
+        label: {
+            type: Object as PropType<{
+                    type: string;
+                    required: true;
+                  }>
+        },
+        iconName: {
+            type: Object as PropType<{
+                    type: string;
+                  }>
+        },
+        iconImage: {
+            type: Object as PropType<{
+                    type: string;
+                  }>
+        },
+        title: {
+            type: Object as PropType<{
+                    type: string;
+                    required: true;
+                  }>
+        },
+        desc: {
+            type: Object as PropType<{
+                    type: string;
+                    required: false;
+                  }>
+        },
+        linkDesc: {
+            type: String
+        },
+        bannerClosed: { default: false,
+            type: Boolean
+        },
+        onToggle: {
+            type: Object as PropType<Function>
+        }
+    },
+    watch: {
+        "bannerClosed": [{
+            handler: "onBannerCloseStateChanged"
+        }]
     }
-  }
+})
 
-  updateBannerHeight() {
-    let banner = this.$refs.banner;
-    let bannerWrapper = this.$refs.bottomWrapper;
-
-    if (!this.closed) {
-      banner.style.maxHeight = "240px";
-    } else {
-      setTimeout(() => {
-        banner.style.maxHeight = `${bannerWrapper.scrollHeight + 32}px`;
-      }, 1);
-    }
-  }
-}
 </script>
 
 <style lang="less">

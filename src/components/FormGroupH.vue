@@ -21,19 +21,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component({})
-export default class FormGroupH extends Vue {
-  @Prop()
-  helpText!: string;
+export default defineComponent({
+    props: {
+        helpText: {
+            type: String
+        },
+        tooltip: {
+            type: String
+        },
+        title: {
+            type: String
+        }
+    }
+})
 
-  @Prop()
-  tooltip!: string;
-
-  @Prop()
-  title!: string;
-}
 </script>
 
 <style lang="less">

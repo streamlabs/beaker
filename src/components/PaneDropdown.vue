@@ -50,154 +50,157 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue } from "vue-property-decorator";
 import { mixin as vFocus } from "vue-focus";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   name: "PaneDropdown",
-  mixins: [vFocus]
-})
-export default class PaneDropdown extends Vue {
-  $refs!: {
-    paneMenu: HTMLDivElement;
-    paneList: HTMLDivElement;
-  };
+  mixins: [vFocus],
+    data() {
+      const $refs: {
+              paneMenu: HTMLDivElement;
+              paneList: HTMLDivElement;
+            } = undefined;
 
-  @Prop({ default: true })
-  dropdownIcon!: boolean;
-
-  @Prop({ default: null })
-  menuAlign!: string;
-
-  @Prop({ default: false })
-  openAbove!: boolean;
-
-  @Prop({ default: false })
-  autoHeight!: boolean;
-
-  @Prop({ default: true })
-  closeOnSelect!: boolean;
-
-  @Prop({ default: false })
-  custom!: boolean;
-
-  @Prop({ default: false })
-  relativeMenu!: boolean;
-
-  @Prop({ default: false })
-  simpleMenu!: boolean;
-
-  @Prop({ default: false })
-  hoverOption!: boolean;
-
-  @Prop({ default: false })
-  nested!: boolean;
-
-  paneMenuOpen = false;
-
-  created() {
-    document.addEventListener("click", this.documentClick);
-  }
-
-  destroyed() {
-    document.removeEventListener("click", this.documentClick);
-  }
-
-  get menuClasses() {
-    let classes: string[] = [];
-
-    if (this.menuAlign) {
-      classes.push(`s-pane-dropdown__menu--${this.menuAlign}`);
-    }
-
-    if (this.openAbove) {
-      classes.push("s-pane-dropdown__menu--top");
-    }
-
-    if (this.autoHeight) {
-      classes.push("s-pane-dropdown__menu--auto-height");
-    }
-
-    if (this.relativeMenu) {
-      classes.push("s-pane-dropdown__menu--relative");
-    }
-
-    if (this.simpleMenu) {
-      classes.push("s-pane-dropdown__menu--simple");
-    }
-
-    return classes;
-  }
-
-  @Watch("paneMenuOpen")
-  watchPaneMenuOpen(newVal) {
-    if (newVal && !this.custom) {
-      this.$nextTick(() => {
-        const list = this.$refs.paneList;
-        const lastSlotItem = list.lastElementChild as HTMLElement;
-        const onTab = e => {
-          if (e.keyCode === 9 && !e.shiftKey) this.hide();
+        return {
+            $refs,
+            paneMenuOpen: false
         };
+    },
+    computed: {
+        menuClasses() {
+            let classes: string[] = [];
 
-        lastSlotItem.addEventListener("keydown", onTab);
-      });
+                if (this.menuAlign) {
+                  classes.push(`s-pane-dropdown__menu--${this.menuAlign}`);
+                }
+
+                if (this.openAbove) {
+                  classes.push("s-pane-dropdown__menu--top");
+                }
+
+                if (this.autoHeight) {
+                  classes.push("s-pane-dropdown__menu--auto-height");
+                }
+
+                if (this.relativeMenu) {
+                  classes.push("s-pane-dropdown__menu--relative");
+                }
+
+                if (this.simpleMenu) {
+                  classes.push("s-pane-dropdown__menu--simple");
+                }
+
+                return classes;
+        }
+    },
+    created() {
+        document.addEventListener("click", this.documentClick);
+    },
+    destroyed() {
+        document.removeEventListener("click", this.documentClick);
+    },
+    methods: {
+        afterOpen(element) {
+            element.style.height = "auto";
+        },
+        open(element) {
+            let width = getComputedStyle(element).width;
+            element.style.width = width;
+            let maxWidth = getComputedStyle(element).width;
+            element.style.maxWidth = maxWidth;
+            element.style.position = `absolute`;
+            element.style.visibility = `hidden`;
+            element.style.height = `auto`;
+            let height = getComputedStyle(element).height;
+            element.style.width = null;
+            element.style.position = null;
+            element.style.visibility = null;
+            element.style.height = 0;
+            getComputedStyle(element).height;
+            setTimeout(() => {
+              element.style.height = height;
+            });
+        },
+        close(element) {
+            if ("target" in element) return;
+
+                let height = getComputedStyle(element).height;
+                element.style.height = height;
+                getComputedStyle(element).height;
+                setTimeout(() => {
+                  element.style.height = 0;
+                });
+        },
+        documentClick(e: Event) {
+            let el: any = this.$refs.paneMenu;
+            let target = e.target;
+            if (el !== target && !el.contains(target)) {
+              this.paneMenuOpen = false;
+            }
+        },
+        onMenuClick() {
+            this.closeOnSelect ? (this.paneMenuOpen = !this.paneMenuOpen) : null;
+        },
+        hide() {
+            this.paneMenuOpen = false;
+        },
+        show() {
+            this.paneMenuOpen = true;
+        },
+        watchPaneMenuOpen(newVal) {
+            if (newVal && !this.custom) {
+                  this.$nextTick(() => {
+                    const list = this.$refs.paneList;
+                    const lastSlotItem = list.lastElementChild as HTMLElement;
+                    const onTab = e => {
+                      if (e.keyCode === 9 && !e.shiftKey) this.hide();
+                    };
+
+                    lastSlotItem.addEventListener("keydown", onTab);
+                  });
+                }
+        }
+    },
+    props: {
+        dropdownIcon: { default: true,
+            type: Boolean
+        },
+        menuAlign: { default: null,
+            type: String
+        },
+        openAbove: { default: false,
+            type: Boolean
+        },
+        autoHeight: { default: false,
+            type: Boolean
+        },
+        closeOnSelect: { default: true,
+            type: Boolean
+        },
+        custom: { default: false,
+            type: Boolean
+        },
+        relativeMenu: { default: false,
+            type: Boolean
+        },
+        simpleMenu: { default: false,
+            type: Boolean
+        },
+        hoverOption: { default: false,
+            type: Boolean
+        },
+        nested: { default: false,
+            type: Boolean
+        }
+    },
+    watch: {
+        "paneMenuOpen": [{
+            handler: "watchPaneMenuOpen"
+        }]
     }
-  }
+})
 
-  afterOpen(element) {
-    element.style.height = "auto";
-  }
-
-  open(element) {
-    let width = getComputedStyle(element).width;
-    element.style.width = width;
-    let maxWidth = getComputedStyle(element).width;
-    element.style.maxWidth = maxWidth;
-    element.style.position = `absolute`;
-    element.style.visibility = `hidden`;
-    element.style.height = `auto`;
-    let height = getComputedStyle(element).height;
-    element.style.width = null;
-    element.style.position = null;
-    element.style.visibility = null;
-    element.style.height = 0;
-    getComputedStyle(element).height;
-    setTimeout(() => {
-      element.style.height = height;
-    });
-  }
-
-  close(element) {
-    if ("target" in element) return;
-
-    let height = getComputedStyle(element).height;
-    element.style.height = height;
-    getComputedStyle(element).height;
-    setTimeout(() => {
-      element.style.height = 0;
-    });
-  }
-
-  documentClick(e: Event) {
-    let el: any = this.$refs.paneMenu;
-    let target = e.target;
-    if (el !== target && !el.contains(target)) {
-      this.paneMenuOpen = false;
-    }
-  }
-
-  onMenuClick() {
-    this.closeOnSelect ? (this.paneMenuOpen = !this.paneMenuOpen) : null;
-  }
-
-  hide() {
-    this.paneMenuOpen = false;
-  }
-
-  show() {
-    this.paneMenuOpen = true;
-  }
-}
 </script>
 
 <style lang="less">

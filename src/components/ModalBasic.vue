@@ -42,42 +42,44 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     Button
-  }
+  },
+    props: {
+        name: {
+            type: String
+        },
+        width: { default: 600,
+            type: Number
+        },
+        minWidth: { default: 600,
+            type: Number
+        },
+        title: {
+            type: String
+        },
+        subTitle: {
+            type: String
+        },
+        text: {
+            type: String
+        },
+        hideActionButtons: {
+            type: String
+        },
+        confirmButtonText: { default: "Confirm",
+            type: String
+        },
+        clickToClose: { default: true,
+            type: Boolean
+        }
+    }
 })
-export default class ModalBasic extends Vue {
-  @Prop()
-  name!: string;
 
-  @Prop({ default: 600 })
-  width!: number;
-
-  @Prop({ default: 600 })
-  minWidth!: number;
-
-  @Prop()
-  title!: string;
-
-  @Prop()
-  subTitle!: string;
-
-  @Prop()
-  text!: string;
-
-  @Prop()
-  hideActionButtons!: string;
-
-  @Prop({ default: "Confirm" })
-  confirmButtonText!: string;
-
-  @Prop({ default: true })
-  clickToClose!: boolean;
-}
 </script>
 
 <style lang="less" scoped>

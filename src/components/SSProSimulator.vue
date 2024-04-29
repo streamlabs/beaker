@@ -32,51 +32,56 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import UrlBar from "./../components/UrlBar.vue";
+import { defineComponent, PropType } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     UrlBar
-  }
+  },
+    data() {
+        const myInt: number = undefined;
+
+        return {
+            themeClasses: ["teal", "orange", "purple", "electric-blue", "red", "lime"],
+            themeClass: "",
+            myInt
+        };
+    },
+    mounted() {
+        this.rotateClasses();
+    },
+    methods: {
+        rotateClasses() {
+            let it = this.themeClasses[Symbol.iterator]();
+            this.myInt = setInterval(() => {
+              // time interval
+              const next = it.next();
+              if (!next.done) {
+                this.themeClass = "s-cs-simulator__web-page--" + next.value;
+              } else {
+                it = this.themeClasses[Symbol.iterator]();
+              }
+            }, 2000);
+        },
+        beforeDestroy() {
+            clearInterval(this.myInt);
+        }
+    },
+    props: {
+        username: { default: "Awkward__Raccoon",
+            type: String
+        },
+        icon: {
+                default: "https://live.kickstarter.com/images/avatar/medium/avatars4.png",
+            type: Object as PropType<String>
+        },
+        domain: { default: "https://awkwardraccoon.tv",
+            type: String
+        }
+    }
 })
-export default class ScsroSimulator extends Vue {
-  @Prop({ default: "Awkward__Raccoon" })
-  username!: string;
 
-  @Prop({
-    default: "https://live.kickstarter.com/images/avatar/medium/avatars4.png"
-  })
-  icon!: String;
-
-  @Prop({ default: "https://awkwardraccoon.tv" })
-  domain!: string;
-
-  themeClasses = ["teal", "orange", "purple", "electric-blue", "red", "lime"];
-  themeClass = "";
-  myInt!: number;
-
-  rotateClasses() {
-    let it = this.themeClasses[Symbol.iterator]();
-    this.myInt = setInterval(() => {
-      // time interval
-      const next = it.next();
-      if (!next.done) {
-        this.themeClass = "s-cs-simulator__web-page--" + next.value;
-      } else {
-        it = this.themeClasses[Symbol.iterator]();
-      }
-    }, 2000);
-  }
-
-  beforeDestroy() {
-    clearInterval(this.myInt);
-  }
-
-  mounted() {
-    this.rotateClasses();
-  }
-}
 </script>
 
 <style lang="less">

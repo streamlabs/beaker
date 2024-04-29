@@ -1,9 +1,22 @@
 import { defineConfig } from "vite";
-import { createVuePlugin } from "vite-plugin-vue2";
+import vue from "@vitejs/plugin-vue2";
+import dts from "vite-plugin-dts";
 
 export default defineConfig({
   base: "/beaker/",
-  plugins: [createVuePlugin()],
+  plugins: [
+    vue(),
+    dts({
+      tsconfigPath: "tsconfig.build.json",
+      cleanVueFileName: true,
+      exclude: [
+        "src/assets/**",
+        "src/demos/**",
+        "src/styles/**",
+        "src/views/**",
+      ],
+    }),
+  ],
   build: {
     minify: false,
     sourcemap: true,

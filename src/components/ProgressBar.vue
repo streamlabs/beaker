@@ -5,15 +5,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-@Component({})
-export default class ProgressBar extends Vue {
-  @Prop()
-  progressComplete!: Number;
-  get getProgress() {
-    return "width:" + this.progressComplete + "%";
-  }
-}
+import { defineComponent, PropType } from "vue";
+
+export default defineComponent({
+    computed: {
+        getProgress() {
+            return "width:" + this.progressComplete + "%";
+        }
+    },
+    props: {
+        progressComplete: {
+            type: Object as PropType<Number>
+        }
+    }
+})
+
 </script>
 
 <style lang="less">

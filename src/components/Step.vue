@@ -20,33 +20,35 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Badge from "./../components/Badge.vue";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     Badge
-  }
+  },
+    props: {
+        title: {
+            type: String
+        },
+        icon: {
+            type: String
+        },
+        isCompleted: { default: false,
+            type: Boolean
+        },
+        completedText: {
+            type: String
+        },
+        hasCheckmark: { default: false,
+            type: Boolean
+        },
+        hasPrime: { default: false,
+            type: Boolean
+        }
+    }
 })
-export default class Step extends Vue {
-  @Prop(String)
-  title!: string;
 
-  @Prop(String)
-  icon!: string;
-
-  @Prop({ default: false })
-  isCompleted!: boolean;
-
-  @Prop(String)
-  completedText!: string;
-
-  @Prop({ default: false })
-  hasCheckmark!: boolean;
-
-  @Prop({ default: false })
-  hasPrime!: boolean;
-}
 </script>
 
 <style lang="less" scoped>

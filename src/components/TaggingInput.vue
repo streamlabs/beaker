@@ -40,109 +40,120 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import TextInput from "./TextInput.vue";
 import TextArea from "./TextArea.vue";
 import Button from "./Button.vue";
+import { defineComponent, PropType } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     TextInput,
     TextArea,
     Button,
   },
+    data() {
+        const tags: string[] = [];
+        const input: string = "";
+
+        return {
+            input,
+            tags
+        };
+    },
+    methods: {
+        onAdd() {
+            if (this.$validator.errors.items.length !== 0) {
+                  this.$emit("error", this.$validator.errors.items, false);
+                  return;
+                }
+
+                if (this.tags.length >= this.maxItems) {
+                  this.$emit("error", ["Max items reached"], true);
+                  return;
+                }
+
+                let inputValue = this.input.trim();
+
+                const found = this.tags.find((v) => {
+                  if (this.prefix && !inputValue.startsWith(this.prefix)) {
+                    return (
+                      v.toLowerCase() === this.prefix + inputValue.trim().toLowerCase()
+                    );
+                  } else {
+                    return v.toLowerCase() === inputValue.trim().toLowerCase();
+                  }
+                });
+
+                if (!found && inputValue.length !== 0) {
+                  if (this.prefix && !inputValue.startsWith(this.prefix)) {
+                    inputValue = this.prefix + inputValue;
+                  }
+                  this.tags.push(inputValue);
+                  this.input = "";
+                  this.emitTagEvents("add");
+                }
+        },
+        onRemove(index: number) {
+            this.tags.splice(index, 1);
+            this.emitTagEvents("remove");
+        },
+        emitTagEvents(...events) {
+            ["input", "change", "update:value", ...events].forEach((event) =>
+              this.$emit(event, this.tags)
+            );
+        },
+        watchValue(newValue) {
+            this.tags = newValue;
+        },
+        watchText(newValue) {
+            this.input = newValue;
+        }
+    },
+    props: {
+        name: {
+            type: String
+        },
+        label: {
+            type: String
+        },
+        placeholder: {
+            type: String
+        },
+        buttonText: { default: "Add Tag",
+            type: String
+        },
+        buttonVariation: { default: "default",
+            type: String
+        },
+        value: { default: () => [],
+            type: Array as PropType<string[]>
+        },
+        text: { default: "",
+            type: String
+        },
+        inputValidation: {
+            type: String
+        },
+        prefix: {
+            type: String
+        },
+        tagVariation: { default: "default",
+            type: String
+        },
+        maxItems: { default: 25,
+            type: Number
+        }
+    },
+    watch: {
+        "value": [{ immediate: true,
+            handler: "watchValue"
+        }],
+        "text": [{ immediate: true,
+            handler: "watchText"
+        }]
+    }
 })
-export default class TaggingInput extends Vue {
-  @Prop()
-  name!: string;
 
-  @Prop()
-  label!: string;
-
-  @Prop()
-  placeholder!: string;
-
-  @Prop({ default: "Add Tag" })
-  buttonText!: string;
-
-  @Prop({ default: "default" })
-  buttonVariation!: string;
-
-  @Prop({ default: () => [] })
-  value!: string[];
-
-  @Prop({ default: "" })
-  text!: string;
-
-  @Prop()
-  inputValidation!: string;
-
-  @Prop()
-  prefix!: string;
-
-  @Prop({ default: "default" })
-  tagVariation!: string;
-
-  @Prop({ default: 25 })
-  maxItems!: number;
-
-  input: string = "";
-  tags: string[] = [];
-
-  @Watch("value", { immediate: true })
-  watchValue(newValue) {
-    this.tags = newValue;
-  }
-
-  @Watch("text", { immediate: true })
-  watchText(newValue) {
-    this.input = newValue;
-  }
-
-  onAdd() {
-    if (this.$validator.errors.items.length !== 0) {
-      this.$emit("error", this.$validator.errors.items, false);
-      return;
-    }
-
-    if (this.tags.length >= this.maxItems) {
-      this.$emit("error", ["Max items reached"], true);
-      return;
-    }
-
-    let inputValue = this.input.trim();
-
-    const found = this.tags.find((v) => {
-      if (this.prefix && !inputValue.startsWith(this.prefix)) {
-        return (
-          v.toLowerCase() === this.prefix + inputValue.trim().toLowerCase()
-        );
-      } else {
-        return v.toLowerCase() === inputValue.trim().toLowerCase();
-      }
-    });
-
-    if (!found && inputValue.length !== 0) {
-      if (this.prefix && !inputValue.startsWith(this.prefix)) {
-        inputValue = this.prefix + inputValue;
-      }
-      this.tags.push(inputValue);
-      this.input = "";
-      this.emitTagEvents("add");
-    }
-  }
-
-  onRemove(index: number) {
-    this.tags.splice(index, 1);
-    this.emitTagEvents("remove");
-  }
-
-  emitTagEvents(...events) {
-    ["input", "change", "update:value", ...events].forEach((event) =>
-      this.$emit(event, this.tags)
-    );
-  }
-}
 </script>
 <style lang="less">
 @import (reference) "./../styles/Imports";

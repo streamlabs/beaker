@@ -71,256 +71,251 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, PropType } from "vue";
 
-@Component({})
-export default class Button extends Vue {
-  @Prop()
-  onClick!: {
-    type: Function;
-  };
+export default defineComponent({
+    data() {
+        return {
+            rippleStartX: 0,
+            rippleStartY: 0,
+            rippleSize: 0,
+            rippleColor: "#000000",
+            rippleOpacity: 0.075,
+            rippleDuration: "",
+            rippleAnimate: false
+        };
+    },
+    computed: {
+        buttonClasses() {
+            const classes: any = [];
 
-  @Prop()
-  bgColor!: {
-    type: string;
-  };
+                if (this.variation) {
+                  classes.push(`s-button--${this.variation}`);
+                }
 
-  @Prop()
-  textColor!: {
-    type: string;
-  };
+                if (this.size) {
+                  classes.push(`s-button--${this.size}`);
+                }
 
-  @Prop(String)
-  icon!: string;
+                if (this.state) {
+                  classes.push(`is-${this.state}`);
+                }
 
-  @Prop({ default: "left" })
-  iconPosition!: {
-    type: String;
-  };
+                return classes.join(" ");
+        },
+        iconClass() {
+            const classes: any = [];
 
-  @Prop()
-  iconImg!: {
-    type: String;
-    default: null;
-  };
+                if (this.icon) {
+                  if (this.icon.indexOf("fa-") !== -1) {
+                    classes.push(this.icon);
+                  } else {
+                    classes.push(`icon-${this.icon}`);
+                  }
+                }
 
-  @Prop()
-  title!: {
-    type: String;
-    default: null;
-  };
+                return classes.join(" ");
+        },
+        slobsDownloadIconClass() {
+            return this.osType === "windows" ? "icon-windows" : "icon-app-store";
+        },
+        slobsDownloadText() {
+            const tests: any = [];
 
-  @Prop()
-  price!: {
-    type: String;
-    default: null;
-  };
+                tests.push("Free");
+                tests.push(this.osType === "windows" ? "Win" : "macOS 10.15+");
+                tests.push(this.osType === "windows" ? "~240MB" : "309MB");
 
-  @Prop()
-  description!: {
-    type: String;
-    default: null;
-  };
+                return tests;
+        },
+        buttonStyle() {
+            let s =
+              "--ripple-x:" +
+              this.rippleStartX +
+              "px; --ripple-y:" +
+              this.rippleStartY +
+              "px; --ripple-size:" +
+              this.rippleSize +
+              "px; --ripple-color:" +
+              this.rippleColor +
+              "; --ripple-opacity:" +
+              this.rippleOpacity +
+              "; --ripple-duration:" +
+              this.rippleDuration +
+              "; background-color:" +
+              this.bgColor +
+              "; color:" +
+              this.textColor;
+            ";";
+            return s;
+        }
+    },
+    methods: {
+        rippleAnimation() {
+            return new Promise((resolve) => {
+              this.rippleAnimate = true;
+              let animationEnded = (e) => {
+                this.$el.removeEventListener("animationnend", animationEnded);
+                resolve();
+              };
+              this.$el.addEventListener("animationend", animationEnded);
+            });
+        },
+        pressDown(e) {
+            let buttonRect = this.$el.getBoundingClientRect();
+                let clickLoc = { x: e.pageX, y: e.pageY };
+                let buttonVar = JSON.stringify(this.variation);
+                let buttonSize = JSON.stringify(this.size);
+                this.rippleSize = Math.floor(buttonRect.width * 2);
+                this.rippleStartX = Math.floor(
+                  Math.abs(buttonRect.left - clickLoc.x) - this.rippleSize / 2
+                );
+                this.rippleStartY = Math.floor(
+                  Math.abs(buttonRect.top - clickLoc.y) - this.rippleSize / 2
+                );
 
-  @Prop()
-  href!: {
-    type: String;
-    default: null;
-  };
+                if (buttonVar === '"paypal"') {
+                  this.rippleColor = "#e3b63b";
+                  this.rippleDuration = "800ms";
+                  this.rippleOpacity = 0.5;
+                }
+                if (buttonVar === '"warning"') {
+                  this.rippleColor = "#ce4a38";
+                }
+                if (
+                  buttonVar === '"subscribe"' ||
+                  buttonSize === '"full-width"' ||
+                  buttonVar === '"paypal"'
+                ) {
+                  this.rippleDuration = "800ms";
+                } else {
+                  this.rippleDuration = "400ms";
+                }
 
-  @Prop({ default: "_self" })
-  target!: String;
-
-  // standard, medium, large, square
-  @Prop()
-  size!: {
-    type: String;
-    size: null;
-  };
-
-  // hover, focus, loading, disabled
-  @Prop()
-  state!: {
-    type: String;
-    default: null;
-  };
-
-  // set buttons type to "submit"
-  @Prop()
-  type!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop()
-  to!: {
-    type: String;
-    default: null;
-  };
-
-  // button, a, router-link
-  @Prop({ default: "button" })
-  tag!: String;
-
-  @Prop()
-  variation!: {
-    type: String;
-    default: "default";
-  };
-
-  @Prop()
-  primeBgColor!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop()
-  primeTitle!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop()
-  ultraTitle!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop({ default: "Download Streamlabs" })
-  slobsDownloadTitle!: {
-    type: String;
-  };
-
-  @Prop({ default: "windows" })
-  osType!: string;
-
-  private rippleStartX = 0;
-  private rippleStartY = 0;
-  private rippleSize = 0;
-  private rippleColor = "#000000";
-  private rippleOpacity = 0.075;
-  private rippleDuration = "";
-  private rippleAnimate = false;
-
-  get buttonClasses() {
-    const classes: any = [];
-
-    if (this.variation) {
-      classes.push(`s-button--${this.variation}`);
+                if (!this.rippleAnimate) {
+                  this.rippleAnimation().then(() => (this.rippleAnimate = false));
+                }
+        }
+    },
+    props: {
+        onClick: {
+            type: Object as PropType<{
+                    type: Function;
+                  }>
+        },
+        bgColor: {
+            type: Object as PropType<{
+                    type: string;
+                  }>
+        },
+        textColor: {
+            type: Object as PropType<{
+                    type: string;
+                  }>
+        },
+        icon: {
+            type: String
+        },
+        iconPosition: { default: "left",
+            type: Object as PropType<{
+                    type: String;
+                  }>
+        },
+        iconImg: {
+            type: Object as PropType<{
+                    type: String;
+                    default: null;
+                  }>
+        },
+        title: {
+            type: Object as PropType<{
+                    type: String;
+                    default: null;
+                  }>
+        },
+        price: {
+            type: Object as PropType<{
+                    type: String;
+                    default: null;
+                  }>
+        },
+        description: {
+            type: Object as PropType<{
+                    type: String;
+                    default: null;
+                  }>
+        },
+        href: {
+            type: Object as PropType<{
+                    type: String;
+                    default: null;
+                  }>
+        },
+        target: { default: "_self",
+            type: Object as PropType<String>
+        },
+        size: {
+            type: Object as PropType<{
+                    type: String;
+                    size: null;
+                  }>
+        },
+        state: {
+            type: Object as PropType<{
+                    type: String;
+                    default: null;
+                  }>
+        },
+        type: {
+            type: Object as PropType<{
+                    type: String;
+                    default: null;
+                  }>
+        },
+        to: {
+            type: Object as PropType<{
+                    type: String;
+                    default: null;
+                  }>
+        },
+        tag: { default: "button",
+            type: Object as PropType<String>
+        },
+        variation: {
+            type: Object as PropType<{
+                    type: String;
+                    default: "default";
+                  }>
+        },
+        primeBgColor: {
+            type: Object as PropType<{
+                    type: String;
+                    default: null;
+                  }>
+        },
+        primeTitle: {
+            type: Object as PropType<{
+                    type: String;
+                    default: null;
+                  }>
+        },
+        ultraTitle: {
+            type: Object as PropType<{
+                    type: String;
+                    default: null;
+                  }>
+        },
+        slobsDownloadTitle: { default: "Download Streamlabs",
+            type: Object as PropType<{
+                    type: String;
+                  }>
+        },
+        osType: { default: "windows",
+            type: String
+        }
     }
+})
 
-    if (this.size) {
-      classes.push(`s-button--${this.size}`);
-    }
-
-    if (this.state) {
-      classes.push(`is-${this.state}`);
-    }
-
-    return classes.join(" ");
-  }
-
-  get iconClass() {
-    const classes: any = [];
-
-    if (this.icon) {
-      if (this.icon.indexOf("fa-") !== -1) {
-        classes.push(this.icon);
-      } else {
-        classes.push(`icon-${this.icon}`);
-      }
-    }
-
-    return classes.join(" ");
-  }
-
-  get slobsDownloadIconClass() {
-    return this.osType === "windows" ? "icon-windows" : "icon-app-store";
-  }
-
-  get slobsDownloadText() {
-    const tests: any = [];
-
-    tests.push("Free");
-    tests.push(this.osType === "windows" ? "Win" : "macOS 10.15+");
-    tests.push(this.osType === "windows" ? "~240MB" : "309MB");
-
-    return tests;
-  }
-
-  get buttonStyle() {
-    let s =
-      "--ripple-x:" +
-      this.rippleStartX +
-      "px; --ripple-y:" +
-      this.rippleStartY +
-      "px; --ripple-size:" +
-      this.rippleSize +
-      "px; --ripple-color:" +
-      this.rippleColor +
-      "; --ripple-opacity:" +
-      this.rippleOpacity +
-      "; --ripple-duration:" +
-      this.rippleDuration +
-      "; background-color:" +
-      this.bgColor +
-      "; color:" +
-      this.textColor;
-    ";";
-    return s;
-  }
-
-  // get _variation() {
-  //   return this.bgColor ? "custom" : this.variation;
-  // }
-
-  rippleAnimation() {
-    return new Promise((resolve) => {
-      this.rippleAnimate = true;
-      let animationEnded = (e) => {
-        this.$el.removeEventListener("animationnend", animationEnded);
-        resolve();
-      };
-      this.$el.addEventListener("animationend", animationEnded);
-    });
-  }
-
-  pressDown(e) {
-    let buttonRect = this.$el.getBoundingClientRect();
-    let clickLoc = { x: e.pageX, y: e.pageY };
-    let buttonVar = JSON.stringify(this.variation);
-    let buttonSize = JSON.stringify(this.size);
-    this.rippleSize = Math.floor(buttonRect.width * 2);
-    this.rippleStartX = Math.floor(
-      Math.abs(buttonRect.left - clickLoc.x) - this.rippleSize / 2
-    );
-    this.rippleStartY = Math.floor(
-      Math.abs(buttonRect.top - clickLoc.y) - this.rippleSize / 2
-    );
-
-    if (buttonVar === '"paypal"') {
-      this.rippleColor = "#e3b63b";
-      this.rippleDuration = "800ms";
-      this.rippleOpacity = 0.5;
-    }
-    if (buttonVar === '"warning"') {
-      this.rippleColor = "#ce4a38";
-    }
-    if (
-      buttonVar === '"subscribe"' ||
-      buttonSize === '"full-width"' ||
-      buttonVar === '"paypal"'
-    ) {
-      this.rippleDuration = "800ms";
-    } else {
-      this.rippleDuration = "400ms";
-    }
-
-    if (!this.rippleAnimate) {
-      this.rippleAnimation().then(() => (this.rippleAnimate = false));
-    }
-  }
-}
 </script>
 
 <style lang="less">

@@ -17,71 +17,77 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Spinner from "./../components/Spinner.vue";
 import Button from "./../components/Button.vue";
+import { defineComponent, PropType } from "vue";
 
-@Component({
-  components: { Spinner, Button }
+export default defineComponent({
+  components: { Spinner, Button },
+    data() {
+        const index: number = 0;
+        const loaderText: string = "";
+
+        return {
+            loaderText,
+            index
+        };
+    },
+    mounted() {
+        if (typeof this.loadingStrs === "string") {
+          this.loaderText = this.loadingStrs;
+        } else {
+          this.distinguishNumberOfArrays();
+        }
+    },
+    methods: {
+        distinguishNumberOfArrays() {
+            if (this.loadingStrs.length > 1) {
+              if (this.isRandom) {
+                this.loopRandomText();
+              } else {
+                this.loopText();
+              }
+            } else {
+              this.loaderText = this.loadingStrs[0];
+            }
+        },
+        loopText() {
+            this.loaderText = this.loadingStrs[this.index];
+            this.index++;
+            if (this.index === this.loadingStrs.length) {
+              this.index = 0;
+            }
+            setTimeout(this.loopText, 4000);
+        },
+        loopRandomText() {
+            const randomIndex = Math.floor(Math.random() * this.loadingStrs.length);
+            if (this.loaderText === this.loadingStrs[randomIndex]) {
+              this.loopRandomText();
+            } else {
+              this.loaderText = this.loadingStrs[randomIndex];
+              setTimeout(this.loopRandomText, 4000);
+            }
+        }
+    },
+    props: {
+        loadingStrs: { default: [],
+            type: Object as PropType<any[] | string>
+        },
+        semiOpaque: { default: false,
+            type: Boolean
+        },
+        isRandom: { default: false,
+            type: Boolean
+        },
+        swapMode: { default: false,
+            type: Object as PropType<Boolean>
+        },
+        fixedBackground: { default: true,
+            type: Boolean
+        }
+    }
 })
-export default class Loading extends Vue {
-  @Prop({ default: [] })
-  loadingStrs!: any[] | string;
 
-  @Prop({ default: false })
-  semiOpaque!: boolean;
-
-  @Prop({ default: false })
-  isRandom!: boolean;
-
-  @Prop({ default: false })
-  swapMode!: Boolean;
-
-  @Prop({ default: true })
-  fixedBackground!: boolean;
-
-  loaderText: string = "";
-  index: number = 0;
-
-  mounted() {
-    if (typeof this.loadingStrs === "string") {
-      this.loaderText = this.loadingStrs;
-    } else {
-      this.distinguishNumberOfArrays();
-    }
-  }
-
-  distinguishNumberOfArrays() {
-    if (this.loadingStrs.length > 1) {
-      if (this.isRandom) {
-        this.loopRandomText();
-      } else {
-        this.loopText();
-      }
-    } else {
-      this.loaderText = this.loadingStrs[0];
-    }
-  }
-
-  loopText() {
-    this.loaderText = this.loadingStrs[this.index];
-    this.index++;
-    if (this.index === this.loadingStrs.length) {
-      this.index = 0;
-    }
-    setTimeout(this.loopText, 4000);
-  }
-
-  loopRandomText() {
-    const randomIndex = Math.floor(Math.random() * this.loadingStrs.length);
-    if (this.loaderText === this.loadingStrs[randomIndex]) {
-      this.loopRandomText();
-    } else {
-      this.loaderText = this.loadingStrs[randomIndex];
-      setTimeout(this.loopRandomText, 4000);
-    }
-  }
-}
 </script>
 
 <style lang="less">

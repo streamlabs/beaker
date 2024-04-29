@@ -13,21 +13,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     Button
-  }
+  },
+    props: {
+        title: {
+            type: String
+        },
+        desc: {
+            type: String
+        }
+    }
 })
-export default class OnboardingStep extends Vue {
-  @Prop()
-  title!: string;
 
-  @Prop()
-  desc!: string;
-}
 </script>
 
 <style lang="less">

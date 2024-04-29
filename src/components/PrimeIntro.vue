@@ -54,34 +54,36 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   components: {
     "s-button": Button
-  }
+  },
+    computed: {
+        hasTitleSlot() {
+            return !(typeof this.$slots.title === "undefined");
+        },
+        hasSubtitleSlot() {
+            return !(typeof this.$slots.subtitle === "undefined");
+        },
+        hasSlot() {
+            return !(typeof this.$slots.default === "undefined");
+        }
+    },
+    methods: {
+        onPrimeButtonHandler() {
+            this.$emit("onClickPrime");
+        }
+    },
+    props: {
+        primeButtonText: { default: "Join Prime",
+            type: String
+        }
+    }
 })
-export default class PrimeIntro extends Vue {
-  @Prop({ default: "Join Prime" })
-  primeButtonText!: string;
 
-  onPrimeButtonHandler() {
-    this.$emit("onClickPrime");
-  }
-
-  get hasTitleSlot() {
-    return !(typeof this.$slots.title === "undefined");
-  }
-
-  get hasSubtitleSlot() {
-    return !(typeof this.$slots.subtitle === "undefined");
-  }
-
-  get hasSlot() {
-    return !(typeof this.$slots.default === "undefined");
-  }
-}
 </script>
 
 <style lang="less" scoped>

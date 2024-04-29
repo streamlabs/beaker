@@ -5,13 +5,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, PropType } from "vue";
 
-@Component({})
-export default class ItemGrid extends Vue {
-  @Prop()
-  items!: Object[];
-}
+export default defineComponent({
+    props: {
+        items: {
+            type: Array as PropType<Object[]>
+        }
+    }
+})
+
 </script>
 
 <style lang="less">

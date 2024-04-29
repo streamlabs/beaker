@@ -87,223 +87,237 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue } from "vue-property-decorator";
 import Fuse from "fuse.js";
+import { defineComponent, PropType } from "vue";
 
-@Component({})
-export default class SiteSearch extends Vue {
-  $refs!: {
-    search_input: HTMLInputElement;
-  };
+export default defineComponent({
+    data() {
+        const currentResult: number = 0;
+        const keyEvents: any = [];
+        const quickLinkLoc: any = [];
+        const value: String = "";
+        const fuse: any = null;
+        const resultLimit: Number = 7;
+        const phaseTwo: Boolean = false;
+        const phaseOne: Boolean = false;
+        const isOpen: Boolean = false;
+        const result: any = [];
+        const $refs: {
+                search_input: HTMLInputElement;
+              } = undefined;
 
-  result: any = [];
-  private isOpen: Boolean = false;
-  private phaseOne: Boolean = false;
-  private phaseTwo: Boolean = false;
-  private resultLimit: Number = 7;
-  private fuse: any = null;
-  private value: String = "";
-  private quickLinkLoc: any = [];
-  private keyEvents: any = [];
-  private currentResult: number = 0;
-
-  @Prop()
-  jsonSearch!: any;
-  searchData = this.jsonSearch;
-
-  @Prop({ default: "" })
-  search!: String;
-
-  @Prop({ default: "fuseResultsUpdated" })
-  eventName!: string;
-
-  @Prop({ default: "fuseInputChanged" })
-  inputChangeEventName!: string;
-
-  @Prop()
-  quickLinks!: any[];
-
-  get suggestedLinks() {
-    return this.quickLinks.filter(i => {
-      let findResult: any = this.searchData.find(
-        data => data.name === i.item.name
-      );
-      let suggestResult: any = this.searchData.indexOf(findResult);
-      this.quickLinkLoc.push(suggestResult);
-      return suggestResult;
-    });
-  }
-
-  get options() {
-    let options = {
-      isCaseSensitive: false,
-      includeMatches: true,
-      includeScore: true,
-      findAllMatches: true,
-      shouldSort: true,
-      threshold: 0.3,
-      location: 0,
-      distance: 35,
-      maxPatternLength: 16,
-      minMatchCharLength: 1,
-      keys: [
-        {
-          name: "keywords",
-          weight: 0.3
+        return {
+            $refs,
+            result,
+            isOpen,
+            phaseOne,
+            phaseTwo,
+            resultLimit,
+            fuse,
+            value,
+            quickLinkLoc,
+            keyEvents,
+            currentResult,
+            searchData: this.jsonSearch
+        };
+    },
+    computed: {
+        suggestedLinks() {
+            return this.quickLinks.filter(i => {
+              let findResult: any = this.searchData.find(
+                data => data.name === i.item.name
+              );
+              let suggestResult: any = this.searchData.indexOf(findResult);
+              this.quickLinkLoc.push(suggestResult);
+              return suggestResult;
+            });
         },
-        {
-          name: "title",
-          weight: 0.7
+        options() {
+            let options = {
+              isCaseSensitive: false,
+              includeMatches: true,
+              includeScore: true,
+              findAllMatches: true,
+              shouldSort: true,
+              threshold: 0.3,
+              location: 0,
+              distance: 35,
+              maxPatternLength: 16,
+              minMatchCharLength: 1,
+              keys: [
+                {
+                  name: "keywords",
+                  weight: 0.3
+                },
+                {
+                  name: "title",
+                  weight: 0.7
+                }
+              ]
+            };
+            return options;
+        },
+        noResults() {
+            if (this.result.length === 0 && this.value != "") {
+              return true;
+            } else {
+              return false;
+            }
+        },
+        limitedResult() {
+            return this.resultLimit
+            ? this.result.slice(0, this.resultLimit)
+            : this.result;
+        },
+        calcHeight() {
+            if (this.phaseOne === false) {
+              return "height: 40px;";
+            }
+            if (
+              this.result.length >= 1 &&
+              this.result.length <= 7 &&
+              this.phaseOne == true
+            ) {
+              let x = parseInt(this.result.length) * 32 + 47;
+              return "height: " + x + "px;";
+            } else {
+              return "height: 271px;";
+            }
         }
-      ]
-    };
-    return options;
-  }
-
-  get noResults() {
-    if (this.result.length === 0 && this.value != "") {
-      return true;
-    } else {
-      return false;
+    },
+    mounted() {
+        this.searchData = this.jsonSearch;
+        this.initFuse();
+    },
+    methods: {
+        keyEvent(event) {
+            // KEYPRESS UP
+            if (event.keyCode === 38 && this.currentResult > 0) {
+              this.currentResult--;
+            }
+            // KEYPRESS DOWN
+            if (this.result.length === 0) {
+              if (event.keyCode === 40 && this.currentResult < 5) {
+                this.currentResult++;
+              }
+            } else {
+              if (event.keyCode === 40 && this.currentResult < 6) {
+                this.currentResult++;
+              }
+            }
+            // KEYPRESS ENTER
+            if (event.keyCode === 13 && this.phaseOne) {
+              if (this.result <= 0) {
+                this.trackEvent(this.currentResult);
+                window.location.href = this.searchData[
+                  this.quickLinkLoc[this.currentResult]
+                ].route;
+                this.blurSearch();
+              } else {
+                this.trackEvent(this.currentResult);
+                window.location.href = this.limitedResult[
+                  this.currentResult
+                ].item.route;
+                this.blurSearch();
+              }
+            }
+            // KEYPRESS ESC
+            if (event.keyCode === 27 && this.phaseOne) {
+              this.blurSearch();
+            }
+        },
+        trackEvent(result) {
+            this.$emit("trackSearchNav", result);
+        },
+        playClosingSequence() {
+            if (this.phaseTwo) {
+              setTimeout(() => {
+                this.phaseTwo = !this.phaseTwo;
+              }, 100);
+              setTimeout(() => {
+                this.phaseOne = !this.phaseOne;
+              }, 200);
+            }
+        },
+        playOpeningSequence() {
+            if (!this.phaseOne) {
+              this.phaseOne = !this.phaseOne;
+              setTimeout(() => {
+                this.phaseTwo = !this.phaseTwo;
+              }, 100);
+            }
+        },
+        initFuse() {
+            this.fuse = new Fuse(this.searchData, this.options);
+            if (this.search) {
+              this.value = this.search;
+            }
+        },
+        blurSearch() {
+            this.value = "";
+            this.$refs.search_input.blur();
+            this.currentResult = 0;
+        },
+        fuseSearch() {
+            if (this.value.trim() === "") {
+              this.result = [];
+            } else {
+              this.result = this.fuse.search(this.value.trim());
+            }
+        },
+        watchSearchData() {
+            this.fuse.searchData = this.searchData;
+            this.fuseSearch();
+        },
+        watchSearch() {
+            this.value = this.search;
+        },
+        watchValue() {
+            this.$parent.$emit(this.inputChangeEventName, this.value);
+            this.$emit(this.inputChangeEventName, this.value);
+            this.fuseSearch();
+        },
+        watchResult(val: [], oldVal: []) {
+            if (this.noResults || this.value == "" || val.length != oldVal.length) {
+              this.currentResult = 0;
+            }
+            this.$emit(this.eventName, this.result);
+            this.$parent.$emit(this.eventName, this.result);
+        }
+    },
+    props: {
+        jsonSearch: {
+            type: Object as PropType<any>
+        },
+        search: { default: "",
+            type: Object as PropType<String>
+        },
+        eventName: { default: "fuseResultsUpdated",
+            type: String
+        },
+        inputChangeEventName: { default: "fuseInputChanged",
+            type: String
+        },
+        quickLinks: {
+            type: Array as PropType<any[]>
+        }
+    },
+    watch: {
+        "searchData": [{
+            handler: "watchSearchData"
+        }],
+        "search": [{
+            handler: "watchSearch"
+        }],
+        "value": [{
+            handler: "watchValue"
+        }],
+        "result": [{
+            handler: "watchResult"
+        }]
     }
-  }
+})
 
-  get limitedResult() {
-    return this.resultLimit
-      ? this.result.slice(0, this.resultLimit)
-      : this.result;
-  }
-
-  get calcHeight() {
-    if (this.phaseOne === false) {
-      return "height: 40px;";
-    }
-    if (
-      this.result.length >= 1 &&
-      this.result.length <= 7 &&
-      this.phaseOne == true
-    ) {
-      let x = parseInt(this.result.length) * 32 + 47;
-      return "height: " + x + "px;";
-    } else {
-      return "height: 271px;";
-    }
-  }
-
-  @Watch("searchData")
-  watchSearchData() {
-    this.fuse.searchData = this.searchData;
-    this.fuseSearch();
-  }
-
-  @Watch("search")
-  watchSearch() {
-    this.value = this.search;
-  }
-
-  @Watch("value")
-  watchValue() {
-    this.$parent.$emit(this.inputChangeEventName, this.value);
-    this.$emit(this.inputChangeEventName, this.value);
-    this.fuseSearch();
-  }
-
-  @Watch("result")
-  watchResult(val: [], oldVal: []) {
-    if (this.noResults || this.value == "" || val.length != oldVal.length) {
-      this.currentResult = 0;
-    }
-    this.$emit(this.eventName, this.result);
-    this.$parent.$emit(this.eventName, this.result);
-  }
-
-  keyEvent(event) {
-    // KEYPRESS UP
-    if (event.keyCode === 38 && this.currentResult > 0) {
-      this.currentResult--;
-    }
-    // KEYPRESS DOWN
-    if (this.result.length === 0) {
-      if (event.keyCode === 40 && this.currentResult < 5) {
-        this.currentResult++;
-      }
-    } else {
-      if (event.keyCode === 40 && this.currentResult < 6) {
-        this.currentResult++;
-      }
-    }
-    // KEYPRESS ENTER
-    if (event.keyCode === 13 && this.phaseOne) {
-      if (this.result <= 0) {
-        this.trackEvent(this.currentResult);
-        window.location.href = this.searchData[
-          this.quickLinkLoc[this.currentResult]
-        ].route;
-        this.blurSearch();
-      } else {
-        this.trackEvent(this.currentResult);
-        window.location.href = this.limitedResult[
-          this.currentResult
-        ].item.route;
-        this.blurSearch();
-      }
-    }
-    // KEYPRESS ESC
-    if (event.keyCode === 27 && this.phaseOne) {
-      this.blurSearch();
-    }
-  }
-
-  trackEvent(result) {
-    this.$emit("trackSearchNav", result);
-  }
-
-  playClosingSequence() {
-    if (this.phaseTwo) {
-      setTimeout(() => {
-        this.phaseTwo = !this.phaseTwo;
-      }, 100);
-      setTimeout(() => {
-        this.phaseOne = !this.phaseOne;
-      }, 200);
-    }
-  }
-
-  playOpeningSequence() {
-    if (!this.phaseOne) {
-      this.phaseOne = !this.phaseOne;
-      setTimeout(() => {
-        this.phaseTwo = !this.phaseTwo;
-      }, 100);
-    }
-  }
-
-  initFuse() {
-    this.fuse = new Fuse(this.searchData, this.options);
-    if (this.search) {
-      this.value = this.search;
-    }
-  }
-
-  blurSearch() {
-    this.value = "";
-    this.$refs.search_input.blur();
-    this.currentResult = 0;
-  }
-
-  fuseSearch() {
-    if (this.value.trim() === "") {
-      this.result = [];
-    } else {
-      this.result = this.fuse.search(this.value.trim());
-    }
-  }
-
-  mounted() {
-    this.searchData = this.jsonSearch;
-    this.initFuse();
-  }
-}
 </script>
 
 <style lang="less">

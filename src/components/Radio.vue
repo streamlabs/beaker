@@ -14,25 +14,28 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component({})
-export default class Radio extends Vue {
-  @Prop(String)
-  label!: string;
+export default defineComponent({
+    props: {
+        label: {
+            type: String
+        },
+        id: {
+            type: String
+        },
+        name: {
+            type: String
+        },
+        value: {
+            type: [String, Boolean]
+        },
+        val: {
+            type: [String, Boolean]
+        }
+    }
+})
 
-  @Prop(String)
-  id!: string;
-
-  @Prop(String)
-  name!: string;
-
-  @Prop([String, Boolean])
-  value!: string | boolean;
-
-  @Prop([String, Boolean])
-  val!: string | boolean;
-}
 </script>
 
 <style lang="less">
