@@ -5,10 +5,10 @@
       :style="{
         'background-image': `linear-gradient(
           to right,
-          ${backgroundColor} ${parseInt((current / total) * 100)}%,
+          ${backgroundColor} ${backgroundProgress}%,
           rgba(0,0,0,0) 0%
         )`,
-        color: textColor
+        color: textColor,
       }"
     >
       {{ `${current}${separator}${total} ${suffix}` }}
@@ -23,84 +23,66 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 
-export default defineComponent({
-    data() {
-        const badgeProRewrite: any = {
-                background: this.backgroundColor,
-                color: this.textColor,
-              };
+interface Props {
+  variant: string;
+  alignLeft: boolean;
+  noMargin: boolean;
+  backgroundColor: string;
+  textColor: string;
+  current: number;
+  total: number;
+  separator: string;
+  suffix: string;
+  small: boolean;
+}
 
-        return {
-            badgeProRewrite
-        };
-    },
-    computed: {
-        badgeStyles() {
-            const styles: any = [];
+const props = withDefaults(defineProps<Props>(), {
+  variant: "success",
+  alignLeft: false,
+  noMargin: false,
+  textColor: "#ffffff",
+  separator: "/",
+});
 
-                if (this.backgroundColor && this.variant !== "progress") {
-                  styles.push(this.badgeProRewrite);
-                }
+const badgeStyles = computed(() => {
+  const styles: any = [];
 
-                return styles;
-        },
-        badgeClasses() {
-            const classes: any = [];
+  if (props.backgroundColor && props.variant !== "progress") {
+    styles.push({
+      background: props.backgroundColor,
+      color: props.textColor,
+    });
+  }
 
-                classes.push(`s-badge--${this.variant}`);
+  return styles;
+});
 
-                if (this.alignLeft) {
-                  classes.push(`s-badge--left`);
-                }
+const badgeClasses = computed(() => {
+  const classes: any = [];
 
-                if (this.noMargin) {
-                  classes.push("s-badge--no-margin");
-                }
+  classes.push(`s-badge--${props.variant}`);
 
-                if (this.small) {
-                  classes.push("s-badge--small");
-                }
+  if (props.alignLeft) {
+    classes.push(`s-badge--left`);
+  }
 
-                return classes;
-        }
-    },
-    props: {
-        variant: { default: "success",
-            type: String
-        },
-        alignLeft: { default: false,
-            type: Boolean
-        },
-        noMargin: { default: false,
-            type: Boolean
-        },
-        backgroundColor: {
-            type: String
-        },
-        textColor: { default: "#ffffff",
-            type: String
-        },
-        current: {
-            type: Number
-        },
-        total: {
-            type: Number
-        },
-        separator: { default: "/",
-            type: String
-        },
-        suffix: {
-            type: String
-        },
-        small: {
-            type: Object as PropType<Boolean>
-        }
-    }
-})
+  if (props.noMargin) {
+    classes.push("s-badge--no-margin");
+  }
 
+  if (props.small) {
+    classes.push("s-badge--small");
+  }
+
+  return classes;
+});
+
+const backgroundProgress = computed(() =>
+  parseInt(`${(props.current / props.total) * 100}`)
+);
 </script>
 
 <style lang="less">
@@ -237,11 +219,13 @@ export default defineComponent({
 
   &--ultra {
     border-radius: 50%;
-    background: linear-gradient(123.53deg,
-          #2de8b0 25.56%,
-          #cbe953 60.27%,
-          #ffab48 79.52%,
-          #ff5151 96.69%);
+    background: linear-gradient(
+      123.53deg,
+      #2de8b0 25.56%,
+      #cbe953 60.27%,
+      #ffab48 79.52%,
+      #ff5151 96.69%
+    );
 
     div {
       height: 14px;

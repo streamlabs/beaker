@@ -214,26 +214,16 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { Component, Vue } from "vue-property-decorator";
-
 import Accordion from "./../components/Accordion.vue";
 import AccordionCode from "./Accordions.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
-// @Component({
-//   components: {
-//     Accordion,
-//     DemoSection
-//   }
-// })
-// export default class Accordions extends Vue {
 const demoCode = ref(AccordionCode);
 const isOpened = ref<boolean | null>(true);
 
 function openAccordion(bool) {
   isOpened.value = bool;
 }
-// }
 </script>
 
 <style lang="less">
