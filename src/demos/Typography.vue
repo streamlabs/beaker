@@ -86,17 +86,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
 import FormGroup from "./../components/FormGroup.vue";
-
-@Component({
-  components: {
-    FormGroup
-  }
-})
-export default class Typography extends Vue {}
 </script>
 
 <style lang="less">
