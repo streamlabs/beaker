@@ -13,7 +13,6 @@
         <a href="/img/kevin-day.svg" download>
           <img src="./../assets/imgs/kevin-day.svg" />
         </a>
-
         <a href="/img/logo.svg" download>
           <img src="./../assets/imgs/logo.svg" />
         </a>
@@ -30,6 +29,7 @@
           <img src="./../assets/imgs/logo-mobile.svg" />
         </a>
       </div>
+
       <div class="logo-demo logo-demo--night">
         <a href="/img/kevin-night.svg" download>
           <img src="./../assets/imgs/kevin-night.svg" />
@@ -53,13 +53,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
-@Component({})
-export default class Assets extends Vue {}
-</script>
 
 <style lang="less" scoped>
 @import (reference) "./../styles/Imports";

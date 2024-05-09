@@ -17,32 +17,29 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 import demos from "../demos";
 
-const excludeFromComponentDemos = [
+const EXCLUDE_FROM_COMPONENT_DEMOS = [
   "assets",
   "colors",
   "installation",
   "left-navigation",
   "navigations",
   "icons",
-  "typography"
+  "typography",
 ];
 
-@Component({})
-export default class LeftNavigation extends Vue {
-  componentDemos = demos.filter(
-    ({ name }) => !excludeFromComponentDemos.includes(name)
-  );
+const componentDemos = ref(
+  demos.filter(({ name }) => !EXCLUDE_FROM_COMPONENT_DEMOS.includes(name))
+);
 
-  @Prop()
-  activeSection!: string;
+const props = defineProps<{ activeSection: string }>();
+const emit = defineEmits(["update-section"]);
 
-  changeSection(activeSection: string) {
-    this.$emit("update-section", activeSection);
-  }
+function changeSection(selectedSection: string) {
+  emit("update-section", selectedSection);
 }
 </script>
 

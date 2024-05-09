@@ -12,23 +12,15 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 import CopyNotification from "../components/CopyNotification.vue";
 import LeftNavigation from "../demos/LeftNavigation.vue";
 
-@Component({
-  components: {
-    CopyNotification,
-    LeftNavigation
-  }
-})
-export default class Documentation extends Vue {
-  activeSection = "installation";
+const activeSection = ref("installation");
 
-  changeSection(activeSection: string) {
-    this.activeSection = activeSection;
-  }
+function changeSection(newSection: string) {
+  activeSection.value = newSection;
 }
 </script>
 

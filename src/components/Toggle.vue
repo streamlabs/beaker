@@ -4,11 +4,11 @@
       type="button"
       v-for="(val, key) in values"
       :key="val.id"
-      :title="key | capitalize"
+      :title="capitalize(key)"
       @click="$emit('input', key)"
       :class="[
         's-toggle__option',
-        { 's-toggle__option--active': value === key }
+        { 's-toggle__option--active': value === key },
       ]"
       v-html="val"
     >
@@ -17,37 +17,26 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 
-export default defineComponent({
-  filters: {
-    capitalize(value: string) {
-      if (!value) return "";
-      value = value.toString();
-      return value.charAt(0).toUpperCase() + value.slice(1);
-    }
-  },
-    computed: {
-        toggleClass() {
-            if (this.variation) {
-              return `s-toggle--${this.variation}`;
-            }
-        }
-    },
-    props: {
-        values: {
-            type: Object as PropType<object>
-        },
-        value: {
-            type: String
-        },
-        variation: {
-            type: String
-        }
-    }
-})
-
+// export default defineComponent({
+// filters: {
+function capitalize(value: string) {
+  if (!value) return "";
+  value = value.toString();
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+// },
+// computed: {
+const toggleClass = computed(() => {
+  if (props.variation) {
+    return `s-toggle--${props.variation}`;
+  }
+});
+// },
+const props = defineProps<{ values: {}; value: string; variation?: string }>();
+// })
 </script>
 
 <style lang="less">

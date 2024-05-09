@@ -53,7 +53,7 @@
     "tslib": "^1.9.3",
     "typescript": "5.4.5",
     "vee-validate": "^2.0.0-rc.25",
-    "vite": "^4.5.2",
+    "vite": "^5.2.11",
     "vite-plugin-dts": "^3.8.3",
     "vite-plugin-vue2": "^2.0.2",
     "vue-class-component": "^7.2.6",

@@ -29,31 +29,29 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed, ref } from "vue";
+// import { Component, Vue } from "vue-property-decorator";
 import Toggle from "./components/Toggle.vue";
 import Documentation from "./views/Documentation.vue";
 
-@Component({
-  components: {
-    Toggle,
-    Documentation
-  }
-})
-export default class App extends Vue {
-  appClass = "app-wrapper";
-  nightClasses = ["night", "night-theme"];
-  theme = "night";
+// @Component({
+//   components: {
+//     Toggle,
+//     Documentation
+//   }
+// })
+// export default class App extends Vue {
+const appClass = ref("app-wrapper");
+const nightClasses = ref(["night", "night-theme"]);
+const theme = ref("night");
 
-  themes = {
-    day: "Day",
-    night: "Night"
-  };
+const themes = ref({
+  day: "Day",
+  night: "Night",
+});
 
-  get isNightTheme() {
-    return this.theme === "night";
-  }
-}
+const isNightTheme = computed(() => theme.value === "night");
 </script>
 
 <style lang="less">
