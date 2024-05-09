@@ -113,24 +113,24 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+// import { Component, Vue } from "vue-property-decorator";
+import { ref } from "vue";
 import ColorPicker from "./../components/ColorPicker.vue";
 import ColorPickersCode from "./ColorPickers.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
-@Component({
-  components: {
-    ColorPicker,
-    DemoSection
-  }
-})
-export default class ColorPickers extends Vue {
-  demoCode = ColorPickersCode;
-  color = "#5E3BEC";
-  alphaColor = "#EB7777";
-  miniColor = "#5E3BEC";
-  miniIconColor = "#5E3BEC";
-}
+// @Component({
+//   components: {
+//     ColorPicker,
+//     DemoSection
+//   }
+// })
+// export default class ColorPickers extends Vue {
+const demoCode = ref(ColorPickersCode);
+const color = ref("#5E3BEC");
+const alphaColor = ref("#EB7777");
+const miniColor = ref("#5E3BEC");
+const miniIconColor = ref("#5E3BEC");
+// }
 </script>

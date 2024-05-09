@@ -4,7 +4,7 @@
     ref="colorpicker"
     :class="{
       's-colorpicker-container__mini': isMini,
-      's-colorpicker-container__mini-icon': isMini && icon
+      's-colorpicker-container__mini-icon': isMini && icon,
     }"
   >
     <input
@@ -40,7 +40,7 @@
 
     <transition name="fade">
       <div v-if="displayPicker" class="s-colorpicker__picker-wrapper">
-        <picker
+        <ChromePicker
           ref="chrome-color-picker"
           class="s-colorpicker"
           :class="alphaClass"
@@ -64,95 +64,72 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Chrome } from "vue-color";
-import { defineComponent, PropType } from "vue";
+<script setup lang="ts">
+import { Chrome as ChromePicker } from "vue-color";
+import { computed, ref } from "vue";
 
-export default defineComponent({
+defineOptions({
   inheritAttrs: false,
-  components: {
-    picker: Chrome
-  },
-    data() {
-      const colors: object = {};
-      const backgroundColor: String = "";
-      const displayPicker: Boolean = false;
-      const $refs: {
-              colorpicker: HTMLElement;
-            } = undefined;
+});
 
-        return {
-            $refs,
-            displayPicker,
-            backgroundColor,
-            colors
-        };
-    },
-    computed: {
-        alphaClass() {
-            return this.hasAlpha
-            ? this.colors["a"] === 1
-            ? "nonAlpha"
-            : "alpha"
-            : false;
-        }
-    },
-    created() {
-        this.colors = Object.assign({}, this.colors, {
-          hex: this.value
-        });
-    },
-    methods: {
-        updateFromPicker(value: any) {
-            this.colors = value;
-            if (this.alphaClass === "alpha") {
-              this.$emit("input", value.hex8);
-            } else {
-              this.$emit("input", value.hex);
-            }
-        },
-        updateFromInput(event: any) {
-            this.colors = event.target.value;
-            this.$emit("input", event.target.value);
-        },
-        hidePicker() {
-            document.removeEventListener("click", this.documentClick);
-            this.displayPicker = false;
-        },
-        showPicker() {
-            document.addEventListener("click", this.documentClick);
-            this.displayPicker = true;
-        },
-        documentClick(e: any) {
-            let el = this.$refs.colorpicker;
-            let target = e.target;
-            if (el && el !== target && !el.contains(target)) {
-              this.hidePicker();
-            }
-        }
-    },
-    props: {
-        value: {
-            type: Object as PropType<any>
-        },
-        placeholder: { default: "#31c3a2",
-            type: String
-        },
-        hasAlpha: { default: false,
-            type: Boolean
-        },
-        isMini: { default: false,
-            type: Boolean
-        },
-        icon: {
-            type: String
-        },
-        error: {
-            type: String
-        }
-    }
-})
+interface Props {
+  value: string;
+  placeholder: string;
+  hasAlpha: boolean;
+  isMini: boolean;
+  icon?: string;
+  error: string;
+}
 
+const props = withDefaults(defineProps<Props>(), {
+  placeholder: "#31c3a2",
+  hasAlpha: false,
+  isMini: false,
+});
+
+const emit = defineEmits(["input"]);
+
+const colors = ref({});
+const displayPicker = ref(false);
+const colorpicker = ref<HTMLElement | null>(null);
+
+const alphaClass = computed(() =>
+  props.hasAlpha ? (colors.value["a"] === 1 ? "nonAlpha" : "alpha") : false
+);
+
+colors.value = Object.assign({}, colors.value, {
+  hex: props.value,
+});
+
+function updateFromPicker(value: any) {
+  colors.value = value;
+  if (alphaClass.value === "alpha") {
+    emit("input", value.hex8);
+  } else {
+    emit("input", value.hex);
+  }
+}
+function updateFromInput(event: any) {
+  colors.value = event.target.value;
+  emit("input", event.target.value);
+}
+function documentClick(e: any) {
+  let el = colorpicker.value;
+  let target = e.target;
+  if (el && el !== target && !el.contains(target)) {
+    hidePicker();
+  }
+}
+
+function hidePicker() {
+  document.removeEventListener("click", documentClick);
+  displayPicker.value = false;
+}
+
+function showPicker() {
+  document.addEventListener("click", documentClick);
+  displayPicker.value = true;
+}
 </script>
 
 <style lang="less">
