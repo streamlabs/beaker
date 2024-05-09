@@ -165,30 +165,19 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 import AnnouncementsCode from "./Announcements.vue?raw";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import NewFeatureOverlay from "./../components/NewFeatureOverlay.vue";
 
-@Component({
-  components: {
-    Button,
-    DemoSection,
-    NewFeatureOverlay
-  }
-})
-export default class AnnoucementsDemo extends Vue {
-  demoCode = AnnouncementsCode;
-  trackingCodeComponent() {
-    console.log("componentEventTracking");
-    // ga('send','event', 'newfeatureoverlay', 'modal_shown', 'component');
-  }
+const demoCode = ref(AnnouncementsCode);
+function trackingCodeComponent() {
+  console.log("componentEventTracking");
+}
 
-  trackingCodeButton() {
-    console.log("buttonEventTracking");
-    // ga('send','event', 'newfeatureoverlay', 'modal_click', 'button');
-  }
+function trackingCodeButton() {
+  console.log("buttonEventTracking");
 }
 </script>

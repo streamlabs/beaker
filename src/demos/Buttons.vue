@@ -72,7 +72,7 @@ components: {
                 @click="buttonClick('Join Prime')"
               />
 
-               <Button
+              <Button
                 variation="ultra"
                 title="Join Ultra"
                 icon="ultra"
@@ -464,7 +464,7 @@ components: {
               icon="picarto"
             />
 
-                <Button
+            <Button
               type="button"
               variation="ultra"
               size="square"
@@ -709,29 +709,19 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import Accordion from "./../components/Accordion.vue";
+<script setup lang="ts">
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import ButtonCode from "./Buttons.vue?raw";
 import { EventBus } from "./../plugins/event-bus";
+import { ref } from "vue";
 
-@Component({
-  components: {
-    Accordion,
-    Button,
-    DemoSection
-  }
-})
-export default class Forms extends Vue {
-  isLoading = true;
-  isLoadingExample = false;
-  demoCode = ButtonCode;
+// const isLoading = ref(true);
+const isLoadingExample = ref(false);
+const demoCode = ref(ButtonCode);
 
-  buttonClick(buttonType) {
-    EventBus.$emit("copy-success", `"${buttonType}" button clicked`);
-  }
+function buttonClick(buttonType) {
+  EventBus.$emit("copy-success", `"${buttonType}" button clicked`);
 }
 </script>
 
