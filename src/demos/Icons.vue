@@ -40,42 +40,44 @@
     </div>
 
     <h1 class="icon__error" v-else>
-      <i class="icon-error"/>
-      There was an error loading the icons</h1>
+      <i class="icon-error" />
+      There was an error loading the icons
+    </h1>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import { EventBus } from "./../plugins/event-bus";
-const ICON_STYLESHEET_URL = 'https://cdn.streamlabs.com/icons/style.css';
+import { onMounted, ref } from "vue";
 
-@Component({})
-export default class Icons extends Vue {
-  iconList:string[] = [];
-  selectedIcon = '';
+const ICON_STYLESHEET_URL = "https://cdn.streamlabs.com/icons/style.css";
 
-  mounted() {
-    const styleSheetsList = Array.from(document.styleSheets);
-    const link = Array.from(styleSheetsList.find(ss => ss.href === ICON_STYLESHEET_URL)?.cssRules || []);
+const iconList = ref<string[]>([]);
+const selectedIcon = ref("");
 
-    this.iconList = link
-      ?.filter(rule => rule.cssText.startsWith('.icon'))
-      .map(rule => rule.cssText.match(/([a-zA-Z0-9-])*(?=::before)/)?.[0] || '')
-      .sort();
-  }
+onMounted(() => {
+  const styleSheetsList = Array.from(document.styleSheets);
+  const link = Array.from(
+    styleSheetsList.find((ss) => ss.href === ICON_STYLESHEET_URL)?.cssRules ||
+      []
+  );
 
-  selectIconData(icon) {
-    this.selectedIcon = icon;
-  }
+  iconList.value = link
+    ?.filter((rule) => rule.cssText.startsWith(".icon"))
+    .map((rule) => rule.cssText.match(/([a-zA-Z0-9-])*(?=::before)/)?.[0] || "")
+    .sort();
+});
 
-  emitCopySuccess(e) {
-    EventBus.$emit("copy-success", `Copied "${e.text}" to clipboard`);
-  }
+function selectIconData(icon) {
+  selectedIcon.value = icon;
+}
 
-  emitCopyError(e) {
-    EventBus.$emit("copy-copy", e);
-  }
+function emitCopySuccess(e) {
+  EventBus.$emit("copy-success", `Copied "${e.text}" to clipboard`);
+}
+
+function emitCopyError(e) {
+  EventBus.$emit("copy-copy", e);
 }
 </script>
 
