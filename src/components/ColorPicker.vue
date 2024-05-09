@@ -78,7 +78,7 @@ interface Props {
   hasAlpha: boolean;
   isMini: boolean;
   icon?: string;
-  error: string;
+  error?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
