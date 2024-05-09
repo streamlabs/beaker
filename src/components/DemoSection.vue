@@ -12,47 +12,31 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Accordion from "./Accordion.vue";
 import { escape } from "lodash-es";
-import { VNode, defineComponent } from "vue";
+import { computed } from "vue";
 
-export default defineComponent({
-  components: {
-    Accordion
-  },
-    computed: {
-        escapedHtml() {
-            const codeRegEx = new RegExp(
-                  `title="${
-                    this.title
-                  }" :code="demoCode">\\s*<template #components>([\\S\\s]*?)<\\/template>\\s*</DemoSection>`,
-                  "gm"
-                );
+const props = defineProps<{ title?: string; code: string }>();
 
-                const codeMatch = codeRegEx.exec(this.code) as string[];
-                const lines = codeMatch[1].split("\n");
-                const matches = /^\s+/.exec(lines[1]);
-                const indentation = matches != null ? matches[0] : null;
-                let indentedLines: string[] = [];
+const escapedHtml = computed(() => {
+  const codeRegEx = new RegExp(
+    `title="${props.title}" :code="demoCode">\\s*<template #components>([\\S\\s]*?)<\\/template>\\s*</DemoSection>`,
+    "gm"
+  );
 
-                if (indentation) {
-                  indentedLines = lines.map(line => line.replace(indentation, ""));
-                }
+  const codeMatch = codeRegEx.exec(props.code) as string[];
+  const lines = codeMatch[1].split("\n");
+  const matches = /^\s+/.exec(lines[1]);
+  const indentation = matches != null ? matches[0] : null;
+  let indentedLines: string[] = [];
 
-                return escape(indentedLines.join("\n").trim());
-        }
-    },
-    props: {
-        title: {
-            type: String
-        },
-        code: { required: true,
-            type: String
-        }
-    }
-})
+  if (indentation) {
+    indentedLines = lines.map((line) => line.replace(indentation, ""));
+  }
 
+  return escape(indentedLines.join("\n").trim());
+});
 </script>
 
 <style lang="less" scoped>
