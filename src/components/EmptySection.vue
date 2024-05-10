@@ -1,46 +1,39 @@
 <template>
   <div class="s-empty-section">
-    <i class="icon-search" v-if="this.variation === 'search'"></i>
-    <i class="icon-empty" v-if="this.variation === 'text'"></i>
-    <i class="icon-lock" v-if="this.variation === 'prime'"></i>
-    <i class="icon-error" v-if="this.variation === 'warning'"></i>
+    <i class="icon-search" v-if="variation === 'search'" />
+    <i class="icon-empty" v-if="variation === 'text'" />
+    <i class="icon-lock" v-if="variation === 'prime'" />
+    <i class="icon-error" v-if="variation === 'warning'" />
 
     <div v-if="titleSlot" class="s-empty-section__title">
-      <slot name="title"></slot>
+      <slot name="title" />
     </div>
     <div v-else class="s-empty-section__title">{{ title }}</div>
     <div class="s-empty-section__subtitle">{{ subtitle }}</div>
-    <slot></slot>
+    <slot />
 
     <div v-if="hasLink">
-      <slot name="link"></slot>
+      <slot name="link" />
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script setup lang="ts">
+export interface Props {
+  variation?: string;
+  title?: string;
+  subtitle?: string;
+  titleSlot?: boolean;
+  hasLink?: boolean;
+}
 
-export default defineComponent({
-    props: {
-        variation: { default: "text",
-            type: Object as PropType<String>
-        },
-        title: { default: "Streamlabs.com",
-            type: Object as PropType<String>
-        },
-        subtitle: { default: "",
-            type: Object as PropType<String>
-        },
-        titleSlot: { default: false,
-            type: Object as PropType<Boolean>
-        },
-        hasLink: { default: false,
-            type: Object as PropType<Boolean>
-        }
-    }
-})
-
+withDefaults(defineProps<Props>(), {
+  variation: "text",
+  title: "Streamlabs.com",
+  subtitle: "",
+  titleSlot: false,
+  hasLink: false,
+});
 </script>
 
 <style lang="less">

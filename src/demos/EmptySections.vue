@@ -83,21 +83,11 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import EmptySection from "./../components/EmptySection.vue";
 import EmptySectionsCode from "./EmptySections.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
-@Component({
-  components: {
-    DemoSection,
-    EmptySection
-  }
-})
-export default class EmptySections extends Vue {
-  demoCode = EmptySectionsCode;
-  value = "hi";
-}
+const demoCode = ref(EmptySectionsCode);
 </script>
