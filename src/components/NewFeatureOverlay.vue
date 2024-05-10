@@ -55,116 +55,77 @@
   </modal>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import Vue, { defineComponent, computed, ref, onMounted } from "vue";
+import type { Vue as V } from "vue/types/vue";
 import Button from "./../components/Button.vue";
 import VueMq from "vue-mq";
-import VModal from "vue-js-modal";
-import { defineComponent, PropType } from "vue";
-
-Vue.use(VModal);
+import { useVModal } from "../plugins/injects";
 
 Vue.use(VueMq, {
   breakpoints: {
     // default breakpoints - customize this
     sm: 900,
     md: 1250,
-    lg: Infinity
+    lg: Infinity,
   },
-  defaultBreakpoint: "sm" // customize this for SSR
+  defaultBreakpoint: "sm", // customize this for SSR
 });
 
-export default defineComponent({
-  components: {
-    Button
-  },
-    data() {
-        const $mq: string | string[] = undefined;
-        const isImage: boolean = true;
+export interface Props {
+  width?: string | number;
+  height?: string | number;
+  label: string;
+  title: string;
+  media: string;
+  buttonTitle: string;
+  buttonRoute?: string;
+  buttonTag?: string;
+  buttonHref: string;
+  buttonTarget: string;
+  dismissRoute?: string;
+  dismissText?: string;
+  onOpen: () => {};
+  onAction: () => {};
+  videoControls?: boolean;
+}
 
-        return {
-            isImage,
-            $mq
-        };
-    },
-    computed: {
-        overlayImage() {
-            return this.media;
-        },
-        containerMq() {
-            return this.$mq === "sm" ? "s-overlay__container--mq" : "";
-        },
-        overlay__imageBlockMq() {
-            return this.$mq === "sm" ? "s-overlay__image-block--mq" : "";
-        }
-    },
-    mounted() {
-        if (this.media.includes("mp4") || this.media.includes("webm")) {
-          this.isImage = false;
-        } else {
-          this.isImage = true;
-        }
-    },
-    methods: {
-        opened(event) {
-            typeof this.onOpen === "function" && this.onOpen();
-        },
-        onPrimaryAction() {
-            typeof this.onAction === "function" && this.onAction();
-            this.onDismiss();
-        },
-        onDismiss() {
-            this.$modal.hide("new-feature");
-        }
-    },
-    props: {
-        width: { default: "100%",
-            type: Object as PropType<string | number>
-        },
-        height: { default: "auto",
-            type: Object as PropType<string | number>
-        },
-        label: {
-            type: String
-        },
-        title: {
-            type: String
-        },
-        media: {
-            type: String
-        },
-        buttonTitle: {
-            type: String
-        },
-        buttonRoute: { default: "/",
-            type: String
-        },
-        buttonTag: { default: "router-link",
-            type: Object as PropType<String>
-        },
-        buttonHref: {
-            type: Object as PropType<String>
-        },
-        buttonTarget: {
-            type: Object as PropType<String>
-        },
-        dismissRoute: { default: "/",
-            type: String
-        },
-        dismissText: { default: "Go to Dashboard",
-            type: String
-        },
-        onOpen: {
-            type: Object as PropType<Function>
-        },
-        onAction: {
-            type: Object as PropType<Function>
-        },
-        videoControls: { default: false,
-            type: Boolean
-        }
-    }
-})
+const props = withDefaults(defineProps<Props>(), {
+  width: "100%",
+  height: "auto",
+  buttonRoute: "/",
+  buttonTag: "router-link",
+  dismissRoute: "/",
+  dismissText: "Go to Dashboard",
+  videoControls: false,
+});
 
+const $modal: V["$modal"] | undefined = useVModal();
+const $mq = ref<string | string[] | undefined>(undefined);
+const isImage = ref<boolean>(true);
+
+const overlayImage = computed(() => props.media);
+const containerMq = computed(() =>
+  $mq.value === "sm" ? "s-overlay__container--mq" : ""
+);
+const overlay__imageBlockMq = computed(() =>
+  $mq.value === "sm" ? "s-overlay__image-block--mq" : ""
+);
+
+onMounted(() => {
+  isImage.value = props.media.includes("mp4") || props.media.includes("webm");
+});
+
+function opened(event) {
+  typeof props.onOpen === "function" && props.onOpen();
+}
+function onPrimaryAction() {
+  typeof props.onAction === "function" && props.onAction();
+  onDismiss();
+}
+function onDismiss() {
+  $modal?.hide("new-feature");
+}
 </script>
 
 <style lang="less" scoped>
