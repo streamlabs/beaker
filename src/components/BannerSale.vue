@@ -3,7 +3,7 @@
     class="s-banner-sale"
     :style="{
       'background-color': backgroundColor,
-      'border-color': borderColor
+      'border-color': borderColor,
     }"
   >
     <div class="s-banner-sale__wrapper s-header">
@@ -30,55 +30,34 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 
-export default defineComponent({
-    computed: {
-        daysDone() {
-            return this.days === "00";
-        },
-        hoursDone() {
-            return this.daysDone && this.hours === "00";
-        },
-        minutesDone() {
-            return this.hoursDone && this.minutes === "00";
-        },
-        secondsDone() {
-            return this.minutesDone && this.seconds === "00";
-        }
-    },
-    props: {
-        title: { required: true,
-            type: String
-        },
-        desc: { required: true,
-            type: String
-        },
-        days: { default: "00", required: true,
-            type: String
-        },
-        hours: { default: "00", required: true,
-            type: String
-        },
-        minutes: { default: "00", required: true,
-            type: String
-        },
-        seconds: { default: "00", required: true,
-            type: String
-        },
-        timeDesc: {
-            type: String
-        },
-        borderColor: { default: "rgba(248, 86, 64, 0.33)",
-            type: String
-        },
-        backgroundColor: { default: "rgba(248, 86, 64, 0.08)",
-            type: String
-        }
-    }
-})
+export interface Props {
+  title: string;
+  desc: string;
+  days?: string;
+  hours?: string;
+  minutes?: string;
+  seconds?: string;
+  timeDesc?: string;
+  borderColor?: string;
+  backgroundColor?: string;
+}
 
+const props = withDefaults(defineProps<Props>(), {
+  days: "00",
+  hours: "00",
+  minutes: "00",
+  seconds: "00",
+  borderColor: "rgba(248, 86, 64, 0.33)",
+  backgroundColor: "rgba(248, 86, 64, 0.08)",
+});
+
+const daysDone = computed(() => props.days === "00");
+const hoursDone = computed(() => daysDone.value && props.hours === "00");
+const minutesDone = computed(() => hoursDone.value && props.minutes === "00");
+const secondsDone = computed(() => minutesDone.value && props.seconds === "00");
 </script>
 
 <style lang="less">

@@ -15,17 +15,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-    props: {
-        bgColor: {
-            type: String
-        }
-    }
-})
-
+<script setup lang="ts">
+defineProps<{ bgColor: string }>();
 </script>
 
 <style lang="less">

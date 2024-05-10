@@ -27,16 +27,16 @@
 import { computed } from "vue";
 
 interface Props {
-  variant: string;
-  alignLeft: boolean;
-  noMargin: boolean;
-  backgroundColor: string;
-  textColor: string;
-  current: number;
-  total: number;
-  separator: string;
-  suffix: string;
-  small: boolean;
+  variant?: string;
+  alignLeft?: boolean;
+  noMargin?: boolean;
+  backgroundColor?: string;
+  textColor?: string;
+  current?: number;
+  total?: number;
+  separator?: string;
+  suffix?: string;
+  small?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {

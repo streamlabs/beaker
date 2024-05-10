@@ -16,22 +16,12 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Button from "./../components/Button.vue";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  components: {
-    Button
-  },
-    props: {
-        title: {
-                default: "Join the Streamlabs OBS Discussion on <span>Discord</span>",
-            type: String
-        }
-    }
-})
-
+withDefaults(defineProps<{ title?: string }>(), {
+  title: "Join the Streamlabs OBS Discussion on <span>Discord</span>",
+});
 </script>
 
 <style lang="less">

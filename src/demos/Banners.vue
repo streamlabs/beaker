@@ -419,8 +419,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import BannersCode from "./Banners.vue?raw";
 import BannerDiscord from "./../components/BannerDiscord.vue";
 import BannerIntroduction from "./../components/BannerIntroduction.vue";
@@ -429,44 +428,32 @@ import BannerSale from "./../components/BannerSale.vue";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import Notice from "./../components/Notice.vue";
-import pretzelIcon from '../assets/imgs/pretzel-icon.png';
+import pretzelIconImage from "../assets/imgs/pretzel-icon.png";
+import { computed, onMounted, ref } from "vue";
 
-@Component({
-  components: {
-    BannerDiscord,
-    BannerIntroduction,
-    BannerMarketing,
-    BannerSale,
-    Button,
-    DemoSection,
-    Notice
-  }
-})
-export default class Banners extends Vue {
-  demoCode = BannersCode;
-  pretzelIcon = pretzelIcon;
-  remainingSecs = 10;
+const demoCode = ref(BannersCode);
+const pretzelIcon = ref(pretzelIconImage);
+const remainingSecs = ref(10);
 
-  bannerClosed = false;
+const bannerClosed = ref(false);
 
-  mounted() {
-    setInterval(() => {
-      this.remainingSecs--;
-      if (this.remainingSecs < 0) {
-        this.remainingSecs = 10;
-      }
-    }, 1000);
-  }
+onMounted(() => {
+  setInterval(() => {
+    remainingSecs.value--;
+    if (remainingSecs.value < 0) {
+      remainingSecs.value = 10;
+    }
+  }, 1000);
+});
 
-  get secs() {
-    return this.remainingSecs < 10
-      ? `0${this.remainingSecs}`
-      : `${this.remainingSecs}`;
-  }
+const secs = computed(() => {
+  return remainingSecs.value < 10
+    ? `0${remainingSecs.value}`
+    : `${remainingSecs.value}`;
+});
 
-  test() {
-    console.log("test");
-  }
+function test() {
+  console.log("test");
 }
 </script>
 

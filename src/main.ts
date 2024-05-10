@@ -4,7 +4,10 @@ import App from "./App.vue";
 import router from "./router";
 
 import VModal from "vue-js-modal";
-import { V_MODAL_INJECTION_KEY } from "./plugins/injects";
+import {
+  V_MODAL_INJECTION_KEY,
+  V_WHAT_INPUT_INJECTION_KEY,
+} from "./plugins/injects";
 import VTooltip from "v-tooltip";
 import VueClipboard from "vue-clipboard2";
 import WhatInput from "./plugins/WhatInput/index";
@@ -23,6 +26,7 @@ new Vue({
   provide() {
     return {
       [V_MODAL_INJECTION_KEY]: this.$modal,
+      [V_WHAT_INPUT_INJECTION_KEY]: this.$whatInput,
     };
   },
 }).$mount("#app");

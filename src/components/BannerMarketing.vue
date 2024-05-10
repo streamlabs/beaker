@@ -3,14 +3,14 @@
     <div
       class="s-banner__bg"
       :style="{
-        background: `linear-gradient(to bottom left, rgba(227, 232, 235, 0.72), rgba(227, 232, 235, 0.72)), url('${bgImage}') center center no-repeat`
+        background: `linear-gradient(to bottom left, rgba(227, 232, 235, 0.72), rgba(227, 232, 235, 0.72)), url('${bgImage}') center center no-repeat`,
       }"
     ></div>
 
     <div
       class="s-banner__bg s-banner__bg--night"
       :style="{
-        background: `linear-gradient(to bottom left, rgba(9, 22, 29, 0.72), rgba(9, 22, 29, 0.72)), url('${bgImageNight}') center center no-repeat`
+        background: `linear-gradient(to bottom left, rgba(9, 22, 29, 0.72), rgba(9, 22, 29, 0.72)), url('${bgImageNight}') center center no-repeat`,
       }"
     ></div>
 
@@ -59,123 +59,78 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script setup lang="ts">
+import { nextTick, onMounted, ref, watch } from "vue";
+import { useWhatInput } from "../plugins/injects";
 
-export default defineComponent({
-    data() {
-        const closed: boolean = false;
-        const $refs: {
-                banner: HTMLDivElement;
-                bottomWrapper: HTMLDivElement;
-              } = undefined;
+export interface Props {
+  bgImageNight?: string;
+  type?: string;
+  bgImage: string;
+  label: string;
+  iconName?: string;
+  iconImage?: string;
+  title: string;
+  desc?: string;
+  linkDesc?: string;
+  bannerClosed?: boolean;
+  onToggle?: () => {};
+}
 
-        return {
-            $refs,
-            closed
-        };
-    },
-    mounted() {
-        this.closed = this.bannerClosed;
-        this.updateBannerHeight();
-    },
-    methods: {
-        toggleBanner() {
-            typeof this.onToggle === "function" && this.onToggle();
-                this.closed = !this.closed;
-                this.updateBannerHeight();
+const props = withDefaults(defineProps<Props>(), {
+  bannerClosed: false,
+});
 
-                /*
-                  For keyboard accessibility
-                */
-                if (this.$whatInput.ask() === "keyboard") {
-                  const icons = this.$refs.banner.querySelectorAll(".icon-down");
-                  let icon!: HTMLLIElement;
+const $whatInput = useWhatInput();
+const closed = ref(false);
+const banner = ref<HTMLDivElement | null>(null);
+const bottomWrapper = ref<HTMLDivElement | null>(null);
 
-                  if (this.closed) {
-                    icon = icons[1] as HTMLLIElement;
-                  } else {
-                    icon = icons[0] as HTMLLIElement;
-                  }
+function updateBannerHeight() {
+  if (!closed.value && banner.value) {
+    banner.value.style.maxHeight = "240px";
+  } else {
+    setTimeout(() => {
+      if (banner.value && bottomWrapper.value) {
+        banner.value.style.maxHeight = `${bottomWrapper.value.scrollHeight +
+          32}px`;
+      }
+    }, 1);
+  }
+}
 
-                  let tabindex = parseInt(icon.getAttribute("tabindex") as string);
-                  this.$nextTick(() => icon.focus());
-                }
-        },
-        updateBannerHeight() {
-            let banner = this.$refs.banner;
-                let bannerWrapper = this.$refs.bottomWrapper;
+onMounted(() => {
+  closed.value = props.bannerClosed;
+  updateBannerHeight();
+});
 
-                if (!this.closed) {
-                  banner.style.maxHeight = "240px";
-                } else {
-                  setTimeout(() => {
-                    banner.style.maxHeight = `${bannerWrapper.scrollHeight + 32}px`;
-                  }, 1);
-                }
-        },
-        onBannerCloseStateChanged(val: boolean, oldVal: boolean) {
-            this.closed = val;
-            this.updateBannerHeight();
-        }
-    },
-    props: {
-        bgImageNight: {
-            type: Object as PropType<{
-                    type: string;
-                  }>
-        },
-        bgImage: {
-            type: Object as PropType<{
-                    type: string;
-                    required: true;
-                  }>
-        },
-        label: {
-            type: Object as PropType<{
-                    type: string;
-                    required: true;
-                  }>
-        },
-        iconName: {
-            type: Object as PropType<{
-                    type: string;
-                  }>
-        },
-        iconImage: {
-            type: Object as PropType<{
-                    type: string;
-                  }>
-        },
-        title: {
-            type: Object as PropType<{
-                    type: string;
-                    required: true;
-                  }>
-        },
-        desc: {
-            type: Object as PropType<{
-                    type: string;
-                    required: false;
-                  }>
-        },
-        linkDesc: {
-            type: String
-        },
-        bannerClosed: { default: false,
-            type: Boolean
-        },
-        onToggle: {
-            type: Object as PropType<Function>
-        }
-    },
-    watch: {
-        "bannerClosed": [{
-            handler: "onBannerCloseStateChanged"
-        }]
+function toggleBanner() {
+  typeof props.onToggle === "function" && props.onToggle();
+  closed.value = !closed.value;
+  updateBannerHeight();
+
+  /* For keyboard accessibility */
+  if ($whatInput?.ask() === "keyboard" && banner.value) {
+    const icons = banner.value.querySelectorAll(".icon-down");
+    let icon!: HTMLLIElement;
+
+    if (closed.value) {
+      icon = icons[1] as HTMLLIElement;
+    } else {
+      icon = icons[0] as HTMLLIElement;
     }
-})
 
+    let tabindex = parseInt(icon.getAttribute("tabindex") as string);
+    nextTick(() => icon.focus());
+  }
+}
+
+function onBannerCloseStateChanged(val: boolean) {
+  closed.value = val;
+  updateBannerHeight();
+}
+
+watch(() => props.bannerClosed, onBannerCloseStateChanged);
 </script>
 
 <style lang="less">

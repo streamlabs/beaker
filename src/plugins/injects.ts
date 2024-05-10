@@ -18,3 +18,16 @@ export const V_MODAL_INJECTION_KEY = Symbol("VModal");
 export function useVModal(): Vue["$modal"] | undefined {
   return inject(V_MODAL_INJECTION_KEY);
 }
+
+/** @typedef {import('vue/types/vue').Vue['$whatInput']} IWhatInput */
+
+/** @type {InjectionKey<IWhatInput>} */
+export const V_WHAT_INPUT_INJECTION_KEY = Symbol("IWhatInput");
+
+/**
+ * Use the VueJSModal modal plugin.
+ * @returns {IWhatInput} The modal plugin
+ */
+export function useWhatInput(): Vue["$whatInput"] | undefined {
+  return inject(V_WHAT_INPUT_INJECTION_KEY);
+}
