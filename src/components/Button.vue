@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 
-interface Props {
+export interface Props {
   bgColor?: string;
   textColor?: string;
   icon?: string;
@@ -114,6 +114,8 @@ const props = withDefaults(defineProps<Props>(), {
   primeBgColor: null,
   primeTitle: null,
   ultraTitle: null,
+  slobsDownloadTitle: "Download Streamlabs",
+  osType: "windows",
 });
 
 const rippleStartX = ref(0);
