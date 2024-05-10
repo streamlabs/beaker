@@ -24,16 +24,12 @@ components: {
           <NewFeatureOverlay
             label="Introducing Merch Stores"
             title="Increase Your Revenue"
-            media="
-              https://cdn.streamlabs.com/cloudbot/prototype_cloudbot_800x300.webm
-            "
+            media="https://cdn.streamlabs.com/static/imgs/uploads/alertbox-onboarding-welcome_P92Pt3CmAdy0mIDT.mp4"
             buttonTitle="Go To Store"
             :onOpen="trackingCodeComponent"
             :onAction="trackingCodeButton"
             buttonTag="a"
-            buttonHref="
-              https://www.twitch.tv/ext/xab8h6nj36fc2wtn71yikw9hqjd6v4-0.0.1
-            "
+            buttonHref="https://www.twitch.tv/ext/xab8h6nj36fc2wtn71yikw9hqjd6v4-0.0.1"
             buttonTarget="_blank"
           >
             <p>

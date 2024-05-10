@@ -11,7 +11,7 @@
     <div slot="top-right" class="s-overlay__icon">
       <span class="s-icon icon-close" @click="onDismiss"></span>
     </div>
-    <div class="s-overlay__container" :class="containerMq">
+    <div class="s-overlay__container">
       <div class="s-overlay__body">
         <p class="s-overlay__label">{{ label }}</p>
         <h1 class="s-overlay__title">{{ title }}</h1>
@@ -38,13 +38,13 @@
         </div>
       </div>
 
-      <div class="s-overlay__image-block" :class="overlay__imageBlockMq">
-        <img v-if="isImage" :src="overlayImage" class="s-overlay__image" />
+      <div class="s-overlay__image-block">
+        <img v-if="!isVideo" :src="overlayImage" class="s-overlay__image" />
         <video
           :controls="videoControls"
           autoplay
           loop
-          v-if="!isImage"
+          v-if="isVideo"
           class="s-overlay__image"
         >
           <source :src="overlayImage" />
@@ -56,21 +56,11 @@
 </template>
 
 <script setup lang="ts">
-import Vue, { defineComponent, computed, ref, onMounted } from "vue";
-import type { Vue as V } from "vue/types/vue";
+import { computed, ref } from "vue";
+import type { Vue } from "vue/types/vue";
 import Button from "./../components/Button.vue";
-import VueMq from "vue-mq";
 import { useVModal } from "../plugins/injects";
 
-Vue.use(VueMq, {
-  breakpoints: {
-    // default breakpoints - customize this
-    sm: 900,
-    md: 1250,
-    lg: Infinity,
-  },
-  defaultBreakpoint: "sm", // customize this for SSR
-});
 
 export interface Props {
   width?: string | number;
@@ -80,13 +70,13 @@ export interface Props {
   media: string;
   buttonTitle: string;
   buttonRoute?: string;
-  buttonTag?: string;
+  buttonTag?: 'router-link' | 'button' | 'a' | undefined;
   buttonHref: string;
   buttonTarget: string;
   dismissRoute?: string;
   dismissText?: string;
-  onOpen: () => {};
-  onAction: () => {};
+  onOpen: () => any;
+  onAction: () => any;
   videoControls?: boolean;
 }
 
@@ -100,21 +90,10 @@ const props = withDefaults(defineProps<Props>(), {
   videoControls: false,
 });
 
-const $modal: V["$modal"] | undefined = useVModal();
-const $mq = ref<string | string[] | undefined>(undefined);
-const isImage = ref<boolean>(true);
+const $modal: Vue["$modal"] | undefined = useVModal();
+const isVideo = computed(() => props.media.includes("mp4") || props.media.includes("webm"));
 
 const overlayImage = computed(() => props.media);
-const containerMq = computed(() =>
-  $mq.value === "sm" ? "s-overlay__container--mq" : ""
-);
-const overlay__imageBlockMq = computed(() =>
-  $mq.value === "sm" ? "s-overlay__image-block--mq" : ""
-);
-
-onMounted(() => {
-  isImage.value = props.media.includes("mp4") || props.media.includes("webm");
-});
 
 function opened(event) {
   typeof props.onOpen === "function" && props.onOpen();
@@ -174,6 +153,10 @@ function onDismiss() {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 40px;
+
+  @media screen and (max-width: 900px) {
+    display: block !important;
+  }
 }
 
 .s-overlay__body {
@@ -214,6 +197,11 @@ function onDismiss() {
   justify-self: center;
   .margin-top(2);
   overflow: hidden;
+
+  @media screen and (max-width: 900px) {
+    width: 100% !important;
+    height: auto;
+  }
 }
 
 .s-overlay__image {

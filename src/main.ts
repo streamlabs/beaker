@@ -11,6 +11,7 @@ import {
 import VTooltip from "v-tooltip";
 import VueClipboard from "vue-clipboard2";
 import WhatInput from "./plugins/WhatInput/index";
+import VueMq from "vue-mq";
 
 Vue.config.productionTip = false;
 
@@ -18,6 +19,15 @@ Vue.use(VModal);
 Vue.use(VTooltip);
 Vue.use(VueClipboard);
 Vue.use(WhatInput);
+Vue.use(VueMq, {
+  breakpoints: {
+    // default breakpoints - customize this
+    sm: 900,
+    md: 1250,
+    lg: Infinity,
+  },
+  defaultBreakpoint: "sm", // customize this for SSR
+});
 
 new Vue({
   el: "#app",

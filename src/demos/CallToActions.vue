@@ -241,28 +241,28 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+// import { Component, Vue } from "vue-property-decorator";
 import Button from "./../components/Button.vue";
 import CallToAction from "./../components/CallToAction.vue";
 import CallToActionCode from "./CallToActions.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
-import logo from './../assets/imgs/logo.svg';
+import logoImg from "./../assets/imgs/logo.svg";
+import { ref } from "vue";
 
-@Component({
-  components: {
-    Button,
-    CallToAction,
-    DemoSection
-  }
-})
-export default class CallToActions extends Vue {
-  demoCode = CallToActionCode;
+// @Component({
+//   components: {
+//     Button,
+//     CallToAction,
+//     DemoSection
+//   }
+// })
+// export default class CallToActions extends Vue {
+const demoCode = ref(CallToActionCode);
+const logo = ref(logoImg);
 
-  logo = logo;
-
-  test() {
-    alert("test");
-  }
+function test() {
+  alert("test");
 }
+// }
 </script>

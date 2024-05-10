@@ -31,3 +31,16 @@ export const V_WHAT_INPUT_INJECTION_KEY = Symbol("IWhatInput");
 export function useWhatInput(): Vue["$whatInput"] | undefined {
   return inject(V_WHAT_INPUT_INJECTION_KEY);
 }
+
+/** @typedef {import('vue/types/vue').Vue['$mq']} VMq */
+
+/** @type {InjectionKey<VMq>} */
+export const V_MQ_INJECTION_KEY = Symbol("VMq");
+
+/**
+ * Use the VueJSModal modal plugin.
+ * @returns {VMq} The modal plugin
+ */
+export function useVMq(): Vue["$mq"] | undefined {
+  return inject(V_MQ_INJECTION_KEY);
+}
