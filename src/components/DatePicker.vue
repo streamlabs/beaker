@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <pane-dropdown
     class="s-date-picker"
     :class="variant === 'toggle' ? `s-date-picker__${variant}` : null"
@@ -9,7 +9,7 @@
     <div slot="title" class="s-date-picker__title">{{ dateTitle }}</div>
     <vue-date-picker
       calendar-class="s-date-picker__calendar"
-      v-bind="{ ...datePickerProps }"
+      v-bind="$attrs"
       :inline="true"
       @selected="updateDate"
       :initial-view="view"
@@ -20,108 +20,117 @@
   </pane-dropdown>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import PaneDropdown from "./PaneDropdown.vue";
-import { defineComponent } from "vue";
+import { computed, reactive, ref } from "vue";
 
-// import VueDatePicker from "vuejs-datepicker";
+import VueDatePicker from "vuejs-datepicker";
 
 interface selectedDate {
   date: Date;
   selected: boolean;
 }
 
-export default defineComponent({
-  components: {
-    // VueDatePicker,
-    PaneDropdown
-  },
-  // props: { ...VueDatePicker.props }
-    data() {
-        const selectedDate: selectedDate = {
-                date: new Date(),
-                selected: false
-              };
+export interface Props {
+  variant?: "toggle" | null;
+  placeholder?: string;
+  view?: string;
+  startDate?: Date | string | null;
+}
 
-        return {
-            today: new Date(),
-            selectedDate
-        };
-    },
-    computed: {
-        datePickerProps() {
-            return { ...this.$props };
-        },
-        dateTitle() {
-            if (this.selectedDate.selected) {
-                  const selectedDate = new Date(this.selectedDate.date.toString());
-                  const months = [
-                    "January",
-                    "February",
-                    "March",
-                    "April",
-                    "May",
-                    "June",
-                    "July",
-                    "August",
-                    "September",
-                    "October",
-                    "November",
-                    "December"
-                  ];
-                  const day = selectedDate.getDate();
-                  const month = selectedDate.getMonth();
-                  const year = selectedDate.getFullYear();
+const props = withDefaults(defineProps<Props>(), {
+  variant: null,
+  placeholder: "Select Date",
+  view: "day",
+  startDate: null,
+});
 
-                  if (
-                    day === this.today.getDate() - 1 &&
-                    month === this.today.getMonth() &&
-                    year === this.today.getFullYear()
-                  ) {
-                    return "Yesterday";
-                  }
+// export default defineComponent({
+//   components: {
+//     // VueDatePicker,
+//     PaneDropdown
+//   },
+// props: { ...VueDatePicker.props }
+// data() {
+const selectedDate = reactive<selectedDate>({
+  date: new Date(),
+  selected: false,
+});
 
-                  if (this.view === "month") return `${months[month]} ${year}`;
-                  if (this.view === "year") return `${year}`;
+// return {
+const today = ref(new Date());
+//     selectedDate
+// };
+// },
+// computed: {
+// const datePickerProps = computed(() => {
+//     return { ...this.$props };
+// });
+const dateTitle = computed(() => {
+  if (selectedDate.selected) {
+    // const selectedDate = new Date(selectedDate.date.toString());
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const day = selectedDate.date.getDate();
+    const month = selectedDate.date.getMonth();
+    const year = selectedDate.date.getFullYear();
 
-                  return `${day} ${months[month]} ${year}`;
-                }
-
-                return this.placeholder;
-        },
-        maxView() {
-            return this.view === "month" ? this.view : "year";
-        }
-    },
-    created() {
-        if (this.startDate) {
-          let date = this.startDate;
-          if (typeof date === "string") {
-            date = new Date(this.startDate);
-          }
-          this.updateDate(date);
-        }
-    },
-    methods: {
-        updateDate(date) {
-            this.selectedDate = {
-                  date,
-                  selected: true
-                };
-
-                this.$emit("selected", date);
-        }
-    },
-    props: {
-        variant: {
-            type: String
-        },
-        placeholder: { default: "Select Date", type: String },
-        view: { default: "day", type: String },
-        startDate: { default: null, type: [Date, String] }
+    if (
+      day === today.value.getDate() - 1 &&
+      month === today.value.getMonth() &&
+      year === today.value.getFullYear()
+    ) {
+      return "Yesterday";
     }
-})
 
+    if (props.view === "month") return `${months[month]} ${year}`;
+    if (props.view === "year") return `${year}`;
+
+    return `${day} ${months[month]} ${year}`;
+  }
+
+  return props.placeholder;
+});
+const maxView = computed(() => {
+  return props.view === "month" ? props.view : "year";
+});
+// },
+// created() {
+
+// },
+// methods: {
+
+const emit = defineEmits(["selected"]);
+
+function updateDate(date: Date) {
+  selectedDate.date = date;
+  selectedDate.selected = true;
+
+  emit("selected", date);
+}
+
+if (props.startDate) {
+  let date = props.startDate;
+  if (typeof date === "string") {
+    date = new Date(props.startDate);
+  }
+  updateDate(date);
+}
+// },
+
+// })
 </script>
 
 <style lang="less">
@@ -325,4 +334,4 @@ export default defineComponent({
     }
   }
 }
-</style>
+</style> -->

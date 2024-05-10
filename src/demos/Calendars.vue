@@ -3,8 +3,14 @@
     <h1>Calendars</h1>
 
     <div class="section">
-      <h2>Date Picker</h2>
+      <h2>Date Picker (DEPRECIATED)</h2>
       <p>
+        Please use a calendar component from the code base you are working from.
+      </p>
+    </div>
+  </div>
+</template>
+<!-- <p>
         Our Date Picker component is extended from
         <a
           target="_blank"
@@ -19,37 +25,37 @@
 <code>import { DatePicker } from 'streamlabs-beaker';
 
 components: {
-  &quot;s-date-picker&quot;: DatePicker
+  &quot;DatePicker&quot;: DatePicker
 }
 
-&lt;s-date-picker
+&lt;DatePicker
   :disabled-dates=&quot;state.disabledDates&quot;
   :full-month-name=&quot;true&quot;
   :placeholder=&quot;'Select Date'&quot;
   :start-date=&quot;tomorrow&quot;
   @selected=&quot;logDate&quot;
-&gt;&lt;/s-date-picker&gt;</code></pre>
+&gt;&lt;/DatePicker&gt;</code></pre>
         </div>
       </Accordion>
 
-      <s-date-picker
+      <DatePicker
         :disabled-dates="state.disabledDates"
         :full-month-name="true"
         :placeholder="'Select Date'"
         :start-date="tomorrow"
         @selected="logDate"
-      ></s-date-picker>
+      ></DatePicker>
     </div>
 
     <div class="section">
       <h2>Toggle Style Variant</h2>
-      <s-date-picker
+      <DatePicker
         :variant="'toggle'"
         :disabled-dates="state.disabledDates"
         :placeholder="'Select Date'"
         :view="'month'"
         @selected="logDate"
-      ></s-date-picker>
+      ></DatePicker>
     </div>
 
     <div class="section">
@@ -104,34 +110,27 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
 import moment from "moment";
 import Accordion from "./../components/Accordion.vue";
 import DatePicker from "./../components/DatePicker.vue";
+import { reactive, ref } from "vue";
 
-@Component({
-  components: {
-    Accordion,
-    "s-date-picker": DatePicker
-  }
-})
-export default class Calendars extends Vue {
-  state = {
-    disabledDates: {
-      dates: [new Date()]
-    }
-  };
+const state = reactive({
+  disabledDates: {
+    dates: [new Date()],
+  },
+});
 
-  tomorrow = moment()
+const tomorrow = ref(
+  moment()
     .add(1, "days")
-    .format();
+    .format()
+);
 
-  logDate(date) {
-    console.log(date);
-  }
+function logDate(date) {
+  console.log(date);
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped></style> -->
