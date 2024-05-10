@@ -2,7 +2,7 @@
   <div class="s-form-group-v">
     <!-- title -->
     <div :style="titleLayoutStyle" class="s-form-group-v__title">
-      <template v-if="!this.$slots.header">
+      <template v-if="!$slots.header">
         <label v-if="title">{{ title }}</label>
         <i
           v-if="tooltip"
@@ -23,33 +23,24 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 
-export default defineComponent({
-    computed: {
-        titleLayoutStyle() {
-            return {
-              "justify-content": this.titleLayout
-            };
-        }
-    },
-    props: {
-        helpText: {
-            type: String
-        },
-        title: {
-            type: String
-        },
-        tooltip: { default: "",
-            type: String
-        },
-        titleLayout: { default: "space-between",
-            type: String
-        }
-    }
-})
+export interface Props {
+  helpText?: string;
+  title?: string;
+  tooltip?: string;
+  titleLayout?: string;
+}
 
+const props = withDefaults(defineProps<Props>(), {
+  tooltip: "",
+  titleLayout: "space-between",
+});
+
+const titleLayoutStyle = computed(() => ({
+  "justify-content": props.titleLayout,
+}));
 </script>
 
 <style lang="less">

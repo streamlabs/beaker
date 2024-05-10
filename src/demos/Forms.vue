@@ -86,34 +86,21 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
 import DemoSection from "./../components/DemoSection.vue";
 import FormsCode from "./Forms.vue?raw";
 import FormGroup from "./../components/FormGroup.vue";
 import FormGroupH from "./../components/FormGroupH.vue";
 import FormGroupV from "./../components/FormGroupV.vue";
-import PaymentForm from "./../components/PaymentForm.vue";
+// import PaymentForm from "./../components/PaymentForm.vue";
 import TextInput from "./../components/TextInput.vue";
+import { ref } from "vue";
 
-@Component({
-  components: {
-    DemoSection,
-    FormGroup,
-    FormGroupH,
-    FormGroupV,
-    PaymentForm,
-    TextInput
-  }
-})
-export default class Forms extends Vue {
-  demoCode = FormsCode;
-  title = "Text Input";
-  tooltip = "Input tooltip message.";
-  helpText = "This is help text";
-  textInputPlaceholder = "Text input placeholder";
-  textInputType = "text";
-  inputValue = "";
-}
+const demoCode = ref(FormsCode);
+const title = ref("Text Input");
+const tooltip = ref("Input tooltip message.");
+const helpText = ref("This is help text");
+const textInputPlaceholder = ref("Text input placeholder");
+const textInputType = ref("text");
+const inputValue = ref("");
 </script>

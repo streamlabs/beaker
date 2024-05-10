@@ -14,7 +14,7 @@
 export interface Props {
   alertText?: string;
   alertMessage?: string;
-  alertImage: string;
+  alertImage?: string;
 }
 
 withDefaults(defineProps<Props>(), {

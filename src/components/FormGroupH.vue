@@ -20,23 +20,13 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-    props: {
-        helpText: {
-            type: String
-        },
-        tooltip: {
-            type: String
-        },
-        title: {
-            type: String
-        }
-    }
-})
-
+<script setup lang="ts">
+export interface Props {
+  helpText: string;
+  tooltip: string;
+  title: string;
+}
+defineProps<Props>();
 </script>
 
 <style lang="less">

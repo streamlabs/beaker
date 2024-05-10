@@ -4,23 +4,14 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+export interface Props {
+  helpText?: string;
+  tooltip?: string;
+  title?: string;
+}
 
-export default defineComponent({
-    props: {
-        helpText: {
-            type: String
-        },
-        tooltip: {
-            type: String
-        },
-        title: {
-            type: String
-        }
-    }
-})
-
+defineProps<Props>();
 </script>
 
 <style lang="less">
