@@ -80,28 +80,17 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import DemoSection from "./../components/DemoSection.vue";
 import Guard from "./../components/Guard.vue";
-import GuardNew from "./../components/GuardNew.vue";
+// import GuardNew from "./../components/GuardNew.vue";
 import GuardsCode from "./Guards.vue?raw";
 import TextInput from "./../components/TextInput.vue";
 
-@Component({
-  components: {
-    DemoSection,
-    Guard,
-    GuardNew,
-    TextInput
-  }
-})
-export default class Accordions extends Vue {
-  demoCode = GuardsCode;
-  textInputPlaceholder = "placeholder";
-  textInputValue = "This is something super secret...";
-}
+const demoCode = ref(GuardsCode);
+const textInputPlaceholder = ref("placeholder");
+const textInputValue = ref("This is something super secret...");
 </script>
 
 <style lang="less">

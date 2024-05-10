@@ -17,64 +17,53 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref, computed } from "vue";
 
-export default defineComponent({
-    data() {
-        const visible: boolean = true;
+const emit = defineEmits(["click"]);
 
-        return {
-            visible
-        };
-    },
-    computed: {
-        prefix() {
-            return this.type === "input" ? "s-input-guard" : "s-text-guard";
-        },
-        guardClasses() {
-            const classes: string[] = [];
-                if (this.visible) {
-                  classes.push(this.prefix);
-                } else {
-                  classes.push(`${this.prefix}--readable`);
-                }
+export interface Props {
+  value?: string;
+  placeholder?: string;
+  showOnClick?: boolean;
+  variation?: string;
+  type?: string;
+}
 
-                if (this.variation === "alt") {
-                  classes.push(`${this.prefix}--alt`);
-                }
+const props = withDefaults(defineProps<Props>(), {
+  placeholder: "Click to show",
+  showOnClick: true,
+  variation: "normal",
+  type: "text",
+});
 
-                return classes;
-        }
-    },
-    methods: {
-        showText() {
-            if (this.showOnClick) {
-              this.visible = false;
-            } else {
-              this.$emit("click");
-            }
-        }
-    },
-    props: {
-        value: {
-            type: String
-        },
-        placeholder: { default: "Click to show",
-            type: String
-        },
-        showOnClick: { default: true,
-            type: Boolean
-        },
-        variation: { default: "normal",
-            type: String
-        },
-        type: { default: "text",
-            type: String
-        }
-    }
-})
+const visible = ref(true);
 
+const prefix = computed(() =>
+  props.type === "input" ? "s-input-guard" : "s-text-guard"
+);
+const guardClasses = computed(() => {
+  const classes: string[] = [];
+  if (visible.value) {
+    classes.push(prefix.value);
+  } else {
+    classes.push(`${prefix.value}--readable`);
+  }
+
+  if (props.variation === "alt") {
+    classes.push(`${prefix.value}--alt`);
+  }
+
+  return classes;
+});
+
+function showText() {
+  if (props.showOnClick) {
+    visible.value = false;
+  } else {
+    emit("click");
+  }
+}
 </script>
 
 <style lang="less">
