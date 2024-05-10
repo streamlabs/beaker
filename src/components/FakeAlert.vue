@@ -10,24 +10,18 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+export interface Props {
+  alertText?: string;
+  alertMessage?: string;
+  alertImage: string;
+}
 
-export default defineComponent({
-    props: {
-        alertText: { default: "galazy83 donated $50.00",
-            type: String
-        },
-        alertMessage: { default: "Thanks for the stream. Go CivRyan!",
-            type: String
-        },
-        alertImage: {
-                default: "https://thumbs.gfycat.com/PleasedIcyCod-size_restricted.gif",
-            type: String
-        }
-    }
-})
-
+withDefaults(defineProps<Props>(), {
+  alertText: "galazy83 donated $50.00",
+  alertMessage: "Thanks for the stream. Go CivRyan!",
+  alertImage: "https://thumbs.gfycat.com/PleasedIcyCod-size_restricted.gif",
+});
 </script>
 
 <style lang="less">

@@ -58,20 +58,12 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 
 import DemoSection from "./../components/DemoSection.vue";
 import ExtrasCode from "./Extras.vue?raw";
 import FakeAlert from "./../components/FakeAlert.vue";
 
-@Component({
-  components: {
-    DemoSection,
-    FakeAlert
-  }
-})
-export default class Extras extends Vue {
-  demoCode = ExtrasCode;
-}
+const demoCode = ref(ExtrasCode);
 </script>
