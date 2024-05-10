@@ -55,7 +55,7 @@
           :value="value"
           :placeholder="placeholder"
           @input="updateFromInput"
-          v-on="listeners"
+          v-on="$listeners"
           class="s-colorpicker__input--mini"
           :class="{ 's-colorpicker__input--error': error }"
         />
@@ -68,15 +68,11 @@
 import { Chrome as ChromePicker } from "vue-color";
 import { computed, ref } from "vue";
 
-defineOptions({
-  inheritAttrs: false,
-});
-
 interface Props {
   value: string;
-  placeholder: string;
-  hasAlpha: boolean;
-  isMini: boolean;
+  placeholder?: string;
+  hasAlpha?: boolean;
+  isMini?: boolean;
   icon?: string;
   error?: string;
 }
