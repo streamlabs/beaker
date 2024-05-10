@@ -17,36 +17,27 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import ClickOutside from "vue-click-outside";
-import { defineComponent } from "vue";
+import { ref } from "vue";
 
-export default defineComponent({
-  directives: {
-    ClickOutside
-  },
-    data() {
-        return {
-            addLayout: true,
-            chooseLayout: false
-        };
-    },
-    methods: {
-        showChooseLayout() {
-            this.chooseLayout = true;
-            this.addLayout = false;
-        },
-        showAddLayout() {
-            this.chooseLayout = false;
-            this.addLayout = true;
-        },
-        closeChooseLayout() {
-            this.chooseLayout = false;
-            this.addLayout = true;
-        }
-    }
-})
+const vClickOutside = ClickOutside;
 
+const addLayout = ref(true);
+const chooseLayout = ref(false);
+
+function showChooseLayout() {
+  chooseLayout.value = true;
+  addLayout.value = false;
+}
+function showAddLayout() {
+  chooseLayout.value = false;
+  addLayout.value = true;
+}
+function closeChooseLayout() {
+  chooseLayout.value = false;
+  addLayout.value = true;
+}
 </script>
 
 <style lang="less">

@@ -110,84 +110,72 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
-import Accordion from "./../components/Accordion.vue";
+<script setup lang="ts">
+import { ref } from "vue";
 import CreatorSitesCode from "./CreatorSites.vue?raw";
 import CSLayoutPicker from "./../components/CSLayoutPicker.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import SSProSimulator from "./../components/SSProSimulator.vue";
 import UrlBar from "./../components/UrlBar.vue";
 
-@Component({
-  components: {
-    Accordion,
-    CSLayoutPicker,
-    DemoSection,
-    UrlBar,
-    SSProSimulator
-  }
-})
-export default class CreatorSitesDemo extends Vue {
-  demoCode = CreatorSitesCode;
-  username = "morganleee";
-  icon =
-    "https://static-cdn.jtvnw.net/jtv_user_pictures/9dfce03d-25cc-4737-96d2-2ecf6924bebe-profile_image-70x70.jpg";
+const demoCode = ref(CreatorSitesCode);
+const username = ref("morganleee");
+const icon = ref(
+  "https://static-cdn.jtvnw.net/jtv_user_pictures/9dfce03d-25cc-4737-96d2-2ecf6924bebe-profile_image-70x70.jpg"
+);
 
-  domain = "morganleeeeeeeeeee.com";
+const domain = ref("morganleeeeeeeeeee.com");
 
-  webLayouts = [
-    {
-      src:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
-    },
-    {
-      src:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
-    },
-    {
-      src:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
-    },
-    {
-      src:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
-    },
-    {
-      src:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
-    },
-    {
-      src:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
-    },
-    {
-      src:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
-    },
-    {
-      src:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
-    },
-    {
-      src:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
-    },
-    {
-      src:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
-    },
-    {
-      src:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
-    },
-    {
-      src:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
-    }
-  ];
-}
+const webLayouts = ref([
+  {
+    src:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png",
+  },
+  {
+    src:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png",
+  },
+  {
+    src:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png",
+  },
+  {
+    src:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png",
+  },
+  {
+    src:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png",
+  },
+  {
+    src:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png",
+  },
+  {
+    src:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png",
+  },
+  {
+    src:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png",
+  },
+  {
+    src:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png",
+  },
+  {
+    src:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png",
+  },
+  {
+    src:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png",
+  },
+  {
+    src:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png",
+  },
+]);
 </script>
 
 <style lang="less" scoped>

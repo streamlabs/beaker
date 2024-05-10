@@ -31,57 +31,49 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import UrlBar from "./../components/UrlBar.vue";
-import { defineComponent, PropType } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 
-export default defineComponent({
-  components: {
-    UrlBar
-  },
-    data() {
-        const myInt: number = undefined;
+export interface Props {
+  username?: string;
+  icon?: string;
+  domain?: string;
+}
 
-        return {
-            themeClasses: ["teal", "orange", "purple", "electric-blue", "red", "lime"],
-            themeClass: "",
-            myInt
-        };
-    },
-    mounted() {
-        this.rotateClasses();
-    },
-    methods: {
-        rotateClasses() {
-            let it = this.themeClasses[Symbol.iterator]();
-            this.myInt = setInterval(() => {
-              // time interval
-              const next = it.next();
-              if (!next.done) {
-                this.themeClass = "s-cs-simulator__web-page--" + next.value;
-              } else {
-                it = this.themeClasses[Symbol.iterator]();
-              }
-            }, 2000);
-        },
-        beforeDestroy() {
-            clearInterval(this.myInt);
-        }
-    },
-    props: {
-        username: { default: "Awkward__Raccoon",
-            type: String
-        },
-        icon: {
-                default: "https://live.kickstarter.com/images/avatar/medium/avatars4.png",
-            type: Object as PropType<String>
-        },
-        domain: { default: "https://awkwardraccoon.tv",
-            type: String
-        }
+withDefaults(defineProps<Props>(), {
+  username: "Awkward__Raccoon",
+  icon: "https://live.kickstarter.com/images/avatar/medium/avatars4.png",
+  domain: "https://awkwardraccoon.tv",
+});
+
+const myInt = ref<number | undefined>(undefined);
+const themeClasses = ref([
+  "teal",
+  "orange",
+  "purple",
+  "electric-blue",
+  "red",
+  "lime",
+]);
+const themeClass = ref("");
+
+function rotateClasses() {
+  let it = themeClasses.value[Symbol.iterator]();
+  myInt.value = setInterval(() => {
+    // time interval
+    const next = it.next();
+    if (!next.done) {
+      themeClass.value = `s-cs-simulator__web-page--${next.value}`;
+    } else {
+      it = themeClasses.value[Symbol.iterator]();
     }
-})
-
+  }, 2000);
+}
+onMounted(rotateClasses);
+onUnmounted(() => {
+  if (myInt.value) clearInterval(myInt.value);
+});
 </script>
 
 <style lang="less">

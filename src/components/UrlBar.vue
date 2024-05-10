@@ -9,18 +9,14 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script setup lang="ts">
+export interface Props {
+  domain?: string;
+}
 
-export default defineComponent({
-    props: {
-        domain: {
-                default: "https://awkwardraccoon.com",
-            type: Object as PropType<String>
-        }
-    }
-})
-
+withDefaults(defineProps<Props>(), {
+  domain: "https://awkwardraccoon.com",
+});
 </script>
 
 <style lang="less">
