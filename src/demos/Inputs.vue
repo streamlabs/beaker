@@ -88,7 +88,7 @@ components: {
       </DemoSection>
     </div>
 
-    <div class="section">
+    <!-- <div class="section">
       <h2>Text Inputs with Variable Menu Wrapper</h2>
       <p>
         A new way to navigate variables, just wrap your input with the Variable
@@ -496,7 +496,7 @@ components: {
           </tr>
         </tbody>
       </table>
-    </div>
+    </div> -->
 
     <div class="section">
       <h2>Image Input Picker</h2>
@@ -536,195 +536,195 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Watch, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+// import { Component, Watch, Vue } from "vue-property-decorator";
 
-import Checkbox from "./../components/Checkbox.vue";
+// import Checkbox from "./../components/Checkbox.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import FormGroup from "./../components/FormGroup.vue";
 import ImagePickerInput from "./../components/ImagePickerInput.vue";
 import InputsCode from "./Inputs.vue?raw";
-import Radio from "./../components/Radio.vue";
-import Selector from "./../components/Selector.vue";
-import StatusSwitch from "./../components/StatusSwitch.vue";
-import TaggingInput from "./../components/TaggingInput.vue";
-import TextArea from "./../components/TextArea.vue";
+// import Radio from "./../components/Radio.vue";
+// import Selector from "./../components/Selector.vue";
+// import StatusSwitch from "./../components/StatusSwitch.vue";
+// import TaggingInput from "./../components/TaggingInput.vue";
+// import TextArea from "./../components/TextArea.vue";
 import TextInput from "./../components/TextInput.vue";
 import varSearch from "./../components/cloudbotvariables.json";
-import VariableMenu from "./../components/VariableMenu.vue";
+// import VariableMenu from "./../components/VariableMenu.vue";
+import { ref } from "vue";
 
-@Component({
-  components: {
-    Checkbox,
-    DemoSection,
-    FormGroup,
-    ImagePickerInput,
-    Radio,
-    Selector,
-    StatusSwitch,
-    TaggingInput,
-    TextArea,
-    TextInput,
-    VariableMenu
-  }
-})
-export default class Inputs extends Vue {
-  demoCode = InputsCode;
-  data = "";
+// @Component({
+//   components: {
+//     Checkbox,
+//     DemoSection,
+//     FormGroup,
+//     ImagePickerInput,
+//     Radio,
+//     Selector,
+//     StatusSwitch,
+//     TaggingInput,
+//     TextArea,
+//     TextInput,
+//     VariableMenu
+//   }
+// })
+// export default class Inputs extends Vue {
+const demoCode = ref(InputsCode);
+const data = ref("");
 
-  radioValue = true;
+const radioValue = ref(true);
 
-  checkboxValue1 = true;
-  checkboxValue2 = false;
-  checkboxValue3 = true;
-  checkboxValue4 = false;
-  selected = "Option A";
-  selectedGroup = "Option A";
-  multipleSelected = ["Option B", "Option C"];
-  optionGroups = [
-    {
-      group: "Group A",
-      items: ["Option A", "Option B", "Option C"]
-    },
-    {
-      group: "Group B",
-      items: ["Option A", "Option B", "Option C"]
-    },
-    {
-      group: "Group C",
-      items: ["Option A", "Option B", "Option C"]
-    }
-  ];
-  optionSelected = ["Glass Pint", "Glass Beer"];
-  objectSelected = {
+const checkboxValue1 = ref(true);
+const checkboxValue2 = ref(false);
+const checkboxValue3 = ref(true);
+const checkboxValue4 = ref(false);
+const selected = ref("Option A");
+const selectedGroup = ref("Option A");
+const multipleSelected = ref(["Option B", "Option C"]);
+const optionGroups = ref([
+  {
+    group: "Group A",
+    items: ["Option A", "Option B", "Option C"],
+  },
+  {
+    group: "Group B",
+    items: ["Option A", "Option B", "Option C"],
+  },
+  {
+    group: "Group C",
+    items: ["Option A", "Option B", "Option C"],
+  },
+]);
+const optionSelected = ref(["Glass Pint", "Glass Beer"]);
+const objectSelected = ref({
+  value: "glass-pint",
+  title: "Glass Pint",
+  image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-pint.png",
+});
+const statusValue = ref(true);
+const testingInput = ref(null);
+
+const layoutValue = ref("above");
+const jarValue = ref("glass-pint");
+
+// For Variable Menu
+const varData = ref(varSearch);
+const variAreaValue = ref("");
+const variTextValue = ref("");
+
+// Text inputs
+const textInputValue = ref("test");
+const numberInputValue = ref(0);
+const emailInputValue = ref("");
+const passwordInputValue = ref("");
+const errorTextInputValue = ref("");
+const textAreaInputValue = ref("");
+
+const textInputPlaceholder = ref("Placeholder");
+const emailInputPlaceholder = ref("Placeholder");
+const passwordInputPlaceholder = ref("Placeholder");
+
+const options = ref([
+  {
     value: "glass-pint",
     title: "Glass Pint",
-    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-pint.png"
-  };
-  statusValue = true;
-  testingInput = null;
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-pint.png",
+  },
+  {
+    value: "glass-beer",
+    title: "Glass Beer",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer.png",
+  },
+  {
+    value: "glass-beer-2",
+    title: "Glass Beer 2",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer2.png",
+  },
+  {
+    value: "glass-coffee",
+    title: "Glass Coffee",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-coffee.png",
+  },
+  {
+    value: "glass-fancy",
+    title: "Glass Fancy",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-fancy.png",
+  },
+  {
+    value: "glass-whiskey",
+    title: "Glass Whiskey",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-whiskey.png",
+  },
+  {
+    value: "glass-burbon",
+    title: "Glass Burbon",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-burbon.png",
+  },
+  {
+    value: "glass-martini",
+    title: "Glass Martini",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-martini.png",
+  },
+  {
+    value: "glass-beer-3",
+    title: "Glass Beer 3",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer3.png",
+  },
+  {
+    value: "glass-wine",
+    title: "Glass Wine",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-wine.png",
+  },
+  {
+    value: "glass-baileys",
+    title: "Glass Baileys",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-baileys.png",
+  },
+  {
+    value: "glass-champagne",
+    title: "Glass Champagne",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-champagne.png",
+  },
+  {
+    value: "glass-coffee-no-handle",
+    title: "Glass Coffee No Handle",
+    image:
+      "https://cdn.streamlabs.com/static/tip-jar/jars/glass-coffee-no-handle.png",
+  },
+  {
+    value: "glass-plinko",
+    title: "Glass Plinko",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-plinko.png",
+  },
+  {
+    value: "glass-stocking",
+    title: "Glass Stocking",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-stocking.png",
+  },
+  {
+    value: "glass-snowman",
+    title: "Glass Snowman",
+    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-snowman.png",
+  },
+]);
 
-  layoutValue = "above";
-  jarValue = "glass-pint";
-
-  // For Variable Menu
-  varData = varSearch;
-  variAreaValue = "";
-  variTextValue = "";
-
-  // Text inputs
-  textInputValue = "test";
-  numberInputValue = 0;
-  emailInputValue = "";
-  passwordInputValue = "";
-  errorTextInputValue = "";
-  textAreaInputValue = "";
-
-  textInputPlaceholder = "Placeholder";
-  emailInputPlaceholder = "Placeholder";
-  passwordInputPlaceholder = "Placeholder";
-
-  options = [
-    {
-      value: "glass-pint",
-      title: "Glass Pint",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-pint.png"
-    },
-    {
-      value: "glass-beer",
-      title: "Glass Beer",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer.png"
-    },
-    {
-      value: "glass-beer-2",
-      title: "Glass Beer 2",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer2.png"
-    },
-    {
-      value: "glass-coffee",
-      title: "Glass Coffee",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-coffee.png"
-    },
-    {
-      value: "glass-fancy",
-      title: "Glass Fancy",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-fancy.png"
-    },
-    {
-      value: "glass-whiskey",
-      title: "Glass Whiskey",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-whiskey.png"
-    },
-    {
-      value: "glass-burbon",
-      title: "Glass Burbon",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-burbon.png"
-    },
-    {
-      value: "glass-martini",
-      title: "Glass Martini",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-martini.png"
-    },
-    {
-      value: "glass-beer-3",
-      title: "Glass Beer 3",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer3.png"
-    },
-    {
-      value: "glass-wine",
-      title: "Glass Wine",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-wine.png"
-    },
-    {
-      value: "glass-baileys",
-      title: "Glass Baileys",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-baileys.png"
-    },
-    {
-      value: "glass-champagne",
-      title: "Glass Champagne",
-      image:
-        "https://cdn.streamlabs.com/static/tip-jar/jars/glass-champagne.png"
-    },
-    {
-      value: "glass-coffee-no-handle",
-      title: "Glass Coffee No Handle",
-      image:
-        "https://cdn.streamlabs.com/static/tip-jar/jars/glass-coffee-no-handle.png"
-    },
-    {
-      value: "glass-plinko",
-      title: "Glass Plinko",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-plinko.png"
-    },
-    {
-      value: "glass-stocking",
-      title: "Glass Stocking",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-stocking.png"
-    },
-    {
-      value: "glass-snowman",
-      title: "Glass Snowman",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-snowman.png"
-    }
-  ];
-
-  show = [
-    "Bounce",
-    "Bounce In",
-    "Bounce In Down",
-    "Bounce In Left",
-    "Bounce In Right",
-    "Bounce In Up",
-    "Fade In",
-    "Fade In Down",
-    "Fade In Down Big",
-    "Fade In Left",
-    "Fade In Left Big",
-    "Fade In Right",
-    "Fade In",
-    "Fade In Up",
-    "Fade In Up Big"
-  ];
-}
+const show = ref([
+  "Bounce",
+  "Bounce In",
+  "Bounce In Down",
+  "Bounce In Left",
+  "Bounce In Right",
+  "Bounce In Up",
+  "Fade In",
+  "Fade In Down",
+  "Fade In Down Big",
+  "Fade In Left",
+  "Fade In Left Big",
+  "Fade In Right",
+  "Fade In",
+  "Fade In Up",
+  "Fade In Up Big",
+]);
+// }
 </script>

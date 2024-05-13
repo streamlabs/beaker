@@ -3,14 +3,14 @@
     class="s-form-field"
     :class="{
       's-form-field--with-label': label,
-      's-form-field--disabled': disabled
+      's-form-field--disabled': disabled,
     }"
   >
     <div v-if="type === 'number'" class="s-arrows">
       <div
         :class="{
           's-arrow arrow-up': true,
-          's-arrow--disabled': isMaxReached
+          's-arrow--disabled': isMaxReached,
         }"
         @click="increment"
       >
@@ -19,7 +19,7 @@
       <div
         :class="{
           's-arrow arrow-down': true,
-          's-arrow--disabled': isMinReached
+          's-arrow--disabled': isMinReached,
         }"
         @click="decrement"
       >
@@ -27,7 +27,8 @@
       </div>
     </div>
     <input
-      ref="input"
+      ref="inputRef"
+      v-bind="$attrs"
       :type="type"
       :placeholder="placeholder"
       @input="handleInput"
@@ -44,14 +45,14 @@
       :class="{
         's-form-field__input': true,
         's-form-field__input--error': !!error,
-        's-form-field__input--disabled': disabled
+        's-form-field__input--disabled': disabled,
       }"
       v-on="filteredListeners"
       @mousewheel="mouseWheel"
     />
     <label
       :class="{
-        's-form-field__label--top': value !== '' && !disabled
+        's-form-field__label--top': value !== '' && !disabled,
       }"
       class="s-form-field__label"
       v-if="label"
@@ -67,118 +68,116 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { omit, isNil } from "lodash-es";
-import { defineComponent } from "vue";
+import { ref, computed, watch, getCurrentInstance } from "vue";
 
-export default defineComponent({
-    data() {
-        const content: string = "";
-        const $refs: {
-                input: HTMLInputElement;
-              } = undefined;
+export interface Props {
+  name?: string;
+  value: string | number;
+  error?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  helpText?: string;
+  type?: string;
+  placeholder: string;
+  disabled?: boolean;
+  label?: string;
+  readonly?: boolean;
+  autoComplete?: string;
+  autofocus?: boolean;
+}
 
-        return {
-            $refs,
-            content
-        };
-    },
-    computed: {
-        filteredListeners() {
-            return omit(this.$listeners, ["input"]);
-        },
-        isMaxReached() {
-            return (
-              this.type === "number" &&
-              !isNil(this.max) &&
-              Number(this.value) >= this.max
-            );
-        },
-        isMinReached() {
-            return (
-              this.type === "number" &&
-              !isNil(this.min) &&
-              Number(this.value) <= this.min
-            );
-        }
-    },
-    created() {
-        this.content =
-          this.value !== undefined && this.value !== null
-            ? this.value.toString()
-            : "";
-        this.$parent.$on("update", this.updateValue);
-    },
-    methods: {
-        focus() {
-            this.$refs.input.focus();
-        },
-        handleInput(event: { target: HTMLInputElement }) {
-            this.update(
-              this.type === "number" ? Number(event.target.value) : event.target.value
-            );
-        },
-        updateValue(val) {
-            this.$refs.input.value = val;
-        },
-        onKeyUp(event: { target: HTMLTextAreaElement }) {
-            this.$emit("keyup", event);
-        },
-        onFocus(event: { target: HTMLTextAreaElement }) {
-            this.$emit("focus", event);
-        },
-        onClick(event: { target: HTMLTextAreaElement }) {
-            this.$emit("click", event);
-        },
-        increment() {
-            if (this.isMaxReached) return;
+const props = withDefaults(defineProps<Props>(), {
+  step: 1,
+  type: "text",
+  autoComplete: "off",
+});
 
-                this.update(Number(this.content) + this.step);
-        },
-        decrement() {
-            if (this.isMinReached) return;
+const content = ref(props?.value.toString() ?? "");
+const inputRef = ref<HTMLInputElement | null>(null);
 
-                this.update(Number(this.content) - this.step);
-        },
-        mouseWheel(event: WheelEvent) {
-            if (this.type === "number") {
-                  if (event.deltaY > 0) this.decrement();
-                  else this.increment();
+const emit = defineEmits([
+  "keyup",
+  "focus",
+  "click",
+  "input",
+  "onChange",
+  "blur",
+]);
 
-                  event.preventDefault();
-                }
-        },
-        update(value) {
-            this.$emit("input", value);
-        },
-        valueChanged(newValue: string) {
-            this.content = newValue.toString();
-            this.$emit("onChange", newValue);
-        }
-    },
-    props: {
-        name: { type: String },
-        value: { type: [String, Number] },
-        error: { type: String },
-        min: { type: Number },
-        max: { type: Number },
-        step: { type: Number, default: 1 },
-        helpText: { type: String },
-        type: { type: String, default: "text" },
-        placeholder: { type: String },
-        disabled: { type: Boolean },
-        label: { type: String },
-        readonly: { type: Boolean },
-        autoComplete: { type: String, default: "off" },
-        autofocus: { type: Boolean }
-    },
-    watch: {
-        "value": [{
-            handler: "valueChanged"
-        }]
-    }
-})
+watch(
+  () => props.value,
+  (newValue) => {
+    content.value = newValue.toString();
+    emit("onChange", newValue);
+  }
+);
 
+const filteredListeners = computed(() =>
+  // For Vue 2.7, getCurrentInstance() is an unconventional way get access to $listeners in Composition API
+  omit(getCurrentInstance()?.proxy.$listeners, ["input"])
+);
+
+function update(value) {
+  emit("input", value);
+}
+
+function focus() {
+  inputRef.value?.focus();
+}
+
+function handleInput(event: { target: HTMLInputElement }) {
+  update(
+    props.type === "number" ? Number(event.target.value) : event.target.value
+  );
+}
+
+function onKeyUp(event: { target: HTMLTextAreaElement }) {
+  emit("keyup", event);
+}
+
+function onFocus(event: { target: HTMLTextAreaElement }) {
+  emit("focus", event);
+}
+
+function onClick(event: { target: HTMLTextAreaElement }) {
+  emit("click", event);
+}
+
+const isMaxReached = computed(
+  () =>
+    props.type === "number" &&
+    !isNil(props.max) &&
+    Number(props.value) >= props.max
+);
+
+function increment() {
+  if (isMaxReached.value) return;
+
+  update(Number(content.value) + props.step);
+}
+
+const isMinReached = computed(
+  () =>
+    props.type === "number" &&
+    !isNil(props.min) &&
+    Number(props.value) <= props.min
+);
+
+function decrement() {
+  if (isMinReached.value) return;
+
+  update(Number(content.value) - props.step);
+}
+function mouseWheel(event: WheelEvent) {
+  if (props.type === "number") {
+    event.deltaY > 0 ? decrement() : increment();
+
+    event.preventDefault();
+  }
+}
 </script>
 
 <style lang="less">

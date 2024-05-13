@@ -7,7 +7,7 @@
         class="s-tabs__tab"
         :class="{
           'is-active': tab.active,
-          'is-hidden': tab.hidden
+          'is-hidden': tab.hidden,
         }"
         :style="selectTabSize"
         @click="showTab(tab)"
@@ -36,9 +36,7 @@
         menuAlign="right"
         :tabindex="hiddenActiveTab && !hiddenTabFocused ? 0 : -1"
       >
-        <template slot="title"
-          >More</template
-        >
+        <template slot="title">More</template>
         <div
           v-for="tab in hiddenTabs"
           :key="`hidden-${tab.value}`"
@@ -76,7 +74,6 @@
 </template>
 
 <script lang="ts">
-import ResizeObserver from "resize-observer-polyfill";
 import { debounce, cloneDeep } from "lodash-es";
 import PaneDropdown from "./PaneDropdown.vue";
 import { defineComponent, PropType } from "vue";
@@ -93,280 +90,283 @@ interface IModifiedTab extends ITab {
 }
 export default defineComponent({
   components: {
-    PaneDropdown
+    PaneDropdown,
   },
-    data() {
-        const allTabElements: NodeListOf<HTMLDivElement> = null as any;
-        const tabsNav: HTMLDivElement = null as any;
-        const modifiedTabs: IModifiedTab[] = [];
-        const $refs: {
-                tabsNav: HTMLDivElement;
-                tabsWrapper: HTMLDivElement;
-                hiddenTabsDropdown: PaneDropdown;
-              } = undefined;
+  data() {
+    const allTabElements: NodeListOf<HTMLDivElement> = null as any;
+    const tabsNav: HTMLDivElement = null as any;
+    const modifiedTabs: IModifiedTab[] = [];
+    const $refs: {
+      tabsNav: HTMLDivElement;
+      tabsWrapper: HTMLDivElement;
+      hiddenTabsDropdown: PaneDropdown;
+    } = undefined;
 
+    return {
+      $refs,
+      isMounted: false,
+      hasHiddenTabs: true,
+      hiddenTabFocused: false,
+      modifiedTabs,
+      dropdownIsActive: false,
+      selectTabSize: { fontSize: this.tabSize },
+      prevWidth: 0,
+      tabWidthsSet: false,
+      tabsNav,
+      allTabElements,
+    };
+  },
+  computed: {
+    tabLinkTag() {
+      return this.updateRoute ? "router-link" : "button";
+    },
+    tabSize() {
+      return this.size === "large" ? "16px" : "14px";
+    },
+    hiddenTabs() {
+      return this.modifiedTabs.filter((tab) => tab.hidden);
+    },
+    activeTab() {
+      if (this.modifiedTabs.every((tab) => !tab.active)) {
+        return this.selected || this.modifiedTabs[0].value;
+      }
+      return this.modifiedTabs.find((tab) => tab.active);
+    },
+    hiddenActiveTab() {
+      return this.hiddenTabs.find((tab) => tab.active);
+    },
+  },
+  mounted() {
+    this.$refs.hiddenTabsDropdown.$el.addEventListener(
+      "focus",
+      this.focusActiveTab
+    );
+    this.loadTabProperties();
+    this.isMounted = true;
+    this.tabsNav = this.$refs.tabsNav;
+
+    this.$nextTick(() => {
+      if (this.selected) {
+        const activeTab =
+          this.modifiedTabs.find((tab) => this.selected === tab.value) ||
+          this.modifiedTabs[0];
+        activeTab.active = true;
+      }
+
+      this.allTabElements = this.tabsNav.querySelectorAll(".s-tabs__tab");
+      this.setTabWidths();
+    });
+
+    this.$nextTick(() => {
+      this.setTabWidths();
+      this.loadResizeObserver();
+    });
+  },
+  destroyed() {
+    this.$refs.hiddenTabsDropdown.$el.removeEventListener(
+      "focus",
+      this.focusActiveTab
+    );
+  },
+  methods: {
+    loadTabProperties() {
+      this.modifiedTabs = cloneDeep(this.tabs).map((tab) => {
         return {
-            $refs,
-            isMounted: false,
-            hasHiddenTabs: true,
-            hiddenTabFocused: false,
-            modifiedTabs,
-            dropdownIsActive: false,
-            selectTabSize: { fontSize: this.tabSize },
-            prevWidth: 0,
-            tabWidthsSet: false,
-            tabsNav,
-            allTabElements
+          ...tab,
+          active: false,
+          hidden: false,
+          width: 0,
         };
+      });
     },
-    computed: {
-        tabLinkTag() {
-            return this.updateRoute ? "router-link" : "button";
-        },
-        tabSize() {
-            return this.size === "large" ? "16px" : "14px";
-        },
-        hiddenTabs() {
-            return this.modifiedTabs.filter(tab => tab.hidden);
-        },
-        activeTab() {
-            if (this.modifiedTabs.every(tab => !tab.active)) {
-              return this.selected || this.modifiedTabs[0].value;
-            }
-            return this.modifiedTabs.find(tab => tab.active);
-        },
-        hiddenActiveTab() {
-            return this.hiddenTabs.find(tab => tab.active);
+    setTabWidths() {
+      Array.from(this.tabsNav.querySelectorAll(".s-tabs__tab")).forEach(
+        (tab, idx) => {
+          this.$nextTick(() => {
+            let tabLink = tab.querySelector(".s-tabs__link") as HTMLDivElement;
+            this.modifiedTabs[idx].width =
+              idx !== this.modifiedTabs.length - 1
+                ? tabLink.offsetWidth + 16
+                : tabLink.offsetWidth;
+          });
         }
+      );
     },
-    mounted() {
-        this.$refs.hiddenTabsDropdown.$el.addEventListener(
-              "focus",
-              this.focusActiveTab
-            );
-            this.loadTabProperties();
-            this.isMounted = true;
-            this.tabsNav = this.$refs.tabsNav;
-
-            this.$nextTick(() => {
-              if (this.selected) {
-                const activeTab =
-                  this.modifiedTabs.find(tab => this.selected === tab.value) ||
-                  this.modifiedTabs[0];
-                activeTab.active = true;
-              }
-
-              this.allTabElements = this.tabsNav.querySelectorAll(".s-tabs__tab");
-              this.setTabWidths();
-            });
-
-            this.$nextTick(() => {
-              this.setTabWidths();
-              this.loadResizeObserver();
-            });
+    loadResizeObserver() {
+      const ro = new ResizeObserver((entries) => {
+        entries.forEach((entry) => {
+          const { width, height } = entry.contentRect;
+          if (this.prevWidth !== width) {
+            this.$nextTick(() => this.setHiddenTabs());
+            this.prevWidth = width;
+          }
+        });
+      });
+      ro.observe(this.tabsNav);
     },
-    destroyed() {
-        this.$refs.hiddenTabsDropdown.$el.removeEventListener(
-          "focus",
-          this.focusActiveTab
+    setHiddenTabs() {
+      if (!this.isMounted) return false;
+      this.hasHiddenTabs = true;
+
+      this.$nextTick(() => {
+        const moreTab = Array.from(
+          this.tabsNav.children
+        ).pop() as HTMLDivElement;
+        let totalTabsWidth = moreTab.offsetWidth;
+        const tabsNavWidth = this.tabsNav.offsetWidth;
+        this.hasHiddenTabs = false;
+
+        this.modifiedTabs.forEach((tab, index) => {
+          tab.hidden = false;
+
+          if (
+            tabsNavWidth >= totalTabsWidth + tab.width &&
+            !this.hasHiddenTabs
+          ) {
+            totalTabsWidth += tab.width;
+          } else {
+            this.modifiedTabs[index].hidden = true;
+            if (!this.hasHiddenTabs) this.hasHiddenTabs = true;
+          }
+        });
+
+        if (this.modifiedTabs.some((tab) => tab.hidden))
+          this.hasHiddenTabs = true;
+      });
+    },
+    setTabOnKeyDown(event, current, direction = "RIGHT") {
+      const paneDropdown = this.$refs.hiddenTabsDropdown;
+      const currentIndex = this.modifiedTabs.findIndex(
+        (tab) => current === tab.value
+      );
+      let newIndex = 0;
+
+      if (direction === "LEFT") {
+        newIndex =
+          currentIndex === 0 ? this.modifiedTabs.length - 1 : currentIndex - 1;
+      } else {
+        newIndex =
+          currentIndex === this.modifiedTabs.length - 1 ? 0 : currentIndex + 1;
+      }
+
+      this.togglePaneDropdown(
+        this.modifiedTabs[currentIndex].hidden,
+        this.modifiedTabs[newIndex].hidden
+      );
+
+      let newTab: HTMLSpanElement | HTMLAnchorElement = null as any;
+
+      if (this.modifiedTabs[newIndex].hidden) {
+        const newHiddenIndex = this.hiddenTabs.findIndex(
+          (tab) => this.modifiedTabs[newIndex].value === tab.value
         );
+        let newHiddenList: NodeListOf<HTMLAnchorElement> = null as any;
+
+        this.$nextTick(() => {
+          newHiddenList = paneDropdown.$el.querySelectorAll(
+            ".s-pane-dropdown__list .s-tabs__link"
+          );
+          newTab = newHiddenList[newHiddenIndex];
+        });
+
+        const newHiddenTab = this.hiddenTabs[newHiddenIndex];
+      } else {
+        newTab = this.allTabElements[newIndex].querySelector(
+          ".s-tabs__link"
+        ) as HTMLSpanElement | HTMLAnchorElement;
+      }
+
+      this.$nextTick(() => {
+        newTab.focus();
+        this.showTab(this.modifiedTabs[newIndex]);
+      });
     },
-    methods: {
-        loadTabProperties() {
-            this.modifiedTabs = cloneDeep(this.tabs).map(tab => {
-              return {
-                ...tab,
-                active: false,
-                hidden: false,
-                width: 0
-              };
-            });
-        },
-        setTabWidths() {
-            Array.from(this.tabsNav.querySelectorAll(".s-tabs__tab")).forEach(
-              (tab, idx) => {
-                this.$nextTick(() => {
-                  let tabLink = tab.querySelector(".s-tabs__link") as HTMLDivElement;
-                  this.modifiedTabs[idx].width =
-                    idx !== this.modifiedTabs.length - 1
-                      ? tabLink.offsetWidth + 16
-                      : tabLink.offsetWidth;
-                });
-              }
-            );
-        },
-        loadResizeObserver() {
-            const ro = new ResizeObserver(entries => {
-              entries.forEach(entry => {
-                const { width, height } = entry.contentRect;
-                if (this.prevWidth !== width) {
-                  this.$nextTick(() => this.setHiddenTabs());
-                  this.prevWidth = width;
-                }
-              });
-            });
-            ro.observe(this.tabsNav);
-        },
-        setHiddenTabs() {
-            if (!this.isMounted) return false;
-                this.hasHiddenTabs = true;
+    togglePaneDropdown(currentHidden, newHidden) {
+      const paneDropdown = this.$refs.hiddenTabsDropdown;
 
-                this.$nextTick(() => {
-                  const moreTab = Array.from(this.tabsNav.children).pop() as HTMLDivElement;
-                  let totalTabsWidth = moreTab.offsetWidth;
-                  const tabsNavWidth = this.tabsNav.offsetWidth;
-                  this.hasHiddenTabs = false;
-
-                  this.modifiedTabs.forEach((tab, index) => {
-                    tab.hidden = false;
-
-                    if (tabsNavWidth >= totalTabsWidth + tab.width && !this.hasHiddenTabs) {
-                      totalTabsWidth += tab.width;
-                    } else {
-                      this.modifiedTabs[index].hidden = true;
-                      if (!this.hasHiddenTabs) this.hasHiddenTabs = true;
-                    }
-                  });
-
-                  if (this.modifiedTabs.some(tab => tab.hidden)) this.hasHiddenTabs = true;
-                });
-        },
-        setTabOnKeyDown(event, current, direction = "RIGHT") {
-            const paneDropdown = this.$refs.hiddenTabsDropdown;
-                const currentIndex = this.modifiedTabs.findIndex(
-                  tab => current === tab.value
-                );
-                let newIndex = 0;
-
-                if (direction === "LEFT") {
-                  newIndex =
-                    currentIndex === 0 ? this.modifiedTabs.length - 1 : currentIndex - 1;
-                } else {
-                  newIndex =
-                    currentIndex === this.modifiedTabs.length - 1 ? 0 : currentIndex + 1;
-                }
-
-                this.togglePaneDropdown(
-                  this.modifiedTabs[currentIndex].hidden,
-                  this.modifiedTabs[newIndex].hidden
-                );
-
-                let newTab: HTMLSpanElement | HTMLAnchorElement = null as any;
-
-                if (this.modifiedTabs[newIndex].hidden) {
-                  const newHiddenIndex = this.hiddenTabs.findIndex(
-                    tab => this.modifiedTabs[newIndex].value === tab.value
-                  );
-                  let newHiddenList: NodeListOf<HTMLAnchorElement> = null as any;
-
-                  this.$nextTick(() => {
-                    newHiddenList = paneDropdown.$el.querySelectorAll(
-                      ".s-pane-dropdown__list .s-tabs__link"
-                    );
-                    newTab = newHiddenList[newHiddenIndex];
-                  });
-
-                  const newHiddenTab = this.hiddenTabs[newHiddenIndex];
-                } else {
-                  newTab = this.allTabElements[newIndex].querySelector(".s-tabs__link") as
-                    | HTMLSpanElement
-                    | HTMLAnchorElement;
-                }
-
-                this.$nextTick(() => {
-                  newTab.focus();
-                  this.showTab(this.modifiedTabs[newIndex]);
-                });
-        },
-        togglePaneDropdown(currentHidden, newHidden) {
-            const paneDropdown = this.$refs.hiddenTabsDropdown;
-
-                if (newHidden && this.dropdownIsActive) return;
-                if (newHidden) {
-                  this.$refs.hiddenTabsDropdown.show();
-                  this.openPaneDropdown();
-                } else {
-                  this.closePaneDropdown();
-                }
-        },
-        openPaneDropdown() {
-            this.dropdownIsActive = true;
-        },
-        closePaneDropdown() {
-            this.$refs.hiddenTabsDropdown.hide();
-            this.dropdownIsActive = false;
-        },
-        showHiddenTabs(val: boolean) {
-            this.dropdownIsActive = val;
-        },
-        tabLinkOptions(tabValue) {
-            return {
-              to: this.updateRoute ? `#/${tabValue}` : undefined
-            };
-        },
-        blurPaneDropDown() {
-            this.$nextTick(() => {
-              const paneDropdown = this.$refs.hiddenTabsDropdown;
-              const currnetHiddenList = paneDropdown.$el.querySelectorAll(
-                ".s-pane-dropdown__list .s-tabs__link"
-              );
-              if (
-                [...currnetHiddenList].some(
-                  tabElement => document.activeElement === tabElement
-                )
-              ) {
-                return;
-              }
-              this.hiddenTabFocused = false;
-              this.closePaneDropdown();
-            });
-        },
-        focusActiveTab() {
-            this.openPaneDropdown();
-                // Only use activeTabIndex when whatInput.ask() === "keyboard".
-                if (this.$whatInput.ask("intent") === "keyboard") {
-                  const activeTabIndex = this.hiddenTabs.findIndex(tab => tab.active);
-                  const paneDropdown = this.$refs.hiddenTabsDropdown;
-
-                  this.$nextTick(() => {
-                    const currnetHiddenList: NodeListOf<
-                      HTMLButtonElement | HTMLAnchorElement
-                    > = paneDropdown.$el.querySelectorAll(
-                      ".s-pane-dropdown__list .s-tabs__link"
-                    );
-                    const activeTab = currnetHiddenList[activeTabIndex];
-                    activeTab.focus();
-                  });
-                }
-        },
-        showTab(tab: IModifiedTab) {
-            this.modifiedTabs.forEach(tab => (tab.active = false));
-            tab.active = true;
-            this.$emit("tab-selected", tab.value);
-        }
+      if (newHidden && this.dropdownIsActive) return;
+      if (newHidden) {
+        this.$refs.hiddenTabsDropdown.show();
+        this.openPaneDropdown();
+      } else {
+        this.closePaneDropdown();
+      }
     },
-    props: {
-        tabs: {
-            type: Array as PropType<ITab[]>
-        },
-        size: {
-            type: String
-        },
-        selected: {
-            type: String
-        },
-        className: {
-            type: String
-        },
-        hideContent: {
-            type: Boolean
-        },
-        updateRoute: { default: true,
-            type: Boolean
+    openPaneDropdown() {
+      this.dropdownIsActive = true;
+    },
+    closePaneDropdown() {
+      this.$refs.hiddenTabsDropdown.hide();
+      this.dropdownIsActive = false;
+    },
+    showHiddenTabs(val: boolean) {
+      this.dropdownIsActive = val;
+    },
+    tabLinkOptions(tabValue) {
+      return {
+        to: this.updateRoute ? `#/${tabValue}` : undefined,
+      };
+    },
+    blurPaneDropDown() {
+      this.$nextTick(() => {
+        const paneDropdown = this.$refs.hiddenTabsDropdown;
+        const currnetHiddenList = paneDropdown.$el.querySelectorAll(
+          ".s-pane-dropdown__list .s-tabs__link"
+        );
+        if (
+          [...currnetHiddenList].some(
+            (tabElement) => document.activeElement === tabElement
+          )
+        ) {
+          return;
         }
-    }
-})
+        this.hiddenTabFocused = false;
+        this.closePaneDropdown();
+      });
+    },
+    focusActiveTab() {
+      this.openPaneDropdown();
+      // Only use activeTabIndex when whatInput.ask() === "keyboard".
+      if (this.$whatInput.ask("intent") === "keyboard") {
+        const activeTabIndex = this.hiddenTabs.findIndex((tab) => tab.active);
+        const paneDropdown = this.$refs.hiddenTabsDropdown;
 
+        this.$nextTick(() => {
+          const currnetHiddenList: NodeListOf<
+            HTMLButtonElement | HTMLAnchorElement
+          > = paneDropdown.$el.querySelectorAll(
+            ".s-pane-dropdown__list .s-tabs__link"
+          );
+          const activeTab = currnetHiddenList[activeTabIndex];
+          activeTab.focus();
+        });
+      }
+    },
+    showTab(tab: IModifiedTab) {
+      this.modifiedTabs.forEach((tab) => (tab.active = false));
+      tab.active = true;
+      this.$emit("tab-selected", tab.value);
+    },
+  },
+  props: {
+    tabs: {
+      type: Array as PropType<ITab[]>,
+    },
+    size: {
+      type: String,
+    },
+    selected: {
+      type: String,
+    },
+    className: {
+      type: String,
+    },
+    hideContent: {
+      type: Boolean,
+    },
+    updateRoute: { default: true, type: Boolean },
+  },
+});
 </script>
 
 <style lang="less" scoped>

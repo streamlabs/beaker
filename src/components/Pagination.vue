@@ -25,66 +25,60 @@
 </template>
 
 <script lang="ts">
-import ResizeObserver from "resize-observer-polyfill";
 import VuePaginateComponent from "vuejs-paginate";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   components: {
-    VuePaginateComponent
+    VuePaginateComponent,
   },
-    data() {
-        const $refs: {
-                pagination: HTMLDivElement;
-              } = undefined;
-        const pageRange: number = 3;
+  data() {
+    const $refs: {
+      pagination: HTMLDivElement;
+    } = undefined;
+    const pageRange: number = 3;
 
-        return {
-            pageRange,
-            $refs
-        };
+    return {
+      pageRange,
+      $refs,
+    };
+  },
+  computed: {
+    pageCount() {
+      if (this.totalPageCount && this.totalPageCount > 0)
+        return this.totalPageCount;
+
+      let remainder = this.totalItemCount % this.itemsPerPage > 0 ? 1 : 0;
+      return Math.floor(this.totalItemCount / this.itemsPerPage) + remainder;
     },
-    computed: {
-        pageCount() {
-            if (this.totalPageCount && this.totalPageCount > 0)
-                  return this.totalPageCount;
+  },
+  mounted() {
+    const ro = new ResizeObserver((entries, observer) => {
+      for (const entry of entries) {
+        const { left, top, width, height } = entry.contentRect;
 
-                let remainder = this.totalItemCount % this.itemsPerPage > 0 ? 1 : 0;
-                return Math.floor(this.totalItemCount / this.itemsPerPage) + remainder;
-        }
+        if (width < 456) this.pageRange = 1;
+      }
+    });
+
+    ro.observe(this.$refs.pagination);
+  },
+  methods: {
+    selectPage(page: number) {
+      this.$emit("page-selected", page);
     },
-    mounted() {
-        const ro = new ResizeObserver((entries, observer) => {
-              for (const entry of entries) {
-                const { left, top, width, height } = entry.contentRect;
-
-                if (width < 456) this.pageRange = 1;
-              }
-            });
-
-            ro.observe(this.$refs.pagination);
+  },
+  props: {
+    nightBg: { default: false, type: Boolean },
+    itemsPerPage: {
+      type: Number,
     },
-    methods: {
-        selectPage(page: number) {
-            this.$emit("page-selected", page);
-        }
+    totalItemCount: {
+      type: Number,
     },
-    props: {
-        nightBg: { default: false,
-            type: Boolean
-        },
-        itemsPerPage: {
-            type: Number
-        },
-        totalItemCount: {
-            type: Number
-        },
-        totalPageCount: { default: 0,
-            type: Number
-        }
-    }
-})
-
+    totalPageCount: { default: 0, type: Number },
+  },
+});
 </script>
 
 <style lang="less">
