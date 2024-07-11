@@ -3,7 +3,7 @@
     <button
       type="button"
       v-for="(val, key) in values"
-      :key="val.id"
+      :key="key"
       :title="capitalize(key)"
       @click="$emit('input', key)"
       :class="[
@@ -20,23 +20,25 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-// export default defineComponent({
-// filters: {
+const props = defineProps<{
+  values: Record<string, string>;
+  value: string;
+  variation?: string;
+}>();
+
+defineEmits<{ (e: "input", value: string) }>();
+
 function capitalize(value: string) {
   if (!value) return "";
   value = value.toString();
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
-// },
-// computed: {
+
 const toggleClass = computed(() => {
   if (props.variation) {
     return `s-toggle--${props.variation}`;
   }
 });
-// },
-const props = defineProps<{ values: {}; value: string; variation?: string }>();
-// })
 </script>
 
 <style lang="less">

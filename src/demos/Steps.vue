@@ -116,24 +116,14 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
 import DemoSection from "./../components/DemoSection.vue";
 import FormGroup from "./../components/FormGroup.vue";
 import Step from "./../components/Step.vue";
 import StepsCode from "./Steps.vue?raw";
+import { ref } from "vue";
 
-@Component({
-  components: {
-    DemoSection,
-    FormGroup,
-    Step
-  }
-})
-export default class Steps extends Vue {
-  demoCode = StepsCode;
-}
+const demoCode = ref(StepsCode);
 </script>
 
 <style lang="less" scoped>

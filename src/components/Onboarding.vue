@@ -68,76 +68,47 @@
   </div>
 </template>
 
-<script lang="ts">
-import OnboardingStep from "./../components/OnboardingStep.vue";
+<script setup lang="ts">
+import { computed } from "vue";
+// import OnboardingStep from "./../components/OnboardingStep.vue";
 import Button from "./../components/Button.vue";
-import { defineComponent, PropType } from "vue";
 
-export default defineComponent({
-  components: {
-    OnboardingStep,
-    Button
-  },
-    computed: {
-        location() {
-            if (this.stepLocation === "left") return "s-onboarding__left";
-            if (this.stepLocation === "top") return "s-onboarding__top";
-        },
-        namedSteps() {
-            return this.steps.every(step => !!step.name);
-        },
-        isCompleted() {
-            return this.steps.every(step => step.complete);
-        }
-    },
-    methods: {
-        currentStepStyle(index) {
-            return index + 1 === this.currentStep;
-        },
-        checkmarkStyle(index) {
-            return this.steps[index].complete;
-        }
-    },
-    props: {
-        steps: {
-            type: Array as PropType<{ name?: string; complete: boolean }[]>
-        },
-        stepLocation: { default: "left",
-            type: String
-        },
-        currentStep: {
-            type: Number
-        },
-        completeHandler: {
-            type: Object as PropType<Function>
-        },
-        continueHandler: {
-            type: Object as PropType<Function>
-        },
-        skipHandler: {
-            type: Object as PropType<Function>
-        },
-        prevHandler: {
-            type: Object as PropType<Function>
-        },
-        skippable: {
-            type: Boolean
-        },
-        disableControls: { default: false,
-            type: Boolean
-        },
-        hideSkip: { default: false,
-            type: Boolean
-        },
-        hideBack: { default: false,
-            type: Boolean
-        },
-        hideButton: { default: false,
-            type: Boolean
-        }
-    }
-})
+interface Props {
+  steps: { name?: string; complete: boolean }[];
+  stepLocation: string;
+  currentStep: number;
+  completeHandler: () => any;
+  continueHandler: () => any;
+  skipHandler?: () => any;
+  prevHandler?: () => any;
+  skippable: boolean;
+  disableControls?: boolean;
+  hideSkip?: boolean;
+  hideBack?: boolean;
+  hideButton?: boolean;
+}
 
+const props = withDefaults(defineProps<Props>(), {
+  stepLocation: "left",
+  disableControls: false,
+  hideSkip: false,
+  hideBack: false,
+  hideButton: false,
+});
+
+const location = computed(() => {
+  if (props.stepLocation === "left") return "s-onboarding__left";
+  if (props.stepLocation === "top") return "s-onboarding__top";
+});
+const namedSteps = computed(() => props.steps.every((step) => !!step.name));
+const isCompleted = computed(() => props.steps.every((step) => step.complete));
+
+function currentStepStyle(index) {
+  return index + 1 === props.currentStep;
+}
+function checkmarkStyle(index) {
+  return props.steps[index].complete;
+}
 </script>
 
 <style lang="less">

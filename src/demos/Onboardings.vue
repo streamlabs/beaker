@@ -31,22 +31,38 @@
             <OnboardingStep slot="1">
               <span slot="title">Getting Started</span>
               <span slot="desc">Slot 1</span>
-              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
+              <SSProSimulator
+                :username="username"
+                :domain="domain"
+                :icon="icon"
+              />
             </OnboardingStep>
             <OnboardingStep slot="2">
               <span slot="title">A Few More Things</span>
               <span slot="desc">Slot 2</span>
-              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
+              <SSProSimulator
+                :username="username"
+                :domain="domain"
+                :icon="icon"
+              />
             </OnboardingStep>
             <OnboardingStep slot="3">
               <span slot="title">Almost There</span>
               <span slot="desc">Slot 3</span>
-              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
+              <SSProSimulator
+                :username="username"
+                :domain="domain"
+                :icon="icon"
+              />
             </OnboardingStep>
             <OnboardingStep slot="4">
               <span slot="title">Getting Started</span>
               <span slot="desc">Slot 4</span>
-              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
+              <SSProSimulator
+                :username="username"
+                :domain="domain"
+                :icon="icon"
+              />
             </OnboardingStep>
           </Onboarding>
         </template>
@@ -69,22 +85,38 @@
             <OnboardingStep slot="1">
               <span slot="title">Getting Started</span>
               <span slot="desc">Slot 1</span>
-              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
+              <SSProSimulator
+                :username="username"
+                :domain="domain"
+                :icon="icon"
+              />
             </OnboardingStep>
             <OnboardingStep slot="2">
               <span slot="title">A Few More Things</span>
               <span slot="desc">Slot 2</span>
-              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
+              <SSProSimulator
+                :username="username"
+                :domain="domain"
+                :icon="icon"
+              />
             </OnboardingStep>
             <OnboardingStep slot="3">
               <span slot="title">Almost There</span>
               <span slot="desc">Slot 3</span>
-              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
+              <SSProSimulator
+                :username="username"
+                :domain="domain"
+                :icon="icon"
+              />
             </OnboardingStep>
             <OnboardingStep slot="4">
               <span slot="title">Getting Started</span>
               <span slot="desc">Slot 4</span>
-              <SSProSimulator :username="username" :domain="domain" :icon="icon"/>
+              <SSProSimulator
+                :username="username"
+                :domain="domain"
+                :icon="icon"
+              />
             </OnboardingStep>
           </Onboarding>
         </template>
@@ -168,8 +200,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 
 import DemoSection from "./../components/DemoSection.vue";
 import Onboarding from "./../components/Onboarding.vue";
@@ -177,54 +209,43 @@ import OnboardingStep from "./../components/OnboardingStep.vue";
 import OnboardingsCode from "./Onboardings.vue?raw";
 import SSProSimulator from "./../components/SSProSimulator.vue";
 
-@Component({
-  components: {
-    DemoSection,
-    Onboarding,
-    OnboardingStep,
-    OnboardingsCode,
-    SSProSimulator
-  }
-})
-export default class Onboardings extends Vue {
-  demoCode = OnboardingsCode;
-  currentStep: number = 1;
+const demoCode = ref(OnboardingsCode);
+const currentStep = ref(1);
 
-  steps: Object = [
-    { name: "Donations", complete: false },
-    { name: "Cloudbot", complete: false },
-    { name: "Streamlabs OBS", complete: false },
-    { name: "Alert Box", complete: false }
-  ];
+const steps = ref([
+  { name: "Donations", complete: false },
+  { name: "Cloudbot", complete: false },
+  { name: "Streamlabs OBS", complete: false },
+  { name: "Alert Box", complete: false },
+]);
 
-  stepsTest: Object = [
-    { complete: false },
-    { complete: false },
-    { complete: false },
-    { complete: false }
-  ];
+const stepsTest = ref([
+  { complete: false },
+  { complete: false },
+  { complete: false },
+  { complete: false },
+]);
 
-  continueFunc() {
-    this.stepsTest[this.currentStep - 1].complete = true;
-    this.currentStep++;
-  }
-
-  skipFunc() {
-    this.currentStep++;
-  }
-
-  previousFunc() {
-    this.currentStep--;
-  }
-
-  completeFunc() {
-    console.log("complete clicked");
-  }
-
-  username = "morganleee";
-  icon =
-    "https://static-cdn.jtvnw.net/jtv_user_pictures/9dfce03d-25cc-4737-96d2-2ecf6924bebe-profile_image-70x70.jpg";
-
-  domain = "morganleeeeeeeeeee.com";
+function continueFunc() {
+  stepsTest.value[currentStep.value - 1].complete = true;
+  currentStep.value++;
 }
+
+function skipFunc() {
+  currentStep.value++;
+}
+
+function previousFunc() {
+  currentStep.value--;
+}
+
+function completeFunc() {
+  console.log("complete clicked");
+}
+
+const username = "morganleee";
+const icon =
+  "https://static-cdn.jtvnw.net/jtv_user_pictures/9dfce03d-25cc-4737-96d2-2ecf6924bebe-profile_image-70x70.jpg";
+
+const domain = "morganleeeeeeeeeee.com";
 </script>

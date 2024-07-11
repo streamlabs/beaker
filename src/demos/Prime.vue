@@ -167,9 +167,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import Badge from "./../components/Badge.vue";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
@@ -179,35 +178,22 @@ import PrimeCode from "./Prime.vue?raw";
 import PrimeSection from "./../components/PrimeSection.vue";
 import WelcomePrime from "./../components/WelcomePrime.vue";
 
-@Component({
-  components: {
-    Badge,
-    Button,
-    DemoSection,
-    ModalComp,
-    NavCallToAction,
-    PrimeSection,
-    WelcomePrime
-  }
-})
-export default class PrimeComponents extends Vue {
-  demoCode = PrimeCode;
+const demoCode = ref(PrimeCode);
 
-  testClick() {
-    console.log("test prime section click");
-  }
+function testClick() {
+  console.log("test prime section click");
+}
 
-  testNavClick() {
-    console.log("test prime nav click");
-  }
+function testNavClick() {
+  console.log("test prime nav click");
+}
 
-  testWelcomePrime() {
-    console.log("test welcome prime click");
-  }
+function testWelcomePrime() {
+  console.log("test welcome prime click");
+}
 
-  testPrimeIntro() {
-    console.log("test prime info click");
-  }
+function testPrimeIntro() {
+  console.log("test prime info click");
 }
 </script>
 

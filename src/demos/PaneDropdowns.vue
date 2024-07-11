@@ -56,7 +56,7 @@ components: {
           </div>
 
           <div class="row">
-            <PaneDropdown open-above="top">
+            <PaneDropdown :open-above="true">
               <span slot="title">Top Dropdown Menu</span>
               <a href="#">Hey I'm a longer link here</a>
               <a href="#">Let's see how this looks</a>
@@ -191,19 +191,11 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 import DemoSection from "./../components/DemoSection.vue";
 import PaneDropdown from "./../components/PaneDropdown.vue";
 import PaneDropdownsCode from "./PaneDropdowns.vue?raw";
 
-@Component({
-  components: {
-    DemoSection,
-    PaneDropdown
-  }
-})
-export default class Dropdowns extends Vue {
-  demoCode = PaneDropdownsCode;
-}
+const demoCode = ref(PaneDropdownsCode);
 </script>

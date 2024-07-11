@@ -59,7 +59,7 @@ components: {
             Success callout. <a href="#0">Link</a>
           </Callout>
 
-          <Callout variation="warning strong" icon="warning">
+          <Callout variation="warning strong">
             Warning callout. <a href="#0">Link</a>
           </Callout>
 
@@ -80,7 +80,6 @@ components: {
         <template #components>
           <Callout
             variation="cookies"
-            icon="info"
             :closeable="true"
             :onClose="cookieCalloutClosed"
           >
@@ -140,15 +139,15 @@ components: {
 
         <DemoSection title="Icon Callouts" :code="demoCode">
           <template #components>
-            <Callout icon="success" variation="success" :closeable="true">
+            <Callout variation="success" :closeable="true">
               Success callout. <a href="#0">Link</a>
             </Callout>
 
-            <Callout icon="warning" variation="warning" :closeable="true">
+            <Callout variation="warning" :closeable="true">
               Warning callout. <a href="#0">Link</a>
             </Callout>
 
-            <Callout icon="info" variation="info" :closeable="true">
+            <Callout variation="info" :closeable="true">
               Info callout. <a href="#0">Link</a>
             </Callout>
 

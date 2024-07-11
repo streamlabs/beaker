@@ -49,158 +49,138 @@
   </div>
 </template>
 
-<script lang="ts">
-import { mixin as vFocus } from "vue-focus";
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
 
-export default defineComponent({
-  name: "PaneDropdown",
-  mixins: [vFocus],
-    data() {
-      const $refs: {
-              paneMenu: HTMLDivElement;
-              paneList: HTMLDivElement;
-            } = undefined;
+interface Props {
+  dropdownIcon?: boolean;
+  menuAlign?: string | null;
+  openAbove?: boolean;
+  autoHeight?: boolean;
+  closeOnSelect?: boolean;
+  custom?: boolean;
+  relativeMenu?: boolean;
+  simpleMenu?: boolean;
+  hoverOption?: boolean;
+  nested?: boolean;
+}
 
-        return {
-            $refs,
-            paneMenuOpen: false
-        };
-    },
-    computed: {
-        menuClasses() {
-            let classes: string[] = [];
+const props = withDefaults(defineProps<Props>(), {
+  dropdownIcon: true,
+  menuAlign: null,
+  openAbove: false,
+  autoHeight: false,
+  closeOnSelect: true,
+  custom: false,
+  relativeMenu: false,
+  simpleMenu: false,
+  hoverOption: false,
+  nested: false,
+});
 
-                if (this.menuAlign) {
-                  classes.push(`s-pane-dropdown__menu--${this.menuAlign}`);
-                }
+const paneMenu = ref<HTMLDivElement | null>(null);
+const paneList = ref<HTMLDivElement | null>(null);
+const paneMenuOpen = ref(false);
 
-                if (this.openAbove) {
-                  classes.push("s-pane-dropdown__menu--top");
-                }
+const menuClasses = computed(() => {
+  let classes: string[] = [];
 
-                if (this.autoHeight) {
-                  classes.push("s-pane-dropdown__menu--auto-height");
-                }
+  if (props.menuAlign) {
+    classes.push(`s-pane-dropdown__menu--${props.menuAlign}`);
+  }
 
-                if (this.relativeMenu) {
-                  classes.push("s-pane-dropdown__menu--relative");
-                }
+  if (props.openAbove) {
+    classes.push("s-pane-dropdown__menu--top");
+  }
 
-                if (this.simpleMenu) {
-                  classes.push("s-pane-dropdown__menu--simple");
-                }
+  if (props.autoHeight) {
+    classes.push("s-pane-dropdown__menu--auto-height");
+  }
 
-                return classes;
-        }
-    },
-    created() {
-        document.addEventListener("click", this.documentClick);
-    },
-    destroyed() {
-        document.removeEventListener("click", this.documentClick);
-    },
-    methods: {
-        afterOpen(element) {
-            element.style.height = "auto";
-        },
-        open(element) {
-            let width = getComputedStyle(element).width;
-            element.style.width = width;
-            let maxWidth = getComputedStyle(element).width;
-            element.style.maxWidth = maxWidth;
-            element.style.position = `absolute`;
-            element.style.visibility = `hidden`;
-            element.style.height = `auto`;
-            let height = getComputedStyle(element).height;
-            element.style.width = null;
-            element.style.position = null;
-            element.style.visibility = null;
-            element.style.height = 0;
-            getComputedStyle(element).height;
-            setTimeout(() => {
-              element.style.height = height;
-            });
-        },
-        close(element) {
-            if ("target" in element) return;
+  if (props.relativeMenu) {
+    classes.push("s-pane-dropdown__menu--relative");
+  }
 
-                let height = getComputedStyle(element).height;
-                element.style.height = height;
-                getComputedStyle(element).height;
-                setTimeout(() => {
-                  element.style.height = 0;
-                });
-        },
-        documentClick(e: Event) {
-            let el: any = this.$refs.paneMenu;
-            let target = e.target;
-            if (el !== target && !el.contains(target)) {
-              this.paneMenuOpen = false;
-            }
-        },
-        onMenuClick() {
-            this.closeOnSelect ? (this.paneMenuOpen = !this.paneMenuOpen) : null;
-        },
-        hide() {
-            this.paneMenuOpen = false;
-        },
-        show() {
-            this.paneMenuOpen = true;
-        },
-        watchPaneMenuOpen(newVal) {
-            if (newVal && !this.custom) {
-                  this.$nextTick(() => {
-                    const list = this.$refs.paneList;
-                    const lastSlotItem = list.lastElementChild as HTMLElement;
-                    const onTab = e => {
-                      if (e.keyCode === 9 && !e.shiftKey) this.hide();
-                    };
+  if (props.simpleMenu) {
+    classes.push("s-pane-dropdown__menu--simple");
+  }
 
-                    lastSlotItem.addEventListener("keydown", onTab);
-                  });
-                }
-        }
-    },
-    props: {
-        dropdownIcon: { default: true,
-            type: Boolean
-        },
-        menuAlign: { default: null,
-            type: String
-        },
-        openAbove: { default: false,
-            type: Boolean
-        },
-        autoHeight: { default: false,
-            type: Boolean
-        },
-        closeOnSelect: { default: true,
-            type: Boolean
-        },
-        custom: { default: false,
-            type: Boolean
-        },
-        relativeMenu: { default: false,
-            type: Boolean
-        },
-        simpleMenu: { default: false,
-            type: Boolean
-        },
-        hoverOption: { default: false,
-            type: Boolean
-        },
-        nested: { default: false,
-            type: Boolean
-        }
-    },
-    watch: {
-        "paneMenuOpen": [{
-            handler: "watchPaneMenuOpen"
-        }]
-    }
-})
+  return classes;
+});
 
+function afterOpen(element) {
+  element.style.height = "auto";
+}
+
+function open(element) {
+  let width = getComputedStyle(element).width;
+  element.style.width = width;
+  let maxWidth = getComputedStyle(element).width;
+  element.style.maxWidth = maxWidth;
+  element.style.position = `absolute`;
+  element.style.visibility = `hidden`;
+  element.style.height = `auto`;
+  let height = getComputedStyle(element).height;
+  element.style.width = null;
+  element.style.position = null;
+  element.style.visibility = null;
+  element.style.height = 0;
+  getComputedStyle(element).height;
+  setTimeout(() => {
+    element.style.height = height;
+  });
+}
+
+function close(element) {
+  if ("target" in element) return;
+
+  let height = getComputedStyle(element).height;
+  element.style.height = height;
+  getComputedStyle(element).height;
+  setTimeout(() => {
+    element.style.height = 0;
+  });
+}
+
+function documentClick(e: Event) {
+  let el: any = paneMenu.value;
+  let target = e.target;
+  if (el !== target && !el.contains(target)) {
+    paneMenuOpen.value = false;
+  }
+}
+
+document.addEventListener("click", documentClick);
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", documentClick);
+});
+
+function onMenuClick() {
+  props.closeOnSelect ? (paneMenuOpen.value = !paneMenuOpen.value) : null;
+}
+
+function hide() {
+  paneMenuOpen.value = false;
+}
+
+function show() {
+  paneMenuOpen.value = true;
+}
+
+watch(paneMenuOpen, (newVal) => {
+  if (paneList.value && newVal && !props.custom) {
+    nextTick(() => {
+      const list = paneList.value;
+      const lastSlotItem = list?.lastElementChild as HTMLElement;
+      const onTab = (e) => {
+        if (e.keyCode === 9 && !e.shiftKey) hide();
+      };
+
+      lastSlotItem.addEventListener("keydown", onTab);
+    });
+  }
+});
 </script>
 
 <style lang="less">

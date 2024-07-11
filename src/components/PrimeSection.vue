@@ -22,33 +22,19 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Badge from "./Badge.vue";
 import Button from "./Button.vue";
 import EmptySection from "./EmptySection.vue";
-import { defineComponent, PropType } from "vue";
 
-export default defineComponent({
-  components: {
-    Badge,
-    Button,
-    EmptySection
-  },
-    props: {
-        subtitle: {
-            type: String
-        },
-        href: {
-            type: String
-        },
-        onClick: {
-            type: Object as PropType<{
-                    type: Function;
-                  }>
-        }
-    }
-})
+interface Props {
+  subtitle: string;
+  href: string;
+  onClick: () => any;
+}
 
+defineEmits(["click"]);
+defineProps<Props>();
 </script>
 
 <style lang="less">

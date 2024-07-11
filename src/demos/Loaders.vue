@@ -216,9 +216,8 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import Accordion from "./../components/Accordion.vue";
 import Button from "./../components/Button.vue";
 import LoadersCode from "./Loaders.vue?raw";
@@ -226,27 +225,16 @@ import DemoSection from "./../components/DemoSection.vue";
 import Loading from "./../components/Loading.vue";
 import Spinner from "./../components/Spinner.vue";
 
-@Component({
-  components: {
-    Accordion,
-    Button,
-    DemoSection,
-    Loading,
-    Spinner
-  }
-})
-export default class Loaders extends Vue {
-  demoCode = LoadersCode;
-  isLoading = false;
-  isLoadingSemi = false;
-  isLoadingSwapped = false;
+const demoCode = ref(LoadersCode);
+const isLoading = ref(false);
+const isLoadingSemi = ref(false);
+const isLoadingSwapped = ref(false);
 
-  array = [
-    "This loader is using an array of strings...",
-    "Syncing all files to our cloud...",
-    "Lorem ipsum dolor sit amet, consectetur...",
-    "Sed do eiusmod tempor incididunt ut labore..."
-  ];
-  string = "This loader is using a single string...";
-}
+const array = ref([
+  "This loader is using an array of strings...",
+  "Syncing all files to our cloud...",
+  "Lorem ipsum dolor sit amet, consectetur...",
+  "Sed do eiusmod tempor incididunt ut labore...",
+]);
+const string = ref("This loader is using a single string...");
 </script>

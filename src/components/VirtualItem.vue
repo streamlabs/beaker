@@ -30,78 +30,56 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed, onMounted, ref, useAttrs } from "vue";
 
-export default defineComponent({
-    data() {
-        const isClickable: boolean = false;
+interface Props {
+  name: string;
+  value?: string;
+  preview: string;
+  quantity?: number;
+  rarity: string;
+  selected?: boolean;
+  selectionCount?: string;
+  remainingTime?: string;
+  hasWarning?: boolean;
+  isGiveaway?: boolean;
+  type?: string;
+}
 
-        return {
-            isClickable
-        };
-    },
-    computed: {
-        virtualItemClasses() {
-            const classes: any = [];
+const props = withDefaults(defineProps<Props>(), {
+  selected: false,
+  hasWarning: false,
+  isGiveaway: false,
+});
 
-                if (this.rarity) {
-                  classes.push(`s-virtual-item--${this.rarity}`);
-                }
+const isClickable = ref(false);
 
-                if (this.selected) {
-                  classes.push("is-selected");
-                }
+const virtualItemClasses = computed(() => {
+  const classes: any = [];
 
-                if (this.isClickable) {
-                  classes.push("clickable");
-                }
+  if (props.rarity) {
+    classes.push(`s-virtual-item--${props.rarity}`);
+  }
 
-                return classes.join(" ");
-        }
-    },
-    mounted() {
-        if (this.$listeners.click) {
-          this.isClickable = true;
-        }
-    },
-    props: {
-        name: {
-            type: String
-        },
-        value: {
-            type: String
-        },
-        preview: {
-            type: String
-        },
-        quantity: {
-            type: Number
-        },
-        rarity: {
-            type: String
-        },
-        selected: { default: false,
-            type: Boolean
-        },
-        selectionCount: {
-            type: String
-        },
-        remainingTime: {
-            type: String
-        },
-        hasWarning: { default: false,
-            type: Boolean
-        },
-        isGiveaway: { default: false,
-            type: Boolean
-        },
-        type: {
-            type: String
-        }
-    }
-})
+  if (props.selected) {
+    classes.push("is-selected");
+  }
 
+  if (isClickable.value) {
+    classes.push("clickable");
+  }
+
+  return classes.join(" ");
+});
+
+const attrs = useAttrs();
+
+onMounted(() => {
+  if (attrs.click) {
+    isClickable.value = true;
+  }
+});
 </script>
 
 <style lang="less">

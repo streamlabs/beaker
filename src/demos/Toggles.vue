@@ -18,7 +18,7 @@ components: {
           <Toggle
             :values="{
               show: `<i class='icon-view'></i>`,
-              hide: `<i class='icon-hide'></i>`
+              hide: `<i class='icon-hide'></i>`,
             }"
             v-model="selectedOption"
           />
@@ -33,7 +33,7 @@ components: {
           <Toggle
             :values="{
               revenue: 'Revenue',
-              growth: 'Growth'
+              growth: 'Growth',
             }"
             v-model="selectedTextOption"
             :variation="'text'"
@@ -81,22 +81,13 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import DemoSection from "./../components/DemoSection.vue";
 import Toggle from "./../components/Toggle.vue";
 import TogglesCode from "./Toggles.vue?raw";
 
-@Component({
-  components: {
-    DemoSection,
-    Toggle
-  }
-})
-export default class Toggles extends Vue {
-  demoCode = TogglesCode;
-  selectedOption = "show";
-  selectedTextOption = "revenue";
-}
+const demoCode = ref(TogglesCode);
+const selectedOption = ref("show");
+const selectedTextOption = ref("revenue");
 </script>

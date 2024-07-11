@@ -42,48 +42,46 @@
       </ul>
       <span class="modal-prime-intro__price">...only from $12/month</span>
       <div class="modal-prime-intro__button">
-        <s-button
+        <SButton
           size="large"
           variation="prime-white"
           :title="primeButtonText"
           @click="onPrimeButtonHandler"
-        ></s-button>
+        ></SButton>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import Button from "./../components/Button.vue";
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import SButton from "./../components/Button.vue";
+import { computed, useSlots } from "vue";
 
-export default defineComponent({
-  components: {
-    "s-button": Button
-  },
-    computed: {
-        hasTitleSlot() {
-            return !(typeof this.$slots.title === "undefined");
-        },
-        hasSubtitleSlot() {
-            return !(typeof this.$slots.subtitle === "undefined");
-        },
-        hasSlot() {
-            return !(typeof this.$slots.default === "undefined");
-        }
-    },
-    methods: {
-        onPrimeButtonHandler() {
-            this.$emit("onClickPrime");
-        }
-    },
-    props: {
-        primeButtonText: { default: "Join Prime",
-            type: String
-        }
-    }
-})
+const slots = useSlots();
 
+interface Props {
+  primeButtonText: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  primeButtonText: "Join Prime",
+});
+
+const hasTitleSlot = computed(() => {
+  return !(typeof slots.title === "undefined");
+});
+const hasSubtitleSlot = computed(() => {
+  return !(typeof slots.subtitle === "undefined");
+});
+const hasSlot = computed(() => {
+  return !(typeof slots.default === "undefined");
+});
+
+const emit = defineEmits(["onClickPrime"]);
+
+function onPrimeButtonHandler() {
+  emit("onClickPrime");
+}
 </script>
 
 <style lang="less" scoped>

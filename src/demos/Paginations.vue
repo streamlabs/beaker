@@ -86,24 +86,15 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
 import Pagination from "./../components/Pagination.vue";
 import PaginationsCode from "./Paginations.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
+import { ref } from "vue";
 
-@Component({
-  components: {
-    DemoSection,
-    Pagination
-  }
-})
-export default class Paginations extends Vue {
-  demoCode = PaginationsCode;
+const demoCode = ref(PaginationsCode);
 
-  consolePage(page: number) {
-    let groupStart = page * 4 - 4;
-  }
+function consolePage(page: number) {
+  let groupStart = page * 4 - 4;
 }
 </script>

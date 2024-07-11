@@ -33,7 +33,7 @@ components: {
         <template #components>
           <slider
             :value="value"
-            @input="value => updateValue(value)"
+            @input="(value) => updateValue(value)"
             :max="100"
             :min="1"
             :interval="1"
@@ -54,7 +54,7 @@ components: {
         <template #components>
           <slider
             :value="value"
-            @input="value => updateValue(value)"
+            @input="(value) => updateValue(value)"
             :max="100"
             :min="1"
             :interval="1"
@@ -182,40 +182,32 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 import Slider from "./../components/Slider.vue";
-import SliderTwo from "./../components/SliderTwo.vue";
+// import SliderTwo from "./../components/SliderTwo.vue";
 import Accordion from "./../components/Accordion.vue";
 import SlidersCode from "./Sliders.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
-@Component({
-  components: {
-    Accordion,
-    DemoSection,
-    Slider,
-    SliderTwo
-  }
-})
-export default class Sliders extends Vue {
-  demoCode = SlidersCode;
-  localValue: number | string = 15;
 
-  updateLocalValue(value) {
-    this.localValue = value;
-  }
+const demoCode = ref(SlidersCode);
+const localValue = ref<number | string>(15);
 
-  localValueTwo: number | string = 15;
+function updateLocalValue(value) {
+  localValue.value = value;
+}
 
-  updateLocalValueTwo(value) {
-    this.localValueTwo = value;
-  }
+const localValueTwo = ref<number | string>(15);
 
-  value = 50;
-  data = ["one", "two", "three", "four", "five", "six"];
-  updateValue(value) {
-    console.log(value); // this function is required, it doesn't have to do anything, it just needs to exist.
-  }
+function updateLocalValueTwo(value) {
+  localValueTwo.value = value;
+}
+
+const value = ref(50);
+const data = ref(["one", "two", "three", "four", "five", "six"]);
+function updateValue(val) {
+  value.value = val;
+  console.log(value); // this function is required, it doesn't have to do anything, it just needs to exist.
 }
 </script>
 

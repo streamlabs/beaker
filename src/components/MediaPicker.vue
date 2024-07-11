@@ -92,10 +92,10 @@
               v-focus="focused === index"
               :tabindex="focused === index ? 0 : -1"
               @focus="focused = index"
-              @click.stop="$emit(control.emit)"
+              @click.stop="control.emit"
               @keydown.tab="onTabOut"
-              @keydown.space.prevent="$emit(control.emit)"
-              @keydown.enter.prevent="$emit(control.emit)"
+              @keydown.space.prevent="control.emit"
+              @keydown.enter.prevent="control.emit"
               @keydown.left.prevent="moveLeft()"
               @keydown.right.prevent="moveRight()"
               ><i :class="control.icon"></i>
@@ -107,212 +107,189 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { mixin as vFocus } from "vue-focus";
-import Button from "./../components/Button.vue";
-import { defineComponent } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
-export default defineComponent({
-  components: {
-    Button,
-  },
+interface Props {
+  variation: "image" | "audio";
+  mediaLink: boolean;
+  mediaPreview?: boolean;
+  title?: string;
+  value: string;
+  controlsAlwaysVisible?: boolean;
+  canDelete?: boolean;
+}
 
-  mixins: [vFocus],
-  data() {
-    const $refs: {
-      mediaPicker: HTMLElement;
-    } = undefined;
+const props = withDefaults(defineProps<Props>(), {
+  mediaLink: false,
+  mediaPreview: true,
+  controlsAlwaysVisible: false,
+  canDelete: true,
+});
 
-    return {
-      $refs,
-      mediaPickerSmall: false,
-      mediaBroken: false,
-      mediaControlsVisible: false,
-      focused: 0,
-    };
-  },
-  computed: {
-    mediaControls() {
-      const controlData = [
-        {
-          key: "media-link",
-          available: !!this.mediaLink,
-          class: "s-media-picker__link-icon",
-          emit: "link-media",
-          title: `Link ${this.variationTitle}`,
-          icon: "icon-link",
-        },
-        {
-          key: "media-selected-zoom",
-          available:
-            this.mediaPreview &&
-            this.variation === "image" &&
-            this.media.selected &&
-            !this.mediaBroken,
-          class: "s-media-picker__zoom-icon",
-          emit: "preview-media",
-          title: `Preview ${this.variationTitle}`,
-          icon: "icon-zoom",
-        },
-        {
-          key: "media-selected-play",
-          available:
-            this.mediaPreview &&
-            !this.mediaBroken &&
-            this.variation === "audio" &&
-            this.media.selected,
-          class: "s-media-picker__play-icon",
-          emit: "preview-media",
-          title: `preview ${this.variationTitle}`,
-          icon: "icon-media-share-2",
-        },
-        {
-          key: "media-remove",
-          available: this.media.selected,
-          class: "s-media-picker__small-remove",
-          emit: "remove-media",
-          title: `Remove ${this.variationTitle}`,
-          icon: "icon-close",
-        },
-        {
-          key: "media-select",
-          available: true,
-          class: "s-media-picker__small-remove",
-          emit: "select-media",
-          title: `Select ${this.variationTitle}`,
-          icon: "icon-upload-image",
-        },
-      ];
-      return controlData.filter((control) => {
-        if (!control.available) {
-          return false;
-        }
+const emit = defineEmits<{
+  (e: "select-media"): void;
+  (e: "preview-media"): void;
+  (e: "link-media"): void;
+  (e: "remove-media"): void;
+}>();
 
-        if (!this.canDelete && control.key === "media-remove") {
-          return false;
-        }
+const mediaPicker = ref<HTMLElement | null>(null);
 
-        return true;
-      });
-    },
-    mediaInputPlaceholder() {
-      return this.variation === "audio"
-        ? `Select Audio File`
-        : `Select Image/Video File`;
-    },
-    buttonTitle() {
-      return this.variation ? `Select ${this.variation}` : "Select Media";
-    },
-    variationTitle() {
-      return this.variation === "image" ? "Image" : "Audio";
-    },
-    media() {
-      return {
-        selected: this.value ? true : false,
-        fileName: this.value ? this.value.split("/").pop() : "",
-        url: this.value,
-      };
-    },
-    noMediaIcon() {
-      return this.variation === "image" ? "icon-image" : "icon-music";
-    },
-    valueIsVideo() {
-      const src = this.value;
-      if (!src) {
-        return false;
-      }
+const mediaPickerSmall = ref(false);
+const mediaBroken = ref(false);
+const mediaControlsVisible = ref(false);
+const focused = ref(0);
 
-      const videoTypes = [
-        ".mov",
-        ".wmv",
-        ".flv",
-        ".avi",
-        ".webm",
-        ".mkv",
-        ".mp4",
-      ];
-      const urlStripped = src.split("?")[0];
-
-      return videoTypes.some((type) => urlStripped.endsWith(type));
+const mediaControls = computed(() => {
+  const controlData = [
+    {
+      key: "media-link",
+      available: !!props.mediaLink,
+      class: "s-media-picker__link-icon",
+      emit: () => emit("link-media"),
+      title: `Link ${variationTitle.value}`,
+      icon: "icon-link",
     },
-  },
-  mounted() {
-    const ro = new ResizeObserver((entries, observer) => {
+    {
+      key: "media-selected-zoom",
+      available:
+        props.mediaPreview &&
+        props.variation === "image" &&
+        media.value.selected &&
+        !mediaBroken.value,
+      class: "s-media-picker__zoom-icon",
+      emit: () => emit("preview-media"),
+      title: `Preview ${variationTitle.value}`,
+      icon: "icon-zoom",
+    },
+    {
+      key: "media-selected-play",
+      available:
+        props.mediaPreview &&
+        !mediaBroken.value &&
+        props.variation === "audio" &&
+        media.value.selected,
+      class: "s-media-picker__play-icon",
+      emit: () => emit("preview-media"),
+      title: `preview ${variationTitle.value}`,
+      icon: "icon-media-share-2",
+    },
+    {
+      key: "media-remove",
+      available: media.value.selected,
+      class: "s-media-picker__small-remove",
+      emit: () => emit("remove-media"),
+      title: `Remove ${variationTitle.value}`,
+      icon: "icon-close",
+    },
+    {
+      key: "media-select",
+      available: true,
+      class: "s-media-picker__small-remove",
+      emit: () => emit("select-media"),
+      title: `Select ${variationTitle.value}`,
+      icon: "icon-upload-image",
+    },
+  ];
+
+  return controlData.filter((control) => {
+    if (!control.available) {
+      return false;
+    }
+
+    if (!props.canDelete && control.key === "media-remove") {
+      return false;
+    }
+
+    return true;
+  });
+});
+const mediaInputPlaceholder = computed(() => {
+  return props.variation === "audio"
+    ? `Select Audio File`
+    : `Select Image/Video File`;
+});
+const buttonTitle = computed(() =>
+  props.variation ? `Select ${props.variation}` : "Select Media"
+);
+const variationTitle = computed(() =>
+  props.variation === "image" ? "Image" : "Audio"
+);
+const media = computed(() => ({
+  selected: props.value ? true : false,
+  fileName: props.value ? props.value.split("/").pop() : "",
+  url: props.value,
+}));
+const noMediaIcon = computed(() =>
+  props.variation === "image" ? "icon-image" : "icon-music"
+);
+const valueIsVideo = computed(() => {
+  const src = props.value;
+  if (!src) {
+    return false;
+  }
+
+  const videoTypes = [".mov", ".wmv", ".flv", ".avi", ".webm", ".mkv", ".mp4"];
+  const urlStripped = src.split("?")[0];
+
+  return videoTypes.some((type) => urlStripped.endsWith(type));
+});
+// },
+onMounted(() => {
+  if (mediaPicker.value) {
+    const ro = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        const { left, top, width, height } = entry.contentRect;
-        this.mediaPickerSmall = width < 500 ? true : false;
+        const { width } = entry.contentRect;
+        mediaPickerSmall.value = width < 500 ? true : false;
       }
     });
 
-    ro.observe(this.$refs.mediaPicker);
-    this.focused = this.mediaControls.length - 1;
-  },
-  methods: {
-    setBrokenMedia(event) {
-      this.mediaBroken = event ? true : false;
-    },
-    onTabOut() {
-      if (this.mediaPickerSmall) this.mediaControlsVisible = false;
-    },
-    moveRight() {
-      this.focused = Math.min(this.focused + 1, this.mediaControls.length - 1);
-    },
-    moveLeft() {
-      this.focused = Math.max(this.focused - 1, 0);
-    },
-    showMediaControls() {
-      this.mediaControlsVisible = true;
-      this.focused = this.mediaControls.length - 1;
-    },
-    handleControlVisibility(showControls) {
-      if (this.controlsAlwaysVisible) return;
-      this.mediaControlsVisible = showControls;
-    },
-    watchValue() {
-      this.setBrokenMedia(null);
-    },
-    watchMediaControlsVisible() {
-      if (this.mediaPickerSmall && !this.mediaControlsVisible) {
-        this.focused = -1;
-      }
-    },
-    watchMediaControls(newVal) {
-      this.focused = newVal.length - 1;
-    },
-  },
-  props: {
-    variation: {
-      type: String,
-    },
-    mediaLink: { default: false, type: Boolean },
-    mediaPreview: { default: true, type: Boolean },
-    title: {
-      type: String,
-    },
-    value: {
-      type: String,
-    },
-    controlsAlwaysVisible: { default: false, type: Boolean },
-    canDelete: { default: true, type: Boolean },
-  },
-  watch: {
-    value: [
-      {
-        handler: "watchValue",
-      },
-    ],
-    mediaControlsVisible: [
-      {
-        handler: "watchMediaControlsVisible",
-      },
-    ],
-    mediaControls: [
-      {
-        handler: "watchMediaControls",
-      },
-    ],
-  },
+    ro.observe(mediaPicker.value);
+    focused.value = mediaControls.value.length - 1;
+  }
 });
+// methods: {
+function setBrokenMedia(event) {
+  mediaBroken.value = event ? true : false;
+}
+function onTabOut() {
+  if (mediaPickerSmall.value) mediaControlsVisible.value = false;
+}
+function moveRight() {
+  focused.value = Math.min(focused.value + 1, mediaControls.value.length - 1);
+}
+function moveLeft() {
+  focused.value = Math.max(focused.value - 1, 0);
+}
+function showMediaControls() {
+  mediaControlsVisible.value = true;
+  focused.value = mediaControls.value.length - 1;
+}
+function handleControlVisibility(showControls) {
+  if (props.controlsAlwaysVisible) return;
+  mediaControlsVisible.value = showControls;
+}
+function watchValue() {
+  setBrokenMedia(null);
+}
+function watchMediaControlsVisible() {
+  if (mediaPickerSmall.value && !mediaControlsVisible.value) {
+    focused.value = -1;
+  }
+}
+function watchMediaControls(newVal) {
+  focused.value = newVal.length - 1;
+}
+// },
+
+// watch: {
+watch(() => props.value, watchValue);
+watch(mediaControlsVisible, watchMediaControlsVisible);
+watch(mediaControls, watchMediaControls);
+// },
+// });
 </script>
 
 <style lang="less">

@@ -85,10 +85,9 @@
   "dependencies": {
     "lodash-es": "4.17.21",
     "v-tooltip": "^2.0.2",
-    "vue": "2.7.14",
+    "vue": "2.7.16",
     "vue-a11y-utils": "^0.6.2",
     "vue-focus": "^2.1.0",
-    "vue-template-compiler": "2.7.14",
     "what-input": "^5.2.6"
   }
 }

@@ -114,30 +114,21 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import DemoSection from "./../components/DemoSection.vue";
 import NoticesCode from "./Notices.vue?raw";
 import TooltipNotice from "./../components/TooltipNotice.vue";
 
-@Component({
-  components: {
-    DemoSection,
-    TooltipNotice
-  }
-})
-export default class Notices extends Vue {
-  demoCode = NoticesCode;
-  showTooltipNotice = true;
+const demoCode = ref(NoticesCode);
+const showTooltipNotice = ref(true);
 
-  alertTooltip() {
-    window.alert("tooltip clicked");
-  }
+function alertTooltip() {
+  window.alert("tooltip clicked");
+}
 
-  closeTooltip() {
-    this.showTooltipNotice = false;
-  }
+function closeTooltip() {
+  showTooltipNotice.value = false;
 }
 </script>
 

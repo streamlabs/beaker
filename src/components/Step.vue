@@ -19,36 +19,24 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Badge from "./../components/Badge.vue";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  components: {
-    Badge
-  },
-    props: {
-        title: {
-            type: String
-        },
-        icon: {
-            type: String
-        },
-        isCompleted: { default: false,
-            type: Boolean
-        },
-        completedText: {
-            type: String
-        },
-        hasCheckmark: { default: false,
-            type: Boolean
-        },
-        hasPrime: { default: false,
-            type: Boolean
-        }
-    }
-})
-
+withDefaults(
+  defineProps<{
+    title: string;
+    icon?: string;
+    isCompleted?: boolean;
+    completedText?: string;
+    hasCheckmark?: boolean;
+    hasPrime?: boolean;
+  }>(),
+  {
+    isCompleted: false,
+    hasCheckmark: false,
+    hasPrime: false,
+  }
+);
 </script>
 
 <style lang="less" scoped>

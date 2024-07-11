@@ -4,22 +4,16 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 
-export default defineComponent({
-    computed: {
-        getProgress() {
-            return "width:" + this.progressComplete + "%";
-        }
-    },
-    props: {
-        progressComplete: {
-            type: Object as PropType<Number>
-        }
-    }
-})
+const getProgress = computed(() => "width:" + props.progressComplete + "%");
 
+interface Props {
+  progressComplete: number;
+}
+
+const props = defineProps<Props>();
 </script>
 
 <style lang="less">

@@ -4,17 +4,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
-
-export default defineComponent({
-    props: {
-        items: {
-            type: Array as PropType<Object[]>
-        }
-    }
-})
-
+<script setup lang="ts">
+defineProps<{ items?: object[] }>();
 </script>
 
 <style lang="less">

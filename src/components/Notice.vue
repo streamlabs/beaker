@@ -18,40 +18,33 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 
-export default defineComponent({
-    computed: {
-        iconType() {
-            switch (this.variation) {
-              case "default":
-                return "information";
-              case "warning":
-                return "error";
-            }
-        },
-        iconClass() {
-            const iconSrc = this.icon ? this.icon : this.iconType;
-            return `icon-${iconSrc}`;
-        }
-    },
-    props: {
-        variation: { default: "default",
-            type: String
-        },
-        title: { required: true,
-            type: String
-        },
-        desc: { required: true,
-            type: String
-        },
-        icon: {
-            type: String
-        }
-    }
-})
+interface Props {
+  variation: string;
+  title: string;
+  desc: string;
+  icon?: string;
+}
 
+const props = withDefaults(defineProps<Props>(), {
+  variation: "default",
+});
+
+const iconType = computed(() => {
+  switch (props.variation) {
+    case "default":
+      return "information";
+    case "warning":
+      return "error";
+  }
+});
+
+const iconClass = computed(() => {
+  const iconSrc = props.icon ? props.icon : iconType.value;
+  return `icon-${iconSrc}`;
+});
 </script>
 
 <style lang="less">

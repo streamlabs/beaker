@@ -19,55 +19,33 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Button from "./../components/Button.vue";
-import { defineComponent, PropType } from "vue";
+import { ref } from "vue";
 
-export default defineComponent({
-  components: {
-    Button
-  },
-    data() {
-        const callToActionBg: object = {
-                backgroundColor: this.bgColor
-              };
+interface Props {
+  bgColor?: string;
+  description?: string;
+  buttonVariation?: string;
+  buttonTitle?: string;
+  buttonHref?: string;
+  buttonTo?: string;
+  buttonTag: "button" | "a" | "router-link" | undefined;
+  onClick?: () => any;
+}
 
-        return {
-            callToActionBg
-        };
-    },
-    props: {
-        bgColor: {
-            type: Object as PropType<String>
-        },
-        description: {
-                default:
-                  "Over 800k creators use Streamlabs OBS daily, delivering entertainment.",
-            type: Object as PropType<String>
-        },
-        buttonVariation: { default: "slobs-download",
-            type: Object as PropType<String>
-        },
-        buttonTitle: { default: "Download Streamlabs OBS",
-            type: Object as PropType<String>
-        },
-        buttonHref: {
-            type: Object as PropType<String>
-        },
-        buttonTo: {
-            type: Object as PropType<String>
-        },
-        buttonTag: {
-            type: Object as PropType<String>
-        },
-        onClick: {
-            type: Object as PropType<{
-                    type: Function;
-                  }>
-        }
-    }
-})
+const props = withDefaults(defineProps<Props>(), {
+  description:
+    "Over 800k creators use Streamlabs OBS daily, delivering entertainment.",
+  buttonVariation: "slobs-download",
+  buttonTitle: "Download Streamlabs OBS",
+});
 
+defineEmits(["click"]);
+
+const callToActionBg = ref({
+  backgroundColor: props.bgColor,
+});
 </script>
 
 <style lang="less">

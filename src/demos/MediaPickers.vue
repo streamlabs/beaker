@@ -146,60 +146,50 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import FormGroup from "./../components/FormGroup.vue";
 import MediaPicker from "./../components/MediaPicker.vue";
 import MediaPickersCode from "./MediaPickers.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
-@Component({
-  components: {
-    DemoSection,
-    FormGroup,
-    MediaPicker
-  }
-})
-export default class ImagePickers extends Vue {
-  demoCode = MediaPickersCode;
-  msg = "Hi!";
-  audioMedia = "";
-  imageMedia = "";
-  videoMedia = "";
+const demoCode = ref(MediaPickersCode);
+const msg = ref("Hi!");
+const audioMedia = ref("");
+const imageMedia = ref("");
+const videoMedia = ref("");
 
-  selectVideoMedia() {
-    this.videoMedia =
-      "https://cdn.streamlabs.com/static/imgs/intro-maker/highlight-key-info-before-your-stream.jpg.mp4";
-  }
-  selectImageMedia() {
-    this.imageMedia =
-      "https://uploads.twitchalerts.com/000/045/005/127/foolofsoul-design-1521842129-0.png";
-  }
+function selectVideoMedia() {
+  videoMedia.value =
+    "https://cdn.streamlabs.com/static/imgs/intro-maker/highlight-key-info-before-your-stream.jpg.mp4";
+}
+function selectImageMedia() {
+  imageMedia.value =
+    "https://uploads.twitchalerts.com/000/045/005/127/foolofsoul-design-1521842129-0.png";
+}
 
-  selectAudioMedia() {
-    this.audioMedia =
-      "https://cdn1.twitchalerts.com/twitch-bits/sounds/bits.ogg";
-  }
+function selectAudioMedia() {
+  audioMedia.value =
+    "https://cdn1.twitchalerts.com/twitch-bits/sounds/bits.ogg";
+}
 
-  removeImageMedia() {
-    this.imageMedia = "";
-  }
-  removeVideoMedia() {
-    this.videoMedia = "";
-  }
+function removeImageMedia() {
+  imageMedia.value = "";
+}
+function removeVideoMedia() {
+  videoMedia.value = "";
+}
 
-  removeAudioMedia() {
-    this.audioMedia = "";
-  }
+function removeAudioMedia() {
+  audioMedia.value = "";
+}
 
-  previewVideoMedia() {
-    console.log("Previewing Video");
-    window.open(this.videoMedia);
-  }
-  previewImageMedia() {
-    console.log("Previewing Media");
-    window.open(this.imageMedia);
-  }
+function previewVideoMedia() {
+  console.log("Previewing Video");
+  window.open(videoMedia.value);
+}
+function previewImageMedia() {
+  console.log("Previewing Media");
+  window.open(imageMedia.value);
 }
 </script>

@@ -137,43 +137,33 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
 
-export default defineComponent({
-  name: "Spinner",
-    data() {
-        const firefox: Boolean = false;
+interface Props {
+  size: string;
+  swap: boolean;
+}
 
-        return {
-            firefox
-        };
-    },
-    computed: {
-        spinnerClass() {
-            return `s-spinner--${this.size}`;
-        },
-        swapMode() {
-            if (this.swap === true) {
-              return "s-spinner--modeswap";
-            }
-        }
-    },
-    mounted() {
-        if (navigator.userAgent.indexOf("Firefox") != -1) {
-          this.firefox = true;
-        }
-    },
-    props: {
-        size: { default: "small",
-            type: Object as PropType<String>
-        },
-        swap: { default: false,
-            type: Object as PropType<Boolean>
-        }
-    }
-})
+const props = withDefaults(defineProps<Props>(), {
+  size: "small",
+  swap: false,
+});
 
+const firefox = ref(false);
+
+const spinnerClass = computed(() => `s-spinner--${props.size}`);
+const swapMode = computed(() => {
+  if (props.swap) {
+    return "s-spinner--modeswap";
+  }
+});
+
+onMounted(() => {
+  if (navigator.userAgent.indexOf("Firefox") != -1) {
+    firefox.value = true;
+  }
+});
 </script>
 
 <style lang="less">

@@ -28,10 +28,10 @@ import Badge from "./../components/Badge.vue";
 
 interface Props {
   variation: string;
-  icon: boolean;
-  customIcon: string;
-  closeable: boolean;
-  onClose: () => {};
+  icon?: boolean;
+  customIcon?: string;
+  closeable?: boolean;
+  onClose?: () => any;
 }
 
 const props = withDefaults(defineProps<Props>(), {
