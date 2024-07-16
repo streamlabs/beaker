@@ -346,24 +346,15 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import ModalComp from "./../components/ModalComp.vue";
 import ModalsCode from "./Modals.vue?raw";
 
-@Component({
-  components: {
-    Button,
-    DemoSection,
-    ModalComp
-  }
-})
-export default class Modals extends Vue {
-  demoCode = ModalsCode;
-  test() {
-    console.log("test");
-  }
+const demoCode = ref(ModalsCode);
+function test() {
+  console.log("test");
 }
 </script>

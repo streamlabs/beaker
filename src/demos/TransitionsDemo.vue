@@ -112,21 +112,23 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { onMounted, onUnmounted, ref } from "vue";
 
-@Component({})
-export default class TransitionsDemo extends Vue {
-  private flip: boolean = true;
+const flip = ref(true);
+const flipLoop = ref<number | null>(null);
 
-  flipProc() {
-    this.flip = !this.flip;
-  }
-
-  mounted() {
-    var flipLoop = setInterval(this.flipProc, 2500);
-  }
+function flipProc() {
+  flip.value = !flip.value;
 }
+
+onMounted(() => {
+  flipLoop.value = setInterval(flipProc, 2500);
+});
+
+onUnmounted(() => {
+  if (typeof flipLoop.value === "number") clearInterval(flipLoop.value);
+});
 </script>
 
 <style lang="less">

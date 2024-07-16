@@ -22,7 +22,7 @@
 import { computed } from "vue";
 
 interface Props {
-  variation: string;
+  variation?: string;
   title: string;
   desc: string;
   icon?: string;

@@ -1,11 +1,17 @@
 <template>
-  <div class="s-content-row" :class="contentRowMq">
-    <div class="s-content-box" :class="contentBoxMq">
+  <div class="s-content-row" :class="{ 's-content-row-mq': $mq === 'sm' }">
+    <div class="s-content-box" :class="{ 's-content-box-mq': $mq === 'sm' }">
       <i class="s-banner__icon" :class="`icon-${icon}`" v-if="icon"></i>
-      <h2 class="s-content__title" :class="contentTitleMq">
+      <h2
+        class="s-content__title"
+        :class="{ 's-content__title-mq': $mq === 'sm' }"
+      >
         <slot name="title"></slot>
       </h2>
-      <p class="s-content__text" :class="contentTextMq">
+      <p
+        class="s-content__text"
+        :class="{ 's-content__text-mq': $mq === 'sm' }"
+      >
         <slot name="text"></slot>
       </p>
     </div>
@@ -23,71 +29,25 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Button from "./../components/Button.vue";
-import VueMq from "vue-mq";
-import { defineComponent, PropType } from "vue";
 
-Vue.use(VueMq, {
-  breakpoints: {
-    // default breakpoints - customize this
-    sm: 900,
-    md: 1250,
-    lg: Infinity
-  },
-  defaultBreakpoint: "sm" // customize this for SSR
+interface Props {
+  icon?: string;
+  btnVariation?: string;
+  btnTitle?: string;
+  buttonHref?: string;
+  buttonTo?: string;
+  buttonTag?: string;
+}
+
+withDefaults(defineProps<Props>(), {
+  btnVariation: "default",
+  btnTitle: "Default",
+  buttonTag: "button",
 });
 
-export default defineComponent({
-  components: {
-    Button
-  },
-    data() {
-        const $mq: any = undefined;
-
-        return {
-            $mq
-        };
-    },
-    computed: {
-        contentRowMq() {
-            return this.$mq === "sm" ? "s-content-row-mq" : "";
-        },
-        contentBoxMq() {
-            return this.$mq === "sm" ? "s-content-box-mq" : "";
-        },
-        bannerIconMq() {
-            return this.$mq === "sm" ? "s-banner__icon-mq" : "";
-        },
-        contentTitleMq() {
-            return this.$mq === "sm" ? "s-content__title-mq" : "";
-        },
-        contentTextMq() {
-            return this.$mq === "sm" ? "s-content__text-mq" : "";
-        }
-    },
-    props: {
-        icon: {
-            type: String
-        },
-        btnVariation: { default: "default",
-            type: String
-        },
-        btnTitle: { default: "Default",
-            type: String
-        },
-        buttonHref: {
-            type: Object as PropType<String>
-        },
-        buttonTo: {
-            type: Object as PropType<String>
-        },
-        buttonTag: { default: "button",
-            type: Object as PropType<String>
-        }
-    }
-})
-
+const $mq = undefined;
 </script>
 
 <style lang="less">

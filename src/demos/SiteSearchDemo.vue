@@ -65,7 +65,7 @@ export default {
               { item: { name: 'creatorsites' } },
               { item: { name: 'merchsetup' } },
               { item: { name: 'd-chatbox' } },
-              { item: { name: 'streamlabs-obs' } }
+              { item: { name: 'streamlabs-obs' } },
             ]"
           />
         </template>
@@ -101,9 +101,8 @@ export default {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import Accordion from "./../components/Accordion.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import SiteSearch from "./../components/SiteSearch.vue";
@@ -111,15 +110,6 @@ import SiteSearchDemoCode from "./SiteSearchDemo.vue?raw";
 
 import searchData from "./../components/sitesearchdata.json";
 
-@Component({
-  components: {
-    Accordion,
-    DemoSection,
-    SiteSearch
-  }
-})
-export default class SiteSearchDemo extends Vue {
-  demoCode = SiteSearchDemoCode;
-  jsonSearch = (searchData as any).data;
-}
+const demoCode = ref(SiteSearchDemoCode);
+const jsonSearch = ref(searchData.data);
 </script>

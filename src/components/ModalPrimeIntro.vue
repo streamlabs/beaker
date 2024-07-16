@@ -19,31 +19,22 @@
   </modal>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import PrimeIntro from "./PrimeIntro.vue";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  components: { PrimeIntro },
-    props: {
-        name: { default: "modal-prime-intro",
-            type: String
-        },
-        width: {
-            type: Number
-        },
-        minWidth: {
-            type: Number
-        },
-        hasPrimeCloseButton: { default: false,
-            type: Boolean
-        },
-        primeButtonText: { default: "Join Ultra",
-            type: String
-        }
-    }
-})
+interface Props {
+  name?: string;
+  width: number;
+  minWidth: number;
+  hasPrimeCloseButton?: boolean;
+  primeButtonText?: string;
+}
 
+withDefaults(defineProps<Props>(), {
+  name: "modal-prime-intro",
+  hasPrimeCloseButton: false,
+  primeButtonText: "Join Ultra",
+});
 </script>
 
 <style lang="less" scoped>

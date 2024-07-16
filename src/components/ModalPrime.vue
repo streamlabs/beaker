@@ -17,33 +17,22 @@
   </modal>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import WelcomePrime from "./../components/WelcomePrime.vue";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  components: {
-    WelcomePrime
-  },
-    props: {
-        name: { default: "modal-welcome-prime",
-            type: String
-        },
-        width: {
-            type: Number
-        },
-        minWidth: {
-            type: Number
-        },
-        hasPrimeCloseButton: { default: false,
-            type: Boolean
-        },
-        primeButtonText: { default: "Continue",
-            type: String
-        }
-    }
-})
+interface Props {
+  name?: string;
+  width: number;
+  minWidth: number;
+  hasPrimeCloseButton?: boolean;
+  primeButtonText?: string;
+}
 
+withDefaults(defineProps<Props>(), {
+  name: "modal-welcome-prime",
+  hasPrimeCloseButton: false,
+  primeButtonText: "Continue",
+});
 </script>
 
 <style lang="less" scoped>

@@ -141,8 +141,8 @@
 import { computed, onMounted, ref } from "vue";
 
 interface Props {
-  size: string;
-  swap: boolean;
+  size?: string;
+  swap?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {

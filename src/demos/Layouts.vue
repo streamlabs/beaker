@@ -34,9 +34,7 @@ components: {
         :btnVariation="'action'"
         :btnTitle="'Action'"
       >
-        <template slot="title"
-          >Tiltify</template
-        >
+        <template slot="title">Tiltify</template>
         <template slot="text"
           >Link your account and visit Alert Box to configure your Tiltify
           Events.</template
@@ -115,19 +113,11 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 import ContentRow from "./../components/ContentRow.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import LayoutsCode from "./Layouts.vue?raw";
 
-@Component({
-  components: {
-    ContentRow,
-    DemoSection
-  }
-})
-export default class Layouts extends Vue {
-  demoCode = LayoutsCode;
-}
+const demoCode = ref(LayoutsCode);
 </script>

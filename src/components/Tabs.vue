@@ -11,12 +11,12 @@
         </div>
 
         <div
-          ref="scrollable_tabs"
+          ref="scrollableTabs"
           @scroll="calculateScrolls"
           class="s-tabs"
           :class="{
             's-has-next': hasNext,
-            's-has-prev': hasPrev
+            's-has-prev': hasPrev,
           }"
         >
           <div
@@ -64,118 +64,107 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script setup lang="ts">
+import {
+  computed,
+  nextTick,
+  onBeforeMount,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "vue";
 
-export default defineComponent({
-    data() {
-        const selectedTab: string = "";
-        const tabsContainer: HTMLDivElement = null as any;
-        const $refs: {
-                scrollable_tabs: HTMLDivElement;
-              } = undefined;
+interface Tabs {
+  name: string;
+  value: string;
+  icon?: string;
+}
 
-        return {
-            $refs,
-            isMounted: false,
-            tabsContainer,
-            canScroll: false,
-            hasNext: false,
-            hasPrev: false,
-            scrollIncrement: 100,
-            selectedTab,
-            selectTabSize: {
-                    fontSize: this.tabSize
-                  }
-        };
-    },
-    computed: {
-        tabSize() {
-            if (this.size === "small") {
-              return "14px";
-            } else if (this.size === "large") {
-              return "16px";
-            } else {
-              return "14px";
-            }
-        }
-    },
-    created() {
-        window.addEventListener("resize", this.calculateScrolls);
-    },
-    mounted() {
-        this.isMounted = true;
-        this.tabsContainer = this.$refs.scrollable_tabs;
-        this.calculateScrolls();
-        if (this.selected) {
-          this.selectedTab = this.selected;
-        } else {
-          this.selectedTab = this.tabs[0].value;
-        }
-    },
-    destroyed() {
-        window.removeEventListener("resize", this.calculateScrolls);
-    },
-    methods: {
-        scrollLeft() {
-            this.tabsContainer.scrollLeft =
-            this.tabsContainer.scrollLeft - this.scrollIncrement;
-        },
-        scrollRight() {
-            this.tabsContainer.scrollLeft =
-            this.tabsContainer.scrollLeft + this.scrollIncrement;
-        },
-        calculateScrolls() {
-            if (!this.isMounted) return false;
-            this.canScroll =
-              this.tabsContainer.scrollWidth > this.tabsContainer.clientWidth;
-            this.hasPrev = this.tabsContainer.scrollLeft > 0;
-            const scrollRight =
-              this.tabsContainer.scrollWidth -
-              (this.tabsContainer.scrollLeft + this.tabsContainer.clientWidth);
-            this.hasNext = scrollRight > 0;
-        },
-        showTab(tab: string) {
-            this.selectedTab = tab;
-            this.$emit("tab-selected", tab);
-        },
-        onTabsChange() {
-            this.$nextTick(() => this.calculateScrolls());
-        }
-    },
-    props: {
-        tabs: {
-            type: Object as PropType<[
-                    {
-                      name: string;
-                      value: string;
-                      icon: string;
-                    }
-                  ]>
-        },
-        size: {
-            type: String
-        },
-        selected: {
-            type: String
-        },
-        className: {
-            type: String
-        },
-        hideContent: {
-            type: Boolean
-        },
-        updateRoute: { default: true,
-            type: Boolean
-        }
-    },
-    watch: {
-        "tabs": [{ deep: true,
-            handler: "onTabsChange"
-        }]
-    }
-})
+interface Props {
+  tabs: Tabs[];
+  size: "small" | "large";
+  selected: string;
+  className?: string;
+  hideContent?: boolean;
+  updateRoute?: boolean;
+}
 
+const props = withDefaults(defineProps<Props>(), {
+  updateRoute: true,
+});
+
+watch(() => props.tabs, onTabsChange, { deep: true });
+
+const selectedTab = ref("");
+const tabsContainer = ref<HTMLDivElement | null>(null);
+const scrollableTabs = ref<HTMLDivElement | null>(null);
+
+const isMounted = ref(false);
+const canScroll = ref(false);
+const hasNext = ref(false);
+const hasPrev = ref(false);
+const scrollIncrement = ref(100);
+
+const tabSize = computed(() => (props.size === "large" ? "16px" : "14px"));
+const selectTabSize = reactive({
+  fontSize: tabSize.value,
+});
+
+function calculateScrolls() {
+  if (!isMounted.value || !tabsContainer.value) return false;
+  canScroll.value =
+    tabsContainer.value.scrollWidth > tabsContainer.value.clientWidth;
+  hasPrev.value = tabsContainer.value.scrollLeft > 0;
+  const scrollRight =
+    tabsContainer.value.scrollWidth -
+    (tabsContainer.value.scrollLeft + tabsContainer.value.clientWidth);
+  hasNext.value = scrollRight > 0;
+}
+
+onBeforeMount(() => {
+  window.addEventListener("resize", calculateScrolls);
+});
+
+onMounted(() => {
+  isMounted.value = true;
+  tabsContainer.value = scrollableTabs.value;
+  calculateScrolls();
+  if (props.selected) {
+    selectedTab.value = props.selected;
+  } else {
+    selectedTab.value = props.tabs[0].value;
+  }
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", calculateScrolls);
+});
+
+function scrollLeft() {
+  if (tabsContainer.value) {
+    tabsContainer.value.scrollLeft =
+      tabsContainer.value.scrollLeft - scrollIncrement.value;
+  }
+}
+
+function scrollRight() {
+  if (tabsContainer.value) {
+    tabsContainer.value.scrollLeft =
+      tabsContainer.value.scrollLeft + scrollIncrement.value;
+  }
+}
+
+const emit = defineEmits(["tab-selected"]);
+function showTab(tab: string) {
+  selectedTab.value = tab;
+  emit("tab-selected", tab);
+}
+
+function onTabsChange() {
+  nextTick(calculateScrolls);
+}
 </script>
 
 <style lang="less" scoped>

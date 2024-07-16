@@ -20,35 +20,21 @@
   </modal>
 </template>
 
-<script lang="ts">
-import Button from "./../components/Button.vue";
+<script setup lang="ts">
 import Spinner from "./../components/Spinner.vue";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  components: {
-    Button,
-    Spinner
-  },
-    props: {
-        name: {
-            type: String
-        },
-        width: { default: 600,
-            type: Number
-        },
-        minWidth: { default: 600,
-            type: Number
-        },
-        title: {
-            type: String
-        },
-        text: {
-            type: String
-        }
-    }
-})
+interface Props {
+  name: string;
+  width?: number;
+  minWidth?: number;
+  title: string;
+  text: string;
+}
 
+withDefaults(defineProps<Props>(), {
+  width: 600,
+  minWidth: 600,
+});
 </script>
 
 <style lang="less" scoped>

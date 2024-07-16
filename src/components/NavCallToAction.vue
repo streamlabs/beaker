@@ -30,7 +30,7 @@ interface Props {
   buttonTitle?: string;
   buttonHref?: string;
   buttonTo?: string;
-  buttonTag: "button" | "a" | "router-link" | undefined;
+  buttonTag?: "button" | "a" | "router-link" | undefined;
   onClick?: () => any;
 }
 

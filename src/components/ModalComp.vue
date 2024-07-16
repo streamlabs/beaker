@@ -96,160 +96,48 @@
   </div>
 </template>
 
-<script lang="ts">
-import Button from "./../components/Button.vue";
+<script setup lang="ts">
+// import Button from "./../components/Button.vue";
 import ModalBasic from "./../components/ModalBasic.vue";
 import ModalSubscribe from "./../components/ModalSubscribe.vue";
 import ModalRedirect from "./../components/ModalRedirect.vue";
 import ModalConfirmation from "./../components/ModalConfirmation.vue";
 import ModalPrime from "./../components/ModalPrime.vue";
 import ModalPrimeIntro from "./../components/ModalPrimeIntro.vue";
-import VModal from "vue-js-modal";
-import { defineComponent } from "vue";
+// import VModal from "vue-js-modal";
+import { computed } from "vue";
 
-Vue.use(VModal);
+// Vue.use(VModal);
 
-export default defineComponent({
-  components: {
-    Button,
-    ModalBasic,
-    ModalSubscribe,
-    ModalRedirect,
-    ModalConfirmation,
-    ModalPrime,
-    ModalPrimeIntro
-  },
-    data() {
-        const modalName: string = "";
+const modalName = computed(() => props.name || `modal-${props.type}`);
 
-        return {
-            modalName
-        };
-    },
-    mounted() {
-        this.selectName();
-    },
-    methods: {
-        selectName() {
-            switch (this.type) {
-                  case "basic":
-                    if (this.name) {
-                      this.modalName = this.name;
-                    } else {
-                      this.modalName = "modal-basic";
-                    }
-                    break;
+interface Props {
+  name?: string;
+  width?: number;
+  minWidth?: number;
+  scrollable?: boolean;
+  type?: string;
+  title?: string;
+  subTitle?: string;
+  text?: string;
+  subscribeText?: string;
+  subscribeMessage?: string;
+  notes?: string;
+  proBadge?: boolean;
+  customPreview?: boolean;
+  confirmButtonText?: string;
+  buttonVariation?: string;
+  buttonTitle?: string;
+  buttonPrice?: string;
+  cancelTitle?: string;
+  primeButtonText?: string;
+  hasPrimeCloseButton?: boolean;
+  hideActionButtons?: string;
+  clickToClose?: boolean;
+}
 
-                  case "subscribe":
-                    if (this.name) {
-                      this.modalName = this.name;
-                    } else {
-                      this.modalName = "modal-subscribe";
-                    }
-                    break;
-
-                  case "redirect":
-                    if (this.name) {
-                      this.modalName = this.name;
-                    } else {
-                      this.modalName = "modal-redirect";
-                    }
-                    break;
-
-                  case "confirmation":
-                    if (this.name) {
-                      this.modalName = this.name;
-                    } else {
-                      this.modalName = "modal-confirmation";
-                    }
-                    break;
-
-                  case "welcome-prime":
-                    if (this.name) {
-                      this.modalName = this.name;
-                    } else {
-                      this.modalName = "modal-welcome-prime";
-                    }
-                    break;
-
-                  case "prime-intro":
-                    if (this.name) {
-                      this.modalName = this.name;
-                    } else {
-                      this.modalName = "modal-prime-intro";
-                    }
-                    break;
-                }
-        }
-    },
-    props: {
-        name: {
-            type: String
-        },
-        width: { default: 600,
-            type: Number
-        },
-        minWidth: { default: 600,
-            type: Number
-        },
-        scrollable: {
-            type: Boolean
-        },
-        type: {
-            type: String
-        },
-        title: {
-            type: String
-        },
-        subTitle: {
-            type: String
-        },
-        text: {
-            type: String
-        },
-        subscribeText: {
-            type: String
-        },
-        subscribeMessage: {
-            type: String
-        },
-        notes: {
-            type: String
-        },
-        proBadge: {
-            type: Boolean
-        },
-        customPreview: {
-            type: Boolean
-        },
-        confirmButtonText: {
-            type: String
-        },
-        buttonVariation: {
-            type: String
-        },
-        buttonTitle: {
-            type: String
-        },
-        buttonPrice: {
-            type: String
-        },
-        cancelTitle: {
-            type: String
-        },
-        primeButtonText: {
-            type: String
-        },
-        hasPrimeCloseButton: {
-            type: Boolean
-        },
-        hideActionButtons: {
-            type: String
-        },
-        clickToClose: {
-            type: Boolean
-        }
-    }
-})
-
+const props = withDefaults(defineProps<Props>(), {
+  width: 600,
+  minWidth: 600,
+});
 </script>

@@ -31,45 +31,35 @@
   </modal>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { useVModal } from "./../plugins/injects";
 import Button from "./../components/Button.vue";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  components: {
-    Button
-  },
-    methods: {
-        onConfirmHandler() {
-            this.$emit("confirm");
-            this.$modal.hide(this.name);
-        }
-    },
-    props: {
-        name: { default: "modal-confirmation",
-            type: String
-        },
-        width: { default: 600,
-            type: Number
-        },
-        minWidth: { default: 600,
-            type: Number
-        },
-        subTitle: {
-            type: String
-        },
-        text: {
-            type: String
-        },
-        confirmButtonText: { default: "Confirm",
-            type: String
-        },
-        buttonVariation: { default: "warning",
-            type: String
-        }
-    }
-})
+const emit = defineEmits(["confirm"]);
+const $modal = useVModal();
 
+function onConfirmHandler() {
+  emit("confirm");
+  $modal.hide(props.name);
+}
+
+interface Props {
+  name?: string;
+  width?: number;
+  minWidth?: number;
+  subTitle: string;
+  text: string;
+  confirmButtonText?: string;
+  buttonVariation?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  name: "modal-confirmation",
+  width: 600,
+  minWidth: 600,
+  confirmButtonText: "Confirm",
+  buttonVariation: "warning",
+});
 </script>
 
 <style lang="less" scoped>

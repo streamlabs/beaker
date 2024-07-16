@@ -41,45 +41,27 @@
   </modal>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Button from "./../components/Button.vue";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  components: {
-    Button
-  },
-    props: {
-        name: {
-            type: String
-        },
-        width: { default: 600,
-            type: Number
-        },
-        minWidth: { default: 600,
-            type: Number
-        },
-        title: {
-            type: String
-        },
-        subTitle: {
-            type: String
-        },
-        text: {
-            type: String
-        },
-        hideActionButtons: {
-            type: String
-        },
-        confirmButtonText: { default: "Confirm",
-            type: String
-        },
-        clickToClose: { default: true,
-            type: Boolean
-        }
-    }
-})
+interface Props {
+  name: string;
+  width?: number;
+  minWidth?: number;
+  title?: string;
+  subTitle?: string;
+  text?: string;
+  hideActionButtons?: string;
+  confirmButtonText?: string;
+  clickToClose?: boolean;
+}
 
+withDefaults(defineProps<Props>(), {
+  width: 600,
+  minWidth: 600,
+  confirmButtonText: "Confirm",
+  clickToClose: true,
+});
 </script>
 
 <style lang="less" scoped>

@@ -10,12 +10,12 @@
         <span>...</span>
       </div>
       <div
-        ref="scrollable_nav"
+        ref="scrollableNav"
         @scroll="calculateScrolls"
         class="s-apps-tab__container"
         :class="{
           's-has-next': hasNext,
-          's-has-prev': hasPrev
+          's-has-prev': hasPrev,
         }"
       >
         <span
@@ -40,75 +40,65 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue, { defineComponent, PropType } from "vue";
-export default defineComponent({
-    data() {
-        const appTabsContainer: HTMLDivElement = undefined;
-        const $refs: {
-                scrollable_nav: HTMLDivElement;
-              } = undefined;
+<script setup lang="ts">
+import Vue, { ref, onBeforeMount, onBeforeUnmount, onMounted } from "vue";
 
-        return {
-            $refs,
-            isMounted: false,
-            appTabsContainer,
-            canScroll: false,
-            hasNext: false,
-            hasPrev: false,
-            scrollIncrement: 100
-        };
-    },
-    created() {
-        window.addEventListener("resize", this.calculateScrolls);
-    },
-    mounted() {
-        this.isMounted = true;
-        this.appTabsContainer = this.$refs.scrollable_nav;
-        this.calculateScrolls();
-    },
-    destroyed() {
-        window.removeEventListener("resize", this.calculateScrolls);
-    },
-    methods: {
-        scrollLeft() {
-            this.appTabsContainer.scrollLeft =
-            this.appTabsContainer.scrollLeft - this.scrollIncrement;
-        },
-        scrollRight() {
-            this.appTabsContainer.scrollLeft =
-            this.appTabsContainer.scrollLeft + this.scrollIncrement;
-        },
-        calculateScrolls() {
-            if (!this.isMounted) return false;
-                this.canScroll =
-                  this.appTabsContainer.scrollWidth > this.appTabsContainer.clientWidth;
-                this.hasPrev = this.appTabsContainer.scrollLeft > 0;
-                let scrollRight =
-                  this.appTabsContainer.scrollWidth -
-                  (this.appTabsContainer.scrollLeft + this.appTabsContainer.clientWidth);
+defineProps<{
+  items: {
+    name: string;
+    value: string;
+  }[];
+  value: string;
+}>();
 
-                this.hasNext = scrollRight > 0;
-        },
-        navigateItem(item: string) {
-            this.$emit("input", item);
-        }
-    },
-    props: {
-        items: {
-            type: Object as PropType<[
-                    {
-                      name: string;
-                      value: string;
-                    }
-                  ]>
-        },
-        value: {
-            type: String
-        }
-    }
-})
+const appTabsContainer = ref<HTMLDivElement | null>(null);
+const scrollableNav = ref<HTMLDivElement | null>(null);
+const isMounted = ref(false);
+const canScroll = ref(false);
+const hasNext = ref(false);
+const hasPrev = ref(false);
+const scrollIncrement = ref(10);
 
+function calculateScrolls() {
+  if (!isMounted.value || !appTabsContainer.value) return false;
+  canScroll.value =
+    appTabsContainer.value.scrollWidth > appTabsContainer.value.clientWidth;
+  hasPrev.value = appTabsContainer.value.scrollLeft > 0;
+  let scrollRight =
+    appTabsContainer.value.scrollWidth -
+    (appTabsContainer.value.scrollLeft + appTabsContainer.value.clientWidth);
+
+  hasNext.value = scrollRight > 0;
+}
+onBeforeMount(() => {
+  window.addEventListener("resize", calculateScrolls);
+});
+onMounted(() => {
+  isMounted.value = true;
+  appTabsContainer.value = scrollableNav.value;
+  calculateScrolls();
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", calculateScrolls);
+});
+function scrollLeft() {
+  if (appTabsContainer.value) {
+    appTabsContainer.value.scrollLeft =
+      appTabsContainer.value.scrollLeft - scrollIncrement.value;
+  }
+}
+
+function scrollRight() {
+  if (appTabsContainer.value) {
+    appTabsContainer.value.scrollLeft =
+      appTabsContainer.value.scrollLeft + scrollIncrement.value;
+  }
+}
+
+const emit = defineEmits(["input"]);
+function navigateItem(item: string) {
+  emit("input", item);
+}
 </script>
 
 <style lang="less">

@@ -15,7 +15,7 @@ export const V_MODAL_INJECTION_KEY = Symbol("VModal");
  * Use the VueJSModal modal plugin.
  * @returns {VModal} The modal plugin
  */
-export function useVModal(): Vue["$modal"] | undefined {
+export function useVModal(): Vue["$modal"] {
   return inject(V_MODAL_INJECTION_KEY);
 }
 
@@ -28,7 +28,7 @@ export const V_WHAT_INPUT_INJECTION_KEY = Symbol("IWhatInput");
  * Use the VueJSModal modal plugin.
  * @returns {IWhatInput} The modal plugin
  */
-export function useWhatInput(): Vue["$whatInput"] | undefined {
+export function useWhatInput(): Vue["$whatInput"] {
   return inject(V_WHAT_INPUT_INJECTION_KEY);
 }
 
@@ -41,6 +41,6 @@ export const V_MQ_INJECTION_KEY = Symbol("VMq");
  * Use the VueJSModal modal plugin.
  * @returns {VMq} The modal plugin
  */
-export function useVMq(): Vue["$mq"] | undefined {
+export function useVMq(): Vue["$mq"] {
   return inject(V_MQ_INJECTION_KEY);
 }

@@ -29,8 +29,8 @@ import EmptySection from "./EmptySection.vue";
 
 interface Props {
   subtitle: string;
-  href: string;
-  onClick: () => any;
+  href?: string;
+  onClick?: () => any;
 }
 
 defineEmits(["click"]);

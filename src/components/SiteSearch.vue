@@ -4,7 +4,7 @@
     :class="[
       { 's-sitesearch--is-open': isOpen },
       { 's-sitesearch--phase-one': phaseOne },
-      { 's-sitesearch--phase-two': phaseTwo }
+      { 's-sitesearch--phase-two': phaseTwo },
     ]"
     :style="calcHeight"
   >
@@ -86,238 +86,225 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Fuse from "fuse.js";
-import { defineComponent, PropType } from "vue";
+import { computed, onMounted, ref, toRef, watch } from "vue";
 
-export default defineComponent({
-    data() {
-        const currentResult: number = 0;
-        const keyEvents: any = [];
-        const quickLinkLoc: any = [];
-        const value: String = "";
-        const fuse: any = null;
-        const resultLimit: Number = 7;
-        const phaseTwo: Boolean = false;
-        const phaseOne: Boolean = false;
-        const isOpen: Boolean = false;
-        const result: any = [];
-        const $refs: {
-                search_input: HTMLInputElement;
-              } = undefined;
+interface SearchData {
+  name: string;
+  title: string;
+  route: string;
+  keywords: string[];
+  image: string;
+}
 
-        return {
-            $refs,
-            result,
-            isOpen,
-            phaseOne,
-            phaseTwo,
-            resultLimit,
-            fuse,
-            value,
-            quickLinkLoc,
-            keyEvents,
-            currentResult,
-            searchData: this.jsonSearch
-        };
+interface ResultData {
+  item: SearchData;
+  refIndex: number;
+}
+
+interface Props {
+  jsonSearch: SearchData[];
+  search?: string;
+  quickLinks?: {
+    item: { name: string };
+  }[];
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  search: "",
+  quickLinks: () => [],
+});
+
+const currentResult = ref(0);
+const keyEvents = ref([]);
+const quickLinkLoc = ref<number[]>([]);
+const value = ref("");
+const fuse = ref<Fuse<SearchData> | null>(null);
+const resultLimit = ref(7);
+const phaseTwo = ref(false);
+const phaseOne = ref(false);
+const isOpen = ref(false);
+const result = ref<ResultData[]>([]);
+const search_input = ref<HTMLInputElement | null>(null);
+const searchData = toRef(props, "jsonSearch");
+
+const suggestedLinks = computed(() => {
+  return props.quickLinks.filter((i) => {
+    let findResult: any = searchData.value.find(
+      (data) => data.name === i.item.name
+    );
+    let suggestResult: number = searchData.value.indexOf(findResult);
+    quickLinkLoc.value.push(suggestResult);
+    return suggestResult;
+  });
+});
+const options = computed(() => ({
+  isCaseSensitive: false,
+  includeMatches: true,
+  includeScore: true,
+  findAllMatches: true,
+  shouldSort: true,
+  threshold: 0.3,
+  location: 0,
+  distance: 35,
+  maxPatternLength: 16,
+  minMatchCharLength: 1,
+  keys: [
+    {
+      name: "keywords",
+      weight: 0.3,
     },
-    computed: {
-        suggestedLinks() {
-            return this.quickLinks.filter(i => {
-              let findResult: any = this.searchData.find(
-                data => data.name === i.item.name
-              );
-              let suggestResult: any = this.searchData.indexOf(findResult);
-              this.quickLinkLoc.push(suggestResult);
-              return suggestResult;
-            });
-        },
-        options() {
-            let options = {
-              isCaseSensitive: false,
-              includeMatches: true,
-              includeScore: true,
-              findAllMatches: true,
-              shouldSort: true,
-              threshold: 0.3,
-              location: 0,
-              distance: 35,
-              maxPatternLength: 16,
-              minMatchCharLength: 1,
-              keys: [
-                {
-                  name: "keywords",
-                  weight: 0.3
-                },
-                {
-                  name: "title",
-                  weight: 0.7
-                }
-              ]
-            };
-            return options;
-        },
-        noResults() {
-            if (this.result.length === 0 && this.value != "") {
-              return true;
-            } else {
-              return false;
-            }
-        },
-        limitedResult() {
-            return this.resultLimit
-            ? this.result.slice(0, this.resultLimit)
-            : this.result;
-        },
-        calcHeight() {
-            if (this.phaseOne === false) {
-              return "height: 40px;";
-            }
-            if (
-              this.result.length >= 1 &&
-              this.result.length <= 7 &&
-              this.phaseOne == true
-            ) {
-              let x = parseInt(this.result.length) * 32 + 47;
-              return "height: " + x + "px;";
-            } else {
-              return "height: 271px;";
-            }
-        }
+    {
+      name: "title",
+      weight: 0.7,
     },
-    mounted() {
-        this.searchData = this.jsonSearch;
-        this.initFuse();
-    },
-    methods: {
-        keyEvent(event) {
-            // KEYPRESS UP
-            if (event.keyCode === 38 && this.currentResult > 0) {
-              this.currentResult--;
-            }
-            // KEYPRESS DOWN
-            if (this.result.length === 0) {
-              if (event.keyCode === 40 && this.currentResult < 5) {
-                this.currentResult++;
-              }
-            } else {
-              if (event.keyCode === 40 && this.currentResult < 6) {
-                this.currentResult++;
-              }
-            }
-            // KEYPRESS ENTER
-            if (event.keyCode === 13 && this.phaseOne) {
-              if (this.result <= 0) {
-                this.trackEvent(this.currentResult);
-                window.location.href = this.searchData[
-                  this.quickLinkLoc[this.currentResult]
-                ].route;
-                this.blurSearch();
-              } else {
-                this.trackEvent(this.currentResult);
-                window.location.href = this.limitedResult[
-                  this.currentResult
-                ].item.route;
-                this.blurSearch();
-              }
-            }
-            // KEYPRESS ESC
-            if (event.keyCode === 27 && this.phaseOne) {
-              this.blurSearch();
-            }
-        },
-        trackEvent(result) {
-            this.$emit("trackSearchNav", result);
-        },
-        playClosingSequence() {
-            if (this.phaseTwo) {
-              setTimeout(() => {
-                this.phaseTwo = !this.phaseTwo;
-              }, 100);
-              setTimeout(() => {
-                this.phaseOne = !this.phaseOne;
-              }, 200);
-            }
-        },
-        playOpeningSequence() {
-            if (!this.phaseOne) {
-              this.phaseOne = !this.phaseOne;
-              setTimeout(() => {
-                this.phaseTwo = !this.phaseTwo;
-              }, 100);
-            }
-        },
-        initFuse() {
-            this.fuse = new Fuse(this.searchData, this.options);
-            if (this.search) {
-              this.value = this.search;
-            }
-        },
-        blurSearch() {
-            this.value = "";
-            this.$refs.search_input.blur();
-            this.currentResult = 0;
-        },
-        fuseSearch() {
-            if (this.value.trim() === "") {
-              this.result = [];
-            } else {
-              this.result = this.fuse.search(this.value.trim());
-            }
-        },
-        watchSearchData() {
-            this.fuse.searchData = this.searchData;
-            this.fuseSearch();
-        },
-        watchSearch() {
-            this.value = this.search;
-        },
-        watchValue() {
-            this.$parent.$emit(this.inputChangeEventName, this.value);
-            this.$emit(this.inputChangeEventName, this.value);
-            this.fuseSearch();
-        },
-        watchResult(val: [], oldVal: []) {
-            if (this.noResults || this.value == "" || val.length != oldVal.length) {
-              this.currentResult = 0;
-            }
-            this.$emit(this.eventName, this.result);
-            this.$parent.$emit(this.eventName, this.result);
-        }
-    },
-    props: {
-        jsonSearch: {
-            type: Object as PropType<any>
-        },
-        search: { default: "",
-            type: Object as PropType<String>
-        },
-        eventName: { default: "fuseResultsUpdated",
-            type: String
-        },
-        inputChangeEventName: { default: "fuseInputChanged",
-            type: String
-        },
-        quickLinks: {
-            type: Array as PropType<any[]>
-        }
-    },
-    watch: {
-        "searchData": [{
-            handler: "watchSearchData"
-        }],
-        "search": [{
-            handler: "watchSearch"
-        }],
-        "value": [{
-            handler: "watchValue"
-        }],
-        "result": [{
-            handler: "watchResult"
-        }]
+  ],
+}));
+
+const noResults = computed(
+  () => result.value.length === 0 && value.value != ""
+);
+const limitedResult = computed(() =>
+  resultLimit.value ? result.value.slice(0, resultLimit.value) : result.value
+);
+
+const calcHeight = computed(() => {
+  if (phaseOne.value === false) {
+    return "height: 40px;";
+  }
+  if (
+    result.value.length >= 1 &&
+    result.value.length <= 7 &&
+    phaseOne.value == true
+  ) {
+    let x = result.value.length * 32 + 47;
+    return `height: ${x}px;`;
+  } else {
+    return "height: 271px;";
+  }
+});
+
+const emit = defineEmits([
+  "trackSearchNav",
+  "searchResultsUpdated",
+  "searchInputChanged",
+]);
+
+function trackEvent(res) {
+  emit("trackSearchNav", res);
+}
+
+function blurSearch() {
+  value.value = "";
+  search_input.value?.blur();
+  currentResult.value = 0;
+}
+
+function keyEvent(event) {
+  // KEYPRESS UP
+  if (event.keyCode === 38 && currentResult.value > 0) {
+    currentResult.value--;
+  }
+  // KEYPRESS DOWN
+  if (result.value.length === 0) {
+    if (event.keyCode === 40 && currentResult.value < 5) {
+      currentResult.value++;
     }
-})
+  } else {
+    if (event.keyCode === 40 && currentResult.value < 6) {
+      currentResult.value++;
+    }
+  }
+  // KEYPRESS ENTER
+  if (event.keyCode === 13 && phaseOne.value) {
+    if (result.value.length <= 0) {
+      trackEvent(currentResult.value);
+      window.location.href =
+        searchData.value[quickLinkLoc.value[currentResult.value]].route;
+      blurSearch();
+    } else {
+      trackEvent(currentResult.value);
+      window.location.href =
+        limitedResult.value[currentResult.value].item.route;
+      blurSearch();
+    }
+  }
+  // KEYPRESS ESC
+  if (event.keyCode === 27 && phaseOne.value) {
+    blurSearch();
+  }
+}
 
+function playClosingSequence() {
+  if (phaseTwo.value) {
+    setTimeout(() => {
+      phaseTwo.value = !phaseTwo.value;
+    }, 100);
+    setTimeout(() => {
+      phaseOne.value = !phaseOne.value;
+    }, 200);
+  }
+}
+
+function playOpeningSequence() {
+  if (!phaseOne.value) {
+    phaseOne.value = !phaseOne.value;
+    setTimeout(() => {
+      phaseTwo.value = !phaseTwo.value;
+    }, 100);
+  }
+}
+
+onMounted(() => {
+  initFuse();
+});
+function initFuse() {
+  fuse.value = new Fuse(searchData.value, options.value);
+  if (props.search) {
+    value.value = props.search;
+  }
+}
+
+function fuseSearch() {
+  if (fuse.value) {
+    if (value.value.trim() === "") {
+      result.value = [];
+    } else {
+      result.value = fuse.value.search(value.value.trim());
+    }
+  }
+}
+
+function watchSearchData() {
+  if (fuse.value) {
+    fuse.value.setCollection(searchData.value);
+    fuseSearch();
+  }
+}
+
+function watchSearch() {
+  value.value = props.search;
+}
+
+function watchValue() {
+  // this.$parent.$emit(props.inputChangeEventName, value.value);
+  emit("searchInputChanged", value.value);
+  fuseSearch();
+}
+
+function watchResult(val, oldVal) {
+  if (noResults.value || value.value === "" || val.length != oldVal.length) {
+    currentResult.value = 0;
+  }
+  emit("searchResultsUpdated", result.value);
+  // this.$parent.$emit(props.eventName, result.value);
+}
+
+watch(searchData, watchSearchData);
+watch(() => props.search, watchSearch);
+watch(value, watchValue);
+watch(result, watchResult, { deep: true });
 </script>
 
 <style lang="less">

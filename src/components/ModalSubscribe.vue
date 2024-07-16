@@ -59,68 +59,40 @@
   </modal>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Button from "./../components/Button.vue";
 import Badge from "./../components/Badge.vue";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  components: {
-    Button,
-    Badge
-  },
-    props: {
-        name: {
-            type: String
-        },
-        width: { default: 600,
-            type: Number
-        },
-        minWidth: { default: 600,
-            type: Number
-        },
-        scrollable: { default: false,
-            type: Boolean
-        },
-        title: {
-            type: String
-        },
-        subTitle: {
-            type: String
-        },
-        text: {
-            type: String
-        },
-        notes: {
-            type: String
-        },
-        subscribeText: {
-            type: String
-        },
-        subscribeMessage: {
-            type: String
-        },
-        proBadge: { default: true,
-            type: Boolean
-        },
-        customPreview: { default: false,
-            type: Boolean
-        },
-        buttonTitle: { default: "Subscribe with PayPal",
-            type: String
-        },
-        buttonPrice: { default: "$5.99/mo",
-            type: String
-        },
-        buttonVariation: { default: "subscribe",
-            type: String
-        },
-        cancelTitle: { default: "Cancel",
-            type: String
-        }
-    }
-})
+interface Props {
+  name: string;
+  width?: number;
+  minWidth?: number;
+  scrollable?: boolean;
+  title: string;
+  subTitle: string;
+  text: string;
+  notes: string;
+  subscribeText: string;
+  subscribeMessage: string;
+  proBadge?: boolean;
+  customPreview?: boolean;
+  buttonTitle?: string;
+  buttonPrice?: string;
+  buttonVariation?: string;
+  cancelTitle?: string;
+}
 
+withDefaults(defineProps<Props>(), {
+  width: 600,
+  minWidth: 600,
+  scrollable: false,
+  proBadge: true,
+  customPreview: false,
+  buttonTitle: "Subscribe with PayPal",
+  buttonPrice: "$5.99/mo",
+  buttonVariation: "subscribe",
+  cancelTitle: "Cancel",
+});
 </script>
 
 <style lang="less" scoped>

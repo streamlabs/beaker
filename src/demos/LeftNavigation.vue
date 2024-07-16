@@ -3,7 +3,6 @@
     <div class="left-navigation-section">
       <h4>Essentials</h4>
       <router-link to="installation">Installation</router-link>
-      <router-link to="assets">Assets</router-link>
       <router-link to="colors">Colors</router-link>
       <router-link to="icons">Icons</router-link>
       <router-link to="typography">Typography</router-link>
