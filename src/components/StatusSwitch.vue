@@ -16,23 +16,18 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-    props: {
-        label: {
-            type: String
-        },
-        size: {
-            type: String
-        },
-        value: { default: false,
-            type: Boolean
-        }
-    }
-})
-
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    label: string;
+    size?: string;
+    value: boolean;
+  }>(),
+  {
+    value: false,
+    size: "",
+  }
+);
 </script>
 
 <style lang="less">

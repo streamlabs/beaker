@@ -31,17 +31,9 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-// import { Component, Vue } from "vue-property-decorator";
 import Toggle from "./components/Toggle.vue";
 import Documentation from "./views/Documentation.vue";
 
-// @Component({
-//   components: {
-//     Toggle,
-//     Documentation
-//   }
-// })
-// export default class App extends Vue {
 const appClass = ref("app-wrapper");
 const nightClasses = ref(["night", "night-theme"]);
 const theme = ref("night");

@@ -13,29 +13,17 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+interface Props {
+  label: string;
+  id: string;
+  name: string;
+  value: string | boolean;
+  val: string | boolean;
+}
 
-export default defineComponent({
-    props: {
-        label: {
-            type: String
-        },
-        id: {
-            type: String
-        },
-        name: {
-            type: String
-        },
-        value: {
-            type: [String, Boolean]
-        },
-        val: {
-            type: [String, Boolean]
-        }
-    }
-})
-
+defineProps<Props>();
+defineEmits(["input", "on-click"]);
 </script>
 
 <style lang="less">

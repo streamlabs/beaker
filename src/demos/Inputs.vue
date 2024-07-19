@@ -79,7 +79,7 @@ components: {
               v-model="textAreaInputValue"
               name="myarea"
               placeholder="This is where you put some cool stuff"
-              autoResize="true"
+              :autoResize="true"
               :maxLength="1000"
               :maxHeight="100"
             />
@@ -88,7 +88,7 @@ components: {
       </DemoSection>
     </div>
 
-    <!-- <div class="section">
+    <div class="section">
       <h2>Text Inputs with Variable Menu Wrapper</h2>
       <p>
         A new way to navigate variables, just wrap your input with the Variable
@@ -114,7 +114,7 @@ components: {
               v-model="variAreaValue"
               name="myarea"
               placeholder="w/ Variable Menu"
-              rows="3"
+              :rows="3"
               :maxLength="1000"
               :maxHeight="100"
             />
@@ -205,7 +205,7 @@ components: {
           <TaggingInput
             name="aliases"
             placeholder="!hello"
-            maxItems="10"
+            :maxItems="10"
             inputValidation="required"
             @keydown.space.prevent
           />
@@ -496,7 +496,7 @@ components: {
           </tr>
         </tbody>
       </table>
-    </div> -->
+    </div>
 
     <div class="section">
       <h2>Image Input Picker</h2>
@@ -537,39 +537,21 @@ components: {
 </template>
 
 <script setup lang="ts">
-// import { Component, Watch, Vue } from "vue-property-decorator";
-
-// import Checkbox from "./../components/Checkbox.vue";
+import Checkbox from "./../components/Checkbox.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import FormGroup from "./../components/FormGroup.vue";
 import ImagePickerInput from "./../components/ImagePickerInput.vue";
 import InputsCode from "./Inputs.vue?raw";
-// import Radio from "./../components/Radio.vue";
-// import Selector from "./../components/Selector.vue";
-// import StatusSwitch from "./../components/StatusSwitch.vue";
-// import TaggingInput from "./../components/TaggingInput.vue";
-// import TextArea from "./../components/TextArea.vue";
+import Radio from "./../components/Radio.vue";
+import Selector from "./../components/Selector.vue";
+import StatusSwitch from "./../components/StatusSwitch.vue";
+import TaggingInput from "./../components/TaggingInput.vue";
+import TextArea from "./../components/TextArea.vue";
 import TextInput from "./../components/TextInput.vue";
 import varSearch from "./../components/cloudbotvariables.json";
-// import VariableMenu from "./../components/VariableMenu.vue";
+import VariableMenu from "./../components/VariableMenu.vue";
 import { ref } from "vue";
 
-// @Component({
-//   components: {
-//     Checkbox,
-//     DemoSection,
-//     FormGroup,
-//     ImagePickerInput,
-//     Radio,
-//     Selector,
-//     StatusSwitch,
-//     TaggingInput,
-//     TextArea,
-//     TextInput,
-//     VariableMenu
-//   }
-// })
-// export default class Inputs extends Vue {
 const demoCode = ref(InputsCode);
 const data = ref("");
 

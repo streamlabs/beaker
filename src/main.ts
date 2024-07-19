@@ -7,6 +7,7 @@ import VModal from "vue-js-modal";
 import {
   V_MODAL_INJECTION_KEY,
   V_WHAT_INPUT_INJECTION_KEY,
+  VEE_VALIDATE_INJECTION_KEY,
 } from "./plugins/injects";
 import VTooltip from "v-tooltip";
 import VueClipboard from "vue-clipboard2";
@@ -37,6 +38,7 @@ new Vue({
     return {
       [V_MODAL_INJECTION_KEY]: this.$modal,
       [V_WHAT_INPUT_INJECTION_KEY]: this.$whatInput,
+      [VEE_VALIDATE_INJECTION_KEY]: this.$validator,
     };
   },
 }).$mount("#app");

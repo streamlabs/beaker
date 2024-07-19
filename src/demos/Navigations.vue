@@ -81,16 +81,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import Accordion from "./../components/Accordion.vue";
 import ScrollNav from "./../components/ScrollNav.vue";
-
-@Component({
-  components: {
-    ScrollNav,
-    Accordion
-  }
-})
-export default class Navigations extends Vue {}
 </script>

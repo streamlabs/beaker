@@ -39,121 +39,102 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import TextInput from "./TextInput.vue";
-import TextArea from "./TextArea.vue";
 import Button from "./Button.vue";
-import { defineComponent, PropType } from "vue";
+import { watch, ref, reactive } from "vue";
+import { useVeeValidate } from "../plugins/injects";
 
-export default defineComponent({
-  components: {
-    TextInput,
-    TextArea,
-    Button,
-  },
-    data() {
-        const tags: string[] = [];
-        const input: string = "";
+interface Props {
+  name: string;
+  label?: string;
+  placeholder?: string;
+  buttonText?: string;
+  buttonVariation?: string;
+  value?: string[];
+  text?: string;
+  inputValidation: string;
+  prefix?: string;
+  tagVariation?: string;
+  maxItems?: number;
+}
 
-        return {
-            input,
-            tags
-        };
-    },
-    methods: {
-        onAdd() {
-            if (this.$validator.errors.items.length !== 0) {
-                  this.$emit("error", this.$validator.errors.items, false);
-                  return;
-                }
+const props = withDefaults(defineProps<Props>(), {
+  buttonText: "Add Tag",
+  buttonVariation: "default",
+  value: () => [],
+  text: "",
+  tagVariation: "default",
+  maxItems: 25,
+});
 
-                if (this.tags.length >= this.maxItems) {
-                  this.$emit("error", ["Max items reached"], true);
-                  return;
-                }
+const tags = ref<string[]>([]);
+const input = ref("");
 
-                let inputValue = this.input.trim();
+const emit = defineEmits([
+  "error",
+  "input",
+  "change",
+  "update:value",
+  "update:text",
+  "remove",
+  "add",
+]);
 
-                const found = this.tags.find((v) => {
-                  if (this.prefix && !inputValue.startsWith(this.prefix)) {
-                    return (
-                      v.toLowerCase() === this.prefix + inputValue.trim().toLowerCase()
-                    );
-                  } else {
-                    return v.toLowerCase() === inputValue.trim().toLowerCase();
-                  }
-                });
+const $validator = reactive(useVeeValidate());
 
-                if (!found && inputValue.length !== 0) {
-                  if (this.prefix && !inputValue.startsWith(this.prefix)) {
-                    inputValue = this.prefix + inputValue;
-                  }
-                  this.tags.push(inputValue);
-                  this.input = "";
-                  this.emitTagEvents("add");
-                }
-        },
-        onRemove(index: number) {
-            this.tags.splice(index, 1);
-            this.emitTagEvents("remove");
-        },
-        emitTagEvents(...events) {
-            ["input", "change", "update:value", ...events].forEach((event) =>
-              this.$emit(event, this.tags)
-            );
-        },
-        watchValue(newValue) {
-            this.tags = newValue;
-        },
-        watchText(newValue) {
-            this.input = newValue;
-        }
-    },
-    props: {
-        name: {
-            type: String
-        },
-        label: {
-            type: String
-        },
-        placeholder: {
-            type: String
-        },
-        buttonText: { default: "Add Tag",
-            type: String
-        },
-        buttonVariation: { default: "default",
-            type: String
-        },
-        value: { default: () => [],
-            type: Array as PropType<string[]>
-        },
-        text: { default: "",
-            type: String
-        },
-        inputValidation: {
-            type: String
-        },
-        prefix: {
-            type: String
-        },
-        tagVariation: { default: "default",
-            type: String
-        },
-        maxItems: { default: 25,
-            type: Number
-        }
-    },
-    watch: {
-        "value": [{ immediate: true,
-            handler: "watchValue"
-        }],
-        "text": [{ immediate: true,
-            handler: "watchText"
-        }]
+function onAdd() {
+  if ($validator.errors.items.length !== 0) {
+    emit("error", $validator.errors.items, false);
+    return;
+  }
+
+  if (tags.value.length >= props.maxItems) {
+    emit("error", ["Max items reached"], true);
+    return;
+  }
+
+  let inputValue = input.value.trim();
+
+  const found = tags.value.find((v) => {
+    if (props.prefix && !inputValue.startsWith(props.prefix)) {
+      return v.toLowerCase() === props.prefix + inputValue.trim().toLowerCase();
+    } else {
+      return v.toLowerCase() === inputValue.trim().toLowerCase();
     }
-})
+  });
 
+  if (!found && inputValue.length !== 0) {
+    if (props.prefix && !inputValue.startsWith(props.prefix)) {
+      inputValue = props.prefix + inputValue;
+    }
+    tags.value.push(inputValue);
+    input.value = "";
+    emitTagEvents("add");
+  }
+}
+
+function onRemove(index: number) {
+  tags.value.splice(index, 1);
+  emitTagEvents("remove");
+}
+
+function emitTagEvents(...events) {
+  ["input", "change", "update:value", ...events].forEach((event) =>
+    emit(event, tags.value)
+  );
+}
+
+function watchValue(newValue) {
+  tags.value = newValue;
+}
+
+function watchText(newValue) {
+  input.value = newValue;
+}
+
+watch(() => props.value, watchValue, { immediate: true });
+watch(() => props.text, watchText, { immediate: true });
 </script>
 <style lang="less">
 @import (reference) "./../styles/Imports";

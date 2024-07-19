@@ -12,23 +12,20 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+interface Props {
+  label: string;
+  id: string;
+  name?: string;
+  value: boolean;
+}
 
-export default defineComponent({
-    methods: {
-        toggleCheck() {
-            this.$emit("input", !this.value);
-        }
-    },
-    props: {
-        label: { type: String, required: true },
-        id: { type: String, required: true },
-        name: { type: String },
-        value: { type: Boolean, required: true }
-    }
-})
+const props = defineProps<Props>();
 
+const emit = defineEmits(["input"]);
+function toggleCheck() {
+  emit("input", !props.value);
+}
 </script>
 
 <style lang="less">

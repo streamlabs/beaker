@@ -6,7 +6,7 @@ import type { Vue } from "vue/types/vue";
  * @template {*} T
  */
 
-/** @typedef {import('vue/types/vue').Vue['$modal']} VModal */
+/** @typedef {Vue['$modal']} VModal */
 
 /** @type {InjectionKey<VModal>} */
 export const V_MODAL_INJECTION_KEY = Symbol("VModal");
@@ -43,4 +43,17 @@ export const V_MQ_INJECTION_KEY = Symbol("VMq");
  */
 export function useVMq(): Vue["$mq"] {
   return inject(V_MQ_INJECTION_KEY);
+}
+
+/** @typedef {import('vee-validate').Validator} VeeValidate */
+
+/** @type {InjectionKey<VeeValidate>} */
+export const VEE_VALIDATE_INJECTION_KEY = Symbol('VeeValidate');
+
+/**
+ * Use the VeeValidate validation plugin.
+ * @returns {VeeValidate} The validation plugin
+ */
+export function useVeeValidate(): Vue["$validator"] {
+  return inject(VEE_VALIDATE_INJECTION_KEY);
 }
