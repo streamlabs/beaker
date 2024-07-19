@@ -43,465 +43,444 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
-    data() {
-        const halt: boolean = false;
-        const bounced: boolean = false;
-        const currentHeight: number = 0;
-        const currentWidth: number = 0;
-        const range: any[] = [];
-        const offset: any = null;
-        const lazy: boolean = false;
-        const currentValue: any = 0;
-        const size: number = 0;
-        const isDragging: boolean = false;
-        const $refs: {
-                elem: HTMLDivElement;
-                process: HTMLDivElement;
-                handle: HTMLDivElement;
-                wrap: HTMLDivElement;
-              } = undefined;
+  data() {
+    const halt: boolean = false;
+    const bounced: boolean = false;
+    const currentHeight: number = 0;
+    const currentWidth: number = 0;
+    const range: any[] = [];
+    const offset: any = null;
+    const lazy: boolean = false;
+    const currentValue: any = 0;
+    const size: number = 0;
+    const isDragging: boolean = false;
+    const $refs: {
+      elem: HTMLDivElement;
+      process: HTMLDivElement;
+      handle: HTMLDivElement;
+      wrap: HTMLDivElement;
+    } = undefined;
 
-        return {
-            $refs,
-            isDragging,
-            size,
-            currentValue,
-            lazy,
-            offset,
-            range,
-            currentWidth,
-            currentHeight,
-            bounced,
-            halt
-        };
-    },
-    computed: {
-        val: {
-            get() {
-                if (this.dataIndexing) {
-                  return this.data
-                    ? this.data.indexOf(this.data[this.currentValue])
-                    : this.currentValue;
-                } else {
-                  return this.data ? this.data[this.currentValue] : this.currentValue;
-                }
-            },
-            set(newVal) {
-                if (this.data) {
-                  let index = this.data.indexOf(newVal);
-                  if (index > -1) {
-                    this.currentValue = index;
-                  }
-                } else {
-                  this.currentValue = newVal;
-                }
-            }
-        },
-        displayValue() {
-            if (this.data) {
-              return this.dataIndexing
-                ? this.data[this.currentIndex]
-                : this.currentValue;
-            } else {
-              return this.currentValue;
-            }
-        },
-        currentIndex() {
-            return (this.currentValue - this.minimum) / this.spacing;
-        },
-        indexRange() {
-            return [0, this.currentIndex];
-        },
-        minimum() {
-            return this.data ? 0 : this.min;
-        },
-        maximum() {
-            return this.data ? this.data.length - 1 : this.max;
-        },
-        spacing() {
-            return this.data ? 1 : this.interval;
-        },
-        multiple() {
-            let decimals = `${this.interval}`.split(".")[1];
-            return decimals ? Math.pow(10, decimals.length) : 1;
-        },
-        total() {
-            if (this.data) {
-              return this.data.length - 1;
-            } else if (
-              Math.floor((this.maximum - this.minimum) * this.multiple) %
-                (this.interval * this.multiple) !==
-              0
-            ) {
-              console.error(
-                "[ERROR]: Prop[interval] must be a divisor of [max] - [min]"
-              );
-            }
-            return (this.maximum - this.minimum) / this.interval;
-        },
-        gap() {
-            return this.size / this.total;
-        },
-        position() {
-            return ((this.currentValue - this.minimum) / this.spacing) * this.gap;
-        },
-        limit() {
-            return [0, this.size];
-        },
-        valueLimit() {
-            return [this.minimum, this.maximum];
-        }
-    },
-    mounted() {
-        if (this.steps !== 0) {
-          console.error(
-            "[ERROR]: Prop[steps] has been replaced with Prop[interval]"
-          );
-        }
-        this.getStaticData();
-        this.setValue(this.limitValue(this.value));
-        this.setTransform(this.position);
-        if (this.marks) {
-          this.createMarks();
-        }
-        if (this.$refs.elem) {
-          this.resizeSensor(this.$refs.elem);
-          this.bindEvents(this.$refs.elem);
-        }
-    },
-    updated() {
-        if (!this.isDragging) {
-          this.setTransitionTime(0.25);
+    return {
+      $refs,
+      isDragging,
+      size,
+      currentValue,
+      lazy,
+      offset,
+      range,
+      currentWidth,
+      currentHeight,
+      bounced,
+      halt,
+    };
+  },
+  computed: {
+    val: {
+      get() {
+        if (this.dataIndexing) {
+          return this.data
+            ? this.data.indexOf(this.data[this.currentValue])
+            : this.currentValue;
         } else {
-          this.setTransitionTime(0);
+          return this.data ? this.data[this.currentValue] : this.currentValue;
         }
-    },
-    methods: {
-        debounce() {
-            return new Promise(resolve => {
-              if (!this.bounced) {
-                this.bounced = true;
-                setTimeout(() => {
-                  this.bounced = false;
-                  resolve();
-                }, 100);
-              }
-            });
-        },
-        dnr() {
-            this.debounce().then(() => {
-              let size = this.$refs.elem.getBoundingClientRect();
-              let newWidth = size.width;
-              let newHeight = size.height;
-              if (newWidth != this.currentWidth || newHeight != this.currentHeight) {
-                this.currentWidth = newWidth;
-                this.currentHeight = newHeight;
-                this.refresh(this.$refs.elem);
-              }
-            });
-        },
-        resizeSensor(el: HTMLDivElement) {
-            let expand = document.createElement("div");
-            expand.classList.add("s-slider-expand-watch");
-            expand.style.position = "absolute";
-            expand.style.left = "0px";
-            expand.style.top = "0px";
-            expand.style.right = "0px";
-            expand.style.bottom = "0px";
-            expand.style.overflow = "hidden";
-            expand.style.visibility = "hidden";
-            let expandChild = document.createElement("div");
-            expandChild.style.position = "absolute";
-            expandChild.style.left = "0px";
-            expandChild.style.top = "0px";
-            expandChild.style.width = "10000000px";
-            expandChild.style.height = "10000000px";
-            expand.appendChild(expandChild);
-            let shrink = document.createElement("div");
-            shrink.classList.add("s-slider-shrink-watch");
-            shrink.style.position = "absolute";
-            shrink.style.left = "0px";
-            shrink.style.top = "0px";
-            shrink.style.right = "0px";
-            shrink.style.bottom = "0px";
-            shrink.style.overflow = "hidden";
-            shrink.style.visibility = "hidden";
-            let shrinkChild = document.createElement("div");
-            shrinkChild.style.position = "absolute";
-            shrinkChild.style.left = "0px";
-            shrinkChild.style.top = "0px";
-            shrinkChild.style.width = "200%";
-            shrinkChild.style.height = "200%";
-            shrink.appendChild(shrinkChild);
-            el.appendChild(expand);
-            el.appendChild(shrink);
-            this.setSensorScroll(this.$refs.elem);
-            let size = el.getBoundingClientRect();
-            this.currentWidth = size.width;
-            this.currentHeight = size.height;
-        },
-        setSensorScroll(el) {
-            el.querySelector(".s-slider-expand-watch").scrollLeft = 10000000;
-            el.querySelector(".s-slider-expand-watch").scrollTop = 10000000;
-            el.querySelector(".s-slider-shrink-watch").scrollLeft = 10000000;
-            el.querySelector(".s-slider-shrink-watch").scrollTop = 10000000;
-        },
-        bindEvents(el: any) {
-            document.addEventListener("mousemove", this.moving);
-            document.addEventListener("mouseup", this.moveEnd);
-            document.addEventListener("mouseleave", this.moveEnd);
-            el.querySelector(".s-slider-shrink-watch").addEventListener(
-              "scroll",
-              this.dnr
-            );
-            el.querySelector(".s-slider-expand-watch").addEventListener(
-              "scroll",
-              this.dnr
-            );
-        },
-        unbindEvents(el: any) {
-            document.removeEventListener("mousemove", this.moving);
-            document.removeEventListener("mouseup", this.moveEnd);
-            document.removeEventListener("mouseleave", this.moveEnd);
-            el.querySelector(".s-slider-shrink-watch").removeEventListener(
-              "scroll",
-              this.dnr
-            );
-            el.querySelector(".s-slider-expand-watch").removeEventListener(
-              "scroll",
-              this.dnr
-            );
-        },
-        getPos(e) {
-            return e.clientX - this.offset;
-        },
-        wrapClick(e) {
-            if (this.isDisabled) return false;
-            let pos = this.getPos(e);
-            this.setValueOnPos(pos, false);
-            if (!this.isDragging) this.setTransform(this.position);
-        },
-        moveStart() {
-            if (!this.draggable) return false;
-            this.isDragging = true;
-            this.$emit("dragStart", this);
-        },
-        moving(e) {
-            if (!this.isDragging || !this.draggable) return false;
-            e.preventDefault();
-            this.setValueOnPos(this.getPos(e), true);
-            if (!this.halt) this.setTransform(this.getPos(e));
-        },
-        moveEnd(e) {
-            if (this.isDragging && this.draggable) {
-              this.$emit("dragEnd", this);
-              this.setValue(this.limitValue(this.value));
-              this.setTransitionTime(0.125);
-              this.setTransform(this.position);
-              this.isDragging = false;
-              if (this.lazy && this.isDiff(this.val, this.value)) {
-                this.syncValue();
-              }
-            } else {
-              return false;
-            }
-        },
-        setValueOnPos(pos, isDrag) {
-            let range = this.limit;
-            let valueRange = this.valueLimit;
-            if (pos >= range[0] && pos <= range[1]) {
-              this.halt = false;
-              let v =
-                (Math.round(pos / this.gap) * (this.spacing * this.multiple) +
-                  this.minimum * this.multiple) /
-                this.multiple;
-              this.setCurrentValue(v, isDrag);
-            } else if (pos < range[0]) {
-              this.halt = true;
-              console.log("overshoot1");
-              this.setTransform(range[0]);
-              this.setCurrentValue(valueRange[0], true);
-            } else {
-              this.halt = true;
-              console.log("overshoot2");
-              this.setTransform(range[1]);
-              this.setCurrentValue(valueRange[1], true);
-            }
-        },
-        createMarks() {
-            if (Array.isArray(this.data)) {
-              let ticks = this.data.length;
-              for (let i = 0; i < ticks; i++) {
-                this.range.push(this.data[i]);
-              }
-            } else if (
-              Math.floor((this.maximum - this.minimum) * this.multiple) %
-                (this.interval * this.multiple) !==
-              0
-            ) {
-              console.error(
-                "[ERROR]: Prop[interval] must be a divisor of [max] - [min]"
-              );
-            } else {
-              let ticks = (this.max - this.min) / this.interval;
-              let t = 0 - this.interval;
-              for (let i = -1; i < ticks; i++) {
-                t = t + this.interval;
-                this.range.push(t);
-              }
-            }
-        },
-        isDiff(a, b) {
-            if (
-              Object.prototype.toString.call(a) !== Object.prototype.toString.call(b)
-            ) {
-              return true;
-            } else if (Array.isArray(a) && a.length === b.length) {
-              return a.some((v, i) => v !== b[i]);
-            }
-            return a !== b;
-        },
-        setCurrentValue(val, bool) {
-            if (val < this.minimum || val > this.maximum) return false;
-            if (this.isDiff(this.currentValue, val)) {
-              this.currentValue = val;
-              if (!this.lazy || !this.isDragging) {
-                this.syncValue();
-              }
-            }
-        },
-        setIndex(val) {
-            val = this.spacing * val + this.minimum;
-            this.setCurrentValue(val, true);
-        },
-        setValue(val) {
-            if (this.isDiff(this.val, val)) {
-              let resetVal = this.limitValue(val);
-              this.val = resetVal;
-              this.syncValue();
-              //this.refresh(this.$refs.elem);
-            }
-        },
-        setTransform(val) {
-            let value = val - (this.$refs.handle.scrollWidth - 2) / 2;
-            let translateValue = `translateX(${value}px)`;
-            this.$refs.handle.style.transform = translateValue;
-            this.$refs.handle.style.webkitTransform = translateValue;
-            this.$refs.handle.style.transform = translateValue;
-            this.$refs.process.style.width = `${val}px`;
-        },
-        setTransitionTime(t) {
-            this.$refs.handle.style.transitionDuration = `${t}s`;
-            this.$refs.handle.style.webkitTransitionDuration = `${t}s`;
-            this.$refs.process.style.transitionDuration = `${t}s`;
-            this.$refs.process.style.webkitTransitionDuration = `${t}s`;
-        },
-        limitValue(val) {
-            if (this.data) {
-              return val;
-            }
-            const inRange = v => {
-              if (v < this.min) {
-                return this.min;
-              } else if (v > this.max) {
-                return this.max;
-              }
-              return v;
-            };
-            return inRange(val);
-        },
-        syncValue() {
-            let val = this.val;
-            if (this.range) {
-              this.$emit("callbackRange", this.range[this.currentIndex]);
-            }
-            this.$emit("input", val);
-        },
-        getValue() {
-            return this.val;
-        },
-        getIndex() {
-            return this.currentIndex;
-        },
-        getStaticData() {
-            if (this.$refs.elem) {
-              this.size = this.$refs.elem.offsetWidth;
-              this.offset = this.$refs.elem.getBoundingClientRect().left;
-            }
-        },
-        refresh(el) {
-            if (el) {
-              this.getStaticData();
-              this.setTransform(this.position);
-              this.setSensorScroll(el);
-            }
-        },
-        beforeDestroy() {
-            if (this.$refs.elem) {
-              this.unbindEvents(this.$refs.elem);
-            }
-        },
-        watchValue(newVal) {
-            this.setValue(newVal);
+      },
+      set(newVal) {
+        if (this.data) {
+          let index = this.data.indexOf(newVal);
+          if (index > -1) {
+            this.currentValue = index;
+          }
+        } else {
+          this.currentValue = newVal;
         }
+      },
     },
-    props: {
-        interval: { default: 1,
-            type: Number
-        },
-        steps: { default: 0,
-            type: Number
-        },
-        data: { default: null,
-            type: Array as PropType<any[]>
-        },
-        dataIndexing: { default: true,
-            type: Boolean
-        },
-        value: { default: 0,
-            type: Object as PropType<[string, number]>
-        },
-        min: { default: 0,
-            type: Number
-        },
-        max: { default: 100,
-            type: Number
-        },
-        tooltip: { default: "always",
-            type: Object as PropType<"always" | false>
-        },
-        suffix: { default: null,
-            type: String
-        },
-        prefix: { default: null,
-            type: String
-        },
-        simpleTheme: { default: false,
-            type: Boolean
-        },
-        marks: { default: false,
-            type: Boolean
-        },
-        labels: { default: false,
-            type: Boolean
-        },
-        isDisabled: { default: false,
-            type: Boolean
-        },
-        draggable: { default: true,
-            type: Boolean
-        }
+    displayValue() {
+      if (this.data) {
+        return this.dataIndexing
+          ? this.data[this.currentIndex]
+          : this.currentValue;
+      } else {
+        return this.currentValue;
+      }
     },
-    watch: {
-        "value": [{
-            handler: "watchValue"
-        }]
+    currentIndex() {
+      return (this.currentValue - this.minimum) / this.spacing;
+    },
+    indexRange() {
+      return [0, this.currentIndex];
+    },
+    minimum() {
+      return this.data ? 0 : this.min;
+    },
+    maximum() {
+      return this.data ? this.data.length - 1 : this.max;
+    },
+    spacing() {
+      return this.data ? 1 : this.interval;
+    },
+    multiple() {
+      let decimals = `${this.interval}`.split(".")[1];
+      return decimals ? Math.pow(10, decimals.length) : 1;
+    },
+    total() {
+      if (this.data) {
+        return this.data.length - 1;
+      } else if (
+        Math.floor((this.maximum - this.minimum) * this.multiple) %
+          (this.interval * this.multiple) !==
+        0
+      ) {
+        console.error(
+          "[ERROR]: Prop[interval] must be a divisor of [max] - [min]"
+        );
+      }
+      return (this.maximum - this.minimum) / this.interval;
+    },
+    gap() {
+      return this.size / this.total;
+    },
+    position() {
+      return ((this.currentValue - this.minimum) / this.spacing) * this.gap;
+    },
+    limit() {
+      return [0, this.size];
+    },
+    valueLimit() {
+      return [this.minimum, this.maximum];
+    },
+  },
+  mounted() {
+    if (this.steps !== 0) {
+      console.error(
+        "[ERROR]: Prop[steps] has been replaced with Prop[interval]"
+      );
     }
-})
-
+    this.getStaticData();
+    this.setValue(this.limitValue(this.value));
+    this.setTransform(this.position);
+    if (this.marks) {
+      this.createMarks();
+    }
+    if (this.$refs.elem) {
+      this.resizeSensor(this.$refs.elem);
+      this.bindEvents(this.$refs.elem);
+    }
+  },
+  updated() {
+    if (!this.isDragging) {
+      this.setTransitionTime(0.25);
+    } else {
+      this.setTransitionTime(0);
+    }
+  },
+  methods: {
+    debounce() {
+      return new Promise((resolve) => {
+        if (!this.bounced) {
+          this.bounced = true;
+          setTimeout(() => {
+            this.bounced = false;
+            resolve();
+          }, 100);
+        }
+      });
+    },
+    dnr() {
+      this.debounce().then(() => {
+        let size = this.$refs.elem.getBoundingClientRect();
+        let newWidth = size.width;
+        let newHeight = size.height;
+        if (newWidth != this.currentWidth || newHeight != this.currentHeight) {
+          this.currentWidth = newWidth;
+          this.currentHeight = newHeight;
+          this.refresh(this.$refs.elem);
+        }
+      });
+    },
+    resizeSensor(el: HTMLDivElement) {
+      let expand = document.createElement("div");
+      expand.classList.add("s-slider-expand-watch");
+      expand.style.position = "absolute";
+      expand.style.left = "0px";
+      expand.style.top = "0px";
+      expand.style.right = "0px";
+      expand.style.bottom = "0px";
+      expand.style.overflow = "hidden";
+      expand.style.visibility = "hidden";
+      let expandChild = document.createElement("div");
+      expandChild.style.position = "absolute";
+      expandChild.style.left = "0px";
+      expandChild.style.top = "0px";
+      expandChild.style.width = "10000000px";
+      expandChild.style.height = "10000000px";
+      expand.appendChild(expandChild);
+      let shrink = document.createElement("div");
+      shrink.classList.add("s-slider-shrink-watch");
+      shrink.style.position = "absolute";
+      shrink.style.left = "0px";
+      shrink.style.top = "0px";
+      shrink.style.right = "0px";
+      shrink.style.bottom = "0px";
+      shrink.style.overflow = "hidden";
+      shrink.style.visibility = "hidden";
+      let shrinkChild = document.createElement("div");
+      shrinkChild.style.position = "absolute";
+      shrinkChild.style.left = "0px";
+      shrinkChild.style.top = "0px";
+      shrinkChild.style.width = "200%";
+      shrinkChild.style.height = "200%";
+      shrink.appendChild(shrinkChild);
+      el.appendChild(expand);
+      el.appendChild(shrink);
+      this.setSensorScroll(this.$refs.elem);
+      let size = el.getBoundingClientRect();
+      this.currentWidth = size.width;
+      this.currentHeight = size.height;
+    },
+    setSensorScroll(el) {
+      el.querySelector(".s-slider-expand-watch").scrollLeft = 10000000;
+      el.querySelector(".s-slider-expand-watch").scrollTop = 10000000;
+      el.querySelector(".s-slider-shrink-watch").scrollLeft = 10000000;
+      el.querySelector(".s-slider-shrink-watch").scrollTop = 10000000;
+    },
+    bindEvents(el: any) {
+      document.addEventListener("mousemove", this.moving);
+      document.addEventListener("mouseup", this.moveEnd);
+      document.addEventListener("mouseleave", this.moveEnd);
+      el.querySelector(".s-slider-shrink-watch").addEventListener(
+        "scroll",
+        this.dnr
+      );
+      el.querySelector(".s-slider-expand-watch").addEventListener(
+        "scroll",
+        this.dnr
+      );
+    },
+    unbindEvents(el: any) {
+      document.removeEventListener("mousemove", this.moving);
+      document.removeEventListener("mouseup", this.moveEnd);
+      document.removeEventListener("mouseleave", this.moveEnd);
+      el.querySelector(".s-slider-shrink-watch").removeEventListener(
+        "scroll",
+        this.dnr
+      );
+      el.querySelector(".s-slider-expand-watch").removeEventListener(
+        "scroll",
+        this.dnr
+      );
+    },
+    getPos(e) {
+      return e.clientX - this.offset;
+    },
+    wrapClick(e) {
+      if (this.isDisabled) return false;
+      let pos = this.getPos(e);
+      this.setValueOnPos(pos, false);
+      if (!this.isDragging) this.setTransform(this.position);
+    },
+    moveStart() {
+      if (!this.draggable) return false;
+      this.isDragging = true;
+      this.$emit("dragStart", this);
+    },
+    moving(e) {
+      if (!this.isDragging || !this.draggable) return false;
+      e.preventDefault();
+      this.setValueOnPos(this.getPos(e), true);
+      if (!this.halt) this.setTransform(this.getPos(e));
+    },
+    moveEnd(e) {
+      if (this.isDragging && this.draggable) {
+        this.$emit("dragEnd", this);
+        this.setValue(this.limitValue(this.value));
+        this.setTransitionTime(0.125);
+        this.setTransform(this.position);
+        this.isDragging = false;
+        if (this.lazy && this.isDiff(this.val, this.value)) {
+          this.syncValue();
+        }
+      } else {
+        return false;
+      }
+    },
+    setValueOnPos(pos, isDrag) {
+      let range = this.limit;
+      let valueRange = this.valueLimit;
+      if (pos >= range[0] && pos <= range[1]) {
+        this.halt = false;
+        let v =
+          (Math.round(pos / this.gap) * (this.spacing * this.multiple) +
+            this.minimum * this.multiple) /
+          this.multiple;
+        this.setCurrentValue(v, isDrag);
+      } else if (pos < range[0]) {
+        this.halt = true;
+        console.log("overshoot1");
+        this.setTransform(range[0]);
+        this.setCurrentValue(valueRange[0], true);
+      } else {
+        this.halt = true;
+        console.log("overshoot2");
+        this.setTransform(range[1]);
+        this.setCurrentValue(valueRange[1], true);
+      }
+    },
+    createMarks() {
+      if (Array.isArray(this.data)) {
+        let ticks = this.data.length;
+        for (let i = 0; i < ticks; i++) {
+          this.range.push(this.data[i]);
+        }
+      } else if (
+        Math.floor((this.maximum - this.minimum) * this.multiple) %
+          (this.interval * this.multiple) !==
+        0
+      ) {
+        console.error(
+          "[ERROR]: Prop[interval] must be a divisor of [max] - [min]"
+        );
+      } else {
+        let ticks = (this.max - this.min) / this.interval;
+        let t = 0 - this.interval;
+        for (let i = -1; i < ticks; i++) {
+          t = t + this.interval;
+          this.range.push(t);
+        }
+      }
+    },
+    isDiff(a, b) {
+      if (
+        Object.prototype.toString.call(a) !== Object.prototype.toString.call(b)
+      ) {
+        return true;
+      } else if (Array.isArray(a) && a.length === b.length) {
+        return a.some((v, i) => v !== b[i]);
+      }
+      return a !== b;
+    },
+    setCurrentValue(val, bool) {
+      if (val < this.minimum || val > this.maximum) return false;
+      if (this.isDiff(this.currentValue, val)) {
+        this.currentValue = val;
+        if (!this.lazy || !this.isDragging) {
+          this.syncValue();
+        }
+      }
+    },
+    setIndex(val) {
+      val = this.spacing * val + this.minimum;
+      this.setCurrentValue(val, true);
+    },
+    setValue(val) {
+      if (this.isDiff(this.val, val)) {
+        let resetVal = this.limitValue(val);
+        this.val = resetVal;
+        this.syncValue();
+        //this.refresh(this.$refs.elem);
+      }
+    },
+    setTransform(val) {
+      let value = val - (this.$refs.handle.scrollWidth - 2) / 2;
+      let translateValue = `translateX(${value}px)`;
+      this.$refs.handle.style.transform = translateValue;
+      this.$refs.handle.style.webkitTransform = translateValue;
+      this.$refs.handle.style.transform = translateValue;
+      this.$refs.process.style.width = `${val}px`;
+    },
+    setTransitionTime(t) {
+      this.$refs.handle.style.transitionDuration = `${t}s`;
+      this.$refs.handle.style.webkitTransitionDuration = `${t}s`;
+      this.$refs.process.style.transitionDuration = `${t}s`;
+      this.$refs.process.style.webkitTransitionDuration = `${t}s`;
+    },
+    limitValue(val) {
+      if (this.data) {
+        return val;
+      }
+      const inRange = (v) => {
+        if (v < this.min) {
+          return this.min;
+        } else if (v > this.max) {
+          return this.max;
+        }
+        return v;
+      };
+      return inRange(val);
+    },
+    syncValue() {
+      let val = this.val;
+      if (this.range) {
+        this.$emit("callbackRange", this.range[this.currentIndex]);
+      }
+      this.$emit("input", val);
+    },
+    getValue() {
+      return this.val;
+    },
+    getIndex() {
+      return this.currentIndex;
+    },
+    getStaticData() {
+      if (this.$refs.elem) {
+        this.size = this.$refs.elem.offsetWidth;
+        this.offset = this.$refs.elem.getBoundingClientRect().left;
+      }
+    },
+    refresh(el) {
+      if (el) {
+        this.getStaticData();
+        this.setTransform(this.position);
+        this.setSensorScroll(el);
+      }
+    },
+    beforeDestroy() {
+      if (this.$refs.elem) {
+        this.unbindEvents(this.$refs.elem);
+      }
+    },
+    watchValue(newVal) {
+      this.setValue(newVal);
+    },
+  },
+  props: {
+    interval: { default: 1, type: Number },
+    steps: { default: 0, type: Number },
+    data: { default: null, type: Array },
+    dataIndexing: { default: true, type: Boolean },
+    value: {
+      default: 0,
+      // [string, number]
+      type: Object,
+    },
+    min: { default: 0, type: Number },
+    max: { default: 100, type: Number },
+    tooltip: {
+      default: "always",
+      // "always" | false
+      type: Object,
+    },
+    suffix: { default: null, type: String },
+    prefix: { default: null, type: String },
+    simpleTheme: { default: false, type: Boolean },
+    marks: { default: false, type: Boolean },
+    labels: { default: false, type: Boolean },
+    isDisabled: { default: false, type: Boolean },
+    draggable: { default: true, type: Boolean },
+  },
+  watch: {
+    value: [
+      {
+        handler: "watchValue",
+      },
+    ],
+  },
+});
 </script>
 
 <style lang="less" scoped>

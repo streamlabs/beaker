@@ -13,9 +13,9 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { EventBus } from "./../plugins/event-bus";
-import { defineComponent } from "vue";
+import { computed, ref, onBeforeMount, onUnmounted } from "vue";
 
 interface INotificationMsg {
   id: number;
@@ -24,68 +24,63 @@ interface INotificationMsg {
   timerStarted: boolean;
 }
 
-export default defineComponent({
-    data() {
-        const messages: INotificationMsg[] = [];
+const messages = ref<INotificationMsg[]>([]);
 
-        return {
-            messages
-        };
-    },
-    computed: {
-        visibleMessages() {
-            const msgs = this.messages.filter((msg, idx) => idx < 5);
+const visibleMessages = computed(() => {
+  const msgs = messages.value.filter((msg, idx) => idx < 5);
 
-                msgs.forEach(msg => {
-                  if (!msg.timerStarted) {
-                    msg.timerStarted = true;
-                    setTimeout(() => {
-                      const idx = this.messages.findIndex(message => msg.id === message.id);
-                      this.messages.splice(idx, 1);
-                    }, 5000);
-                  }
-                });
-
-                return msgs;
-        }
-    },
-    created() {
-        EventBus.$on("copy-success", this.onCopySuccess);
-        EventBus.$on("copy-error", this.onCopyError);
-    },
-    destroyed() {
-        EventBus.$off("copy-success");
-        EventBus.$off("copy-error");
-    },
-    methods: {
-        onCopySuccess(e) {
-            let msg: string = typeof e === 'string' ? e : e.text;
-
-                this.setCopyMsg({
-                  id: this.setCopyMsgId(),
-                  msg,
-                  status: "success",
-                  timerStarted: false
-                });
-        },
-        onCopyError(e) {
-            this.setCopyMsg({
-              id: this.setCopyMsgId(),
-              msg: "Failed to copy to clipboard",
-              status: "error",
-              timerStarted: false
-            });
-        },
-        setCopyMsgId() {
-            return Math.ceil(Math.random() * 10000);
-        },
-        setCopyMsg({ id, msg, status, timerStarted }) {
-            const message: INotificationMsg = { id, msg, status, timerStarted };
-            this.messages.push(message);
-        }
+  msgs.forEach((msg) => {
+    if (!msg.timerStarted) {
+      msg.timerStarted = true;
+      setTimeout(() => {
+        const idx = messages.value.findIndex(
+          (message) => msg.id === message.id
+        );
+        messages.value.splice(idx, 1);
+      }, 5000);
     }
-})
+  });
 
+  return msgs;
+});
+
+function setCopyMsgId() {
+  return Math.ceil(Math.random() * 10000);
+}
+function setCopyMsg({ id, msg, status, timerStarted }) {
+  const message: INotificationMsg = { id, msg, status, timerStarted };
+  messages.value.push(message);
+}
+
+function onCopySuccess(e) {
+  let msg: string = typeof e === "string" ? e : e.text;
+
+  setCopyMsg({
+    id: setCopyMsgId(),
+    msg,
+    status: "success",
+    timerStarted: false,
+  });
+}
+
+function onCopyError(e) {
+  setCopyMsg({
+    id: setCopyMsgId(),
+    msg: "Failed to copy to clipboard",
+    status: "error",
+    timerStarted: false,
+  });
+}
+
+onBeforeMount(() => {
+  EventBus.$on("copy-success", onCopySuccess);
+  EventBus.$on("copy-error", onCopyError);
+});
+
+onUnmounted(() => {
+  EventBus.$off("copy-success");
+  EventBus.$off("copy-error");
+});
 </script>
 
 <style lang="less" scoped>

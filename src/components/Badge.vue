@@ -81,7 +81,9 @@ const badgeClasses = computed(() => {
 });
 
 const backgroundProgress = computed(() =>
-  parseInt(`${(props.current / props.total) * 100}`)
+  !props.current || !props.total
+    ? 0
+    : parseInt(`${(props.current / props.total) * 100}`)
 );
 </script>
 

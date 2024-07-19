@@ -12,24 +12,11 @@
   </div>
 </template>
 
-<script lang="ts">
-import Button from "./../components/Button.vue";
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  components: {
-    Button
-  },
-    props: {
-        title: {
-            type: String
-        },
-        desc: {
-            type: String
-        }
-    }
-})
-
+<script setup lang="ts">
+defineProps<{
+  title: string;
+  desc: string;
+}>();
 </script>
 
 <style lang="less">

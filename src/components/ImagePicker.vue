@@ -1,7 +1,7 @@
 <template>
   <div class="s-image-picker">
     <div class="s-image-picker__thumb" @click="chooseImage">
-      <img :src="this.imageThumb" v-if="imageSelected" />
+      <img :src="imageThumb" v-if="imageSelected" />
       <div class="s-upload-icon" v-if="!imageSelected">
         <i class="icon-upload-image"></i>
       </div>
@@ -14,7 +14,7 @@
         accept=".jpg, .jpeg, .png, .gif, .svg"
         @change="onSelectFile"
       />
-      {{ this.imageFileName }}
+      {{ imageFileName }}
     </div>
     <div class="s-button-container s-button-container--right">
       <Button
@@ -34,59 +34,43 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Button from "./../components/Button.vue";
-import { defineComponent } from "vue";
+import { ref } from "vue";
 
-export default defineComponent({
-  components: {
-    Button
-  },
-    data() {
-        const imageSelected: Boolean = false;
-        const imageThumb: any = null;
-        const imageFileName: any = "Click here to add image...";
-        const imageData: any = null;
-        const $refs: {
-                fileInput: HTMLElement;
-              } = undefined;
+const imageSelected = ref(false);
+const imageThumb = ref<string | null>(null);
+const imageFileName = ref("Click here to add image...");
+const imageData = ref(null);
+const fileInput = ref<HTMLElement | null>(null);
 
-        return {
-            $refs,
-            imageData,
-            imageFileName,
-            imageThumb,
-            imageSelected
-        };
-    },
-    methods: {
-        chooseImage() {
-            if (!this.imageSelected) {
-              this.$refs.fileInput.click();
-            }
-        },
-        deleteImage() {
-            this.imageFileName = "Click here to add image...";
-            this.imageThumb = null;
-            this.imageSelected = false;
-        },
-        uploadImage() {
-            this.$emit("upload", this.imageData);
-        },
-        onSelectFile(event: any) {
-            var files = event.target.files;
-            var output: any = [];
-            for (var i = 0, f; (f = files[i]); i++) {
-              output.push(f.name, f.size);
-            }
-            this.imageFileName = output[0];
-            this.imageData = event.target.files[0];
-            this.imageThumb = URL.createObjectURL(files[0]);
-            this.imageSelected = true;
-        }
-    }
-})
+function chooseImage() {
+  if (!imageSelected.value) {
+    fileInput.value?.click();
+  }
+}
+function deleteImage() {
+  imageFileName.value = "Click here to add image...";
+  imageThumb.value = null;
+  imageSelected.value = false;
+}
 
+const emit = defineEmits(["upload"]);
+function uploadImage() {
+  emit("upload", imageData.value);
+}
+
+function onSelectFile(event: any) {
+  var files = event.target.files;
+  var output: any = [];
+  for (var i = 0, f; (f = files[i]); i++) {
+    output.push(f.name, f.size);
+  }
+  imageFileName.value = output[0];
+  imageData.value = event.target.files[0];
+  imageThumb.value = URL.createObjectURL(files[0]);
+  imageSelected.value = true;
+}
 </script>
 
 <style lang="less">

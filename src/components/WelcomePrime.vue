@@ -26,64 +26,46 @@
       </div>
       <div class="modal-prime__button">
         <slot v-if="hasSlot"></slot>
-        <s-button
+        <SButton
           v-else
           size="large"
           variation="prime"
           icon="prime"
           :title="primeButtonText"
           @click="onPrimeButtonHandler"
-        ></s-button>
+        ></SButton>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import Button from "./../components/Button.vue";
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import SButton from "./../components/Button.vue";
+import { ref, computed, onMounted } from "vue";
 
-export default defineComponent({
-  components: {
-    "s-button": Button
-  },
-    data() {
-        const isUserAgentEdge: boolean = false;
-        const primeFeatureListDefault: string[] = [
-                "100s of Stunning Themes",
-                "Every App is FREE",
-                "Merch Store with Wholesale Pricing",
-                "Custom Web Domain and Email Address",
-                "Automatic Gold All-Star Status"
-              ];
+const isUserAgentEdge = ref(false);
+const primeFeatureListDefault = ref([
+  "100s of Stunning Themes",
+  "Every App is FREE",
+  "Merch Store with Wholesale Pricing",
+  "Custom Web Domain and Email Address",
+  "Automatic Gold All-Star Status",
+]);
 
-        return {
-            primeFeatureListDefault,
-            isUserAgentEdge
-        };
-    },
-    computed: {
-        hasSlot() {
-            return !(typeof this.$slots.default === "undefined");
-        }
-    },
-    mounted() {
-        navigator.userAgent.indexOf("Edge") !== -1
-        ? (this.isUserAgentEdge = true)
-        : (this.isUserAgentEdge = false);
-    },
-    methods: {
-        onPrimeButtonHandler() {
-            this.$emit("onClickPrime");
-        }
-    },
-    props: {
-        primeButtonText: { default: "Continue",
-            type: String
-        }
-    }
-})
+const hasSlot = computed(() => !(typeof this.$slots.default === "undefined"));
 
+onMounted(() => {
+  isUserAgentEdge.value = navigator.userAgent.indexOf("Edge") !== -1;
+});
+
+const emit = defineEmits(["onClickPrime"]);
+function onPrimeButtonHandler() {
+  emit("onClickPrime");
+}
+
+withDefaults(defineProps<{ primeButtonText?: string }>(), {
+  primeButtonText: "Continue",
+});
 </script>
 
 <style lang="less" scoped>

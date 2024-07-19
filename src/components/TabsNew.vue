@@ -76,7 +76,7 @@
 <script lang="ts">
 import { debounce, cloneDeep } from "lodash-es";
 import PaneDropdown from "./PaneDropdown.vue";
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 
 interface ITab {
   name: string;
@@ -350,7 +350,8 @@ export default defineComponent({
   },
   props: {
     tabs: {
-      type: Array as PropType<ITab[]>,
+      // ITab[]
+      type: Array,
     },
     size: {
       type: String,

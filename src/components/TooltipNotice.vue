@@ -27,61 +27,42 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed } from "vue";
 import Button from "./Button.vue";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  components: {
-    Button
-  },
-    computed: {
-        arrowClasses() {
-            let classes: string[] = [];
+interface Props {
+  title: string;
+  buttonTitle?: string;
+  secondaryActionTitle?: string;
+  desc: string;
+  arrowPosition?: string;
+  hasButton?: boolean;
+  hasSecondaryAction?: boolean;
+  width?: number;
+}
 
-                if (this.arrowPosition) {
-                  classes.push(`s-tooltip-notice__arrow--${this.arrowPosition}`);
-                }
+const props = withDefaults(defineProps<Props>(), {
+  buttonTitle: "Got it",
+  secondaryActionTitle: "Learn More",
+  arrowPosition: "left",
+  hasButton: true,
+  hasSecondaryAction: false,
+  width: 200,
+});
 
-                return classes;
-        }
-    },
-    methods: {
-        clickHandler() {
-            this.$emit("handle-tooltip");
-        },
-        secondaryClickHandler() {
-            this.$emit("handle-tooltip-secondary");
-        }
-    },
-    props: {
-        title: { required: true,
-            type: String
-        },
-        buttonTitle: { default: "Got it",
-            type: String
-        },
-        secondaryActionTitle: { default: "Learn More",
-            type: String
-        },
-        desc: { required: true,
-            type: String
-        },
-        arrowPosition: { default: "left",
-            type: String
-        },
-        hasButton: { default: true,
-            type: Boolean
-        },
-        hasSecondaryAction: { default: false,
-            type: Boolean
-        },
-        width: { default: 200,
-            type: Number
-        }
-    }
-})
+const arrowClasses = computed(() =>
+  props.arrowPosition ? `s-tooltip-notice__arrow--${props.arrowPosition}` : ""
+);
 
+const emit = defineEmits(["handle-tooltip", "handle-tooltip-secondary"]);
+function clickHandler() {
+  emit("handle-tooltip");
+}
+
+function secondaryClickHandler() {
+  emit("handle-tooltip-secondary");
+}
 </script>
 
 <style lang="less">
