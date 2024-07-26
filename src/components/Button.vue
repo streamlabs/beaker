@@ -89,7 +89,7 @@ export interface Props {
   state?: "hover" | "focus" | "loading" | "disabled" | null;
   type?: string | null;
   to?: string | null;
-  tag?: "button" | "a" | "router-link";
+  tag?: "button" | "a" | "router-link" | undefined;
   variation?: string;
   primeBgColor?: string | null;
   primeTitle?: string | null;

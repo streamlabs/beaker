@@ -6,13 +6,16 @@ import dts from "vite-plugin-dts";
 export default defineConfig({
   plugins: [vue(), dts({
       tsconfigPath: "tsconfig.json",
-      cleanVueFileName: true,
-      exclude: [
+    cleanVueFileName: true,
+      include: ['src/components/*.vue'],
+    exclude: [
+        "src/index.d.ts",
         "src/assets/**",
         "src/demos/**",
         "src/styles/**",
         "src/views/**",
-      ],
+    ],
+      outDir: 'dist',
     }),],
   build: {
     minify: false,

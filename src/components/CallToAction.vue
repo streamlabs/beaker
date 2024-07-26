@@ -77,7 +77,7 @@ export interface Props {
   buttonDescription?: string;
   buttonHref?: string;
   buttonTo?: string;
-  buttonTag?: string;
+  buttonTag?: "button" | "a" | "router-link" | undefined;
   buttonClick?: () => {};
   buttonBg?: string;
   buttonTextColor?: string;
