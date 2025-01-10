@@ -34,23 +34,23 @@
       >
         <div class="s-sitesearch-quicklinks">Quick Links</div>
         <a
-          :href="searchData[quickLinkLoc[i]].route"
           v-for="(suggested, i) in suggestedLinks"
+          :href="jsonSearch[suggested.jsonSearchIndex].route"
           :key="suggested.item.name"
           class="s-sitesearch-results"
           :class="{ 's-active-result': currentResult === i }"
           @mouseover="currentResult = i"
-          @mousedown="trackEvent(searchData[quickLinkLoc[i]].route)"
+          @mousedown="trackEvent(jsonSearch[suggested.jsonSearchIndex].route)"
           @mouseup="blurSearch"
         >
           <div class="s-sitesearch__result--image">
             <i
-              :class="searchData[quickLinkLoc[i]].image"
+              :class="jsonSearch[suggested.jsonSearchIndex].image"
               class="s-sitesearch__result--image"
             ></i>
           </div>
           <div class="s-sitesearch__result--title">
-            {{ searchData[quickLinkLoc[i]].title }}
+            {{ jsonSearch[suggested.jsonSearchIndex].title }}
           </div>
         </a>
       </div>
@@ -61,13 +61,13 @@
       >
         <transition-group name="s-sitesearch--fadeX">
           <a
-            :href="searchResult.item.route"
             v-for="(searchResult, i) in limitedResult"
+            :href="searchResult.item.route"
             :key="searchResult.item.name"
             class="s-sitesearch-results"
             :class="{ 's-active-result': currentResult === i }"
             @mouseover="currentResult = i"
-            @mousedown="trackEvent(searchData[quickLinkLoc[i]].route)"
+            @mousedown="trackEvent(jsonSearch[searchResult.refIndex].route)"
             @mouseup="blurSearch"
           >
             <div class="s-sitesearch__result--image">

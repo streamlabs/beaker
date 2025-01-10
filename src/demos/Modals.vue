@@ -353,8 +353,23 @@ import DemoSection from "./../components/DemoSection.vue";
 import ModalComp from "./../components/ModalComp.vue";
 import ModalsCode from "./Modals.vue?raw";
 
+<<<<<<< HEAD
 const demoCode = ref(ModalsCode);
 function test() {
   console.log("test");
+=======
+@Component({
+  components: {
+    Button,
+    DemoSection,
+    ModalComp,
+  },
+})
+export default class Modals extends Vue {
+  demoCode = ModalsCode;
+  test() {
+    console.log("test");
+  }
+>>>>>>> 2e694028174d3fce01756b9d0699ccfffadf1baf
 }
 </script>

@@ -17,7 +17,10 @@
     :tooltip-formatter="prefix + '{value}' + suffix"
     :data="data"
     :disabled="disabled"
+    v-bind="$attrs"
+    v-on="$listeners"
     @change="(value) => emitInput(value)"
+    ref="slider"
   />
   <!-- ref="slider" -->
 </template>
@@ -89,7 +92,6 @@ onMounted(() => {
   });
 
   if (slider.value) {
-    console.log("🚀 ~ onMounted ~ slider.value:", slider.value);
     ro.value.observe(slider.value);
   }
   displayValue.value = props.value;
