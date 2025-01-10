@@ -1,11 +1,20 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import dts from "vite-plugin-dts";
+import path from "path";
 
 export default defineConfig({
   base: "/beaker/",
   plugins: [
-    vue(),
+    vue({
+      template: {
+        compilerOptions: {
+          compatConfig: {
+            MODE: 2
+          }
+        }
+      }
+    }),
     dts({
       tsconfigPath: "tsconfig.build.json",
       cleanVueFileName: true,
@@ -24,4 +33,11 @@ export default defineConfig({
       requireReturnsDefault: true,
     },
   },
+
+  resolve: {
+    alias: {
+      vue: '@vue/compat',
+      'vue-js-modal': path.join(__dirname, './src/plugins/vue-js-modal/src')
+    }
+  }
 });

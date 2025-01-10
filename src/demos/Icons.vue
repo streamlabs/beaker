@@ -47,8 +47,11 @@
 </template>
 
 <script setup lang="ts">
-import { EventBus } from "./../plugins/event-bus";
+// import { EventBus } from "./../plugins/event-bus";
 import { onMounted, ref } from "vue";
+import { useCopyNotification } from "../composables/index";
+
+const { onCopySuccess, onCopyError } = useCopyNotification();
 
 const ICON_STYLESHEET_URL = "https://cdn.streamlabs.com/icons/style.css";
 
@@ -73,11 +76,11 @@ function selectIconData(icon) {
 }
 
 function emitCopySuccess(e) {
-  EventBus.$emit("copy-success", `Copied "${e.text}" to clipboard`);
+  onCopySuccess(`Copied "${e.text}" to clipboard`);
 }
 
 function emitCopyError(e) {
-  EventBus.$emit("copy-copy", e);
+  onCopyError(e);
 }
 </script>
 

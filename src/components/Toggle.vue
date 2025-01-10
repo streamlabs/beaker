@@ -10,7 +10,6 @@
         's-toggle__option',
         { 's-toggle__option--active': value === key },
       ]"
-      v-html="val"
     >
       {{ val }}
     </button>

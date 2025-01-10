@@ -14,73 +14,76 @@
 </template>
 
 <script setup lang="ts">
-import { EventBus } from "./../plugins/event-bus";
-import { computed, ref, onBeforeMount, onUnmounted } from "vue";
+// import { EventBus } from "./../plugins/event-bus";
+// import { computed, ref, onBeforeMount, onUnmounted } from "vue";
+import { useCopyNotification } from "../composables/index";
 
-interface INotificationMsg {
-  id: number;
-  status: string;
-  msg: string;
-  timerStarted: boolean;
-}
+const { visibleMessages } = useCopyNotification();
 
-const messages = ref<INotificationMsg[]>([]);
+// interface INotificationMsg {
+//   id: number;
+//   status: string;
+//   msg: string;
+//   timerStarted: boolean;
+// }
 
-const visibleMessages = computed(() => {
-  const msgs = messages.value.filter((msg, idx) => idx < 5);
+// const messages = ref<INotificationMsg[]>([]);
 
-  msgs.forEach((msg) => {
-    if (!msg.timerStarted) {
-      msg.timerStarted = true;
-      setTimeout(() => {
-        const idx = messages.value.findIndex(
-          (message) => msg.id === message.id
-        );
-        messages.value.splice(idx, 1);
-      }, 5000);
-    }
-  });
+// const visibleMessages = computed(() => {
+//   const msgs = messages.value.filter((msg, idx) => idx < 5);
 
-  return msgs;
-});
+//   msgs.forEach((msg) => {
+//     if (!msg.timerStarted) {
+//       msg.timerStarted = true;
+//       setTimeout(() => {
+//         const idx = messages.value.findIndex(
+//           (message) => msg.id === message.id
+//         );
+//         messages.value.splice(idx, 1);
+//       }, 5000);
+//     }
+//   });
 
-function setCopyMsgId() {
-  return Math.ceil(Math.random() * 10000);
-}
-function setCopyMsg({ id, msg, status, timerStarted }) {
-  const message: INotificationMsg = { id, msg, status, timerStarted };
-  messages.value.push(message);
-}
+//   return msgs;
+// });
 
-function onCopySuccess(e) {
-  let msg: string = typeof e === "string" ? e : e.text;
+// function setCopyMsgId() {
+//   return Math.ceil(Math.random() * 10000);
+// }
+// function setCopyMsg({ id, msg, status, timerStarted }) {
+//   const message: INotificationMsg = { id, msg, status, timerStarted };
+//   messages.value.push(message);
+// }
 
-  setCopyMsg({
-    id: setCopyMsgId(),
-    msg,
-    status: "success",
-    timerStarted: false,
-  });
-}
+// function onCopySuccess(e) {
+//   let msg: string = typeof e === "string" ? e : e.text;
 
-function onCopyError(e) {
-  setCopyMsg({
-    id: setCopyMsgId(),
-    msg: "Failed to copy to clipboard",
-    status: "error",
-    timerStarted: false,
-  });
-}
+//   setCopyMsg({
+//     id: setCopyMsgId(),
+//     msg,
+//     status: "success",
+//     timerStarted: false,
+//   });
+// }
 
-onBeforeMount(() => {
-  EventBus.$on("copy-success", onCopySuccess);
-  EventBus.$on("copy-error", onCopyError);
-});
+// function onCopyError(e) {
+//   setCopyMsg({
+//     id: setCopyMsgId(),
+//     msg: "Failed to copy to clipboard",
+//     status: "error",
+//     timerStarted: false,
+//   });
+// }
 
-onUnmounted(() => {
-  EventBus.$off("copy-success");
-  EventBus.$off("copy-error");
-});
+// onBeforeMount(() => {
+//   EventBus.$on("copy-success", onCopySuccess);
+//   EventBus.$on("copy-error", onCopyError);
+// });
+
+// onUnmounted(() => {
+//   EventBus.$off("copy-success");
+//   EventBus.$off("copy-error");
+// });
 </script>
 
 <style lang="less" scoped>

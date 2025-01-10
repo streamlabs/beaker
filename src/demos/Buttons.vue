@@ -713,15 +713,18 @@ components: {
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import ButtonCode from "./Buttons.vue?raw";
-import { EventBus } from "./../plugins/event-bus";
+// import { EventBus } from "./../plugins/event-bus";
 import { ref } from "vue";
+import { useCopyNotification } from "../composables/index";
+
+const { onCopySuccess } = useCopyNotification();
 
 // const isLoading = ref(true);
 const isLoadingExample = ref(false);
 const demoCode = ref(ButtonCode);
 
 function buttonClick(buttonType) {
-  EventBus.$emit("copy-success", `"${buttonType}" button clicked`);
+  onCopySuccess(`"${buttonType}" button clicked`);
 }
 </script>
 

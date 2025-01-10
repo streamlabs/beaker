@@ -47,7 +47,10 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { EventBus } from "./../plugins/event-bus";
+// import { EventBus } from "./../plugins/event-bus";
+import { useCopyNotification } from "../composables/index";
+
+const { onCopySuccess, onCopyError } = useCopyNotification();
 
 interface INotificationMsg {
   id: number;
@@ -124,31 +127,12 @@ const colors = [
   ],
 ];
 
-const visibleMessages = computed(() => {
-  const msgs = messages.value.filter((_, idx) => idx < 5);
-
-  msgs.forEach((msg) => {
-    if (!msg.timerStarted) {
-      msg.timerStarted = true;
-
-      setTimeout(() => {
-        const idx = messages.value.findIndex(
-          (message) => msg.id === message.id
-        );
-        messages.value.splice(idx, 1);
-      }, 5000);
-    }
-  });
-
-  return msgs;
-});
-
 function emitCopySuccess(e) {
-  EventBus.$emit("copy-success", `${e.text} copied`);
+  onCopySuccess(`${e.text} copied`);
 }
 
 function emitCopyError(e) {
-  EventBus.$emit("copy-copy", e);
+  onCopyError(e);
 }
 </script>
 
