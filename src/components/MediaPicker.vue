@@ -86,6 +86,7 @@
           >
             <a
               v-for="(control, index) in mediaControls"
+              ref="controls"
               :key="control.key"
               :class="control.class"
               :title="control.title"
@@ -108,8 +109,9 @@
 </template>
 
 <script setup lang="ts">
-import { mixin as vFocus } from "vue-focus";
-import { computed, onMounted, ref, watch } from "vue";
+// import { mixin as vFocus } from "vue-focus";
+import { useFocus } from "@vueuse/core";
+import { computed, onMounted, ref, watch, useTemplateRef } from "vue";
 
 interface Props {
   variation: "image" | "audio";
@@ -135,6 +137,7 @@ const emit = defineEmits<{
   (e: "remove-media"): void;
 }>();
 
+const controlRefs = useTemplateRef("controls");
 const mediaPicker = ref<HTMLElement | null>(null);
 
 const mediaPickerSmall = ref(false);
