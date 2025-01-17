@@ -1,16 +1,10 @@
 /// <reference path="./../index.d.ts" />
-import { createApp, configureCompat } from "@vue/compat";
+import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import defineValidationRules from './plugins/validation-rules';
 
 import 'vue-final-modal/style.css';
-
-
-configureCompat({
-  MODE: 3,
-  RENDER_FUNCTION: false
-})
 
 defineValidationRules();
 

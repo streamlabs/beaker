@@ -8,22 +8,12 @@ export default defineConfig({
   // base: "/beaker/",
   resolve: {
     alias: {
-      vue: '@vue/compat',
-      '@': path.join(__dirname, 'src/'),
-      'vue-js-modal': path.join(__dirname, 'src/plugins/vue-js-modal/src/index.js')
+      '@': path.join(__dirname, 'src/')
     }
   },
   plugins: [
     vueDevTools(),
-    vue({
-      template: {
-        compilerOptions: {
-          compatConfig: {
-            MODE: 3
-          }
-        }
-      }
-    }),
+    vue(),
     dts({
       tsconfigPath: "tsconfig.build.json",
       cleanVueFileName: true,
