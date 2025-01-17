@@ -9,7 +9,7 @@
       class="s-loader__bg"
     >
       <div class="s-loader__inner">
-        <Spinner :swap="swapMode" class="s-spinner__overlay" :size="'large'" />
+        <Spinner :swap="swapMode" class="s-spinner__overlay" size="large" />
         <div class="s-loader__text">{{ loaderText }}</div>
       </div>
     </div>
@@ -17,63 +17,62 @@
 </template>
 
 <script setup lang="ts">
-import Spinner from "./../components/Spinner.vue";
-import Button from "./../components/Button.vue";
 import { onMounted, ref } from "vue";
+import Spinner from "@/components/Spinner.vue";
 
 interface Props {
-  loadingStrs?: string[];
+  loadingStrs?: string | string[];
   semiOpaque?: boolean;
   isRandom?: boolean;
   swapMode?: boolean;
   fixedBackground?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  loadingStrs: () => [""],
-  semiOpaque: false,
-  isRandom: false,
-  swapMode: false,
-  fixedBackground: true,
-});
+const {
+  loadingStrs = [""],
+  semiOpaque = false,
+  isRandom = false,
+  swapMode = false,
+  fixedBackground = true,
+} = defineProps<Props>();
 
 const index = ref(0);
 const loaderText = ref("");
 
 function loopText() {
-  loaderText.value = props.loadingStrs[index.value];
+  loaderText.value = loadingStrs[index.value];
   index.value++;
-  if (index.value === props.loadingStrs.length) {
+  if (index.value === loadingStrs.length) {
     index.value = 0;
   }
   setTimeout(loopText, 4000);
 }
 
 function loopRandomText() {
-  const randomIndex = Math.floor(Math.random() * props.loadingStrs.length);
-  if (loaderText.value === props.loadingStrs[randomIndex]) {
+  const randomIndex = Math.floor(Math.random() * loadingStrs.length);
+  if (loaderText.value === loadingStrs[randomIndex]) {
     loopRandomText();
   } else {
-    loaderText.value = props.loadingStrs[randomIndex];
+    loaderText.value = loadingStrs[randomIndex];
     setTimeout(loopRandomText, 4000);
   }
 }
 
 function distinguishNumberOfArrays() {
-  if (props.loadingStrs.length > 1) {
-    if (props.isRandom) {
+  if (loadingStrs.length > 1) {
+    if (isRandom) {
       loopRandomText();
     } else {
       loopText();
     }
   } else {
-    loaderText.value = props.loadingStrs?.[0];
+    loaderText.value = loadingStrs?.[0];
   }
 }
 
 onMounted(() => {
-  if (typeof props.loadingStrs === "string") {
-    loaderText.value = props.loadingStrs;
+  if (typeof loadingStrs === "string") {
+    loaderText.value = loadingStrs;
   } else {
     distinguishNumberOfArrays();
   }

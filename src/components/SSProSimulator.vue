@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import UrlBar from "./../components/UrlBar.vue";
+import UrlBar from "@/components/UrlBar.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 
 export interface Props {

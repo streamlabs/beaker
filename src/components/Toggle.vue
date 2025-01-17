@@ -5,14 +5,13 @@
       v-for="(val, key) in values"
       :key="key"
       :title="capitalize(key)"
-      @click="$emit('input', key)"
+      @click="model = key"
       :class="[
         's-toggle__option',
-        { 's-toggle__option--active': value === key },
+        { 's-toggle__option--active': model === key },
       ]"
-    >
-      {{ val }}
-    </button>
+      v-html="val"
+    />
   </div>
 </template>
 
@@ -21,11 +20,11 @@ import { computed } from "vue";
 
 const props = defineProps<{
   values: Record<string, string>;
-  value: string;
   variation?: string;
 }>();
 
-defineEmits<{ (e: "input", value: string) }>();
+defineEmits(["update:model-value"]);
+const model = defineModel<string>({ required: true });
 
 function capitalize(value: string) {
   if (!value) return "";

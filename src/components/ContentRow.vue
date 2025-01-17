@@ -1,36 +1,36 @@
 <template>
   <div class="s-content-row" :class="{ 's-content-row-mq': $mq === 'sm' }">
     <div class="s-content-box" :class="{ 's-content-box-mq': $mq === 'sm' }">
-      <i class="s-banner__icon" :class="`icon-${icon}`" v-if="icon"></i>
+      <i v-if="icon" class="s-banner__icon" :class="`icon-${icon}`" />
       <h2
         class="s-content__title"
         :class="{ 's-content__title-mq': $mq === 'sm' }"
       >
-        <slot name="title"></slot>
+        <slot name="title" />
       </h2>
       <p
         class="s-content__text"
         :class="{ 's-content__text-mq': $mq === 'sm' }"
       >
-        <slot name="text"></slot>
+        <slot name="text" />
       </p>
     </div>
     <div class="s-button-container">
       <Button
-        :size="'fixed-width'"
+        size="fixed-width"
         :variation="btnVariation"
         :title="btnTitle"
-        :onClick="'buttonClick'"
         :href="buttonHref"
         :to="buttonTo"
         :tag="buttonTag"
-      ></Button>
+        @click="buttonClick"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Button from "./../components/Button.vue";
+import Button from "@/components/Button.vue";
 
 interface Props {
   icon?: string;
@@ -38,14 +38,15 @@ interface Props {
   btnTitle?: string;
   buttonHref?: string;
   buttonTo?: string;
-  buttonTag?: string;
+  buttonTag?: "button" | "a" | "router-link" | undefined;
+  buttonClick?: () => any;
 }
 
-withDefaults(defineProps<Props>(), {
-  btnVariation: "default",
-  btnTitle: "Default",
-  buttonTag: "button",
-});
+const {
+  btnVariation = "default",
+  btnTitle = "Default",
+  buttonTag = "button",
+} = defineProps<Props>();
 
 const $mq = undefined;
 </script>

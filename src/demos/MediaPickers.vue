@@ -14,49 +14,44 @@ components: {
       <DemoSection title="Default" :code="demoCode">
         <template #components>
           <FormGroup>
-            <media-picker
-              slot="input"
-              variation="image"
-              :media-link="true"
-              :media-preview="false"
-              @select-media="selectVideoMedia"
-              @preview-media="previewVideoMedia"
-              @remove-media="removeVideoMedia"
-              title="Select Video Media"
-              v-model="videoMedia"
-            />
-
-            <media-picker
-              slot="input"
-              variation="image"
-              :media-link="true"
-              :media-preview="false"
-              @select-media="selectImageMedia"
-              @preview-media="previewImageMedia"
-              @remove-media="removeImageMedia"
-              title="Select Image Media"
-              v-model="imageMedia"
-            />
-
-            <media-picker
-              slot="input"
-              variation="audio"
-              :media-link="true"
-              @select-media="selectAudioMedia"
-              @remove-media="removeAudioMedia"
-              v-model="audioMedia"
-            />
-
-            <media-picker
-              slot="input"
-              variation="audio"
-              title="My Sample Title"
-              :media-link="true"
-              :controls-always-visible="true"
-              @select-media="selectAudioMedia"
-              @remove-media="removeAudioMedia"
-              v-model="audioMedia"
-            />
+            <template #input>
+              <MediaPicker
+                variation="image"
+                :media-link="true"
+                :media-preview="false"
+                @select-media="selectVideoMedia"
+                @preview-media="previewVideoMedia"
+                @remove-media="removeVideoMedia"
+                title="Select Video Media"
+                v-model="videoMedia"
+              />
+              <MediaPicker
+                variation="image"
+                :media-link="true"
+                :media-preview="false"
+                @select-media="selectImageMedia"
+                @preview-media="previewImageMedia"
+                @remove-media="removeImageMedia"
+                title="Select Image Media"
+                v-model="imageMedia"
+              />
+              <MediaPicker
+                variation="audio"
+                :media-link="true"
+                @select-media="selectAudioMedia"
+                @remove-media="removeAudioMedia"
+                v-model="audioMedia"
+              />
+              <MediaPicker
+                variation="audio"
+                title="My Sample Title"
+                :media-link="true"
+                :controls-always-visible="true"
+                @select-media="selectAudioMedia"
+                @remove-media="removeAudioMedia"
+                v-model="audioMedia"
+              />
+            </template>
           </FormGroup>
         </template>
       </DemoSection>
@@ -148,10 +143,10 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import FormGroup from "./../components/FormGroup.vue";
-import MediaPicker from "./../components/MediaPicker.vue";
+import FormGroup from "@/components/FormGroup.vue";
+import MediaPicker from "@/components/MediaPicker.vue";
 import MediaPickersCode from "./MediaPickers.vue?raw";
-import DemoSection from "./../components/DemoSection.vue";
+import DemoSection from "@/components/DemoSection.vue";
 
 const demoCode = ref(MediaPickersCode);
 const msg = ref("Hi!");

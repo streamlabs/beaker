@@ -1,12 +1,8 @@
 <template>
-  <modal
-    :name="name"
-    :classes="'s-modal-wrapper'"
-    :maxWidth="width"
-    :minWidth="minWidth"
-    height="auto"
-    :adaptive="true"
-    v-on="$listeners"
+  <VueFinalModal
+    :modal-id="name"
+    :content-style="{ width, minWidth }"
+    v-bind="$attrs"
   >
     <div class="s-modal-container">
       <div class="s-redirect">
@@ -17,24 +13,22 @@
         <p class="s-modal-text">{{ text }}</p>
       </div>
     </div>
-  </modal>
+  </VueFinalModal>
 </template>
 
 <script setup lang="ts">
-import Spinner from "./../components/Spinner.vue";
+import Spinner from "@/components/Spinner.vue";
+import { VueFinalModal } from "vue-final-modal";
 
 interface Props {
   name: string;
-  width?: number;
-  minWidth?: number;
+  width?: string;
+  minWidth?: string;
   title: string;
   text: string;
 }
 
-withDefaults(defineProps<Props>(), {
-  width: 600,
-  minWidth: 600,
-});
+const { width = "600px", minWidth = "600px" } = defineProps<Props>();
 </script>
 
 <style lang="less" scoped>

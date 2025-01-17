@@ -21,15 +21,16 @@
             link-desc="Win 7+  245.8 MB"
             :onToggle="test"
           >
-            <Button
-              slot="link"
-              type="a"
-              variation="action"
-              size="standard"
-              href="#"
-              title="Download"
-              icon="overview"
-            />
+            <template #link>
+              <Button
+                type="a"
+                variation="action"
+                size="standard"
+                href="#"
+                title="Download"
+                icon="overview"
+              />
+            </template>
           </banner-marketing>
         </template>
       </DemoSection>
@@ -47,14 +48,15 @@
         link-desc="$4.99/mo"
         :banner-closed="bannerClosed"
       >
-        <Button
-          slot="link"
-          type="a"
-          variation="action"
-          size="standard"
-          href="#"
-          title="Try It Now"
-        />
+        <template #link>
+          <Button
+            type="a"
+            variation="action"
+            size="standard"
+            href="#"
+            title="Try It Now"
+          />
+        </template>
       </banner-marketing>
 
       <table class="docs-table">
@@ -256,13 +258,14 @@
               "
             icon="information"
           >
-            <Button
-              slot="button"
-              type="button"
-              size="fixed-width"
-              variation="action"
-              title="Join"
-            />
+            <template #button>
+              <Button
+                type="button"
+                size="fixed-width"
+                variation="action"
+                title="Join"
+              />
+            </template>
           </Notice>
         </template>
       </DemoSection>
@@ -275,13 +278,14 @@
         title="Your donation link has expired"
         desc="Copy your new donation link and replace all instances containing twitchalerts.com."
       >
-        <Button
-          slot="button"
-          type="button"
-          size="fixed-width"
-          variation="default"
-          title="Copy Link"
-        />
+        <template #button>
+          <Button
+            type="button"
+            size="fixed-width"
+            variation="default"
+            title="Copy Link"
+          />
+        </template>
       </Notice>
 
       <table class="docs-table">
@@ -372,27 +376,33 @@
       <DemoSection title="Introduction Banner" :code="demoCode">
         <template #components>
           <BannerIntroduction bgColor="#5e3bec">
-            <img
-              slot="bgImage"
-              src="https://cdn.streamlabs.com/static/alert-box-sounds-banner-bg.png"
-              alt=""
-              class="banner-introduction-bgImage"
-            />
-            <template #title
-              >Introducing<span class="banner-introduction-title"
-                >Prime Alert Box Sounds</span
-              ></template
-            >
-            <template #description
-              >Modern, hype sounds you can add to your live alerts. All included
-              with Prime.</template
-            >
-            <Button
-              slot="button"
-              title="Browse Sounds"
-              :bgColor="'#000'"
-              :textColor="'#fff'"
-            ></Button>
+            <template #bgImage>
+              <img
+                src="https://cdn.streamlabs.com/static/alert-box-sounds-banner-bg.png"
+                alt=""
+                class="banner-introduction-bgImage"
+              />
+            </template>
+
+            <template #title>
+              Introducing
+              <span class="banner-introduction-title">
+                Prime Alert Box Sounds
+              </span>
+            </template>
+
+            <template #description>
+              Modern, hype sounds you can add to your live alerts. All included
+              with Prime.
+            </template>
+
+            <template #button>
+              <Button
+                title="Browse Sounds"
+                :bgColor="'#000'"
+                :textColor="'#fff'"
+              />
+            </template>
           </BannerIntroduction>
         </template>
       </DemoSection>
@@ -421,13 +431,13 @@
 
 <script setup lang="ts">
 import BannersCode from "./Banners.vue?raw";
-import BannerDiscord from "./../components/BannerDiscord.vue";
-import BannerIntroduction from "./../components/BannerIntroduction.vue";
-import BannerMarketing from "./../components/BannerMarketing.vue";
-import BannerSale from "./../components/BannerSale.vue";
-import Button from "./../components/Button.vue";
-import DemoSection from "./../components/DemoSection.vue";
-import Notice from "./../components/Notice.vue";
+import BannerDiscord from "@/components/BannerDiscord.vue";
+import BannerIntroduction from "@/components/BannerIntroduction.vue";
+import BannerMarketing from "@/components/BannerMarketing.vue";
+import BannerSale from "@/components/BannerSale.vue";
+import Button from "@/components/Button.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import Notice from "@/components/Notice.vue";
 import pretzelIconImage from "../assets/imgs/pretzel-icon.png";
 import { computed, onMounted, ref } from "vue";
 

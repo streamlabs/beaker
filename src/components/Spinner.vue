@@ -8,7 +8,7 @@
         :class="spinnerClass"
         viewBox="0 0 28 40"
       >
-        <path d="M0 0, l0 4, l0 -4" id="s-bar-y-path"></path>
+        <path d="M0 0, l0 4, l0 -4" id="s-bar-y-path" />
         <rect
           width="4"
           height="40"
@@ -25,14 +25,14 @@
             begin="0s"
             dur="1.2s"
             repeatCount="indefinite"
-          ></animate>
+          />
           <animate
             attributeName="height"
             values="40; 32; 40"
             begin="0s"
             dur="1.2s"
             repeatCount="indefinite"
-          ></animate>
+          />
           <animateTransform
             v-if="firefox"
             attributeName="transform"
@@ -41,9 +41,9 @@
             begin="0s"
             dur="1.2s"
             repeatCount="indefinite"
-          ></animateTransform>
+          />
           <animateMotion begin="0s" dur="1.2s" repeatCount="indefinite">
-            <mpath xlink:href="#s-bar-y-path"></mpath>
+            <mpath xlink:href="#s-bar-y-path" />
           </animateMotion>
         </rect>
         <rect
@@ -61,21 +61,21 @@
             values=".24; .24; .24"
             begin="0s"
             dur="0.4s"
-          ></animate>
+          />
           <animate
             attributeName="opacity"
             values=".24; .08; .24"
             begin="0.4s"
             dur="1.2s"
             repeatCount="indefinite"
-          ></animate>
+          />
           <animate
             attributeName="height"
             values="40; 32; 40"
             begin="0.4s"
             dur="1.2s"
             repeatCount="indefinite"
-          ></animate>
+          />
           <animateTransform
             v-if="firefox"
             attributeName="transform"
@@ -84,9 +84,9 @@
             begin="0.4s"
             dur="1.2s"
             repeatCount="indefinite"
-          ></animateTransform>
+          />
           <animateMotion begin="0.4s" dur="1.2s" repeatCount="indefinite">
-            <mpath xlink:href="#s-bar-y-path"></mpath>
+            <mpath xlink:href="#s-bar-y-path" />
           </animateMotion>
         </rect>
         <rect
@@ -104,21 +104,21 @@
             values=".24; .24; .24"
             begin="0s"
             dur="0.8s"
-          ></animate>
+          />
           <animate
             attributeName="opacity"
             values=".24; .08; .24"
             begin="0.8s"
             dur="1.2s"
             repeatCount="indefinite"
-          ></animate>
+          />
           <animate
             attributeName="height"
             values="40; 32; 40"
             begin="0.8s"
             dur="1.2s"
             repeatCount="indefinite"
-          ></animate>
+          />
           <animateTransform
             v-if="firefox"
             attributeName="transform"
@@ -127,9 +127,9 @@
             begin="0.8s"
             dur="1.2s"
             repeatCount="indefinite"
-          ></animateTransform>
+          />
           <animateMotion begin="0.8s" dur="1.2s" repeatCount="indefinite">
-            <mpath xlink:href="#s-bar-y-path"></mpath>
+            <mpath xlink:href="#s-bar-y-path" />
           </animateMotion>
         </rect>
       </svg>
@@ -145,16 +145,13 @@ interface Props {
   swap?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  size: "small",
-  swap: false,
-});
+const { size = "small", swap = false } = defineProps<Props>();
 
 const firefox = ref(false);
 
-const spinnerClass = computed(() => `s-spinner--${props.size}`);
+const spinnerClass = computed(() => `s-spinner--${size}`);
 const swapMode = computed(() => {
-  if (props.swap) {
+  if (swap) {
     return "s-spinner--modeswap";
   }
 });

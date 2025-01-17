@@ -104,10 +104,10 @@ components: {
           <tbody>
             <tr>
               <td>loadingStrs</td>
-              <td>any[] | string</td>
+              <td>string | string[]</td>
               <td>-</td>
               <td>
-                Pass an array of stings into the loader. We recommend 3-4. Each
+                Pass an array of strings into the loader. We recommend 3-4. Each
                 shows for 4 seconds before it rotates.
               </td>
             </tr>
@@ -218,12 +218,12 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Accordion from "./../components/Accordion.vue";
-import Button from "./../components/Button.vue";
+import Accordion from "@/components/Accordion.vue";
+import Button from "@/components/Button.vue";
 import LoadersCode from "./Loaders.vue?raw";
-import DemoSection from "./../components/DemoSection.vue";
-import Loading from "./../components/Loading.vue";
-import Spinner from "./../components/Spinner.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import Loading from "@/components/Loading.vue";
+import Spinner from "@/components/Spinner.vue";
 
 const demoCode = ref(LoadersCode);
 const isLoading = ref(false);

@@ -7,14 +7,14 @@
       v-for="option in options"
       :key="option.value"
       class="s-image-picker-input__option"
-      :class="[value === option.value ? 'active' : '']"
+      :class="[modelValue === option.value ? 'active' : '']"
       :style="{ width: width, height: height }"
       @click="emitInput(option.value)"
       @keydown.up.prevent="setValueByKeyPress('UP')"
       @keydown.down.prevent="setValueByKeyPress('DOWN')"
       @keydown.left.prevent="setValueByKeyPress('LEFT')"
       @keydown.right.prevent="setValueByKeyPress('RIGHT')"
-      :tabindex="value === option.value ? '0' : '-1'"
+      :tabindex="modelValue === option.value ? '0' : '-1'"
       ref="imagePickerItem"
     >
       <img :src="option.image" />
@@ -32,14 +32,14 @@ interface IOption {
 }
 
 export interface Props {
-  value: string;
+  modelValue: string;
   width?: string;
   height?: string;
   options?: IOption[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  value: "above",
+  modelValue: "above",
   options: () => [
     {
       value: "above",
@@ -62,7 +62,7 @@ const props = withDefaults(defineProps<Props>(), {
 const containerWidth = ref(0);
 
 const selectedItemIndex = computed(() =>
-  props.options.findIndex((option) => option.value === props.value)
+  props.options.findIndex((option) => option.value === props.modelValue)
 );
 
 const itemsPerRow = computed(() => {
@@ -112,9 +112,9 @@ onMounted(() => {
   });
 });
 
-const emit = defineEmits(["input"]);
+const emit = defineEmits(["update:modelValue"]);
 function emitInput(val: string) {
-  emit("input", val);
+  emit("update:modelValue", val);
 }
 
 const imagePickerItem = ref<HTMLDivElement[] | []>([]);

@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import SButton from "./../components/Button.vue";
+import SButton from "@/components/Button.vue";
 import { computed, useSlots } from "vue";
 
 const slots = useSlots();

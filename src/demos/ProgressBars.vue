@@ -39,9 +39,9 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import ProgressBar from "./../components/ProgressBar.vue";
+import ProgressBar from "@/components/ProgressBar.vue";
 import ProgressBarsCode from "./ProgressBars.vue?raw";
-import DemoSection from "./../components/DemoSection.vue";
+import DemoSection from "@/components/DemoSection.vue";
 
 const demoCode = ref(ProgressBarsCode);
 </script>

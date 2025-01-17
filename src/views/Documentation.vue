@@ -1,27 +1,19 @@
 <template>
   <div class="documentation">
-    <left-navigation
-      @update-section="changeSection"
-      :active-section="activeSection"
-    />
+    <LeftNavigation />
+    <!-- @update-section="changeSection"
+    :active-section="activeSection" -->
 
     <div class="content">
-      <router-view />
+      <RouterView />
     </div>
-    <copy-notification />
+    <CopyNotification />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import CopyNotification from "../components/CopyNotification.vue";
 import LeftNavigation from "../demos/LeftNavigation.vue";
-
-const activeSection = ref("installation");
-
-function changeSection(newSection: string) {
-  activeSection.value = newSection;
-}
 </script>
 
 <style lang="less">
@@ -30,7 +22,7 @@ function changeSection(newSection: string) {
 .documentation {
   display: grid;
   grid-template-columns: 180px auto;
-  grid-gap: 80px;
+  column-gap: 80px;
 
   code {
     background-color: @light-3;
@@ -47,6 +39,12 @@ function changeSection(newSection: string) {
       margin: 0;
     }
   }
+}
+
+.content {
+  height: calc(100vh - 116px);
+  overflow-y: auto;
+  padding-right: 16px;
 }
 
 .s-accordion {

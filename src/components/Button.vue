@@ -13,7 +13,6 @@
     class="s-button ripple"
     :class="[buttonClasses, { 'ripple-animate': rippleAnimate }]"
     :disabled="state === 'disabled' || state === 'loading'"
-    @click="$emit('click')"
     :target="target"
     @mousedown="pressDown"
     :style="buttonStyle"

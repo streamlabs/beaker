@@ -36,7 +36,7 @@
         menuAlign="right"
         :tabindex="hiddenActiveTab && !hiddenTabFocused ? 0 : -1"
       >
-        <template slot="title">More</template>
+        <template #title>More</template>
         <div
           v-for="tab in hiddenTabs"
           :key="`hidden-${tab.value}`"
@@ -449,7 +449,7 @@ export default defineComponent({
     cursor: pointer;
   }
 
-  ::v-deep .s-pane-dropdown {
+  :deep(.s-pane-dropdown) {
     padding-top: 4px;
     padding-bottom: 12px;
 
@@ -508,7 +508,7 @@ export default defineComponent({
       }
     }
 
-    ::v-deep .s-pane-dropdown {
+    :deep(.s-pane-dropdown) {
       .s-tabs__link {
         &:hover {
           color: @white;

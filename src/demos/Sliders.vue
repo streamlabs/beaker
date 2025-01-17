@@ -32,8 +32,7 @@ components: {
       <DemoSection title="Default Slider" :code="demoCode">
         <template #components>
           <slider
-            :value="value"
-            @input="(value) => updateValue(value)"
+            v-model="value"
             :max="100"
             :min="1"
             :interval="1"
@@ -53,8 +52,7 @@ components: {
       <DemoSection title="Simple Theme" :code="demoCode">
         <template #components>
           <slider
-            :value="value"
-            @input="(value) => updateValue(value)"
+            v-model="value"
             :max="100"
             :min="1"
             :interval="1"
@@ -184,31 +182,15 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Slider from "./../components/Slider.vue";
-// import SliderTwo from "./../components/SliderTwo.vue";
-import Accordion from "./../components/Accordion.vue";
+import Slider from "@/components/Slider.vue";
+// import SliderTwo from "@/components/SliderTwo.vue";
 import SlidersCode from "./Sliders.vue?raw";
-import DemoSection from "./../components/DemoSection.vue";
+import DemoSection from "@/components/DemoSection.vue";
 
 const demoCode = ref(SlidersCode);
-const localValue = ref<number | string>(15);
-
-function updateLocalValue(value) {
-  localValue.value = value;
-}
-
-const localValueTwo = ref<number | string>(15);
-
-function updateLocalValueTwo(value) {
-  localValueTwo.value = value;
-}
 
 const value = ref(50);
-const data = ref(["one", "two", "three", "four", "five", "six"]);
-function updateValue(val) {
-  value.value = val;
-  console.log(value); // this function is required, it doesn't have to do anything, it just needs to exist.
-}
+// const data = ref(["one", "two", "three", "four", "five", "six"]);
 </script>
 
 <style lang="less">

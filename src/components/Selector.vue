@@ -1,11 +1,6 @@
 <template>
   <div class="s-selector">
-    <multiselect
-      v-bind="$attrs"
-      :style="styleObject"
-      :max-height="200"
-      v-on="$listeners"
-    >
+    <multiselect v-bind="$attrs" :style="styleObject" :max-height="200">
       <template v-for="(_, slot) of $slots" #[slot]="scope">
         <slot :name="slot" v-bind="scope" />
       </template>

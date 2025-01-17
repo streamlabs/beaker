@@ -21,68 +21,63 @@ components: {
       <DemoSection title="Text Inputs" :code="demoCode">
         <template #components>
           <FormGroup>
-            <TextInput
-              slot="input"
-              type="text"
-              label="Text Input"
-              v-model="textInputValue"
-              name="textExample"
-              :placeholder="textInputPlaceholder"
-              autoComplete="on"
-            />
+            <template #input>
+              <TextInput
+                type="text"
+                label="Text Input"
+                v-model="textInputValue"
+                name="textExample"
+                :placeholder="textInputPlaceholder"
+                autoComplete="on"
+              />
+              <TextInput
+                type="number"
+                label="Number Input"
+                v-model="numberInput"
+                name="numberinputExample"
+                :placeholder="textInputPlaceholder"
+                :min="0"
+                :max="100"
+                :error="errors.numberInput"
+                v-bind="numberInputProps"
+              />
 
-            <TextInput
-              slot="input"
-              type="number"
-              label="Number Input"
-              v-model="numberInputValue"
-              name="numberinputExample"
-              :placeholder="textInputPlaceholder"
-              :min="0"
-              :max="100"
-              v-validate="'required|between:0,100'"
-              :error="errors.first('numberinputExample')"
-            />
+              <TextInput
+                type="email"
+                label="Email Input"
+                v-model="emailInputValue"
+                name="emailExample"
+                :placeholder="emailInputPlaceholder"
+              />
 
-            <TextInput
-              slot="input"
-              type="email"
-              label="Email Input"
-              v-model="emailInputValue"
-              name="emailExample"
-              :placeholder="emailInputPlaceholder"
-            />
+              <TextInput
+                type="password"
+                label="Password Input"
+                v-model="passwordInputValue"
+                name="passwordExample"
+                :placeholder="passwordInputPlaceholder"
+                disabled
+              />
 
-            <TextInput
-              slot="input"
-              type="password"
-              label="Password Input"
-              v-model="passwordInputValue"
-              name="passwordExample"
-              :placeholder="passwordInputPlaceholder"
-              disabled
-            />
+              <TextInput
+                type="text"
+                label="Input With Error"
+                v-model="errorTextInputValue"
+                name="textExample"
+                :placeholder="textInputPlaceholder"
+                :error="'Enter a number'"
+              />
 
-            <TextInput
-              slot="input"
-              type="text"
-              label="Input With Error"
-              v-model="errorTextInputValue"
-              name="textExample"
-              :placeholder="textInputPlaceholder"
-              :error="'Enter a number'"
-            />
-
-            <TextArea
-              slot="input"
-              label="Text Area"
-              v-model="textAreaInputValue"
-              name="myarea"
-              placeholder="This is where you put some cool stuff"
-              :autoResize="true"
-              :maxLength="1000"
-              :maxHeight="100"
-            />
+              <TextArea
+                label="Text Area"
+                v-model="textAreaInputValue"
+                name="myarea"
+                placeholder="This is where you put some cool stuff"
+                :autoResize="true"
+                :maxLength="1000"
+                :maxHeight="100"
+              />
+            </template>
           </FormGroup>
         </template>
       </DemoSection>
@@ -98,26 +93,28 @@ components: {
       <DemoSection title="Variable Menu" :code="demoCode">
         <template #components>
           <VariableMenu :jsonSearch="varData">
-            <text-input
-              slot="input"
-              type="text"
-              v-model="variTextValue"
-              name="textExample"
-              :placeholder="'w/ Variable Menu'"
-            />
+            <template #input>
+              <TextInput
+                type="text"
+                v-model="variTextValue"
+                name="textExample"
+                :placeholder="'w/ Variable Menu'"
+              />
+            </template>
           </VariableMenu>
 
           <VariableMenu :jsonSearch="varData">
-            <TextArea
-              slot="input"
-              ref="textArea"
-              v-model="variAreaValue"
-              name="myarea"
-              placeholder="w/ Variable Menu"
-              :rows="3"
-              :maxLength="1000"
-              :maxHeight="100"
-            />
+            <template #input>
+              <TextArea
+                ref="textArea"
+                v-model="variAreaValue"
+                name="myarea"
+                placeholder="w/ Variable Menu"
+                :rows="3"
+                :maxLength="1000"
+                :maxHeight="100"
+              />
+            </template>
           </VariableMenu>
         </template>
       </DemoSection>
@@ -225,43 +222,40 @@ components: {
       <DemoSection title="Selector" :code="demoCode">
         <template #components>
           <FormGroup>
-            <Selector
-              slot="input"
-              v-model="selected"
-              :options="['Option A', 'Option B', 'Option C']"
-            />
+            <template #input>
+              <Selector
+                v-model="selected"
+                :options="['Option A', 'Option B', 'Option C']"
+              />
 
-            <Selector
-              slot="input"
-              v-model="selectedGroup"
-              :options="optionGroups"
-              group-values="items"
-              group-label="group"
-              :searchable="false"
-            />
+              <Selector
+                v-model="selectedGroup"
+                :options="optionGroups"
+                group-values="items"
+                group-label="group"
+                :searchable="false"
+              />
 
-            <Selector
-              slot="input"
-              v-model="selected"
-              :options="['Option A', 'Option B', 'Option C']"
-              disabled
-            />
+              <Selector
+                v-model="selected"
+                :options="['Option A', 'Option B', 'Option C']"
+                disabled
+              />
 
-            <Selector
-              slot="input"
-              multiple
-              v-model="multipleSelected"
-              :options="['Option A', 'Option B', 'Option C']"
-              :searchable="false"
-            />
+              <Selector
+                multiple
+                v-model="multipleSelected"
+                :options="['Option A', 'Option B', 'Option C']"
+                :searchable="false"
+              />
 
-            <Selector
-              slot="input"
-              multiple
-              v-model="multipleSelected"
-              :options="['Option A', 'Option B', 'Option C']"
-              disabled
-            />
+              <Selector
+                multiple
+                v-model="multipleSelected"
+                :options="['Option A', 'Option B', 'Option C']"
+                disabled
+              />
+            </template>
           </FormGroup>
         </template>
       </DemoSection>
@@ -446,18 +440,14 @@ components: {
         <DemoSection title="Status Switch" :code="demoCode">
           <template #components>
             <FormGroup>
-              <StatusSwitch
-                slot="input"
-                v-model="statusValue"
-                label="Switch Label"
-              />
-
-              <StatusSwitch
-                slot="input"
-                size="small"
-                v-model="statusValue"
-                label="Small Switch Label"
-              />
+              <template #input>
+                <StatusSwitch v-model="statusValue" label="Switch Label" />
+                <StatusSwitch
+                  size="small"
+                  v-model="statusValue"
+                  label="Small Switch Label"
+                />
+              </template>
             </FormGroup>
           </template>
         </DemoSection>
@@ -537,20 +527,30 @@ components: {
 </template>
 
 <script setup lang="ts">
-import Checkbox from "./../components/Checkbox.vue";
-import DemoSection from "./../components/DemoSection.vue";
-import FormGroup from "./../components/FormGroup.vue";
-import ImagePickerInput from "./../components/ImagePickerInput.vue";
+import Checkbox from "@/components/Checkbox.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import FormGroup from "@/components/FormGroup.vue";
+import ImagePickerInput from "@/components/ImagePickerInput.vue";
 import InputsCode from "./Inputs.vue?raw";
-import Radio from "./../components/Radio.vue";
-import Selector from "./../components/Selector.vue";
-import StatusSwitch from "./../components/StatusSwitch.vue";
-import TaggingInput from "./../components/TaggingInput.vue";
-import TextArea from "./../components/TextArea.vue";
-import TextInput from "./../components/TextInput.vue";
-import varSearch from "./../components/cloudbotvariables.json";
-import VariableMenu from "./../components/VariableMenu.vue";
-import { ref } from "vue";
+import Radio from "@/components/Radio.vue";
+import Selector from "@/components/Selector.vue";
+import StatusSwitch from "@/components/StatusSwitch.vue";
+import TaggingInput from "@/components/TaggingInput.vue";
+import TextArea from "@/components/TextArea.vue";
+import TextInput from "@/components/TextInput.vue";
+import varSearch from "@/components/cloudbotvariables.json";
+import VariableMenu from "@/components/VariableMenu.vue";
+import { ref, computed } from "vue";
+import { useForm } from "vee-validate";
+
+const validationSchema = computed(() => ({
+  numberInput: "required|between:0,100",
+}));
+const { errors, defineField } = useForm({
+  validationSchema,
+  initialValues: { numberInput: 100 },
+});
+const [numberInput, numberInputProps] = defineField("numberInput");
 
 const demoCode = ref(InputsCode);
 const data = ref("");

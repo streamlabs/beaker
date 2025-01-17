@@ -28,7 +28,6 @@
     </div>
     <input
       ref="inputRef"
-      v-bind="$attrs"
       :type="type"
       :placeholder="placeholder"
       @input="handleInput"
@@ -49,15 +48,17 @@
       }"
       v-on="filteredListeners"
       @mousewheel="mouseWheel"
+      v-bind="$attrs"
     />
     <label
       :class="{
-        's-form-field__label--top': value !== '' && !disabled,
+        's-form-field__label--top': modelValue !== '' && !disabled,
       }"
       class="s-form-field__label"
       v-if="label"
-      >{{ label }}</label
     >
+      {{ label }}
+    </label>
 
     <div v-show="error" class="s-form-field__input-error">
       <i class="icon-error"></i>
@@ -70,11 +71,11 @@
 
 <script setup lang="ts">
 import { omit, isNil } from "lodash-es";
-import { ref, computed, watch, getCurrentInstance } from "vue";
+import { ref, computed, watch, useAttrs } from "vue";
 
 export interface Props {
   name?: string;
-  value: string | number;
+  modelValue?: string | number | undefined;
   error?: string;
   min?: number;
   max?: number;
@@ -82,7 +83,7 @@ export interface Props {
   helpText?: string;
   type?: string;
   placeholder: string;
-  disabled?: boolean;
+  disabled?: boolean | null;
   label?: string;
   readonly?: boolean;
   autoComplete?: string;
@@ -95,33 +96,36 @@ const props = withDefaults(defineProps<Props>(), {
   autoComplete: "off",
 });
 
-const content = ref(props?.value.toString() ?? "");
+const attrs = useAttrs();
+
+const content = ref(
+  typeof props.modelValue === "number"
+    ? props.modelValue.toString()
+    : props.modelValue
+);
 const inputRef = ref<HTMLInputElement | null>(null);
 
 const emit = defineEmits([
   "keyup",
   "focus",
   "click",
-  "input",
+  "update:modelValue",
   "onChange",
   "blur",
 ]);
 
 watch(
-  () => props.value,
+  () => props.modelValue,
   (newValue) => {
     content.value = newValue.toString();
     emit("onChange", newValue);
   }
 );
 
-const filteredListeners = computed(() =>
-  // For Vue 2.7, getCurrentInstance() is an unconventional way get access to $listeners in Composition API
-  omit(getCurrentInstance()?.proxy.$listeners, ["input"])
-);
+const filteredListeners = computed(() => omit(attrs, ["update:modelValue"]));
 
 function update(value) {
-  emit("input", value);
+  emit("update:modelValue", value);
 }
 
 function focus() {
@@ -150,7 +154,7 @@ const isMaxReached = computed(
   () =>
     props.type === "number" &&
     !isNil(props.max) &&
-    Number(props.value) >= props.max
+    Number(props.modelValue) >= props.max
 );
 
 function increment() {
@@ -163,7 +167,7 @@ const isMinReached = computed(
   () =>
     props.type === "number" &&
     !isNil(props.min) &&
-    Number(props.value) <= props.min
+    Number(props.modelValue) <= props.min
 );
 
 function decrement() {

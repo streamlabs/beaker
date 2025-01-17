@@ -20,7 +20,8 @@ export interface Props {
 withDefaults(defineProps<Props>(), {
   alertText: "galazy83 donated $50.00",
   alertMessage: "Thanks for the stream. Go CivRyan!",
-  alertImage: "https://thumbs.gfycat.com/PleasedIcyCod-size_restricted.gif",
+  alertImage:
+    "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmh4aDQzZG81d3hpbmptM3p1YTEyOTJ6ZzR5Y2pydTZzNGQwOGlwdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/oz45ELYgMoYVsZqmor/giphy.gif",
 });
 </script>
 

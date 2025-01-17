@@ -8,29 +8,25 @@
             key="thumb-upload"
             class="s-media-picker__no-media"
             :class="noMediaIcon"
-          ></i>
+          />
           <i
-            v-if="media.selected && variation === 'audio'"
+            v-else-if="media.selected && variation === 'audio'"
             key="thumb-audio"
             class="icon-music"
           >
-            <audio
-              key="thumb-audio"
-              :src="media.url"
-              @error="setBrokenMedia"
-            ></audio>
+            <audio key="thumb-audio" :src="media.url" @error="setBrokenMedia" />
           </i>
           <img
-            v-if="media.selected && variation === 'image' && !valueIsVideo"
+            v-else-if="media.selected && variation === 'image' && !valueIsVideo"
             key="thumb-image"
             :src="media.url"
             @error="setBrokenMedia"
           />
           <i
-            v-if="media.selected && variation === 'image' && valueIsVideo"
+            v-else-if="media.selected && variation === 'image' && valueIsVideo"
             key="thumb-video"
             class="icon-studio"
-          ></i>
+          />
         </transition>
         <transition
           name="custom-classes-transition"
@@ -40,7 +36,7 @@
           <div
             v-if="media.selected && mediaBroken"
             class="s-media-picker__broken-image"
-          ></div>
+          />
         </transition>
       </div>
 
@@ -50,7 +46,7 @@
             {{ media.fileName }}
           </div>
           <div
-            v-if="!value"
+            v-else-if="!value"
             key="media-not-selected"
             class="s-media-picker__text-placeholder"
           >
@@ -59,9 +55,9 @@
         </transition>
 
         <div
+          class="s-media-picker__controls s-media-picker__controls--small"
           @mouseenter="handleControlVisibility(true)"
           @mouseleave="handleControlVisibility(false)"
-          class="s-media-picker__controls s-media-picker__controls--small"
         >
           <i
             v-if="
@@ -69,13 +65,13 @@
                 !mediaControlsVisible &&
                 !controlsAlwaysVisible
             "
+            ref="viewControls"
             class="icon-add"
             :tabindex="mediaPickerSmall && !mediaControlsVisible ? 0 : -1"
-            v-focus="focused === -1"
             @focus="focused = -1"
             @keydown.space.prevent="showMediaControls"
             @keydown.enter.prevent="showMediaControls"
-          ></i>
+          />
 
           <transition-group
             v-else
@@ -90,7 +86,7 @@
               :key="control.key"
               :class="control.class"
               :title="control.title"
-              v-focus="focused === index"
+              :data-index="index"
               :tabindex="focused === index ? 0 : -1"
               @focus="focused = index"
               @click.stop="control.emit"
@@ -99,7 +95,8 @@
               @keydown.enter.prevent="control.emit"
               @keydown.left.prevent="moveLeft()"
               @keydown.right.prevent="moveRight()"
-              ><i :class="control.icon"></i>
+            >
+              <i :class="control.icon" />
             </a>
           </transition-group>
         </div>
@@ -109,7 +106,6 @@
 </template>
 
 <script setup lang="ts">
-// import { mixin as vFocus } from "vue-focus";
 import { useFocus } from "@vueuse/core";
 import { computed, onMounted, ref, watch, useTemplateRef } from "vue";
 
@@ -118,7 +114,7 @@ interface Props {
   mediaLink: boolean;
   mediaPreview?: boolean;
   title?: string;
-  value: string;
+  value?: string;
   controlsAlwaysVisible?: boolean;
   canDelete?: boolean;
 }
@@ -138,12 +134,32 @@ const emit = defineEmits<{
 }>();
 
 const controlRefs = useTemplateRef("controls");
+onMounted(() => {
+  if (controlRefs.value) {
+    controlRefs.value.forEach((control, i) => {
+      const { focused: focusedControl } = useFocus(control);
+
+      watch(focused, (focus) => {
+        if (control.dataset.index) {
+          focusedControl.value = focus === parseInt(control.dataset.index, 10);
+        }
+      });
+    });
+  }
+});
+
+const viewControlsRef = useTemplateRef("viewControls");
+const { focused: focusedViewControls } = useFocus(viewControlsRef);
+
 const mediaPicker = ref<HTMLElement | null>(null);
 
 const mediaPickerSmall = ref(false);
 const mediaBroken = ref(false);
 const mediaControlsVisible = ref(false);
 const focused = ref(0);
+watch(focused, () => {
+  focusedViewControls.value = focused.value === -1;
+});
 
 const mediaControls = computed(() => {
   const controlData = [
@@ -239,7 +255,7 @@ const valueIsVideo = computed(() => {
 
   return videoTypes.some((type) => urlStripped.endsWith(type));
 });
-// },
+
 onMounted(() => {
   if (mediaPicker.value) {
     const ro = new ResizeObserver((entries) => {
@@ -253,7 +269,7 @@ onMounted(() => {
     focused.value = mediaControls.value.length - 1;
   }
 });
-// methods: {
+
 function setBrokenMedia(event) {
   mediaBroken.value = event ? true : false;
 }
@@ -285,14 +301,10 @@ function watchMediaControlsVisible() {
 function watchMediaControls(newVal) {
   focused.value = newVal.length - 1;
 }
-// },
 
-// watch: {
 watch(() => props.value, watchValue);
 watch(mediaControlsVisible, watchMediaControlsVisible);
 watch(mediaControls, watchMediaControls);
-// },
-// });
 </script>
 
 <style lang="less">

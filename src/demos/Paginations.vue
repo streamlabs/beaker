@@ -87,9 +87,9 @@
 </template>
 
 <script setup lang="ts">
-import Pagination from "./../components/Pagination.vue";
+import Pagination from "@/components/Pagination.vue";
 import PaginationsCode from "./Paginations.vue?raw";
-import DemoSection from "./../components/DemoSection.vue";
+import DemoSection from "@/components/DemoSection.vue";
 import { ref } from "vue";
 
 const demoCode = ref(PaginationsCode);

@@ -35,22 +35,22 @@
         <div class="s-sitesearch-quicklinks">Quick Links</div>
         <a
           v-for="(suggested, i) in suggestedLinks"
-          :href="jsonSearch[suggested.jsonSearchIndex].route"
+          :href="jsonSearch[quickLinkLoc[i]].route"
           :key="suggested.item.name"
           class="s-sitesearch-results"
           :class="{ 's-active-result': currentResult === i }"
           @mouseover="currentResult = i"
-          @mousedown="trackEvent(jsonSearch[suggested.jsonSearchIndex].route)"
+          @mousedown="trackEvent(jsonSearch[quickLinkLoc[i]].route)"
           @mouseup="blurSearch"
         >
           <div class="s-sitesearch__result--image">
             <i
-              :class="jsonSearch[suggested.jsonSearchIndex].image"
+              :class="jsonSearch[quickLinkLoc[i]].image"
               class="s-sitesearch__result--image"
             ></i>
           </div>
           <div class="s-sitesearch__result--title">
-            {{ jsonSearch[suggested.jsonSearchIndex].title }}
+            {{ jsonSearch[quickLinkLoc[i]].title }}
           </div>
         </a>
       </div>
@@ -131,12 +131,14 @@ const searchData = toRef(props, "jsonSearch");
 
 const suggestedLinks = computed(() => {
   return props.quickLinks.filter((i) => {
-    let findResult: any = searchData.value.find(
+    let findResult: SearchData | undefined = searchData.value.find(
       (data) => data.name === i.item.name
     );
-    let suggestResult: number = searchData.value.indexOf(findResult);
+    let suggestResult: number = searchData.value.findIndex(
+      (data) => data.name === findResult?.name
+    );
     quickLinkLoc.value.push(suggestResult);
-    return suggestResult;
+    return suggestResult > -1;
   });
 });
 const options = computed(() => ({

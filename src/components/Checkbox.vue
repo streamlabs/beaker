@@ -4,8 +4,8 @@
       type="checkbox"
       :id="id"
       :name="name"
-      :checked="value"
-      @change="$emit('input', $event.target.checked)"
+      :checked="modelValue"
+      @change="$emit('update:modelValue', $event.target.checked)"
       tabindex="-1"
     />
     <label :for="id">{{ label }}</label>
@@ -17,14 +17,14 @@ interface Props {
   label: string;
   id: string;
   name?: string;
-  value: boolean;
+  modelValue: boolean;
 }
 
 const props = defineProps<Props>();
 
-const emit = defineEmits(["input"]);
+const emit = defineEmits(["update:modelValue"]);
 function toggleCheck() {
-  emit("input", !props.value);
+  emit("update:modelValue", !props.modelValue);
 }
 </script>
 

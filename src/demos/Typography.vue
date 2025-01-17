@@ -87,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import FormGroup from "./../components/FormGroup.vue";
+import FormGroup from "@/components/FormGroup.vue";
 </script>
 
 <style lang="less">

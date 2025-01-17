@@ -89,10 +89,10 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import DemoSection from "./../components/DemoSection.vue";
-import ScrollNav from "./../components/ScrollNav.vue";
-import Tabs from "./../components/Tabs.vue";
-// import TabsNew from "./../components/TabsNew.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import ScrollNav from "@/components/ScrollNav.vue";
+import Tabs from "@/components/Tabs.vue";
+// import TabsNew from "@/components/TabsNew.vue";
 import TabsCode from "./Tabs.vue?raw";
 
 const demoCode = ref(TabsCode);

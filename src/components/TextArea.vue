@@ -13,7 +13,7 @@
         :rows="rows"
         :placeholder="placeholder"
         :maxlength="maxLength"
-        :value="value"
+        :value="modelValue"
         @input="onValueChange"
         @focus="onFocus"
         @click="onClick"
@@ -23,7 +23,7 @@
 
       <label
         :class="{
-          's-form-area__label--top': value !== '',
+          's-form-area__label--top': modelValue !== '',
         }"
         class="s-form-area__label"
         v-if="label"
@@ -51,21 +51,13 @@
 
 <script setup lang="ts">
 import { omit } from "lodash-es";
-import {
-  ref,
-  computed,
-  nextTick,
-  onBeforeMount,
-  onMounted,
-  onUpdated,
-  useAttrs,
-} from "vue";
+import { ref, computed, nextTick, onMounted, onUpdated, useAttrs } from "vue";
 
 interface Props {
   name: string;
   label?: string;
   placeholder?: string;
-  value: string;
+  modelValue: string;
   error?: string;
   helpText?: string;
   cols?: number;
@@ -86,14 +78,14 @@ const textArea = ref<HTMLTextAreaElement | null>(null);
 const attrs = useAttrs();
 
 const filteredListeners = computed(() => omit(attrs, ["input"]));
-const currentLength = computed(() => props.value.length);
+const currentLength = computed(() => props.modelValue.length);
 
 function focus() {
   textArea.value?.focus();
 }
-const emit = defineEmits(["input", "keyup", "focus", "click"]);
+const emit = defineEmits(["update:modelValue", "keyup", "focus", "click"]);
 function onValueChange(event: { target: HTMLTextAreaElement }) {
-  emit("input", event.target.value);
+  emit("update:modelValue", event.target.value);
   updateSize();
 }
 function onKeyUp(event: { target: HTMLTextAreaElement }) {
@@ -107,13 +99,15 @@ function onClick(event: { target: HTMLTextAreaElement }) {
 }
 function updateValue(val) {
   textArea.value = val;
-  emit("input", val);
+  emit("update:modelValue", val);
 }
 function updateSize() {
   if (props.autoResize && textArea.value) {
     textArea.value.style.cssText = "height:auto;";
     const newHeight =
-      textArea.value.scrollHeight > props.maxHeight && props.maxHeight
+      props?.maxHeight &&
+      textArea.value.scrollHeight > props.maxHeight &&
+      props.maxHeight
         ? props.maxHeight + 2
         : textArea.value.scrollHeight + 2;
     textArea.value.style.cssText = "height:" + newHeight + "px";

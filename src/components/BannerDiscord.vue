@@ -8,7 +8,7 @@
       :variation="'custom'"
       :bgColor="'#FFFFFF'"
       :textColor="'#7289DA'"
-      v-on="$listeners"
+      v-on="$attrs"
       :tag="'a'"
       :href="'https://discord.gg/stream'"
       :target="'_blank'"
@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import Button from "./../components/Button.vue";
+import Button from "@/components/Button.vue";
 
 withDefaults(defineProps<{ title?: string }>(), {
   title: "Join the Streamlabs OBS Discussion on <span>Discord</span>",

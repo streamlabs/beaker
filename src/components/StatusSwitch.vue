@@ -1,10 +1,10 @@
 <template>
   <div
     class="s-status-switch"
-    :class="{ enabled: !!value }"
-    @click="$emit('input', !value)"
-    @keydown.prevent.space="$emit('input', !value)"
-    @keydown.prevent.enter="$emit('input', !value)"
+    :class="{ enabled: !!modelValue }"
+    @click="$emit('update:modelValue', !modelValue)"
+    @keydown.prevent.space="$emit('update:modelValue', !modelValue)"
+    @keydown.prevent.enter="$emit('update:modelValue', !modelValue)"
     tabindex="0"
   >
     <div
@@ -21,13 +21,15 @@ withDefaults(
   defineProps<{
     label: string;
     size?: string;
-    value: boolean;
+    modelValue: boolean;
   }>(),
   {
-    value: false,
+    modelValue: false,
     size: "",
   }
 );
+
+defineEmits(["update:modelValue"]);
 </script>
 
 <style lang="less">

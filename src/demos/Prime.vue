@@ -169,14 +169,14 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Badge from "./../components/Badge.vue";
-import Button from "./../components/Button.vue";
-import DemoSection from "./../components/DemoSection.vue";
-import ModalComp from "./../components/ModalComp.vue";
-import NavCallToAction from "./../components/NavCallToAction.vue";
+import Badge from "@/components/Badge.vue";
+import Button from "@/components/Button.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import ModalComp from "@/components/ModalComp.vue";
+import NavCallToAction from "@/components/NavCallToAction.vue";
 import PrimeCode from "./Prime.vue?raw";
-import PrimeSection from "./../components/PrimeSection.vue";
-import WelcomePrime from "./../components/WelcomePrime.vue";
+import PrimeSection from "@/components/PrimeSection.vue";
+import WelcomePrime from "@/components/WelcomePrime.vue";
 
 const demoCode = ref(PrimeCode);
 

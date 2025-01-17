@@ -4,39 +4,36 @@
     :class="{ 's-step--completed': isCompleted, checked: hasCheckmark }"
   >
     <div class="s-step__title">
-      <span class="s-step__icon" :class="icon" v-if="icon"></span>
-      <span class="s-step__icon icon-check-mark" v-if="hasCheckmark"></span>
+      <span class="s-step__icon" :class="icon" v-if="icon" />
+      <span class="s-step__icon icon-check-mark" v-if="hasCheckmark" />
       <p class="s-step__title-text">{{ title }}</p>
       <Badge
-        class="s-step__badge"
         v-if="hasPrime"
+        class="s-step__badge"
         :variant="'prime-alt'"
         :align-left="true"
-      ></Badge>
+      />
     </div>
-    <slot v-if="!isCompleted"></slot>
+    <slot v-if="!isCompleted" />
     <div v-if="isCompleted">{{ completedText }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Badge from "./../components/Badge.vue";
+import Badge from "@/components/Badge.vue";
 
-withDefaults(
-  defineProps<{
-    title: string;
-    icon?: string;
-    isCompleted?: boolean;
-    completedText?: string;
-    hasCheckmark?: boolean;
-    hasPrime?: boolean;
-  }>(),
-  {
-    isCompleted: false,
-    hasCheckmark: false,
-    hasPrime: false,
-  }
-);
+const {
+  isCompleted = false,
+  hasCheckmark = false,
+  hasPrime = false,
+} = defineProps<{
+  title: string;
+  icon?: string;
+  isCompleted?: boolean;
+  completedText?: string;
+  hasCheckmark?: boolean;
+  hasPrime?: boolean;
+}>();
 </script>
 
 <style lang="less" scoped>

@@ -26,16 +26,17 @@ components: {
       <DemoSection title="Input Guard" :code="demoCode">
         <template #components>
           <Guard type="input">
-            <div slot="content">
-              <TextInput
-                slot="input"
-                label="Text input"
-                type="text"
-                :placeholder="textInputPlaceholder"
-                v-model="textInputValue"
-                name="textExample"
-              />
-            </div>
+            <template #content>
+              <div>
+                <TextInput
+                  label="Text input"
+                  type="text"
+                  :placeholder="textInputPlaceholder"
+                  v-model="textInputValue"
+                  name="textExample"
+                />
+              </div>
+            </template>
           </Guard>
         </template>
       </DemoSection>
@@ -82,11 +83,11 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import DemoSection from "./../components/DemoSection.vue";
-import Guard from "./../components/Guard.vue";
-// import GuardNew from "./../components/GuardNew.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import Guard from "@/components/Guard.vue";
+// import GuardNew from "@/components/GuardNew.vue";
 import GuardsCode from "./Guards.vue?raw";
-import TextInput from "./../components/TextInput.vue";
+import TextInput from "@/components/TextInput.vue";
 
 const demoCode = ref(GuardsCode);
 const textInputPlaceholder = ref("placeholder");

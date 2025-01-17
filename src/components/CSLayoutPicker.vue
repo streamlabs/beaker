@@ -1,27 +1,28 @@
 <template>
   <div class="s-cs-layout-picker">
     <div
-      @click="showChooseLayout"
       v-if="addLayout"
       class="s-cs-layout-picker__add-bar"
+      @click="showChooseLayout"
     >
-      <i class="icon-add"></i>
+      <i class="icon-add" />
     </div>
     <div
       v-if="chooseLayout"
-      v-click-outside="showAddLayout"
+      ref="layouts"
       class="s-cs-layout-picker__layouts-bar"
     >
-      <slot name="layouts"></slot>
+      <slot name="layouts" />t>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import ClickOutside from "vue-click-outside";
-import { ref } from "vue";
+import { onClickOutside } from "@vueuse/core";
+import { ref, useTemplateRef } from "vue";
 
-const vClickOutside = ClickOutside;
+const layoutsRef = useTemplateRef("layouts");
+onClickOutside(layoutsRef, showAddLayout);
 
 const addLayout = ref(true);
 const chooseLayout = ref(false);
@@ -31,10 +32,6 @@ function showChooseLayout() {
   addLayout.value = false;
 }
 function showAddLayout() {
-  chooseLayout.value = false;
-  addLayout.value = true;
-}
-function closeChooseLayout() {
   chooseLayout.value = false;
   addLayout.value = true;
 }

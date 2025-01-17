@@ -45,33 +45,35 @@
         </p>
 
         <div
-          v-if="skippable && currentStep === steps && !isCompleted"
+          v-if="skippable && currentStep === steps.length && stepSkipped"
           class="s-onboarding-skip__warning"
         >
           You skipped a step
         </div>
-        <Button
-          v-if="!hideButton"
-          :variation="'action'"
-          :title="currentStep === steps.length ? 'Complete' : 'Continue'"
-          @click="
-            currentStep === steps.length ? completeHandler() : continueHandler()
-          "
-          :state="
-            disableControls || (currentStep === steps.length && !isCompleted)
-              ? 'disabled'
-              : null
-          "
-        ></Button>
+        <template v-if="!hideButton">
+          <Button
+            v-if="currentStep === steps.length"
+            variation="action"
+            title="Complete"
+            @click="completeHandler"
+            :state="disableControls || stepSkipped ? 'disabled' : null"
+          />
+          <Button
+            v-else
+            variation="action"
+            title="Continue"
+            @click="continueHandler"
+          />
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-// import OnboardingStep from "./../components/OnboardingStep.vue";
-import Button from "./../components/Button.vue";
+import { computed, ref, watch } from "vue";
+// import OnboardingStep from "@/components/OnboardingStep.vue";
+import Button from "@/components/Button.vue";
 
 interface Props {
   steps: { name?: string; complete: boolean }[];
@@ -101,7 +103,16 @@ const location = computed(() => {
   if (props.stepLocation === "top") return "s-onboarding__top";
 });
 const namedSteps = computed(() => props.steps.every((step) => !!step.name));
-const isCompleted = computed(() => props.steps.every((step) => step.complete));
+const stepSkipped = ref(false);
+
+watch(
+  () => props.currentStep,
+  () => {
+    const steps = [...props.steps];
+    steps.pop();
+    stepSkipped.value = !steps.every((step) => step.complete);
+  }
+);
 
 function currentStepStyle(index) {
   return index + 1 === props.currentStep;

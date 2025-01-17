@@ -61,9 +61,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import DemoSection from "./../components/DemoSection.vue";
+import DemoSection from "@/components/DemoSection.vue";
 import ExtrasCode from "./Extras.vue?raw";
-import FakeAlert from "./../components/FakeAlert.vue";
+import FakeAlert from "@/components/FakeAlert.vue";
 
 const demoCode = ref(ExtrasCode);
 </script>

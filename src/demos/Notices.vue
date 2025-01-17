@@ -116,9 +116,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import DemoSection from "./../components/DemoSection.vue";
+import DemoSection from "@/components/DemoSection.vue";
 import NoticesCode from "./Notices.vue?raw";
-import TooltipNotice from "./../components/TooltipNotice.vue";
+import TooltipNotice from "@/components/TooltipNotice.vue";
 
 const demoCode = ref(NoticesCode);
 const showTooltipNotice = ref(true);
@@ -133,7 +133,7 @@ function closeTooltip() {
 </script>
 
 <style lang="less" scoped>
-::v-deep .s-demo-section__content {
+:deep(.s-demo-section__content) {
   height: 330px;
 
   .s-tooltip-notice {

@@ -207,10 +207,10 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Badge from "./../components/Badge.vue";
+import Badge from "@/components/Badge.vue";
 import BadgesCode from "./Badges.vue?raw";
-import Callout from "./../components/Callout.vue";
-import DemoSection from "./../components/DemoSection.vue";
+import Callout from "@/components/Callout.vue";
+import DemoSection from "@/components/DemoSection.vue";
 
 const demoCode = ref(BadgesCode);
 </script>

@@ -16,29 +16,25 @@ components: {
       <DemoSection title="Content Row" :code="demoCode">
         <template #components>
           <ContentRow
-            :icon="'desktop'"
-            :btnVariation="'default'"
-            :btnTitle="'Default'"
+            icon="desktop"
+            btn-variation="default"
+            btn-title="Default"
           >
-            <span slot="title">Tiltify</span>
-            <span slot="text">
+            <template #title>Tiltify</template>
+            <template #text>
               Link your account and visit Alert Box to configure your Tiltify
               Events.
-            </span>
+            </template>
           </ContentRow>
         </template>
       </DemoSection>
 
-      <ContentRow
-        :icon="'education'"
-        :btnVariation="'action'"
-        :btnTitle="'Action'"
-      >
-        <template slot="title">Tiltify</template>
-        <template slot="text"
-          >Link your account and visit Alert Box to configure your Tiltify
-          Events.</template
-        >
+      <ContentRow icon="education" btn-variation="action" btn-title="Action">
+        <template #title>Tiltify</template>
+        <template #text>
+          Link your account and visit Alert Box to configure your Tiltify
+          Events.
+        </template>
       </ContentRow>
     </div>
 
@@ -115,8 +111,8 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import ContentRow from "./../components/ContentRow.vue";
-import DemoSection from "./../components/DemoSection.vue";
+import ContentRow from "@/components/ContentRow.vue";
+import DemoSection from "@/components/DemoSection.vue";
 import LayoutsCode from "./Layouts.vue?raw";
 
 const demoCode = ref(LayoutsCode);

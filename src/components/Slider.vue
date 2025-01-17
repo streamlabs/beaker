@@ -1,5 +1,5 @@
 <template>
-  <vue-slider-component
+  <VueSliderComponent
     class="s-slider"
     :class="{
       's-slider--simple': simpleTheme,
@@ -13,12 +13,11 @@
     :min="min"
     :max="max"
     :interval="interval"
-    :value="displayValue"
+    :modelValue="displayValue"
     :tooltip-formatter="prefix + '{value}' + suffix"
     :data="data"
     :disabled="disabled"
     v-bind="$attrs"
-    v-on="$listeners"
     @change="(value) => emitInput(value)"
     ref="slider"
   />
@@ -28,31 +27,31 @@
 <script setup lang="ts">
 import VueSliderComponent from "vue-slider-component";
 import "vue-slider-component/theme/default.css";
-import { onBeforeUnmount, onMounted, ref, watch, type Component } from "vue";
+import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 interface Props {
   width?: number | string;
-  value?: number | string | Array<number> | Array<string>;
+  modelValue?: number | string | Array<number> | Array<string>;
   min?: number;
   max?: number;
   interval?: number;
   tooltip?: "always" | false;
   prefix?: string;
   suffix?: string;
-  disabled?: boolean;
+  disabled?: boolean | null;
   data?: number[] | string[];
   simpleTheme?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  value: 1,
+  modelValue: 1,
   min: 0,
   max: 100,
   interval: 1,
   tooltip: "always",
   prefix: "",
   suffix: "",
-  disabled: false,
+  disabled: null,
 });
 
 const ro = ref<ResizeObserver | undefined>(undefined);
@@ -64,44 +63,44 @@ function setValue(val) {
   displayValue.value = val;
 }
 
-const emit = defineEmits<{ (e: "input", val: any): void }>();
+const emit = defineEmits<{ (e: "update:modelValue", val: any): void }>();
 
 function emitInput(val) {
-  emit("input", val);
+  emit("update:modelValue", val);
   setValue(val);
 }
 
 function updateLocalValue() {
-  displayValue.value = props.value;
+  displayValue.value = props.modelValue;
 }
 
-watch(() => props.value, updateLocalValue);
+watch(() => props.modelValue, updateLocalValue);
 
 onMounted(() => {
-  slider.value = document.querySelector('.s-slider');
-  ro.value = new ResizeObserver((entries) => {
-    for (let entry of entries) {
-      if (!debounced.value) {
-        debounce().then(() => {
-          if (slider.value) {
-            // this.$refs.slider.refresh();
-          }
-        });
-      }
-    }
-  });
+  slider.value = document.querySelector(".s-slider");
+  // ro.value = new ResizeObserver((entries) => {
+  //   for (let entry of entries) {
+  //     if (!debounced.value) {
+  //       debounce().then(() => {
+  //         if (slider.value) {
+  //           // this.$refs.slider.refresh();
+  //         }
+  //       });
+  //     }
+  //   }
+  // });
 
-  if (slider.value) {
-    ro.value.observe(slider.value);
-  }
-  displayValue.value = props.value;
+  // if (slider.value) {
+  //   ro.value.observe(slider.value);
+  // }
+  displayValue.value = props.modelValue;
 });
 
-onBeforeUnmount(() => {
-  if (slider.value) {
-    ro.value?.unobserve(slider.value);
-  }
-});
+// onBeforeUnmount(() => {
+//   if (slider.value) {
+//     ro.value?.unobserve(slider.value);
+//   }
+// });
 
 function debounce() {
   return new Promise((resolve) => {

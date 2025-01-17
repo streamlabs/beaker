@@ -10,7 +10,7 @@
     <input
       v-if="!isMini"
       type="text"
-      :value="value"
+      :value="modelValue"
       :placeholder="placeholder"
       @click="showPicker()"
       @input="updateFromInput"
@@ -33,7 +33,7 @@
 
     <div
       class="s-colorpicker__preview"
-      :style="{ backgroundColor: value }"
+      :style="{ backgroundColor: modelValue }"
       @click="showPicker()"
     ></div>
     <div class="s-colorpicker__preview--alpha"></div>
@@ -44,18 +44,18 @@
           ref="chrome-color-picker"
           class="s-colorpicker"
           :class="alphaClass"
-          :value="colors"
+          :modelValue="colors"
           :disable-alpha="!hasAlpha"
           :disable-fields="!hasAlpha"
-          @input="updateFromPicker"
+          @update:modelValue="updateFromPicker"
         />
         <input
           v-if="isMini"
           type="text"
-          :value="value"
+          :value="modelValue"
           :placeholder="placeholder"
           @input="updateFromInput"
-          v-on="$listeners"
+          v-bind="$attrs"
           class="s-colorpicker__input--mini"
           :class="{ 's-colorpicker__input--error': error }"
         />
@@ -65,11 +65,11 @@
 </template>
 
 <script setup lang="ts">
-import { Chrome as ChromePicker } from "vue-color";
+import { Chrome as ChromePicker } from "@lk77/vue3-color";
 import { computed, ref } from "vue";
 
 interface Props {
-  value: string;
+  modelValue: string;
   placeholder?: string;
   hasAlpha?: boolean;
   isMini?: boolean;
@@ -83,7 +83,7 @@ const props = withDefaults(defineProps<Props>(), {
   isMini: false,
 });
 
-const emit = defineEmits(["input"]);
+const emit = defineEmits(["update:modelValue"]);
 
 const colors = ref({});
 const displayPicker = ref(false);
@@ -94,20 +94,20 @@ const alphaClass = computed(() =>
 );
 
 colors.value = Object.assign({}, colors.value, {
-  hex: props.value,
+  hex: props.modelValue,
 });
 
 function updateFromPicker(value: any) {
   colors.value = value;
   if (alphaClass.value === "alpha") {
-    emit("input", value.hex8);
+    emit("update:modelValue", value.hex8);
   } else {
-    emit("input", value.hex);
+    emit("update:modelValue", value.hex);
   }
 }
 function updateFromInput(event: any) {
   colors.value = event.target.value;
-  emit("input", event.target.value);
+  emit("update:modelValue", event.target.value);
 }
 function documentClick(e: any) {
   let el = colorpicker.value;

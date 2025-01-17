@@ -1,5 +1,5 @@
 <template>
-  <div class="s-colors">
+  <div class="s-colors" ref="colorsWrapper">
     <div class="section">
       <h1>Colors</h1>
       <p>
@@ -46,8 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-// import { EventBus } from "./../plugins/event-bus";
+import { ref } from "vue";
 import { useCopyNotification } from "../composables/index";
 
 const { onCopySuccess, onCopyError } = useCopyNotification();
@@ -58,8 +57,6 @@ interface INotificationMsg {
   msg: string;
   timerStarted: boolean;
 }
-
-const messages = ref<INotificationMsg[]>([]);
 
 const colors = [
   [

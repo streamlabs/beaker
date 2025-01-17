@@ -243,10 +243,10 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Button from "./../components/Button.vue";
-import CallToAction from "./../components/CallToAction.vue";
+import Button from "@/components/Button.vue";
+import CallToAction from "@/components/CallToAction.vue";
 import CallToActionCode from "./CallToActions.vue?raw";
-import DemoSection from "./../components/DemoSection.vue";
+import DemoSection from "@/components/DemoSection.vue";
 import logoImg from "./../assets/imgs/logo.svg";
 
 const demoCode = ref(CallToActionCode);

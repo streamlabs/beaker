@@ -112,8 +112,8 @@ components: {
 
 <script setup lang="ts">
 import moment from "moment";
-import Accordion from "./../components/Accordion.vue";
-import DatePicker from "./../components/DatePicker.vue";
+import Accordion from "@/components/Accordion.vue";
+import DatePicker from "@/components/DatePicker.vue";
 import { reactive, ref } from "vue";
 
 const state = reactive({

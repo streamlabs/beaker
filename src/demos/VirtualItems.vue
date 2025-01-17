@@ -144,9 +144,9 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import DemoSection from "./../components/DemoSection.vue";
-import ItemGrid from "./../components/ItemGrid.vue";
-import VirtualItem from "./../components/VirtualItem.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import ItemGrid from "@/components/ItemGrid.vue";
+import VirtualItem from "@/components/VirtualItem.vue";
 import VirtualItemsCode from "./VirtualItems.vue?raw";
 
 const itemImage = ref(

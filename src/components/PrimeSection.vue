@@ -6,18 +6,22 @@
       :subtitle="subtitle"
       :hasLink="true"
     >
-      <div slot="title">
-        <Badge :align-left="true" :variant="'prime-alt'"></Badge>Feature
-      </div>
-      <div slot="link">
-        <Button
-          @click="$emit('click')"
-          :tag="'a'"
-          :variation="'link'"
-          :href="href"
-          :title="'Try Prime Now'"
-        ></Button>
-      </div>
+      <template #title>
+        <div>
+          <Badge :align-left="true" :variant="'prime-alt'"></Badge>Feature
+        </div>
+      </template>
+      <template #link>
+        <div>
+          <Button
+            @click="$emit('click')"
+            :tag="'a'"
+            :variation="'link'"
+            :href="href"
+            :title="'Try Prime Now'"
+          ></Button>
+        </div>
+      </template>
     </empty-section>
   </div>
 </template>

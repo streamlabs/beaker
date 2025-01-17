@@ -93,16 +93,17 @@ components: {
       <DemoSection title="Layout Picker" :code="demoCode">
         <template #components>
           <CSLayoutPicker>
-            <div
-              slot="layouts"
-              v-for="layout in webLayouts"
-              :key="layout.id"
-              class="s-cs-layout-picker__layout"
-            >
-              <div>
-                <img :src="layout.src" />
+            <template #layouts>
+              <div
+                v-for="layout in webLayouts"
+                :key="layout.id"
+                class="s-cs-layout-picker__layout"
+              >
+                <div>
+                  <img :src="layout.src" />
+                </div>
               </div>
-            </div>
+            </template>
           </CSLayoutPicker>
         </template>
       </DemoSection>
@@ -113,10 +114,10 @@ components: {
 <script setup lang="ts">
 import { ref } from "vue";
 import CreatorSitesCode from "./CreatorSites.vue?raw";
-import CSLayoutPicker from "./../components/CSLayoutPicker.vue";
-import DemoSection from "./../components/DemoSection.vue";
-import SSProSimulator from "./../components/SSProSimulator.vue";
-import UrlBar from "./../components/UrlBar.vue";
+import CSLayoutPicker from "@/components/CSLayoutPicker.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import SSProSimulator from "@/components/SSProSimulator.vue";
+import UrlBar from "@/components/UrlBar.vue";
 
 const demoCode = ref(CreatorSitesCode);
 const username = ref("morganleee");

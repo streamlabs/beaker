@@ -34,12 +34,12 @@ const componentDemos = ref(
   demos.filter(({ name }) => !EXCLUDE_FROM_COMPONENT_DEMOS.includes(name))
 );
 
-const props = defineProps<{ activeSection: string }>();
+// const props = defineProps<{ activeSection: string }>();
 const emit = defineEmits(["update-section"]);
 
-function changeSection(selectedSection: string) {
-  emit("update-section", selectedSection);
-}
+// function changeSection(selectedSection: string) {
+//   emit("update-section", selectedSection);
+// }
 </script>
 
 <style lang="less" scoped>
@@ -49,6 +49,8 @@ function changeSection(selectedSection: string) {
   display: flex;
   flex-direction: column;
   .margin-top(7);
+  height: calc(100vh - 172px);
+  overflow-y: auto;
 
   a {
     text-decoration: none;

@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import Badge from "./../components/Badge.vue";
+import Badge from "@/components/Badge.vue";
 
 interface Props {
   variation: string;

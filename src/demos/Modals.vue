@@ -17,15 +17,12 @@ components: {
             name="modal-basic"
             type="basic"
             title="UI Modal"
-            subTitle="Subtitle"
-            :clickToClose="false"
-            text="
-              Save combining multiple windows like Streamlabels, Twitch Chat,
-              Twitch Dashboard, Video, Streamlabs Dashboard, OBS etc into a
-              live view.
-            "
-            >Slots Available!</ModalComp
+            sub-title="Subtitle"
+            text="Save combining multiple windows like Streamlabels, Twitch Chat, Twitch Dashboard, Video, Streamlabs Dashboard, OBS etc into a live view."
+            :click-to-close="false"
           >
+            Slots Available!
+          </ModalComp>
         </template>
       </DemoSection>
 
@@ -33,7 +30,7 @@ components: {
         <Button
           variation="default"
           title="modal basic"
-          @click="$modal.show('modal-basic')"
+          @click="vfm.open('modal-basic')"
         />
       </div>
     </div>
@@ -51,7 +48,7 @@ components: {
             subTitle="Never pay for GIFs and effects again!"
             text="
               Get unlimited free GIFs and effects that will show up on all
-              alerts on all channels! You’ll also get a fancy ‘Pro’ badge next
+              alerts on all channels! You'll also get a fancy 'Pro' badge next
               to your username on your donations.
             "
             subscribe-text="galazy83 donated $50.00!"
@@ -65,7 +62,7 @@ components: {
         <Button
           variation="default"
           title="modal subscribe"
-          @click="$modal.show('modal-subscribe')"
+          @click="vfm.open('modal-subscribe')"
         />
       </div>
     </div>
@@ -91,7 +88,7 @@ components: {
         <Button
           variation="default"
           title="modal redirect"
-          @click="$modal.show('modal-redirect')"
+          @click="vfm.open('modal-redirect')"
         />
       </div>
     </div>
@@ -104,11 +101,11 @@ components: {
         <template #components>
           <ModalComp
             type="confirmation"
-            :width="400"
-            subTitle="Delete ‘Streamlabs Pillow'"
+            width="400px"
+            subTitle="Delete 'Streamlabs Pillow'"
             text="
-              Are you sure you want to delete the merch item ‘Streamlabs
-              Pillow’? This action cannot be undone.
+              Are you sure you want to delete the merch item 'Streamlabs
+              Pillow'? This action cannot be undone.
             "
             @confirm="() => {}"
             confirmButtonText="Delete"
@@ -120,12 +117,12 @@ components: {
         <Button
           :variation="'warning'"
           :title="'modal confirmation'"
-          @click="$modal.show('modal-confirmation')"
-        ></Button>
+          @click="vfm.open('modal-confirmation')"
+        />
       </div>
     </div>
 
-    <div class="section">
+    <!-- <div class="section">
       <h2>Modal Welcome Prime</h2>
       <p>Used for welcome prime</p>
 
@@ -133,7 +130,7 @@ components: {
         <template #components>
           <ModalComp
             type="welcome-prime"
-            :width="600"
+            width="600px"
             :hasPrimeCloseButton="true"
             @onClickPrime="test"
           />
@@ -147,7 +144,7 @@ components: {
           @click="$modal.show('modal-welcome-prime')"
         />
       </div>
-    </div>
+    </div> -->
 
     <table class="docs-table">
       <thead>
@@ -348,12 +345,16 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Button from "./../components/Button.vue";
-import DemoSection from "./../components/DemoSection.vue";
-import ModalComp from "./../components/ModalComp.vue";
+import Button from "@/components/Button.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import ModalComp from "@/components/ModalComp.vue";
 import ModalsCode from "./Modals.vue?raw";
+import { useVfm } from "vue-final-modal";
 
 const demoCode = ref(ModalsCode);
+
+const vfm = useVfm();
+
 function test() {
   console.log("test");
 }

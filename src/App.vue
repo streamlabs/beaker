@@ -1,14 +1,13 @@
 <template>
-  <div id="app" :class="[isNightTheme ? nightClasses : '', appClass]">
+  <div id="app-component" :class="[isNightTheme ? nightClasses : '', appClass]">
     <div id="nav">
       <div class="logo">
-        <img v-if="isNightTheme" src="./assets/imgs/beaker-full-night.svg" />
-        <img v-else src="./assets/imgs/beaker-full.svg" />
+        <img :src="logo" />
       </div>
-      <toggle :values="themes" v-model="theme"></toggle>
+      <Toggle v-model="theme" :values="themes" />
     </div>
 
-    <documentation></documentation>
+    <Documentation />
 
     <div class="floating-links">
       <a
@@ -26,13 +25,18 @@
         <img src="./assets/imgs/npm.svg" />
       </a>
     </div>
+
+    <ModalsContainer />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import Toggle from "./components/Toggle.vue";
 import Documentation from "./views/Documentation.vue";
+import DayLogo from "./assets/imgs/beaker-full.svg";
+import NightLogo from "./assets/imgs/beaker-full-night.svg";
+import { ModalsContainer } from "vue-final-modal";
 
 const appClass = ref("app-wrapper");
 const nightClasses = ref(["night", "night-theme"]);
@@ -44,6 +48,26 @@ const themes = ref({
 });
 
 const isNightTheme = computed(() => theme.value === "night");
+
+watch(
+  isNightTheme,
+  (isNight) => {
+    const app = document.querySelector("#app");
+
+    if (isNight) {
+      nightClasses.value.forEach((item) => {
+        app?.classList.add(item);
+      });
+    } else {
+      nightClasses.value.forEach((item) => {
+        app?.classList.remove(item);
+      });
+    }
+  },
+  { immediate: true }
+);
+
+const logo = computed(() => (isNightTheme.value ? NightLogo : DayLogo));
 </script>
 
 <style lang="less">
@@ -83,7 +107,7 @@ const isNightTheme = computed(() => theme.value === "night");
 }
 
 .floating-links {
-  position: absolute;
+  position: fixed;
   bottom: 40px;
   right: 40px;
 }

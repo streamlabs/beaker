@@ -82,6 +82,6 @@
 </template>
 
 <script setup lang="ts">
-import Accordion from "./../components/Accordion.vue";
-import ScrollNav from "./../components/ScrollNav.vue";
+import Accordion from "@/components/Accordion.vue";
+import ScrollNav from "@/components/ScrollNav.vue";
 </script>

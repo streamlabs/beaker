@@ -103,12 +103,12 @@ export default {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Accordion from "./../components/Accordion.vue";
-import DemoSection from "./../components/DemoSection.vue";
-import SiteSearch from "./../components/SiteSearch.vue";
+import Accordion from "@/components/Accordion.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import SiteSearch from "@/components/SiteSearch.vue";
 import SiteSearchDemoCode from "./SiteSearchDemo.vue?raw";
 
-import searchData from "./../components/sitesearchdata.json";
+import searchData from "@/components/sitesearchdata.json";
 
 const demoCode = ref(SiteSearchDemoCode);
 const jsonSearch = ref(searchData.data);

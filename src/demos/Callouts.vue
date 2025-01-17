@@ -210,9 +210,9 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Callout from "./../components/Callout.vue";
+import Callout from "@/components/Callout.vue";
 import CalloutsCode from "./Callouts.vue?raw";
-import DemoSection from "./../components/DemoSection.vue";
+import DemoSection from "@/components/DemoSection.vue";
 
 const demoCode = ref(CalloutsCode);
 

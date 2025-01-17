@@ -19,51 +19,60 @@
       <DemoSection title="Onboarding - Named Steps" :code="demoCode">
         <template #components>
           <Onboarding
+            key="onboarding-1"
             :steps="steps"
             :skippable="true"
             :currentStep="currentStep"
-            :stepLocation="'top'"
+            stepLocation="top"
             :skipHandler="skipFunc"
             :prevHandler="previousFunc"
-            :continueHandler="continueFunc"
+            :continueHandler="continueSteps"
             :completeHandler="completeFunc"
           >
-            <OnboardingStep slot="1">
-              <span slot="title">Getting Started</span>
-              <span slot="desc">Slot 1</span>
-              <SSProSimulator
-                :username="username"
-                :domain="domain"
-                :icon="icon"
-              />
-            </OnboardingStep>
-            <OnboardingStep slot="2">
-              <span slot="title">A Few More Things</span>
-              <span slot="desc">Slot 2</span>
-              <SSProSimulator
-                :username="username"
-                :domain="domain"
-                :icon="icon"
-              />
-            </OnboardingStep>
-            <OnboardingStep slot="3">
-              <span slot="title">Almost There</span>
-              <span slot="desc">Slot 3</span>
-              <SSProSimulator
-                :username="username"
-                :domain="domain"
-                :icon="icon"
-              />
-            </OnboardingStep>
-            <OnboardingStep slot="4">
-              <span slot="title">Getting Started</span>
-              <span slot="desc">Slot 4</span>
-              <SSProSimulator
-                :username="username"
-                :domain="domain"
-                :icon="icon"
-              />
-            </OnboardingStep>
+            <template #1>
+              <OnboardingStep>
+                <template #title>Getting Started</template>
+                <template #desc>Slot 1</template>
+                <SSProSimulator
+                  :username="username"
+                  :domain="domain"
+                  :icon="icon"
+                />
+              </OnboardingStep>
+            </template>
+            <template #2>
+              <OnboardingStep>
+                <template #title>A Few More Things</template>
+                <template #desc>Slot 2</template>
+                <SSProSimulator
+                  :username="username"
+                  :domain="domain"
+                  :icon="icon"
+                />
+              </OnboardingStep>
+            </template>
+            <template #3>
+              <OnboardingStep>
+                <template #title>Almost There</template>
+                <template #desc>Slot 3</template>
+                <SSProSimulator
+                  :username="username"
+                  :domain="domain"
+                  :icon="icon"
+                />
+              </OnboardingStep>
+            </template>
+            <template #4>
+              <OnboardingStep>
+                <template #title>Getting Started</template>
+                <template #desc>Slot 4</template>
+                <SSProSimulator
+                  :username="username"
+                  :domain="domain"
+                  :icon="icon"
+                />
+              </OnboardingStep>
+            </template>
           </Onboarding>
         </template>
       </DemoSection>
@@ -73,51 +82,60 @@
       <DemoSection title="Default" :code="demoCode">
         <template #components>
           <Onboarding
-            :steps="stepsTest"
+            key="onboarding-2"
+            :steps="unnamedSteps"
             :skippable="true"
             :currentStep="currentStep"
-            :stepLocation="'top'"
+            stepLocation="top"
             :skipHandler="skipFunc"
             :prevHandler="previousFunc"
-            :continueHandler="continueFunc"
+            :continueHandler="continueUnnamedSteps"
             :completeHandler="completeFunc"
           >
-            <OnboardingStep slot="1">
-              <span slot="title">Getting Started</span>
-              <span slot="desc">Slot 1</span>
-              <SSProSimulator
-                :username="username"
-                :domain="domain"
-                :icon="icon"
-              />
-            </OnboardingStep>
-            <OnboardingStep slot="2">
-              <span slot="title">A Few More Things</span>
-              <span slot="desc">Slot 2</span>
-              <SSProSimulator
-                :username="username"
-                :domain="domain"
-                :icon="icon"
-              />
-            </OnboardingStep>
-            <OnboardingStep slot="3">
-              <span slot="title">Almost There</span>
-              <span slot="desc">Slot 3</span>
-              <SSProSimulator
-                :username="username"
-                :domain="domain"
-                :icon="icon"
-              />
-            </OnboardingStep>
-            <OnboardingStep slot="4">
-              <span slot="title">Getting Started</span>
-              <span slot="desc">Slot 4</span>
-              <SSProSimulator
-                :username="username"
-                :domain="domain"
-                :icon="icon"
-              />
-            </OnboardingStep>
+            <template #1>
+              <OnboardingStep>
+                <template #title>Getting Started</template>
+                <template #desc>Slot 1</template>
+                <SSProSimulator
+                  :username="username"
+                  :domain="domain"
+                  :icon="icon"
+                />
+              </OnboardingStep>
+            </template>
+            <template #2>
+              <OnboardingStep>
+                <template #title>A Few More Things</template>
+                <template #desc>Slot 2</template>
+                <SSProSimulator
+                  :username="username"
+                  :domain="domain"
+                  :icon="icon"
+                />
+              </OnboardingStep>
+            </template>
+            <template #3>
+              <OnboardingStep>
+                <template #title>Almost There</template>
+                <template #desc>Slot 3</template>
+                <SSProSimulator
+                  :username="username"
+                  :domain="domain"
+                  :icon="icon"
+                />
+              </OnboardingStep>
+            </template>
+            <template #4>
+              <OnboardingStep>
+                <template #title>Getting Started</template>
+                <template #desc>Slot 4</template>
+                <SSProSimulator
+                  :username="username"
+                  :domain="domain"
+                  :icon="icon"
+                />
+              </OnboardingStep>
+            </template>
           </Onboarding>
         </template>
       </DemoSection>
@@ -203,11 +221,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import DemoSection from "./../components/DemoSection.vue";
-import Onboarding from "./../components/Onboarding.vue";
-import OnboardingStep from "./../components/OnboardingStep.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import Onboarding from "@/components/Onboarding.vue";
+import OnboardingStep from "@/components/OnboardingStep.vue";
 import OnboardingsCode from "./Onboardings.vue?raw";
-import SSProSimulator from "./../components/SSProSimulator.vue";
+import SSProSimulator from "@/components/SSProSimulator.vue";
 
 const demoCode = ref(OnboardingsCode);
 const currentStep = ref(1);
@@ -219,15 +237,20 @@ const steps = ref([
   { name: "Alert Box", complete: false },
 ]);
 
-const stepsTest = ref([
+const unnamedSteps = ref([
   { complete: false },
   { complete: false },
   { complete: false },
   { complete: false },
 ]);
 
-function continueFunc() {
-  stepsTest.value[currentStep.value - 1].complete = true;
+function continueSteps() {
+  steps.value[currentStep.value - 1].complete = true;
+  currentStep.value++;
+}
+
+function continueUnnamedSteps() {
+  unnamedSteps.value[currentStep.value - 1].complete = true;
   currentStep.value++;
 }
 

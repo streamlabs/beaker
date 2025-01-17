@@ -1,10 +1,10 @@
 <template>
   <div class="s-onboarding-step">
     <h1>
-      <slot name="title"></slot>
+      <slot name="title" />
     </h1>
     <p>
-      <slot name="desc"></slot>
+      <slot name="desc" />
     </p>
     <div>
       <slot></slot>
@@ -14,8 +14,8 @@
 
 <script setup lang="ts">
 defineProps<{
-  title: string;
-  desc: string;
+  title?: string;
+  desc?: string;
 }>();
 </script>
 

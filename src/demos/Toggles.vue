@@ -83,8 +83,8 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import DemoSection from "./../components/DemoSection.vue";
-import Toggle from "./../components/Toggle.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import Toggle from "@/components/Toggle.vue";
 import TogglesCode from "./Toggles.vue?raw";
 
 const demoCode = ref(TogglesCode);

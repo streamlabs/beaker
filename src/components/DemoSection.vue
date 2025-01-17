@@ -1,9 +1,11 @@
 <template>
   <div class="s-demo-section">
     <Accordion openedTitle="Hide Code" closedTitle="Show Code">
-      <div slot="content">
-        <pre><code v-html="escapedHtml"></code></pre>
-      </div>
+      <template #content>
+        <div>
+          <pre><code v-html="escapedHtml"></code></pre>
+        </div>
+      </template>
     </Accordion>
 
     <div class="s-demo-section__content">

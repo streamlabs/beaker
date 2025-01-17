@@ -22,13 +22,14 @@ components: {
       <DemoSection title="Form Group" :code="demoCode">
         <template #components>
           <FormGroup>
-            <TextInput
-              slot="input"
-              :type="textInputType"
-              :placeholder="textInputPlaceholder"
-              :label="title"
-              v-model="inputValue"
-            />
+            <template #input>
+              <TextInput
+                :type="textInputType"
+                :placeholder="textInputPlaceholder"
+                :label="title"
+                v-model="inputValue"
+              />
+            </template>
           </FormGroup>
         </template>
       </DemoSection>
@@ -40,12 +41,13 @@ components: {
       <DemoSection title="Horizontal Form Group" :code="demoCode">
         <template #components>
           <FormGroupH :title="title" :helpText="helpText" :tooltip="tooltip">
-            <TextInput
-              slot="input"
-              :type="textInputType"
-              :placeholder="textInputPlaceholder"
-              v-model="inputValue"
-            />
+            <template #input>
+              <TextInput
+                :type="textInputType"
+                :placeholder="textInputPlaceholder"
+                v-model="inputValue"
+              />
+            </template>
           </FormGroupH>
         </template>
       </DemoSection>
@@ -63,12 +65,13 @@ components: {
             :tooltip="tooltip"
             :helpText="helpText"
           >
-            <TextInput
-              slot="input"
-              :type="textInputType"
-              :placeholder="textInputPlaceholder"
-              v-model="inputValue"
-            />
+            <template #input>
+              <TextInput
+                :type="textInputType"
+                :placeholder="textInputPlaceholder"
+                v-model="inputValue"
+              />
+            </template>
           </FormGroupV>
         </template>
       </DemoSection>
@@ -87,13 +90,13 @@ components: {
 </template>
 
 <script setup lang="ts">
-import DemoSection from "./../components/DemoSection.vue";
+import DemoSection from "@/components/DemoSection.vue";
 import FormsCode from "./Forms.vue?raw";
-import FormGroup from "./../components/FormGroup.vue";
-import FormGroupH from "./../components/FormGroupH.vue";
-import FormGroupV from "./../components/FormGroupV.vue";
-// import PaymentForm from "./../components/PaymentForm.vue";
-import TextInput from "./../components/TextInput.vue";
+import FormGroup from "@/components/FormGroup.vue";
+import FormGroupH from "@/components/FormGroupH.vue";
+import FormGroupV from "@/components/FormGroupV.vue";
+// import PaymentForm from "@/components/PaymentForm.vue";
+import TextInput from "@/components/TextInput.vue";
 import { ref } from "vue";
 
 const demoCode = ref(FormsCode);

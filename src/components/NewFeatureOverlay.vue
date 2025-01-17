@@ -1,66 +1,70 @@
 <template>
-  <modal
-    name="new-feature"
+  <VueFinalModal
+    modal-id="new-feature"
     :adaptive="true"
     :width="width"
     :height="height"
-    classes="s-overlay__wrapper"
-    :clickToClose="true"
+    content-class="s-overlay__wrapper"
+    :click-to-close="true"
     @opened="opened"
   >
-    <div slot="top-right" class="s-overlay__icon">
-      <span class="s-icon icon-close" @click="onDismiss"></span>
-    </div>
-    <div class="s-overlay__container">
-      <div class="s-overlay__body">
-        <p class="s-overlay__label">{{ label }}</p>
-        <h1 class="s-overlay__title">{{ title }}</h1>
-        <p class="s-overlay__text">
-          <slot></slot>
-        </p>
-        <div class="s-overlay-links">
-          <Button
-            :size="'large'"
-            :variation="'action'"
-            :tag="buttonTag"
-            :to="buttonRoute"
-            :href="buttonHref"
-            :target="buttonTarget"
-            :title="buttonTitle"
-            @click.native="onPrimaryAction"
-          ></Button>
-          <router-link
-            class="s-overlay__link"
-            :to="dismissRoute"
-            @click.native="onDismiss"
-            >{{ dismissText }}</router-link
-          >
+    <template #default="{close}">
+      <div class="s-overlay__wrapper">
+        <div class="s-overlay__icon">
+          <i class="s-icon icon-close" @click="close" />
+        </div>
+
+        <div class="s-overlay__container">
+          <div class="s-overlay__body">
+            <p class="s-overlay__label">{{ label }}</p>
+            <h1 class="s-overlay__title">{{ title }}</h1>
+            <p class="s-overlay__text">
+              <slot />
+            </p>
+            <div class="s-overlay-links">
+              <Button
+                size="large"
+                variation="action"
+                :tag="buttonTag"
+                :to="buttonRoute"
+                :href="buttonHref"
+                :target="buttonTarget"
+                :title="buttonTitle"
+                @click="onPrimaryAction"
+              />
+              <RouterLink
+                class="s-overlay__link"
+                :to="dismissRoute"
+                @click="onDismiss"
+              >
+                {{ dismissText }}
+              </RouterLink>
+            </div>
+          </div>
+
+          <div class="s-overlay__image-block">
+            <img v-if="!isVideo" :src="overlayImage" class="s-overlay__image" />
+            <video
+              :controls="videoControls"
+              autoplay
+              loop
+              v-if="isVideo"
+              class="s-overlay__image"
+            >
+              <source :src="overlayImage" />
+              Environment does not support video playback
+            </video>
+          </div>
         </div>
       </div>
-
-      <div class="s-overlay__image-block">
-        <img v-if="!isVideo" :src="overlayImage" class="s-overlay__image" />
-        <video
-          :controls="videoControls"
-          autoplay
-          loop
-          v-if="isVideo"
-          class="s-overlay__image"
-        >
-          <source :src="overlayImage" />
-          Environment does not support video playback
-        </video>
-      </div>
-    </div>
-  </modal>
+    </template>
+  </VueFinalModal>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import type { Vue } from "vue/types/vue";
-import Button from "./../components/Button.vue";
-import { useVModal } from "../plugins/injects";
-
+import { useVfm, VueFinalModal } from "vue-final-modal";
+import { computed } from "vue";
+import Button from "@/components/Button.vue";
 
 export interface Props {
   width?: string | number;
@@ -70,7 +74,7 @@ export interface Props {
   media: string;
   buttonTitle: string;
   buttonRoute?: string;
-  buttonTag?: 'router-link' | 'button' | 'a' | undefined;
+  buttonTag?: "router-link" | "button" | "a" | undefined;
   buttonHref: string;
   buttonTarget: string;
   dismissRoute?: string;
@@ -90,25 +94,29 @@ const props = withDefaults(defineProps<Props>(), {
   videoControls: false,
 });
 
-const $modal: Vue["$modal"] | undefined = useVModal();
-const isVideo = computed(() => props.media.includes("mp4") || props.media.includes("webm"));
+const isVideo = computed(
+  () => props.media.includes("mp4") || props.media.includes("webm")
+);
 
 const overlayImage = computed(() => props.media);
 
-function opened(event) {
+function opened() {
   typeof props.onOpen === "function" && props.onOpen();
 }
+
+const modal = useVfm();
 function onPrimaryAction() {
   typeof props.onAction === "function" && props.onAction();
   onDismiss();
 }
 function onDismiss() {
-  $modal?.hide("new-feature");
+  modal.close("new-feature");
 }
 </script>
 
 <style lang="less" scoped>
 @import (reference) "./../styles/Imports";
+
 .s-overlay__container--mq {
   display: block !important;
 }
@@ -118,11 +126,9 @@ function onDismiss() {
   height: auto;
 }
 
-.v--modal-overlay {
-  background: @day-new-feature-overlay !important;
-}
-
 .s-overlay__wrapper {
+  position: relative;
+  background: @day-new-feature-overlay;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -136,6 +142,9 @@ function onDismiss() {
 }
 
 .s-overlay__icon {
+  position: absolute;
+  top: 0;
+  right: 0;
   .padding(4);
 }
 
@@ -212,8 +221,8 @@ function onDismiss() {
 
 .night,
 .night-theme {
-  .v--modal-overlay {
-    background: @night-new-feature-overlay !important;
+  .s-overlay__wrapper {
+    background: @night-new-feature-overlay;
   }
 
   .s-overlay__label {

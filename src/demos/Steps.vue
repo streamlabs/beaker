@@ -16,42 +16,40 @@ components: {
         <DemoSection title="Default" :code="demoCode">
           <template #components>
             <FormGroup>
-              <Step slot="input" title="Enable Pro">
-                <div class="info">
-                  <p>+20 CCV</p>
-                  <i class="icon-information"></i>
-                </div>
-              </Step>
-
-              <Step
-                slot="input"
-                title="Enable Pro"
-                :isCompleted="true"
-                :hasCheckmark="true"
-                completedText="Complete"
-              >
-                <div class="info">
-                  <p>+20 CCV</p>
-                  <i class="icon-information"></i>
-                </div>
-              </Step>
-
-              <Step
-                slot="input"
-                icon="icon-donation-settings"
-                title="Tip"
-                :hasPrime="true"
-                >0/1</Step
-              >
-
-              <Step
-                slot="input"
-                icon="icon-donation-settings"
-                title="Tip"
-                :isCompleted="true"
-                completedText="1/1"
-                >0/1</Step
-              >
+              <template #input>
+                <Step title="Enable Pro">
+                  <div class="info">
+                    <p>+20 CCV</p>
+                    <i class="icon-information"></i>
+                  </div>
+                </Step>
+                <Step
+                  title="Enable Pro"
+                  :isCompleted="true"
+                  :hasCheckmark="true"
+                  completedText="Complete"
+                >
+                  <div class="info">
+                    <p>+20 CCV</p>
+                    <i class="icon-information"></i>
+                  </div>
+                </Step>
+                <Step
+                  icon="icon-donation-settings"
+                  title="Tip"
+                  :hasPrime="true"
+                >
+                  0/1
+                </Step>
+                <Step
+                  icon="icon-donation-settings"
+                  title="Tip"
+                  :isCompleted="true"
+                  completedText="1/1"
+                >
+                  0/1
+                </Step>
+              </template>
             </FormGroup>
           </template>
         </DemoSection>
@@ -117,9 +115,9 @@ components: {
 </template>
 
 <script setup lang="ts">
-import DemoSection from "./../components/DemoSection.vue";
-import FormGroup from "./../components/FormGroup.vue";
-import Step from "./../components/Step.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import FormGroup from "@/components/FormGroup.vue";
+import Step from "@/components/Step.vue";
 import StepsCode from "./Steps.vue?raw";
 import { ref } from "vue";
 

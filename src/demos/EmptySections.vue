@@ -85,9 +85,9 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import EmptySection from "./../components/EmptySection.vue";
+import EmptySection from "@/components/EmptySection.vue";
 import EmptySectionsCode from "./EmptySections.vue?raw";
-import DemoSection from "./../components/DemoSection.vue";
+import DemoSection from "@/components/DemoSection.vue";
 
 const demoCode = ref(EmptySectionsCode);
 </script>

@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 import { nextTick, onMounted, ref, watch } from "vue";
-import { useWhatInput } from "../plugins/injects";
+// import { useWhatInput } from "../plugins/injects";
 
 export interface Props {
   bgImageNight?: string;
@@ -81,7 +81,7 @@ const props = withDefaults(defineProps<Props>(), {
   bannerClosed: false,
 });
 
-const $whatInput = useWhatInput();
+// const $whatInput = useWhatInput();
 const closed = ref(false);
 const banner = ref<HTMLDivElement | null>(null);
 const bottomWrapper = ref<HTMLDivElement | null>(null);

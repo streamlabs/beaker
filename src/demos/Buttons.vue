@@ -80,10 +80,12 @@ components: {
               />
 
               <Button variation="action" @click="buttonClick('Custom Slot')">
-                <div slot="custom" class="custom-html">
-                  <i class="icon-add-circle"></i>
-                  <span>Custom Slot</span>
-                </div>
+                <template #custom>
+                  <div class="custom-html">
+                    <i class="icon-add-circle"></i>
+                    <span>Custom Slot</span>
+                  </div>
+                </template>
               </Button>
             </div>
           </template>
@@ -710,8 +712,8 @@ components: {
 </template>
 
 <script setup lang="ts">
-import Button from "./../components/Button.vue";
-import DemoSection from "./../components/DemoSection.vue";
+import Button from "@/components/Button.vue";
+import DemoSection from "@/components/DemoSection.vue";
 import ButtonCode from "./Buttons.vue?raw";
 // import { EventBus } from "./../plugins/event-bus";
 import { ref } from "vue";

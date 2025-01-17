@@ -33,11 +33,11 @@ components: {
             buttonTarget="_blank"
           >
             <p>
-              We’ve worked with some of the best developers in the industry to
+              We've worked with some of the best developers in the industry to
               bring you the tools to take your stream to the next level.
             </p>
             <p>
-              We’ve automatically credited $15.00 to your account so you can
+              We've automatically credited $15.00 to your account so you can
               start trying them out today.
             </p>
           </NewFeatureOverlay>
@@ -50,8 +50,8 @@ components: {
         <Button
           :variation="'default'"
           :title="'New Feature Overlay'"
-          @click="$modal.show('new-feature')"
-        ></Button>
+          @click="modal.open('new-feature')"
+        />
       </div>
     </div>
 
@@ -163,12 +163,15 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useVfm } from "vue-final-modal";
 import AnnouncementsCode from "./Announcements.vue?raw";
-import Button from "./../components/Button.vue";
-import DemoSection from "./../components/DemoSection.vue";
-import NewFeatureOverlay from "./../components/NewFeatureOverlay.vue";
+import Button from "@/components/Button.vue";
+import DemoSection from "@/components/DemoSection.vue";
+import NewFeatureOverlay from "@/components/NewFeatureOverlay.vue";
 
 const demoCode = ref(AnnouncementsCode);
+const modal = useVfm();
+
 function trackingCodeComponent() {
   console.log("componentEventTracking");
 }

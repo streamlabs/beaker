@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import WelcomePrime from "./../components/WelcomePrime.vue";
+import WelcomePrime from "@/components/WelcomePrime.vue";
 
 interface Props {
   name?: string;

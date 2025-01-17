@@ -4,9 +4,9 @@
       type="radio"
       :id="id"
       :name="name"
-      :checked="val == value"
+      :checked="val == modelValue"
       :value="val"
-      @input="$emit('input', val)"
+      @input="$emit('update:modelValue', val)"
       @click="$emit('on-click')"
     />
     <label :for="id">{{ label }}</label>
@@ -18,12 +18,12 @@ interface Props {
   label: string;
   id: string;
   name: string;
-  value: string | boolean;
+  modelValue: string | boolean;
   val: string | boolean;
 }
 
 defineProps<Props>();
-defineEmits(["input", "on-click"]);
+defineEmits(["update:modelValue", "on-click"]);
 </script>
 
 <style lang="less">

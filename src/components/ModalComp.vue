@@ -11,9 +11,9 @@
         :hideActionButtons="hideActionButtons"
         :confirmButtonText="confirmButtonText"
         :clickToClose="clickToClose"
-        v-on="$listeners"
+        v-bind="$attrs"
       >
-        <slot></slot>
+        <slot />
       </ModalBasic>
     </div>
 
@@ -35,12 +35,12 @@
         :buttonPrice="buttonPrice"
         :buttonVariation="buttonVariation"
         :cancelTitle="cancelTitle"
-        v-on="$listeners"
+        v-bind="$attrs"
       >
         <template #preview>
-          <slot name="preview"></slot>
+          <slot name="preview" />
         </template>
-        <slot></slot>
+        <slot />
       </ModalSubscribe>
     </div>
 
@@ -51,24 +51,24 @@
         :text="text"
         :width="width"
         :minWidth="minWidth"
-        v-on="$listeners"
-      ></ModalRedirect>
+        v-bind="$attrs"
+      />
     </div>
 
     <div v-if="type === 'confirmation'">
       <ModalConfirmation
         :name="modalName"
-        :subTitle="subTitle"
+        :sub-title="subTitle"
         :text="text"
         :width="width"
-        :minWidth="minWidth"
-        :confirmButtonText="confirmButtonText"
-        :buttonVariation="buttonVariation"
-        v-on="$listeners"
-      ></ModalConfirmation>
+        :min-width="minWidth"
+        :confirm-button-text="confirmButtonText"
+        :button-variation="buttonVariation"
+        v-bind="$attrs"
+      />
     </div>
 
-    <div v-if="type === 'welcome-prime'">
+    <!-- <div v-if="type === 'welcome-prime'">
       <ModalPrime
         :name="modalName"
         :width="width"
@@ -92,18 +92,18 @@
       >
         <slot></slot>
       </ModalPrimeIntro>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script setup lang="ts">
-// import Button from "./../components/Button.vue";
-import ModalBasic from "./../components/ModalBasic.vue";
-import ModalSubscribe from "./../components/ModalSubscribe.vue";
-import ModalRedirect from "./../components/ModalRedirect.vue";
-import ModalConfirmation from "./../components/ModalConfirmation.vue";
-import ModalPrime from "./../components/ModalPrime.vue";
-import ModalPrimeIntro from "./../components/ModalPrimeIntro.vue";
+// import Button from "@/components/Button.vue";
+import ModalBasic from "@/components/ModalBasic.vue";
+import ModalSubscribe from "@/components/ModalSubscribe.vue";
+import ModalRedirect from "@/components/ModalRedirect.vue";
+import ModalConfirmation from "@/components/ModalConfirmation.vue";
+// import ModalPrime from "@/components/ModalPrime.vue";
+// import ModalPrimeIntro from "@/components/ModalPrimeIntro.vue";
 // import VModal from "vue-js-modal";
 import { computed } from "vue";
 
@@ -113,8 +113,8 @@ const modalName = computed(() => props.name || `modal-${props.type}`);
 
 interface Props {
   name?: string;
-  width?: number;
-  minWidth?: number;
+  width?: string; // Converted from number to string
+  minWidth?: string; // Converted from number to string
   scrollable?: boolean;
   type?: string;
   title?: string;
@@ -137,7 +137,15 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  width: 600,
-  minWidth: 600,
+  width: "600px",
+  minWidth: "600px",
 });
 </script>
+
+<style lang="less">
+.vfm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>

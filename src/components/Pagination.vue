@@ -1,9 +1,8 @@
 <template>
   <div ref="pagination" class="pagination__container">
-    <VuePaginateComponent
+    <Paginate
       :class="{ 'pagination--bg': nightBg }"
       v-bind="$attrs"
-      v-on="$listeners"
       :page-count="pageCount"
       :page-range="pageRange"
       :click-handler="selectPage"
@@ -25,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import VuePaginateComponent from "vuejs-paginate";
+import Paginate from "vuejs-paginate-next";
 import { computed, onMounted, ref } from "vue";
 
 interface Props {

@@ -1,30 +1,29 @@
 <template>
   <div class="s-tagging-input">
     <div class="s-tagging-input__container">
-      <text-input
-        v-model="input"
-        v-validate="inputValidation"
-        slot="input"
+      <!-- v-validate="inputValidation" -->
+      <TextInput
+        v-model="inputFieldValue"
         :name="name"
         :label="label"
-        :placeholder="placeholder"
+        :placeholder="placeholder || ''"
         type="text"
-        :error="errors.first(name)"
-        @input="$emit('update:text', $event)"
+        :error="error"
+        @update:modelValue="$emit('update:text', $event)"
         @keydown.enter.prevent="onAdd"
       />
       <Button
         :title="buttonText"
         type="button"
         :variation="buttonVariation"
-        :disabled="value.length >= maxItems"
+        :disabled="modelValue.length >= maxItems"
         @click="onAdd"
       />
     </div>
 
     <div class="s-tagging-input__tags">
       <div
-        v-for="(tag, index) in value"
+        v-for="(tag, index) in modelValue"
         :key="index"
         class="s-tagging-input-tag"
         :class="[`s-tagging-input-tag--${tagVariation}`]"
@@ -42,8 +41,7 @@
 <script setup lang="ts">
 import TextInput from "./TextInput.vue";
 import Button from "./Button.vue";
-import { watch, ref, reactive } from "vue";
-import { useVeeValidate } from "../plugins/injects";
+import { watch, ref } from "vue";
 
 interface Props {
   name: string;
@@ -51,29 +49,30 @@ interface Props {
   placeholder?: string;
   buttonText?: string;
   buttonVariation?: string;
-  value?: string[];
+  modelValue?: string[];
   text?: string;
   inputValidation: string;
   prefix?: string;
   tagVariation?: string;
   maxItems?: number;
+  error?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   buttonText: "Add Tag",
   buttonVariation: "default",
-  value: () => [],
+  modelValue: () => [],
   text: "",
   tagVariation: "default",
   maxItems: 25,
 });
 
 const tags = ref<string[]>([]);
-const input = ref("");
+const inputFieldValue = ref("");
 
 const emit = defineEmits([
   "error",
-  "input",
+  "update:modelValue",
   "change",
   "update:value",
   "update:text",
@@ -81,11 +80,11 @@ const emit = defineEmits([
   "add",
 ]);
 
-const $validator = reactive(useVeeValidate());
+// const $validator = reactive(useVeeValidate());
 
 function onAdd() {
-  if ($validator.errors.items.length !== 0) {
-    emit("error", $validator.errors.items, false);
+  if (props.error) {
+    // emit("error", error, false);
     return;
   }
 
@@ -94,7 +93,7 @@ function onAdd() {
     return;
   }
 
-  let inputValue = input.value.trim();
+  let inputValue = inputFieldValue.value.trim();
 
   const found = tags.value.find((v) => {
     if (props.prefix && !inputValue.startsWith(props.prefix)) {
@@ -109,7 +108,7 @@ function onAdd() {
       inputValue = props.prefix + inputValue;
     }
     tags.value.push(inputValue);
-    input.value = "";
+    inputFieldValue.value = "";
     emitTagEvents("add");
   }
 }
@@ -120,7 +119,7 @@ function onRemove(index: number) {
 }
 
 function emitTagEvents(...events) {
-  ["input", "change", "update:value", ...events].forEach((event) =>
+  ["update:modelValue", "change", "update:value", ...events].forEach((event) =>
     emit(event, tags.value)
   );
 }
@@ -130,10 +129,10 @@ function watchValue(newValue) {
 }
 
 function watchText(newValue) {
-  input.value = newValue;
+  inputFieldValue.value = newValue;
 }
 
-watch(() => props.value, watchValue, { immediate: true });
+watch(() => props.modelValue, watchValue, { immediate: true });
 watch(() => props.text, watchText, { immediate: true });
 </script>
 <style lang="less">
