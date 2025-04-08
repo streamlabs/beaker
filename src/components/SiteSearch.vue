@@ -4,7 +4,7 @@
     :class="[
       { 's-sitesearch--is-open': isOpen },
       { 's-sitesearch--phase-one': phaseOne },
-      { 's-sitesearch--phase-two': phaseTwo }
+      { 's-sitesearch--phase-two': phaseTwo },
     ]"
     :style="calcHeight"
   >
@@ -34,23 +34,23 @@
       >
         <div class="s-sitesearch-quicklinks">Quick Links</div>
         <a
-          :href="searchData[quickLinkLoc[i]].route"
           v-for="(suggested, i) in suggestedLinks"
+          :href="jsonSearch[suggested.jsonSearchIndex].route"
           :key="suggested.item.name"
           class="s-sitesearch-results"
           :class="{ 's-active-result': currentResult === i }"
           @mouseover="currentResult = i"
-          @mousedown="trackEvent(searchData[quickLinkLoc[i]].route)"
+          @mousedown="trackEvent(jsonSearch[suggested.jsonSearchIndex].route)"
           @mouseup="blurSearch"
         >
           <div class="s-sitesearch__result--image">
             <i
-              :class="searchData[quickLinkLoc[i]].image"
+              :class="jsonSearch[suggested.jsonSearchIndex].image"
               class="s-sitesearch__result--image"
             ></i>
           </div>
           <div class="s-sitesearch__result--title">
-            {{ searchData[quickLinkLoc[i]].title }}
+            {{ jsonSearch[suggested.jsonSearchIndex].title }}
           </div>
         </a>
       </div>
@@ -61,13 +61,13 @@
       >
         <transition-group name="s-sitesearch--fadeX">
           <a
-            :href="searchResult.item.route"
             v-for="(searchResult, i) in limitedResult"
+            :href="searchResult.item.route"
             :key="searchResult.item.name"
             class="s-sitesearch-results"
             :class="{ 's-active-result': currentResult === i }"
             @mouseover="currentResult = i"
-            @mousedown="trackEvent(searchData[quickLinkLoc[i]].route)"
+            @mousedown="trackEvent(jsonSearch[searchResult.refIndex].route)"
             @mouseup="blurSearch"
           >
             <div class="s-sitesearch__result--image">
@@ -103,13 +103,11 @@ export default class SiteSearch extends Vue {
   private resultLimit: Number = 7;
   private fuse: any = null;
   private value: String = "";
-  private quickLinkLoc: any = [];
   private keyEvents: any = [];
   private currentResult: number = 0;
 
   @Prop()
   jsonSearch!: any;
-  searchData = this.jsonSearch;
 
   @Prop({ default: "" })
   search!: String;
@@ -124,14 +122,17 @@ export default class SiteSearch extends Vue {
   quickLinks!: any[];
 
   get suggestedLinks() {
-    return this.quickLinks.filter(i => {
-      let findResult: any = this.searchData.find(
-        data => data.name === i.item.name
+    return this.quickLinks.reduce((acc, i) => {
+      let jsonSearchIndex = this.jsonSearch.findIndex(
+        (data) => data.name === i.item.name
       );
-      let suggestResult: any = this.searchData.indexOf(findResult);
-      this.quickLinkLoc.push(suggestResult);
-      return suggestResult;
-    });
+
+      if (jsonSearchIndex > -1) {
+        acc.push({ ...i, jsonSearchIndex });
+      }
+
+      return acc;
+    }, []);
   }
 
   get options() {
@@ -149,13 +150,13 @@ export default class SiteSearch extends Vue {
       keys: [
         {
           name: "keywords",
-          weight: 0.3
+          weight: 0.3,
         },
         {
           name: "title",
-          weight: 0.7
-        }
-      ]
+          weight: 0.7,
+        },
+      ],
     };
     return options;
   }
@@ -190,9 +191,9 @@ export default class SiteSearch extends Vue {
     }
   }
 
-  @Watch("searchData")
-  watchSearchData() {
-    this.fuse.searchData = this.searchData;
+  @Watch("jsonSearch")
+  watchJsonSearch() {
+    this.fuse.searchData = this.jsonSearch;
     this.fuseSearch();
   }
 
@@ -236,8 +237,8 @@ export default class SiteSearch extends Vue {
     if (event.keyCode === 13 && this.phaseOne) {
       if (this.result <= 0) {
         this.trackEvent(this.currentResult);
-        window.location.href = this.searchData[
-          this.quickLinkLoc[this.currentResult]
+        window.location.href = this.jsonSearch[
+          this.suggestedLinks[this.currentResult].jsonSearchIndex
         ].route;
         this.blurSearch();
       } else {
@@ -279,7 +280,7 @@ export default class SiteSearch extends Vue {
   }
 
   initFuse() {
-    this.fuse = new Fuse(this.searchData, this.options);
+    this.fuse = new Fuse(this.jsonSearch, this.options);
     if (this.search) {
       this.value = this.search;
     }
@@ -300,7 +301,6 @@ export default class SiteSearch extends Vue {
   }
 
   mounted() {
-    this.searchData = this.jsonSearch;
     this.initFuse();
   }
 }
