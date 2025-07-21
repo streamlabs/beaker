@@ -4,19 +4,22 @@ import vue from "@vitejs/plugin-vue";
 import dts from "vite-plugin-dts";
 
 export default defineConfig({
-  plugins: [vue(), dts({
+  plugins: [
+    vue(),
+    dts({
       tsconfigPath: "tsconfig.json",
-    cleanVueFileName: true,
+      cleanVueFileName: true,
       include: ['src/components/*.vue'],
-    exclude: [
+      exclude: [
         "src/index.d.ts",
         "src/assets/**",
         "src/demos/**",
         "src/styles/**",
         "src/views/**",
-    ],
+      ],
       outDir: 'dist',
-    }),],
+    }),
+  ],
   build: {
     minify: false,
     target: "chrome61",
