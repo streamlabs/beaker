@@ -29,44 +29,34 @@ export function useCopyNotification() {
     return msgs;
   });
 
-function setCopyMsgId() {
-  return Math.ceil(Math.random() * 10000);
-}
+  function setCopyMsgId() {
+    return Math.ceil(Math.random() * 10000);
+  }
 
-function setCopyMsg({ id, msg, status, timerStarted }) {
-  const message: INotificationMsg = { id, msg, status, timerStarted };
-  messages.value.push(message);
-}
+  function setCopyMsg({ id, msg, status, timerStarted }) {
+    const message: INotificationMsg = { id, msg, status, timerStarted };
+    messages.value.push(message);
+  }
 
-function onCopySuccess(e) {
-  let msg: string = typeof e === "string" ? e : e.text;
+  function onCopySuccess(e) {
+    let msg: string = typeof e === "string" ? e : e.text;
 
-  setCopyMsg({
-    id: setCopyMsgId(),
-    msg,
-    status: "success",
-    timerStarted: false,
-  });
-}
+    setCopyMsg({
+      id: setCopyMsgId(),
+      msg,
+      status: "success",
+      timerStarted: false,
+    });
+  }
 
-function onCopyError(e) {
-  setCopyMsg({
-    id: setCopyMsgId(),
-    msg: "Failed to copy to clipboard",
-    status: "error",
-    timerStarted: false,
-  });
-}
-
-// onBeforeMount(() => {
-//   EventBus.$on("copy-success", onCopySuccess);
-//   EventBus.$on("copy-error", onCopyError);
-// });
-
-// onUnmounted(() => {
-//   EventBus.$off("copy-success");
-//   EventBus.$off("copy-error");
-// });
+  function onCopyError(e) {
+    setCopyMsg({
+      id: setCopyMsgId(),
+      msg: "Failed to copy to clipboard",
+      status: "error",
+      timerStarted: false,
+    });
+  }
 
   return {
     visibleMessages,

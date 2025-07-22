@@ -1,9 +1,10 @@
-const eslint = require("@eslint/js");
-const eslintPluginVue = require("eslint-plugin-vue");
-const globals = require("globals");
-const typescriptEslint = require("typescript-eslint");
+import eslint from "@eslint/js";
+import eslintConfigPrettier from "eslint-config-prettier";
+import eslintPluginVue from "eslint-plugin-vue";
+import globals from "globals";
+import typescriptEslint from "typescript-eslint";
 
-module.exports = typescriptEslint.config(
+export default typescriptEslint.config(
   { ignores: ["*.d.ts", "**/coverage", "**/dist"] },
   {
     extends: [
@@ -20,9 +21,7 @@ module.exports = typescriptEslint.config(
         parser: typescriptEslint.parser
       }
     },
-    rules: {
-      // your rules
-    }
+    rules: {}
   },
   eslintConfigPrettier
 );

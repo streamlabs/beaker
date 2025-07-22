@@ -6,9 +6,13 @@
     "noImplicitAny": false,
     "strict": true,
     "jsx": "preserve",
+    "types": [
+      "vite/client",
+      "node",
+      "vue/macros-global"
+    ],
     "importHelpers": true,
-    "moduleResolution": "node",
-    // "experimentalDecorators": true,
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
@@ -32,8 +36,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "vite-publish.config.mts",
-    "vite-publish.config.mjs"
+    "./vite-publish.config.mjs"
   ],
   "exclude": [
     "node_modules"

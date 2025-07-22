@@ -1,7 +1,7 @@
 import whatInput from "what-input";
 
 const plugin = {
-  install(app, options) {
+  install(app) {
     app.config.globalProperties.$whatInput = whatInput;
   }
 };
