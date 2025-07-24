@@ -19,7 +19,9 @@
     "build": "vite build",
     "serve": "vite preview",
     "build:publish": "vite build -c vite-publish.config.mjs",
-    "deploy": "./deploy.sh"
+    "deploy": "./deploy.sh",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "version": "npm run changelog && git add CHANGELOG.md"
   },
   "files": [
     "dist"
