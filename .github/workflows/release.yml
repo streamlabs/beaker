@@ -22,7 +22,7 @@ jobs:
         run: npm ci
 
       - name: Build Beaker library
-        run: npm run build
+        run: npm run build:publish
 
       - name: Determine version info
         id: version
