@@ -11,7 +11,7 @@
 
     <div class="s-guard__text">
       <TextInput
-        readonly
+        :readonly="true"
         type="text"
         v-model="value"
         @focus="checkSelectedText"
@@ -21,48 +21,36 @@
   </div>
 </template>
 
-<script lang="ts">
-import TextInput from "./TextInput.vue";
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref, defineEmits } from 'vue';
+import TextInput from './TextInput.vue';
 
-export default defineComponent({
-  components: {
-    TextInput
-  },
-    data() {
-        return {
-            visible: false
-        };
-    },
-    methods: {
-        showText(e) {
-            if (!this.visible) {
-                  this.visible = true;
-                } else {
-                  this.$emit("click");
-                }
+const visible = ref(false);
+const value = ref('');
+const placeholder = ref('Click to show');
 
-                if (e.type === "keydown") {
-                  setTimeout(() => e.target.select(), 200);
-                }
-        },
-        checkSelectedText(e) {
-            const target = e.target;
+const emit = defineEmits(['click']);
 
-                if (!this.visible) target.setSelectionRange(0, 0);
+function showText(e: KeyboardEvent | MouseEvent) {
+  if (!visible.value) {
+    visible.value = true;
+  } else {
+    emit('click');
+  }
 
-                target.focus();
-        }
-    },
-    props: {
-        value: {
-            type: String
-        },
-        placeholder: { default: "Click to show",
-            type: String
-        }
-    }
-})
+  if (e.type === 'keydown') {
+    setTimeout(() => (e.target as HTMLInputElement).select(), 200);
+  }
+}
+
+function checkSelectedText(e: Event) {
+  const target = e.target as HTMLInputElement;
+
+  if (!visible.value) target.setSelectionRange(0, 0);
+
+  target.focus();
+}
+</script>
 
 </script>
 

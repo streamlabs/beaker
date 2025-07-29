@@ -30,24 +30,24 @@
       ref="inputRef"
       :type="type"
       :placeholder="placeholder"
-      @input="handleInput"
       :name="name"
       :disabled="disabled"
       :readonly="readonly"
-      @blur="$emit('blur')"
-      @focus="onFocus"
-      @click="onClick"
-      @keyup="onKeyUp"
       :autocomplete="autoComplete"
       :autofocus="autofocus"
       v-model="content"
+      class="s-form-field__input"
       :class="{
-        's-form-field__input': true,
         's-form-field__input--error': !!error,
         's-form-field__input--disabled': disabled,
       }"
-      v-on="filteredListeners"
+      @blur="$emit('blur', $event)"
+      @focus="onFocus"
+      @click="onClick"
+      @keyup="onKeyUp"
+      @input="handleInput"
       @mousewheel="mouseWheel"
+      v-on="filteredListeners"
       v-bind="$attrs"
     />
     <label
@@ -83,7 +83,7 @@ export interface Props {
   helpText?: string;
   type?: string;
   placeholder: string;
-  disabled?: boolean | null;
+  disabled?: boolean | undefined;
   label?: string;
   readonly?: boolean;
   autoComplete?: string;
@@ -101,7 +101,7 @@ const attrs = useAttrs();
 const content = ref(
   typeof props.modelValue === "number"
     ? props.modelValue.toString()
-    : props.modelValue
+    : props.modelValue,
 );
 const inputRef = ref<HTMLInputElement | null>(null);
 
@@ -117,36 +117,32 @@ const emit = defineEmits([
 watch(
   () => props.modelValue,
   (newValue) => {
-    content.value = newValue.toString();
+    content.value =
+      typeof newValue === "number" ? newValue.toString() : newValue;
     emit("onChange", newValue);
-  }
+  },
 );
 
 const filteredListeners = computed(() => omit(attrs, ["update:modelValue"]));
 
-function update(value) {
+function update(value: string | number) {
   emit("update:modelValue", value);
 }
 
-function focus() {
-  inputRef.value?.focus();
+function handleInput(event: Event) {
+  const target = event.target as HTMLInputElement;
+  update(props.type === "number" ? Number(target.value) : target.value);
 }
 
-function handleInput(event: { target: HTMLInputElement }) {
-  update(
-    props.type === "number" ? Number(event.target.value) : event.target.value
-  );
-}
-
-function onKeyUp(event: { target: HTMLTextAreaElement }) {
+function onKeyUp(event: KeyboardEvent) {
   emit("keyup", event);
 }
 
-function onFocus(event: { target: HTMLTextAreaElement }) {
+function onFocus(event: FocusEvent) {
   emit("focus", event);
 }
 
-function onClick(event: { target: HTMLTextAreaElement }) {
+function onClick(event: MouseEvent) {
   emit("click", event);
 }
 
@@ -154,7 +150,7 @@ const isMaxReached = computed(
   () =>
     props.type === "number" &&
     !isNil(props.max) &&
-    Number(props.modelValue) >= props.max
+    Number(props.modelValue) >= props.max,
 );
 
 function increment() {
@@ -167,7 +163,7 @@ const isMinReached = computed(
   () =>
     props.type === "number" &&
     !isNil(props.min) &&
-    Number(props.modelValue) <= props.min
+    Number(props.modelValue) <= props.min,
 );
 
 function decrement() {
