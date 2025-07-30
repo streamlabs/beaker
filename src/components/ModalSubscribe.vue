@@ -1,71 +1,72 @@
 <template>
-  <VueFinalModal
-    :modal-id="name"
-    :content-style="{ width, minWidth }"
+  <modal
+    :name="name"
+    :classes="'s-modal-wrapper'"
+    :maxWidth="width"
+    :minWidth="minWidth"
+    height="auto"
+    :adaptive="true"
     :scrollable="scrollable"
     v-bind="$attrs"
   >
-    <template #default="{close}">
-      <div class="s-modal-container">
-        <div class="s-subscribe-icon-box">
-          <i class="icon-close" @click="close" />
+    <div class="s-modal-container">
+      <div class="s-subscribe-icon-box">
+        <i class="icon-close" @click="$modal.hide(name)"></i>
+      </div>
+      <div class="s-subscribe-upper">
+        <div class="s-subscribe-title-box">
+          <h1 class="s-modal-title">{{ title }}</h1>
+          <badge v-if="proBadge" :align-left="true">Pro</badge>
         </div>
+        <h2 class="s-modal-sub-title">{{ subTitle }}</h2>
+      </div>
 
-        <div class="s-subscribe-upper">
-          <div class="s-subscribe-title-box">
-            <h1 class="s-modal-title">{{ title }}</h1>
-            <Badge v-if="proBadge" :align-left="true">Pro</Badge>
-          </div>
-          <h2 class="s-modal-sub-title">{{ subTitle }}</h2>
+      <div class="s-subscribe-body">
+        <div v-if="customPreview" class="s-subscribe-box">
+          <slot name="preview"></slot>
         </div>
-        <div class="s-subscribe-body">
-          <div v-if="customPreview" class="s-subscribe-box">
-            <slot name="preview" />
-          </div>
-          <div v-else class="s-subscribe-box">
-            <p class="s-subscribe-text">{{ subscribeText }}</p>
-            <p class="s-subscribe-message">
-              {{ subscribeMessage }}
-              <span class="s-subscribe-icon">
-                <img src="../assets/imgs/girl.svg" />
-              </span>
-            </p>
-          </div>
-        </div>
-
-        <div class="s-subscribe-bottom">
-          <p v-if="text" class="s-modal-text s-modal-text-subscribe">
-            {{ text }}
-          </p>
-          <slot v-else />
-
-          <div class="s-button-subscribe">
-            <Button
-              :variation="buttonVariation"
-              :title="buttonTitle"
-              :price="buttonPrice"
-              @click="$emit('subscribe-click')"
-            />
-            <span class="s-button-cancel" @click="handleCancel">
-              {{ cancelTitle }}
+        <div v-else class="s-subscribe-box">
+          <p class="s-subscribe-text">{{ subscribeText }}</p>
+          <p class="s-subscribe-message">
+            {{ subscribeMessage }}
+            <span class="s-subscribe-icon">
+              <img src="../assets/imgs/girl.svg" />
             </span>
-          </div>
-          <p class="s-modal-notes">{{ notes }}</p>
+          </p>
         </div>
       </div>
-    </template>
-  </VueFinalModal>
+
+      <div class="s-subscribe-bottom">
+        <p v-if="text" class="s-modal-text s-modal-text-subscribe">
+          {{ text }}
+        </p>
+        <slot v-else></slot>
+        <div class="s-button-subscribe">
+          <Button
+            :variation="buttonVariation"
+            :title="buttonTitle"
+            :price="buttonPrice"
+            @click="$emit('subscribe-click')"
+          />
+
+          <span class="s-button-cancel" @click="$emit('cancel-click')">{{
+            cancelTitle
+          }}</span>
+        </div>
+        <p class="s-modal-notes">{{ notes }}</p>
+      </div>
+    </div>
+  </modal>
 </template>
 
 <script setup lang="ts">
 import Button from "@/components/Button.vue";
 import Badge from "@/components/Badge.vue";
-import { useVfm, VueFinalModal } from "vue-final-modal";
 
 interface Props {
   name: string;
-  width?: string;
-  minWidth?: string;
+  width?: number;
+  minWidth?: number;
   scrollable?: boolean;
   title: string;
   subTitle: string;
@@ -81,26 +82,17 @@ interface Props {
   cancelTitle?: string;
 }
 
-const {
-  width = "600px",
-  minWidth = "600px",
-  scrollable = false,
-  proBadge = true,
-  customPreview = false,
-  buttonTitle = "Subscribe with PayPal",
-  buttonPrice = "$5.99/mo",
-  buttonVariation = "subscribe",
-  cancelTitle = "Cancel",
-  ...props
-} = defineProps<Props>();
-
-const emit = defineEmits(["cancel-click"]);
-const vfm = useVfm();
-
-function handleCancel() {
-  emit("cancel-click");
-  vfm.close(props.name);
-}
+withDefaults(defineProps<Props>(), {
+  width: 600,
+  minWidth: 600,
+  scrollable: false,
+  proBadge: true,
+  customPreview: false,
+  buttonTitle: "Subscribe with PayPal",
+  buttonPrice: "$5.99/mo",
+  buttonVariation: "subscribe",
+  cancelTitle: "Cancel",
+});
 </script>
 
 <style lang="less" scoped>

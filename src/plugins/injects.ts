@@ -1,35 +1,39 @@
-import { inject } from "vue";
-import type { ComponentCustomProperties } from "vue";
+import { inject, type InjectionKey, type ComponentCustomProperties, type Component, type AsyncComponentLoader } from 'vue';
 
-
-/**
- * @typedef {import('vue').InjectionKey<T>} InjectionKey
- * @template {*} T
-*/
-
-/** @typedef {ComponentCustomProperties['$modal']} VModal */
-
-/** @type {InjectionKey<VModal>} */
-export const V_MODAL_INJECTION_KEY = Symbol("VModal");
+interface VModal {
+  show(
+    target: string | Component | AsyncComponentLoader,
+    paramsOrProps?: object,
+    modalProps?: object,
+    modalEvents?: object
+  ): void
+  hide(name: string, params?: object): void
+  hideAll(): void
+  toggle(name: string, params?: object): void
+}
+export const V_MODAL_INJECTION_KEY: InjectionKey<VModal> = Symbol("VModal");
 
 /**
  * Use the VueJSModal modal plugin.
- * @returns {VModal} The modal plugin
+ * @returns The modal plugin
  */
-export function useVModal(): ComponentCustomProperties["$modal"] {
-  return inject(V_MODAL_INJECTION_KEY);
+export function useVModal(): VModal {
+  const modal = inject(V_MODAL_INJECTION_KEY);
+  if (!modal) {
+    throw new Error('VModal not provided. Make sure to provide it at the app level.');
+  }
+  return modal;
 }
 
-/** @typedef {import('vue').ComponentCustomProperties['$whatInput']} IWhatInput */
+type IWhatInput = ComponentCustomProperties['$whatInput'];
 
-/** @type {InjectionKey<IWhatInput>} */
-export const V_WHAT_INPUT_INJECTION_KEY = Symbol("IWhatInput");
+export const V_WHAT_INPUT_INJECTION_KEY: InjectionKey<IWhatInput> = Symbol("IWhatInput");
 
 /**
- * Use the VueJSModal modal plugin.
- * @returns {IWhatInput} The modal plugin
+ * Use the WhatInput plugin.
+ * @returns The WhatInput plugin
  */
-export function useWhatInput(): ComponentCustomProperties["$whatInput"] | undefined {
+export function useWhatInput(): IWhatInput | undefined {
   return inject(V_WHAT_INPUT_INJECTION_KEY);
 }
 

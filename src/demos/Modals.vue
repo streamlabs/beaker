@@ -13,16 +13,18 @@ components: {
       <h2>Modal Basic</h2>
       <DemoSection title="Modal Basic" :code="demoCode">
         <template #components>
-          <ModalComp
+          <ModalBasic
             name="modal-basic"
-            type="basic"
             title="UI Modal"
-            sub-title="Subtitle"
-            text="Save combining multiple windows like Streamlabels, Twitch Chat, Twitch Dashboard, Video, Streamlabs Dashboard, OBS etc into a live view."
-            :click-to-close="false"
+            subTitle="Subtitle"
+            :clickToClose="false"
+            text="
+              Save combining multiple windows like Streamlabels, Twitch Chat,
+              Twitch Dashboard, Video, Streamlabs Dashboard, OBS etc into a
+              live view.
+            "
+            >Slots Available!</ModalBasic
           >
-            Slots Available!
-          </ModalComp>
         </template>
       </DemoSection>
 
@@ -30,7 +32,7 @@ components: {
         <Button
           variation="default"
           title="modal basic"
-          @click="vfm.open('modal-basic')"
+          @click="$modal.show('modal-basic')"
         />
       </div>
     </div>
@@ -41,14 +43,14 @@ components: {
 
       <DemoSection title="Modal Subscribe" :code="demoCode">
         <template #components>
-          <ModalComp
-            type="subscribe"
+          <ModalSubscribe
+            name="modal-subscribe"
             :scrollable="true"
             title="Streamlabs"
             subTitle="Never pay for GIFs and effects again!"
             text="
               Get unlimited free GIFs and effects that will show up on all
-              alerts on all channels! You'll also get a fancy 'Pro' badge next
+              alerts on all channels! You’ll also get a fancy ‘Pro’ badge next
               to your username on your donations.
             "
             subscribe-text="galazy83 donated $50.00!"
@@ -62,7 +64,7 @@ components: {
         <Button
           variation="default"
           title="modal subscribe"
-          @click="vfm.open('modal-subscribe')"
+          @click="$modal.show('modal-subscribe')"
         />
       </div>
     </div>
@@ -73,8 +75,8 @@ components: {
 
       <DemoSection title="Modal Redirect" :code="demoCode">
         <template #components>
-          <ModalComp
-            type="redirect"
+          <ModalRedirect
+            name="model-redirect"
             title="Redirecting..."
             text="
               Redirecting you to PayPal to update your method of payment.
@@ -88,7 +90,7 @@ components: {
         <Button
           variation="default"
           title="modal redirect"
-          @click="vfm.open('modal-redirect')"
+          @click="$modal.show('modal-redirect')"
         />
       </div>
     </div>
@@ -99,13 +101,12 @@ components: {
 
       <DemoSection title="Modal Confirm" :code="demoCode">
         <template #components>
-          <ModalComp
-            type="confirmation"
-            width="400px"
-            subTitle="Delete 'Streamlabs Pillow'"
+          <ModalConfirmation
+            :width="400"
+            subTitle="Delete ‘Streamlabs Pillow'"
             text="
-              Are you sure you want to delete the merch item 'Streamlabs
-              Pillow'? This action cannot be undone.
+              Are you sure you want to delete the merch item ‘Streamlabs
+              Pillow’? This action cannot be undone.
             "
             @confirm="() => {}"
             confirmButtonText="Delete"
@@ -115,36 +116,36 @@ components: {
 
       <div class="button-container button-container--left">
         <Button
-          :variation="'warning'"
-          :title="'modal confirmation'"
-          @click="vfm.open('modal-confirmation')"
+          variation="warning"
+          title="modal confirmation"
+          @click="$modal.show('modal-confirmation')"
         />
       </div>
     </div>
 
-    <!-- <div class="section">
-      <h2>Modal Welcome Prime</h2>
-      <p>Used for welcome prime</p>
-
-      <DemoSection title="Modal Welcome Prime" :code="demoCode">
-        <template #components>
-          <ModalComp
-            type="welcome-prime"
-            width="600px"
-            :hasPrimeCloseButton="true"
-            @onClickPrime="test"
-          />
-        </template>
-      </DemoSection>
-
-      <div class="button-container button-container--left">
-        <Button
-          variation="default"
-          title="modal welcome prime"
-          @click="$modal.show('modal-welcome-prime')"
-        />
-      </div>
-    </div> -->
+    <!-- <div class="section"> -->
+    <!--   <h2>Modal Welcome Prime</h2> -->
+    <!--   <p>Used for welcome prime</p> -->
+    <!---->
+    <!--   <DemoSection title="Modal Welcome Prime" :code="demoCode"> -->
+    <!--     <template #components> -->
+    <!--       <ModalComp -->
+    <!--         type="welcome-prime" -->
+    <!--         :width="600" -->
+    <!--         :hasPrimeCloseButton="true" -->
+    <!--         @onClickPrime="test" -->
+    <!--       /> -->
+    <!--     </template> -->
+    <!--   </DemoSection> -->
+    <!---->
+    <!--   <div class="button-container button-container--left"> -->
+    <!--     <Button -->
+    <!--       variation="default" -->
+    <!--       title="modal welcome prime" -->
+    <!--       @click="$modal.show('modal-welcome-prime')" -->
+    <!--     /> -->
+    <!--   </div> -->
+    <!-- </div> -->
 
     <table class="docs-table">
       <thead>
@@ -345,17 +346,13 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Button from "@/components/Button.vue";
-import DemoSection from "@/components/DemoSection.vue";
-import ModalComp from "@/components/ModalComp.vue";
+import Button from "./../components/Button.vue";
+import DemoSection from "./../components/DemoSection.vue";
+import ModalBasic from "./../components/ModalBasic.vue";
+import ModalSubscribe from "./../components/ModalSubscribe.vue";
+import ModalRedirect from "./../components/ModalRedirect.vue";
+import ModalConfirmation from "./../components/ModalConfirmation.vue";
 import ModalsCode from "./Modals.vue?raw";
-import { useVfm } from "vue-final-modal";
 
 const demoCode = ref(ModalsCode);
-
-const vfm = useVfm();
-
-function test() {
-  console.log("test");
-}
 </script>

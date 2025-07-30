@@ -10,7 +10,7 @@ export default typescriptEslint.config(
     extends: [
       eslint.configs.recommended,
       ...typescriptEslint.configs.recommended,
-      ...eslintPluginVue.configs["flat/recommended"]
+      ...eslintPluginVue.configs["flat/recommended"],
     ],
     files: ["**/*.{ts,vue}"],
     languageOptions: {
@@ -18,10 +18,10 @@ export default typescriptEslint.config(
       sourceType: "module",
       globals: globals.browser,
       parserOptions: {
-        parser: typescriptEslint.parser
-      }
+        parser: typescriptEslint.parser,
+      },
     },
-    rules: {}
+    rules: {},
   },
-  eslintConfigPrettier
+  eslintConfigPrettier,
 );

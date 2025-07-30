@@ -1,53 +1,53 @@
 <template>
-  <VueFinalModal
-    :modal-id="name"
-    :content-style="{ width, minWidth }"
-    :click-to-close="clickToClose"
+  <modal
+    :name="name"
+    classes="s-modal-wrapper"
+    :max-width="width"
+    :min-width="minWidth"
+    height="auto"
+    :adaptive="true"
     v-bind="$attrs"
+    :click-to-close="clickToClose"
   >
-    <template #default="{close}">
-      <div class="s-modal-container">
-        <div class="s-modal-body">
-          <div class="s-normal-upper">
-            <h1 v-if="!!title" class="s-modal-title">{{ title }}</h1>
-            <h2 v-if="!!subTitle" class="s-modal-sub-title">{{ subTitle }}</h2>
-            <p v-if="!!text" class="s-modal-text">{{ text }}</p>
-            <slot />
-          </div>
-        </div>
-
-        <div
-          class="s-modal-footer"
-          v-if="!hideActionButtons && hideActionButtons !== ''"
-        >
-          <div class="s-modal-footer-inner s-button-container">
-            <Button
-              variation="default"
-              title="Close"
-              size="fixed-width"
-              @click="close"
-            />
-            <Button
-              variation="action"
-              :title="confirmButtonText"
-              size="fixed-width"
-              @click="$emit('confirm')"
-            />
-          </div>
+    <div class="s-modal-container">
+      <div class="s-modal-body">
+        <div class="s-normal-upper">
+          <h1 v-if="!!title" class="s-modal-title">{{ title }}</h1>
+          <h2 v-if="!!subTitle" class="s-modal-sub-title">{{ subTitle }}</h2>
+          <p v-if="!!text" class="s-modal-text">{{ text }}</p>
+          <slot />
         </div>
       </div>
-    </template>
-  </VueFinalModal>
+      <div
+        class="s-modal-footer"
+        v-if="!hideActionButtons && hideActionButtons !== ''"
+      >
+        <div class="s-modal-footer-inner s-button-container">
+          <Button
+            variation="default"
+            title="Close"
+            size="fixed-width"
+            @click="$modal.hide(name)"
+          />
+          <Button
+            variation="action"
+            :title="confirmButtonText"
+            size="fixed-width"
+            @click="$emit('confirm')"
+          />
+        </div>
+      </div>
+    </div>
+  </modal>
 </template>
 
 <script setup lang="ts">
 import Button from "@/components/Button.vue";
-import { VueFinalModal } from "vue-final-modal";
 
 interface Props {
   name: string;
-  width?: string;
-  minWidth?: string;
+  width?: number;
+  minWidth?: number;
   title?: string;
   subTitle?: string;
   text?: string;
@@ -56,12 +56,12 @@ interface Props {
   clickToClose?: boolean;
 }
 
-const {
-  width = "600px",
-  minWidth = "600px",
-  confirmButtonText = "Confirm",
-  clickToClose = true,
-} = defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+  width: 600,
+  minWidth: 600,
+  confirmButtonText: "Confirm",
+  clickToClose: true,
+});
 </script>
 
 <style lang="less" scoped>

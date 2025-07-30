@@ -1,12 +1,11 @@
-/// <reference path="./../index.d.ts" />
 import { createApp } from "vue";
+import type { Plugin } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import defineValidationRules from './plugins/validation-rules';
+import VModal from '@febe95/vue-js-modal'
+import { V_MODAL_INJECTION_KEY } from '@/plugins/injects';
 
-import 'vue-final-modal/style.css';
-
-import { createVfm } from 'vue-final-modal'
 import VTooltip from "v-tooltip";
 import VueClipboard from 'vue3-clipboard'
 import WhatInput from "./plugins/WhatInput";
@@ -14,10 +13,11 @@ import WhatInput from "./plugins/WhatInput";
 defineValidationRules();
 
 const app = createApp(App);
-const vfm = createVfm();
-
 app.use(router)
-  .use(vfm)
+  .use(VModal as Plugin, { dynamic: true })
+
+const modalInstance = app.config.globalProperties.$modal
+app.provide(V_MODAL_INJECTION_KEY, modalInstance)
   .use(VTooltip)
   .use(VueClipboard, { autoSetContainer: true })
   .use(WhatInput)

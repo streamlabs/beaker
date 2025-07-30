@@ -50,7 +50,7 @@ components: {
         <Button
           :variation="'default'"
           :title="'New Feature Overlay'"
-          @click="modal.open('new-feature')"
+          @click="$modal.show('new-feature')"
         />
       </div>
     </div>
@@ -163,14 +163,12 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useVfm } from "vue-final-modal";
 import AnnouncementsCode from "./Announcements.vue?raw";
 import Button from "@/components/Button.vue";
 import DemoSection from "@/components/DemoSection.vue";
 import NewFeatureOverlay from "@/components/NewFeatureOverlay.vue";
 
 const demoCode = ref(AnnouncementsCode);
-const modal = useVfm();
 
 function trackingCodeComponent() {
   console.log("componentEventTracking");

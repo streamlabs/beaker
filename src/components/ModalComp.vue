@@ -4,13 +4,13 @@
       <ModalBasic
         :name="modalName"
         :title="title"
-        :subTitle="subTitle"
+        :sub-title="subTitle"
         :text="text"
         :width="width"
-        :minWidth="minWidth"
-        :hideActionButtons="hideActionButtons"
-        :confirmButtonText="confirmButtonText"
-        :clickToClose="clickToClose"
+        :min-width="minWidth"
+        :hide-action-buttons="hideActionButtons"
+        :confirm-button-text="confirmButtonText"
+        :click-to-close="clickToClose"
         v-bind="$attrs"
       >
         <slot />
@@ -21,20 +21,20 @@
       <ModalSubscribe
         :name="modalName"
         :title="title"
-        :subTitle="subTitle"
+        :sub-title="subTitle"
         :text="text"
-        :subscribeText="subscribeText"
-        :subscribeMessage="subscribeMessage"
+        :subscribe-text="subscribeText"
+        :subscribe-message="subscribeMessage"
         :notes="notes"
         :width="width"
-        :minWidth="minWidth"
+        :min-width="minWidth"
         :scrollable="scrollable"
-        :proBadge="proBadge"
-        :customPreview="customPreview"
-        :buttonTitle="buttonTitle"
-        :buttonPrice="buttonPrice"
-        :buttonVariation="buttonVariation"
-        :cancelTitle="cancelTitle"
+        :pro-badge="proBadge"
+        :custom-preview="customPreview"
+        :button-title="buttonTitle"
+        :button-price="buttonPrice"
+        :button-variation="buttonVariation"
+        :cancel-title="cancelTitle"
         v-bind="$attrs"
       >
         <template #preview>
@@ -50,7 +50,7 @@
         :title="title"
         :text="text"
         :width="width"
-        :minWidth="minWidth"
+        :min-width="minWidth"
         v-bind="$attrs"
       />
     </div>
@@ -142,10 +142,4 @@ const props = withDefaults(defineProps<Props>(), {
 });
 </script>
 
-<style lang="less">
-.vfm {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-</style>
+<style lang="less"></style>

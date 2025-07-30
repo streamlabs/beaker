@@ -1,34 +1,40 @@
 <template>
-  <VueFinalModal
-    :modal-id="name"
-    :content-style="{ width, minWidth }"
+  <modal
+    :name="name"
+    classes="s-modal-wrapper"
+    :max-width="width"
+    :min-width="minWidth"
+    height="auto"
+    :adaptive="true"
     v-bind="$attrs"
   >
     <div class="s-modal-container">
       <div class="s-redirect">
         <div class="s-spinner">
-          <Spinner :variation="'bars'" />
+          <Spinner variation="bars" />
         </div>
         <h1 class="s-modal-title">{{ title }}</h1>
         <p class="s-modal-text">{{ text }}</p>
       </div>
     </div>
-  </VueFinalModal>
+  </modal>
 </template>
 
 <script setup lang="ts">
-import Spinner from "@/components/Spinner.vue";
-import { VueFinalModal } from "vue-final-modal";
+import Spinner from "./../components/Spinner.vue";
 
 interface Props {
   name: string;
-  width?: string;
-  minWidth?: string;
+  width?: number;
+  minWidth?: number;
   title: string;
   text: string;
 }
 
-const { width = "600px", minWidth = "600px" } = defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+  width: 600,
+  minWidth: 600,
+});
 </script>
 
 <style lang="less" scoped>

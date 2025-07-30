@@ -36,7 +36,7 @@ Install required peer dependencies based on your Vue version:
 
 ```bash
 # Vue 3 projects
-npm install vue-final-modal moment fuse.js
+npm install @febe95/vue-js-modal moment fuse.js
 
 # Vue 2 projects
 npm install vue-js-modal moment fuse.js

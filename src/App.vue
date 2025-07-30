@@ -25,8 +25,6 @@
         <img src="./assets/imgs/npm.svg" />
       </a>
     </div>
-
-    <ModalsContainer />
   </div>
 </template>
 
@@ -36,7 +34,6 @@ import Toggle from "./components/Toggle.vue";
 import Documentation from "./views/Documentation.vue";
 import DayLogo from "./assets/imgs/beaker-full.svg";
 import NightLogo from "./assets/imgs/beaker-full-night.svg";
-import { ModalsContainer } from "vue-final-modal";
 
 const appClass = ref("app-wrapper");
 const nightClasses = ref(["night", "night-theme"]);
@@ -64,7 +61,7 @@ watch(
       });
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const logo = computed(() => (isNightTheme.value ? NightLogo : DayLogo));

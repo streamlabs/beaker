@@ -1,63 +1,65 @@
 <template>
-  <VueFinalModal
-    :modal-id="name"
-    :content-style="{ width, minWidth }"
+  <modal
+    :name="name"
+    classes="s-modal-wrapper"
+    :max-width="width"
+    :min-width="minWidth"
+    height="auto"
+    :adaptive="true"
     v-bind="$attrs"
   >
-    <template #default="{close}">
-      <div class="s-modal-container">
-        <div class="s-confirmation">
-          <h2 class="s-modal-sub-title">{{ subTitle }}</h2>
-          <p class="s-modal-text">{{ text }}</p>
-          <div class="s-button-container">
-            <Button
-              variation="default"
-              title="Cancel"
-              size="fixed-width"
-              @click="close"
-            />
-            <Button
-              @click="onConfirmHandler"
-              :variation="buttonVariation"
-              :title="confirmButtonText"
-              size="fixed-width"
-            />
-          </div>
+    <div class="s-modal-container">
+      <div class="s-confirmation">
+        <h2 class="s-modal-sub-title">{{ subTitle }}</h2>
+        <p class="s-modal-text">{{ text }}</p>
+        <div class="s-button-container">
+          <Button
+            variation="default"
+            title="Cancel"
+            size="fixed-width"
+            @click="$modal.hide(name)"
+          />
+          <Button
+            @click="onConfirmHandler"
+            :variation="buttonVariation"
+            :title="confirmButtonText"
+            size="fixed-width"
+          />
         </div>
       </div>
-    </template>
-  </VueFinalModal>
+    </div>
+  </modal>
 </template>
 
 <script setup lang="ts">
-import { useVfm, VueFinalModal } from "vue-final-modal";
-import Button from "@/components/Button.vue";
+import { useVModal } from "./../plugins/injects";
+import Button from "./../components/Button.vue";
+
+const emit = defineEmits(["confirm"]);
+const $modal = useVModal();
+
+function onConfirmHandler() {
+  emit("confirm");
+  $modal.hide(props.name);
+}
 
 interface Props {
   name?: string;
-  width?: string;
-  minWidth?: string;
+  width?: number;
+  minWidth?: number;
   subTitle: string;
   text: string;
   confirmButtonText?: string;
   buttonVariation?: string;
 }
 
-const {
-  name = "modal-confirmation",
-  width = "600px",
-  minWidth = "600px",
-  confirmButtonText = "Confirm",
-  buttonVariation = "warning",
-} = defineProps<Props>();
-
-const emit = defineEmits(["confirm"]);
-const vfm = useVfm();
-
-function onConfirmHandler() {
-  emit("confirm");
-  vfm.close(name);
-}
+const props = withDefaults(defineProps<Props>(), {
+  name: "modal-confirmation",
+  width: 600,
+  minWidth: 600,
+  confirmButtonText: "Confirm",
+  buttonVariation: "warning",
+});
 </script>
 
 <style lang="less" scoped>
