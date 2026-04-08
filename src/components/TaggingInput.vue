@@ -1,15 +1,13 @@
 <template>
   <div class="s-tagging-input">
     <div class="s-tagging-input__container">
-      <text-input
+      <TextInput
         v-model="input"
-        v-validate="inputValidation"
-        slot="input"
         :name="name"
         :label="label"
         :placeholder="placeholder"
         type="text"
-        :error="errors.first(name)"
+        :error="errorMessage"
         @input="$emit('update:text', $event)"
         @keydown.enter.prevent="onAdd"
       />
@@ -39,111 +37,114 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, watch } from "vue";
 import TextInput from "./TextInput.vue";
-import TextArea from "./TextArea.vue";
 import Button from "./Button.vue";
+import { useField } from "../composables/useValidation";
 
-@Component({
-  components: {
-    TextInput,
-    TextArea,
-    Button,
+const props = withDefaults(
+  defineProps<{
+    name: string;
+    label?: string;
+    placeholder?: string;
+    buttonText?: string;
+    buttonVariation?: string;
+    value?: string[];
+    text?: string;
+    inputValidation?: string;
+    prefix?: string;
+    tagVariation?: string;
+    maxItems?: number;
+  }>(),
+  {
+    buttonText: "Add Tag",
+    buttonVariation: "default",
+    value: () => [],
+    text: "",
+    tagVariation: "default",
+    maxItems: 25
+  }
+);
+
+const emit = defineEmits<{
+  input: [tags: string[]];
+  change: [tags: string[]];
+  "update:value": [tags: string[]];
+  "update:text": [text: string];
+  add: [tags: string[]];
+  remove: [tags: string[]];
+  error: [errors: string[], maxReached: boolean];
+}>();
+
+const input = ref("");
+const tags = ref<string[]>([]);
+
+const { errorMessage, validate } = useField(
+  () => props.name,
+  () => props.inputValidation ?? ""
+);
+
+watch(
+  () => props.value,
+  newValue => {
+    tags.value = newValue ?? [];
   },
-})
-export default class TaggingInput extends Vue {
-  @Prop()
-  name!: string;
+  { immediate: true }
+);
 
-  @Prop()
-  label!: string;
+watch(
+  () => props.text,
+  newValue => {
+    input.value = newValue ?? "";
+  },
+  { immediate: true }
+);
 
-  @Prop()
-  placeholder!: string;
-
-  @Prop({ default: "Add Tag" })
-  buttonText!: string;
-
-  @Prop({ default: "default" })
-  buttonVariation!: string;
-
-  @Prop({ default: () => [] })
-  value!: string[];
-
-  @Prop({ default: "" })
-  text!: string;
-
-  @Prop()
-  inputValidation!: string;
-
-  @Prop()
-  prefix!: string;
-
-  @Prop({ default: "default" })
-  tagVariation!: string;
-
-  @Prop({ default: 25 })
-  maxItems!: number;
-
-  input: string = "";
-  tags: string[] = [];
-
-  @Watch("value", { immediate: true })
-  watchValue(newValue) {
-    this.tags = newValue;
+async function onAdd() {
+  await validate();
+  if (errorMessage.value) {
+    emit("error", [errorMessage.value], false);
+    return;
   }
 
-  @Watch("text", { immediate: true })
-  watchText(newValue) {
-    this.input = newValue;
+  if (tags.value.length >= props.maxItems) {
+    emit("error", ["Max items reached"], true);
+    return;
   }
 
-  onAdd() {
-    if (this.$validator.errors.items.length !== 0) {
-      this.$emit("error", this.$validator.errors.items, false);
-      return;
+  let inputValue = input.value.trim();
+
+  const found = tags.value.find(v => {
+    if (props.prefix && !inputValue.startsWith(props.prefix)) {
+      return v.toLowerCase() === props.prefix + inputValue.trim().toLowerCase();
+    } else {
+      return v.toLowerCase() === inputValue.trim().toLowerCase();
     }
+  });
 
-    if (this.tags.length >= this.maxItems) {
-      this.$emit("error", ["Max items reached"], true);
-      return;
+  if (!found && inputValue.length !== 0) {
+    if (props.prefix && !inputValue.startsWith(props.prefix)) {
+      inputValue = props.prefix + inputValue;
     }
-
-    let inputValue = this.input.trim();
-
-    const found = this.tags.find((v) => {
-      if (this.prefix && !inputValue.startsWith(this.prefix)) {
-        return (
-          v.toLowerCase() === this.prefix + inputValue.trim().toLowerCase()
-        );
-      } else {
-        return v.toLowerCase() === inputValue.trim().toLowerCase();
-      }
-    });
-
-    if (!found && inputValue.length !== 0) {
-      if (this.prefix && !inputValue.startsWith(this.prefix)) {
-        inputValue = this.prefix + inputValue;
-      }
-      this.tags.push(inputValue);
-      this.input = "";
-      this.emitTagEvents("add");
-    }
-  }
-
-  onRemove(index: number) {
-    this.tags.splice(index, 1);
-    this.emitTagEvents("remove");
-  }
-
-  emitTagEvents(...events) {
-    ["input", "change", "update:value", ...events].forEach((event) =>
-      this.$emit(event, this.tags)
-    );
+    tags.value.push(inputValue);
+    input.value = "";
+    emitTagEvents("add");
   }
 }
+
+function onRemove(index: number) {
+  tags.value.splice(index, 1);
+  emitTagEvents("remove");
+}
+
+function emitTagEvents(...events: string[]) {
+  ["input", "change", "update:value", ...events].forEach(event =>
+    emit(event as any, tags.value)
+  );
+}
 </script>
+
 <style lang="less">
 @import (reference) "./../styles/Imports";
 
