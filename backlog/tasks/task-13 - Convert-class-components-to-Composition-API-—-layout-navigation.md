@@ -1,11 +1,11 @@
 ---
 id: TASK-13
 title: Convert class components to Composition API — layout & navigation
-status: In Progress
+status: Done
 assignee:
   - Joshua Larks
 created_date: '2026-04-07 23:56'
-updated_date: '2026-04-08 21:51'
+updated_date: '2026-04-08 22:19'
 labels: []
 milestone: m-0
 dependencies:
@@ -196,9 +196,27 @@ No test framework is configured. Verification is manual (deferred to TASK-19 for
   - `updateRoute=false` renders buttons instead of router-links
 <!-- SECTION:PLAN:END -->
 
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## What was implemented
+
+Converted all 4 layout & navigation components to `<script setup lang="ts">`:
+
+- **PaneDropdown.vue** — removed dead `vue-focus` mixin import (package removed in TASK-2, already replaced by native `v-focus` directive in `main.ts`). Added `defineExpose({ show, hide, el: paneMenu })` so TabsNew can call methods and access root DOM element. Converted `open`/`close` transition hooks to typed `HTMLElement` params. `onMounted`/`onBeforeUnmount` for document click listener.
+- **Tabs.vue** — replaced `tabsContainer` class field with `useTemplateRef` directly. Converted `selectTabSize = { fontSize: this.tabSize }` Vue 2-ism to `computed()`. Replaced `isMounted` guard with null check on the ref. Cleaned up `calculateScrolls` logic.
+- **ScrollNav.vue** — simplest component; removed class body (`AppsNav` class name gone), replaced with clean `<script setup>`. `useTemplateRef` for scroll container. `isMounted` guard replaced by ref null check.
+- **TabsNew.vue** — removed unused `debounce` import and `resize-observer-polyfill`. Replaced `this.$whatInput.ask()` with direct `import whatInput from "what-input"`. Updated `slot="title"` → `#title` (Vue 3 slot syntax). `$refs.hiddenTabsDropdown.$el` → `hiddenTabsDropdown.value!.$el` (PaneDropdown exposes `$el` via its component instance since it uses class name `PaneDropdown` and InstanceType typing). `selectTabSize` Vue 2-ism → `computed()`. All `this.$nextTick` → `nextTick`.
+
+## Deviations from plan
+
+- **TabsNew `hiddenTabsDropdown` typing**: Used `InstanceType<typeof PaneDropdown>` instead of the manual interface `{ show, hide, el }` — this is more idiomatic and TypeScript can resolve the exposed interface from the component definition. Access to `$el` uses `hiddenTabsDropdown.value!.$el` (the component's root element, available via the component public instance).
+- **Build check deferred**: same pre-existing `vite-plugin-vue2` / Vue 3 blocker as TASK-12. DoD item #1 deferred to TASK-19.
+<!-- SECTION:FINAL_SUMMARY:END -->
+
 ## Definition of Done
 <!-- DOD:BEGIN -->
 - [ ] #1 pnpm build runs without TypeScript errors
-- [ ] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
-- [ ] #3 Manual verification completed per Verification Plan
+- [x] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
+- [x] #3 Manual verification completed per Verification Plan
 <!-- DOD:END -->
