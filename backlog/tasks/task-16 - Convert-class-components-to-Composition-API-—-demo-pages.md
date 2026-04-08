@@ -4,6 +4,7 @@ title: Convert class components to Composition API — demo pages
 status: To Do
 assignee: []
 created_date: '2026-04-07 23:57'
+updated_date: '2026-04-08 20:28'
 labels: []
 milestone: m-0
 dependencies:
@@ -34,5 +35,5 @@ Verify the full list by checking all `.vue` files in `src/demos/`.
 <!-- AC:BEGIN -->
 - [ ] #1 No @Component decorator usage remains in src/demos/
 - [ ] #2 All demo pages render correctly in the dev site
-- [ ] #3 EventBus interactions work with mitt
+- [ ] #3 Demo pages using EventBus (Colors.vue, Icons.vue, Buttons.vue, Inputs.vue) updated to use useNotification() composable
 <!-- AC:END -->
