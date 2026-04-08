@@ -40,75 +40,56 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount, useTemplateRef } from "vue";
 
-@Component({})
-export default class AppsNav extends Vue {
-  $refs!: {
-    scrollable_nav: HTMLDivElement;
-  };
-
-  @Prop()
-  items!: [
-    {
-      name: string;
-      value: string;
-    }
-  ];
-
-  @Prop()
-  value!: string;
-
-  isMounted = false;
-  appTabsContainer!: HTMLDivElement;
-  canScroll = false;
-  hasNext = false;
-  hasPrev = false;
-
-  private scrollIncrement = 100;
-
-  created() {
-    window.addEventListener("resize", this.calculateScrolls);
-  }
-
-  unmounted() {
-    window.removeEventListener("resize", this.calculateScrolls);
-  }
-
-  mounted() {
-    this.isMounted = true;
-    this.appTabsContainer = this.$refs.scrollable_nav;
-    this.calculateScrolls();
-  }
-
-  scrollLeft() {
-    this.appTabsContainer.scrollLeft =
-      this.appTabsContainer.scrollLeft - this.scrollIncrement;
-  }
-
-  scrollRight() {
-    this.appTabsContainer.scrollLeft =
-      this.appTabsContainer.scrollLeft + this.scrollIncrement;
-  }
-
-  calculateScrolls() {
-    if (!this.isMounted) return false;
-    this.canScroll =
-      this.appTabsContainer.scrollWidth > this.appTabsContainer.clientWidth;
-    this.hasPrev = this.appTabsContainer.scrollLeft > 0;
-    let scrollRight =
-      this.appTabsContainer.scrollWidth -
-      (this.appTabsContainer.scrollLeft + this.appTabsContainer.clientWidth);
-
-    this.hasNext = scrollRight > 0;
-  }
-
-  navigateItem(item: string) {
-    this.$emit("input", item);
-  }
+interface INavItem {
+  name: string;
+  value: string;
 }
+
+defineProps<{
+  items: INavItem[];
+  value?: string;
+}>();
+
+const emit = defineEmits<{ input: [item: string] }>();
+
+const scrollableNav = useTemplateRef<HTMLDivElement>("scrollable_nav");
+
+const canScroll = ref(false);
+const hasNext = ref(false);
+const hasPrev = ref(false);
+const scrollIncrement = 100;
+
+function scrollLeft() {
+  scrollableNav.value!.scrollLeft -= scrollIncrement;
+}
+
+function scrollRight() {
+  scrollableNav.value!.scrollLeft += scrollIncrement;
+}
+
+function calculateScrolls() {
+  const el = scrollableNav.value;
+  if (!el) return;
+  canScroll.value = el.scrollWidth > el.clientWidth;
+  hasPrev.value = el.scrollLeft > 0;
+  hasNext.value = el.scrollWidth - (el.scrollLeft + el.clientWidth) > 0;
+}
+
+function navigateItem(item: string) {
+  emit("input", item);
+}
+
+onMounted(() => {
+  calculateScrolls();
+  window.addEventListener("resize", calculateScrolls);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", calculateScrolls);
+});
 </script>
 
 <style lang="less">
