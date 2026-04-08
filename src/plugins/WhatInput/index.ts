@@ -1,9 +1,9 @@
-import _Vue from "vue";
+import { App } from "vue";
 import whatInput from "what-input";
 
 const plugin = {
-  install(Vue: typeof _Vue) {
-    Vue.prototype.$whatInput = whatInput;
+  install(app: App) {
+    app.config.globalProperties.$whatInput = whatInput;
   }
 };
 
@@ -17,8 +17,8 @@ interface IWhatInput {
   clearStorage(): void;
 }
 
-declare module "vue/types/vue" {
-  interface Vue {
+declare module "@vue/runtime-core" {
+  interface ComponentCustomProperties {
     $whatInput: IWhatInput;
   }
 }
