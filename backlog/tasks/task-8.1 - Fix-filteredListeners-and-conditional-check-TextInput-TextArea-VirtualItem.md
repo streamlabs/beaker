@@ -1,11 +1,11 @@
 ---
 id: TASK-8.1
 title: 'Fix filteredListeners and conditional check (TextInput, TextArea, VirtualItem)'
-status: In Progress
+status: Done
 assignee:
   - Claude Code
 created_date: '2026-04-08 14:01'
-updated_date: '2026-04-08 14:01'
+updated_date: '2026-04-08 14:03'
 labels: []
 dependencies: []
 parent_task_id: TASK-8

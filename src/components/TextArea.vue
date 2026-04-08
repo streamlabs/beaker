@@ -53,7 +53,7 @@
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { omit } from "lodash-es";
 
-@Component({})
+@Component({ inheritAttrs: false })
 export default class TextArea extends Vue {
   $refs!: {
     textArea: HTMLTextAreaElement;
@@ -109,7 +109,7 @@ export default class TextArea extends Vue {
   }
 
   get filteredListeners() {
-    return omit(this.$listeners, ["input"]);
+    return omit(this.$attrs, ["onInput"]);
   }
 
   get currentLength() {

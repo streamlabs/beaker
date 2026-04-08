@@ -71,7 +71,7 @@
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { omit, isNil } from "lodash-es";
 
-@Component({})
+@Component({ inheritAttrs: false })
 export default class TextInput extends Vue {
   $refs!: {
     input: HTMLInputElement;
@@ -134,7 +134,7 @@ export default class TextInput extends Vue {
   }
 
   get filteredListeners() {
-    return omit(this.$listeners, ["input"]);
+    return omit(this.$attrs, ["onInput"]);
   }
 
   get isMaxReached() {

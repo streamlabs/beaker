@@ -71,7 +71,7 @@ export default class VitualItem extends Vue {
   isClickable: boolean = false;
 
   mounted() {
-    if (this.$listeners.click) {
+    if (this.$attrs.onClick) {
       this.isClickable = true;
     }
   }
