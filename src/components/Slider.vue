@@ -1,5 +1,6 @@
 <template>
   <vue-slider-component
+    ref="slider"
     class="s-slider"
     :class="{
       's-slider--simple': simpleTheme,
@@ -18,120 +19,64 @@
     :data="data"
     :disabled="disabled"
     v-bind="$attrs"
-    v-bind="$attrs"
     @change="(value) => emitInput(value)"
-    ref="slider"
   />
 </template>
 
-<script lang="ts">
-import { Component, Prop, Watch, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, watch, onMounted, useTemplateRef } from "vue";
 import VueSliderComponent from "vue-slider-component";
-import ResizeObserver from "resize-observer-polyfill";
 import "vue-slider-component/theme/default.css";
 
-@Component({
-  components: {
-    VueSliderComponent,
-  },
-})
-export default class Slider extends Vue {
-  $refs!: {
-    slider: any;
-  };
-
-  @Watch("value")
-  updateLocalValue() {
-    this.displayValue = this.value;
+const props = withDefaults(
+  defineProps<{
+    width?: number | string;
+    value?: number | string | Array<number> | Array<string>;
+    min?: number;
+    max?: number;
+    interval?: number;
+    tooltip?: "always" | false;
+    prefix?: string;
+    suffix?: string;
+    disabled?: boolean;
+    data?: Array<number> | Array<string>;
+    simpleTheme?: boolean;
+  }>(),
+  {
+    value: 1,
+    min: 0,
+    max: 100,
+    interval: 1,
+    tooltip: "always",
+    prefix: "",
+    suffix: "",
+    disabled: false,
+    simpleTheme: false,
   }
+);
 
-  @Prop()
-  width!: number | string;
+const emit = defineEmits<{
+  input: [val: number | string | Array<number> | Array<string>];
+}>();
 
-  @Prop({ default: 1 })
-  value!: number | string | Array<number> | Array<string>;
+const slider = useTemplateRef<InstanceType<typeof VueSliderComponent>>("slider");
+const displayValue = ref<number | string | Array<number> | Array<string>>(1);
 
-  @Prop({ default: 0 })
-  min!: number;
-
-  @Prop({ default: 100 })
-  max!: number;
-
-  @Prop({ default: 1 })
-  interval!: number;
-
-  @Prop({ default: "always" })
-  tooltip!: "always" | false;
-
-  @Prop({ default: "" })
-  prefix!: string;
-
-  @Prop({ default: "" })
-  suffix!: string;
-
-  @Prop({ default: false })
-  disabled!: boolean;
-
-  @Prop()
-  data!: Array<number> | Array<string>;
-
-  @Prop({ default: false })
-  simpleTheme!: boolean;
-
-  displayValue: number | string | Array<number> | Array<string> = 1;
-  private debounced: boolean = false;
-  private ro: any;
-
-  created() {
-    this.$on("input", this.setValue);
+watch(
+  () => props.value,
+  (newVal) => {
+    displayValue.value = newVal;
   }
+);
 
-  mounted() {
-    this.ro = new ResizeObserver((entries, observer) => {
-      for (let entry of entries) {
-        let { left, top, width, height } = entry.contentRect;
-        if (!this.debounced) {
-          this.debounce().then(() => {
-            if (this.$refs?.slider) {
-              // this.$refs.slider.refresh();
-            }
-          });
-        }
-      }
-    });
-
-    this.ro.observe(this.$refs.slider.$el);
-    this.displayValue = this.value;
-  }
-
-  beforeUnmount() {
-    this.ro.unobserve(this.$refs.slider.$el);
-  }
-
-  unmounted() {
-    this.$off("input", this.setValue);
-  }
-
-  emitInput(val) {
-    this.$emit("input", val);
-  }
-
-  setValue(val) {
-    this.displayValue = val;
-  }
-
-  debounce() {
-    return new Promise((resolve) => {
-      if (!this.debounced) {
-        this.debounced = true;
-        setTimeout(() => {
-          this.debounced = false;
-          resolve();
-        }, 500);
-      }
-    });
-  }
+function emitInput(val: number | string | Array<number> | Array<string>) {
+  displayValue.value = val;
+  emit("input", val);
 }
+
+onMounted(() => {
+  displayValue.value = props.value;
+});
 </script>
 
 <style lang="less">
