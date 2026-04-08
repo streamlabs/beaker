@@ -1,11 +1,11 @@
 ---
 id: TASK-5
 title: Replace EventBus plugin with mitt
-status: In Progress
+status: Done
 assignee:
   - Joshua Larks
 created_date: '2026-04-07 23:55'
-updated_date: '2026-04-08 13:24'
+updated_date: '2026-04-08 13:33'
 labels: []
 milestone: m-0
 dependencies:
@@ -81,6 +81,20 @@ Install `mitt` as a dependency.
 - Confirm event-bus.ts shim compiles without errors
 - Full functional test (notifications appear on copy) deferred to TASK-16 when demo components are converted
 <!-- SECTION:PLAN:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Replaced Vue 2 EventBus pattern with a useNotification composable. No external packages needed.
+
+**What was implemented:**
+- Created `src/composables/useNotification.ts` — module-level singleton `ref<Notification[]>` shared across all consumers. Exposes `success(msg)`, `error(msg)`, `remove(id)`, and `messages`.
+- Deleted `src/plugins/event-bus.ts` entirely — no shim, no bus.
+
+**Deviation from original plan:** Subtask 2 was changed from "migration shim" to outright deletion. The shim was unnecessary complexity given the bus is no longer needed.
+
+**Follow-up (TASK-11/TASK-16):** Consumer files (CopyNotification.vue, Colors.vue, Icons.vue, Buttons.vue) still import the deleted event-bus.ts — those imports will be replaced with `useNotification()` when each component is converted to Composition API.
+<!-- SECTION:FINAL_SUMMARY:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
