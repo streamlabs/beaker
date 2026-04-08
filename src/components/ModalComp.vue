@@ -11,7 +11,7 @@
         :hideActionButtons="hideActionButtons"
         :confirmButtonText="confirmButtonText"
         :clickToClose="clickToClose"
-        v-on="$listeners"
+        v-bind="$attrs"
       >
         <slot></slot>
       </ModalBasic>
@@ -35,7 +35,7 @@
         :buttonPrice="buttonPrice"
         :buttonVariation="buttonVariation"
         :cancelTitle="cancelTitle"
-        v-on="$listeners"
+        v-bind="$attrs"
       >
         <template #preview>
           <slot name="preview"></slot>
@@ -51,7 +51,7 @@
         :text="text"
         :width="width"
         :minWidth="minWidth"
-        v-on="$listeners"
+        v-bind="$attrs"
       ></ModalRedirect>
     </div>
 
@@ -64,7 +64,7 @@
         :minWidth="minWidth"
         :confirmButtonText="confirmButtonText"
         :buttonVariation="buttonVariation"
-        v-on="$listeners"
+        v-bind="$attrs"
       ></ModalConfirmation>
     </div>
 
@@ -75,7 +75,7 @@
         :minWidth="minWidth"
         :primeButtonText="primeButtonText"
         :hasPrimeCloseButton="hasPrimeCloseButton"
-        v-on="$listeners"
+        v-bind="$attrs"
       >
         <slot></slot>
       </ModalPrime>
@@ -88,7 +88,7 @@
         :minWidth="minWidth"
         :primeButtonText="primeButtonText"
         :hasPrimeCloseButton="hasPrimeCloseButton"
-        v-on="$listeners"
+        v-bind="$attrs"
       >
         <slot></slot>
       </ModalPrimeIntro>

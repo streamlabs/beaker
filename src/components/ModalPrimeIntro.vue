@@ -7,13 +7,13 @@
     :minWidth="minWidth"
     height="auto"
     :adaptive="true"
-    v-on="$listeners"
+    v-bind="$attrs"
     :scrollable="true"
   >
     <div class="modal-prime__close" v-if="hasPrimeCloseButton">
       <i class="icon-close" @click="$modal.hide(name)"></i>
     </div>
-    <PrimeIntro :primeButtonText="primeButtonText" v-on="$listeners">
+    <PrimeIntro :primeButtonText="primeButtonText" v-bind="$attrs">
       <slot></slot>
     </PrimeIntro>
   </modal>

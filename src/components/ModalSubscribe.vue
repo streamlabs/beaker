@@ -7,7 +7,7 @@
     height="auto"
     :adaptive="true"
     :scrollable="scrollable"
-    v-on="$listeners"
+    v-bind="$attrs"
   >
     <div class="s-modal-container">
       <div class="s-subscribe-icon-box">

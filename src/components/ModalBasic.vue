@@ -6,7 +6,7 @@
     :minWidth="minWidth"
     height="auto"
     :adaptive="true"
-    v-on="$listeners"
+    v-bind="$attrs"
     :clickToClose="clickToClose"
   >
     <div class="s-modal-container">

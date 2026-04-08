@@ -8,7 +8,7 @@
       :variation="'custom'"
       :bgColor="'#FFFFFF'"
       :textColor="'#7289DA'"
-      v-on="$listeners"
+      v-bind="$attrs"
       :tag="'a'"
       :href="'https://discord.gg/stream'"
       :target="'_blank'"

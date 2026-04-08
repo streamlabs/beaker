@@ -6,12 +6,12 @@
     :minWidth="minWidth"
     height="auto"
     :adaptive="true"
-    v-on="$listeners"
+    v-bind="$attrs"
   >
     <div class="modal-prime__close" v-if="hasPrimeCloseButton">
       <i class="icon-close" @click="$modal.hide(name)"></i>
     </div>
-    <welcome-prime :primeButtonText="primeButtonText" v-on="$listeners">
+    <welcome-prime :primeButtonText="primeButtonText" v-bind="$attrs">
       <slot></slot>
     </welcome-prime>
   </modal>

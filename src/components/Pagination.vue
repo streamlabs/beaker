@@ -3,7 +3,7 @@
     <vue-paginate-component
       :class="{ 'pagination--bg': nightBg }"
       v-bind="$attrs"
-      v-on="$listeners"
+      v-bind="$attrs"
       :page-count="pageCount"
       :page-range="pageRange"
       :click-handler="selectPage"

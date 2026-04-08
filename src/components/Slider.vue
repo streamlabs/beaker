@@ -18,7 +18,7 @@
     :data="data"
     :disabled="disabled"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-bind="$attrs"
     @change="(value) => emitInput(value)"
     ref="slider"
   />

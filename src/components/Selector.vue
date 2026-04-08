@@ -5,7 +5,7 @@
       :style="styleObject"
       :options="options"
       :max-height="200"
-      v-on="$listeners"
+      v-bind="$attrs"
     >
       <template #selection="{ option, values, isOpen }">
         <slot
