@@ -1,22 +1,16 @@
-import Vue from "vue";
-import Router from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import demos from "./demos";
-import VeeValidate from "vee-validate";
 
-Vue.use(Router);
-Vue.use(VeeValidate);
-
-export default new Router({
+export default createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    ...demos.map(({ name, component }) => {
-      return {
-        path: `/${name}`,
-        name: name,
-        component
-      };
-    }),
+    ...demos.map(({ name, component }) => ({
+      path: `/${name}`,
+      name,
+      component
+    })),
     {
-      path: "*",
+      path: "/:pathMatch(.*)*",
       redirect: "/installation"
     }
   ]
