@@ -104,11 +104,11 @@ export default class Slider extends Vue {
     this.displayValue = this.value;
   }
 
-  beforeDestroy() {
+  beforeUnmount() {
     this.ro.unobserve(this.$refs.slider.$el);
   }
 
-  destroyed() {
+  unmounted() {
     this.$off("input", this.setValue);
   }
 

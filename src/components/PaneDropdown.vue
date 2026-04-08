@@ -99,7 +99,7 @@ export default class PaneDropdown extends Vue {
     document.addEventListener("click", this.documentClick);
   }
 
-  destroyed() {
+  unmounted() {
     document.removeEventListener("click", this.documentClick);
   }
 

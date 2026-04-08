@@ -49,7 +49,7 @@ export default class Icons extends Vue {
     EventBus.$on("copy-error", this.onCopyError);
   }
 
-  destroyed() {
+  unmounted() {
     EventBus.$off("copy-success");
     EventBus.$off("copy-error");
   }

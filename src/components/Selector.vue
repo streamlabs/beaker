@@ -58,7 +58,7 @@ export default {
     this.$on("input", this.setValue);
   },
 
-  destroyed() {
+  unmounted() {
     this.$off("input", this.setValue);
   },
 

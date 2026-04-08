@@ -511,7 +511,7 @@ export default class SliderTwo extends Vue {
     }
   }
 
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.$refs.elem) {
       this.unbindEvents(this.$refs.elem);
     }

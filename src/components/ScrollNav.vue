@@ -73,7 +73,7 @@ export default class AppsNav extends Vue {
     window.addEventListener("resize", this.calculateScrolls);
   }
 
-  destroyed() {
+  unmounted() {
     window.removeEventListener("resize", this.calculateScrolls);
   }
 

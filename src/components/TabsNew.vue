@@ -181,7 +181,7 @@ export default class TabsNew extends Vue {
     });
   }
 
-  destroyed() {
+  unmounted() {
     this.$refs.hiddenTabsDropdown.$el.removeEventListener(
       "focus",
       this.focusActiveTab

@@ -1,11 +1,11 @@
 ---
 id: TASK-9
 title: Rename deprecated lifecycle hooks
-status: In Progress
+status: Done
 assignee:
   - Joshua Larks
 created_date: '2026-04-07 23:56'
-updated_date: '2026-04-08 14:39'
+updated_date: '2026-04-08 14:45'
 labels: []
 milestone: m-0
 dependencies:
@@ -39,8 +39,8 @@ Note: `created()`, `mounted()`, `updated()` are unchanged in Vue 3 — do not re
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 No beforeDestroy or destroyed hooks remain
-- [ ] #2 All 9 files updated
+- [x] #1 No beforeDestroy or destroyed hooks remain
+- [x] #2 All 9 files updated
 - [ ] #3 Cleanup logic in affected components still runs correctly
 <!-- AC:END -->
 
@@ -66,6 +66,21 @@ Note: `created()`, `mounted()`, `updated()` are unchanged in Vue 3 — do not re
 - Code review: confirm only the hook names changed, no surrounding logic altered
 - Build verification deferred to TASK-19
 <!-- SECTION:PLAN:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+All deprecated lifecycle hooks renamed across 9 files in a single pass.
+
+**beforeDestroy → beforeUnmount:** Slider.vue, SliderTwo.vue, SSProSimulator.vue
+**destroyed → unmounted:** Slider.vue, ScrollNav.vue, TabsNew.vue, PaneDropdown.vue, Tabs.vue, Selector.vue, CopyNotification.vue
+
+**Verification:** grep returns zero results for both hook names ✓
+
+**Deviations:** None.
+
+**AC #3** (cleanup logic still runs correctly) deferred to TASK-11-15 functional verification.
+<!-- SECTION:FINAL_SUMMARY:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->

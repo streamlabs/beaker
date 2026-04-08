@@ -69,7 +69,7 @@ export default class ScsroSimulator extends Vue {
     }, 2000);
   }
 
-  beforeDestroy() {
+  beforeUnmount() {
     clearInterval(this.myInt);
   }
 

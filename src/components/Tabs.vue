@@ -126,7 +126,7 @@ export default class Tabs extends Vue {
     window.addEventListener("resize", this.calculateScrolls);
   }
 
-  destroyed() {
+  unmounted() {
     window.removeEventListener("resize", this.calculateScrolls);
   }
 
