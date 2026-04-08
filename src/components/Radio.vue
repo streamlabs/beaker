@@ -13,26 +13,19 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+defineProps<{
+  label: string;
+  id: string;
+  name: string;
+  value: string | boolean;
+  val: string | boolean;
+}>();
 
-@Component({})
-export default class Radio extends Vue {
-  @Prop(String)
-  label!: string;
-
-  @Prop(String)
-  id!: string;
-
-  @Prop(String)
-  name!: string;
-
-  @Prop([String, Boolean])
-  value!: string | boolean;
-
-  @Prop([String, Boolean])
-  val!: string | boolean;
-}
+defineEmits<{
+  input: [val: string | boolean];
+  "on-click": [];
+}>();
 </script>
 
 <style lang="less">

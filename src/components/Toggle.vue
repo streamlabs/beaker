@@ -4,7 +4,7 @@
       type="button"
       v-for="(val, key) in values"
       :key="val.id"
-      :title="key | capitalize"
+      :title="capitalize(key)"
       @click="$emit('input', key)"
       :class="[
         's-toggle__option',
@@ -17,33 +17,26 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed } from "vue";
 
-@Component({
-  filters: {
-    capitalize(value: string) {
-      if (!value) return "";
-      value = value.toString();
-      return value.charAt(0).toUpperCase() + value.slice(1);
-    }
-  }
-})
-export default class Toggle extends Vue {
-  @Prop()
-  values!: object;
+const props = defineProps<{
+  values: object;
+  value: string;
+  variation?: string;
+}>();
 
-  @Prop()
-  value!: string;
+defineEmits<{
+  input: [key: string];
+}>();
 
-  @Prop()
-  variation!: string;
+const toggleClass = computed(() =>
+  props.variation ? `s-toggle--${props.variation}` : undefined
+);
 
-  get toggleClass() {
-    if (this.variation) {
-      return `s-toggle--${this.variation}`;
-    }
-  }
+function capitalize(value: string): string {
+  if (!value) return "";
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 </script>
 

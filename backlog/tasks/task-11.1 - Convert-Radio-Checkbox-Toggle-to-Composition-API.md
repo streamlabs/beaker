@@ -1,11 +1,11 @@
 ---
 id: TASK-11.1
 title: 'Convert Radio, Checkbox, Toggle to Composition API'
-status: In Progress
+status: Done
 assignee:
   - Claude Code
 created_date: '2026-04-08 18:17'
-updated_date: '2026-04-08 18:27'
+updated_date: '2026-04-08 18:35'
 labels: []
 dependencies: []
 parent_task_id: TASK-11
