@@ -1,9 +1,11 @@
 ---
 id: TASK-9
 title: Rename deprecated lifecycle hooks
-status: To Do
-assignee: []
+status: In Progress
+assignee:
+  - Joshua Larks
 created_date: '2026-04-07 23:56'
+updated_date: '2026-04-08 14:39'
 labels: []
 milestone: m-0
 dependencies:
@@ -41,3 +43,33 @@ Note: `created()`, `mounted()`, `updated()` are unchanged in Vue 3 — do not re
 - [ ] #2 All 9 files updated
 - [ ] #3 Cleanup logic in affected components still runs correctly
 <!-- AC:END -->
+
+## Implementation Plan
+
+<!-- SECTION:PLAN:BEGIN -->
+## Implementation Plan
+
+### Key findings
+- 9 files confirmed, matching task description
+- beforeDestroy only: SliderTwo.vue, SSProSimulator.vue
+- destroyed only: ScrollNav.vue, TabsNew.vue, PaneDropdown.vue, Tabs.vue, Selector.vue, CopyNotification.vue
+- Both hooks: Slider.vue
+- Pure find-and-replace — no logic changes, no subtasks needed
+
+### Rename deprecated lifecycle hooks across 9 files
+- Rename `beforeDestroy()` → `beforeUnmount()` in: Slider.vue, SliderTwo.vue, SSProSimulator.vue
+- Rename `destroyed()` → `unmounted()` in: Slider.vue, ScrollNav.vue, TabsNew.vue, PaneDropdown.vue, Tabs.vue, Selector.vue, CopyNotification.vue
+- Do NOT rename `created()`, `mounted()`, `updated()` — unchanged in Vue 3
+
+### Verification Plan
+- `grep -rn "beforeDestroy\|destroyed()" src/` returns zero results
+- Code review: confirm only the hook names changed, no surrounding logic altered
+- Build verification deferred to TASK-19
+<!-- SECTION:PLAN:END -->
+
+## Definition of Done
+<!-- DOD:BEGIN -->
+- [ ] #1 pnpm build runs without TypeScript errors
+- [ ] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
+- [ ] #3 Manual verification completed per Verification Plan
+<!-- DOD:END -->
