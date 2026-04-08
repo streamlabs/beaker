@@ -1,11 +1,8 @@
 <template>
-  <modal
-    :name="name"
-    :classes="'s-modal-wrapper'"
-    :maxWidth="width"
-    :minWidth="minWidth"
-    height="auto"
-    :adaptive="true"
+  <VueFinalModal
+    v-model="show"
+    content-class="s-modal-wrapper"
+    :content-style="{ maxWidth: width + 'px', minWidth: minWidth + 'px' }"
     v-bind="$attrs"
   >
     <div class="s-modal-container">
@@ -17,7 +14,7 @@
             :variation="'default'"
             :title="'Cancel'"
             :size="'fixed-width'"
-            @click="$modal.hide(name)"
+            @click="show = false"
           ></Button>
           <Button
             @click="onConfirmHandler"
@@ -28,44 +25,37 @@
         </div>
       </div>
     </div>
-  </modal>
+  </VueFinalModal>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { VueFinalModal } from "vue-final-modal";
 import Button from "./../components/Button.vue";
 
-@Component({
-  components: {
-    Button
+const show = defineModel<boolean>({ default: false });
+
+const props = withDefaults(
+  defineProps<{
+    width?: number;
+    minWidth?: number;
+    subTitle?: string;
+    text?: string;
+    confirmButtonText?: string;
+    buttonVariation?: string;
+  }>(),
+  {
+    width: 600,
+    minWidth: 600,
+    confirmButtonText: "Confirm",
+    buttonVariation: "warning",
   }
-})
-export default class ModalConfirmation extends Vue {
-  @Prop({ default: "modal-confirmation" })
-  name!: string;
+);
 
-  @Prop({ default: 600 })
-  width!: number;
+const emit = defineEmits<{ confirm: [] }>();
 
-  @Prop({ default: 600 })
-  minWidth!: number;
-
-  @Prop()
-  subTitle!: string;
-
-  @Prop()
-  text!: string;
-
-  @Prop({ default: "Confirm" })
-  confirmButtonText!: string;
-
-  @Prop({ default: "warning" })
-  buttonVariation!: string;
-
-  onConfirmHandler() {
-    this.$emit("confirm");
-    this.$modal.hide(this.name);
-  }
+function onConfirmHandler() {
+  emit("confirm");
+  show.value = false;
 }
 </script>
 
