@@ -1,11 +1,8 @@
 <template>
-  <modal
-    :name="name"
-    :classes="'s-modal-wrapper'"
-    :maxWidth="width"
-    :minWidth="minWidth"
-    height="auto"
-    :adaptive="true"
+  <VueFinalModal
+    v-model="show"
+    content-class="s-modal-wrapper"
+    :content-style="{ maxWidth: width + 'px', minWidth: minWidth + 'px' }"
     v-bind="$attrs"
   >
     <div class="s-modal-container">
@@ -17,36 +14,27 @@
         <p class="s-modal-text">{{ text }}</p>
       </div>
     </div>
-  </modal>
+  </VueFinalModal>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import Button from "./../components/Button.vue";
+<script setup lang="ts">
+import { VueFinalModal } from "vue-final-modal";
 import Spinner from "./../components/Spinner.vue";
 
-@Component({
-  components: {
-    Button,
-    Spinner
+const show = defineModel<boolean>({ default: false });
+
+withDefaults(
+  defineProps<{
+    width?: number;
+    minWidth?: number;
+    title?: string;
+    text?: string;
+  }>(),
+  {
+    width: 600,
+    minWidth: 600,
   }
-})
-export default class ModalRedirect extends Vue {
-  @Prop()
-  name!: string;
-
-  @Prop({ default: 600 })
-  width!: number;
-
-  @Prop({ default: 600 })
-  minWidth!: number;
-
-  @Prop()
-  title!: string;
-
-  @Prop()
-  text!: string;
-}
+);
 </script>
 
 <style lang="less" scoped>
