@@ -1,10 +1,11 @@
 ---
 id: TASK-11.4
 title: Convert TaggingInput.vue to Composition API
-status: To Do
+status: In Progress
 assignee:
   - Claude Code
 created_date: '2026-04-08 18:18'
+updated_date: '2026-04-08 19:34'
 labels: []
 dependencies: []
 parent_task_id: TASK-11
