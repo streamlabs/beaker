@@ -1,11 +1,11 @@
 ---
 id: TASK-7
 title: Migrate vee-validate from v2 to v4
-status: In Progress
+status: Done
 assignee:
   - Joshua Larks
 created_date: '2026-04-07 23:55'
-updated_date: '2026-04-08 13:40'
+updated_date: '2026-04-08 13:53'
 labels: []
 milestone: m-0
 dependencies:
@@ -46,7 +46,7 @@ Migrate vee-validate from v2 (directive-based) to v4 (composition-based).
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 vee-validate@4 installed
+- [x] #1 vee-validate@4 installed
 - [ ] #2 No v-validate directives remain
 - [ ] #3 No this.$validator references remain
 - [ ] #4 Validation still works in TaggingInput
@@ -99,6 +99,22 @@ Template: remove `v-validate` directive and `errors.first()`, use `:error="numbe
 - Code review: useValidation.ts registers all rules correctly and re-exports useField/useForm
 - Full functional verification (validation fires on bad input, error messages display) deferred to TASK-11 and TASK-16
 <!-- SECTION:PLAN:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Infrastructure for vee-validate v4 is in place.
+
+**What was implemented:**
+- Installed `vee-validate@4.15.1` and `@vee-validate/rules@4.15.1` as dependencies
+- Created `src/composables/useValidation.ts` — registers `required`, `between`, `min`, `max`, `email` rules at module level, re-exports `useField` and `useForm`
+
+**Deviations:** None.
+
+**Follow-up (TASK-11 and TASK-16):**
+- `TaggingInput.vue`: replace `v-validate` + `this.$validator.errors` with `useField(() => props.name, () => props.inputValidation)` from `useValidation`
+- `Inputs.vue`: replace `v-validate="'required|between:0,100'"` + `errors.first()` with `useField('numberinputExample', 'required|between:0,100')` from `useValidation`
+<!-- SECTION:FINAL_SUMMARY:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
