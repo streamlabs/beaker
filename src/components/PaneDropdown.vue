@@ -49,155 +49,121 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Watch, Vue } from "vue-property-decorator";
-import { mixin as vFocus } from "vue-focus";
+<script setup lang="ts">
+import { ref, computed, watch, onMounted, onBeforeUnmount, useTemplateRef } from "vue";
 
-@Component({
-  name: "PaneDropdown",
-  mixins: [vFocus]
-})
-export default class PaneDropdown extends Vue {
-  $refs!: {
-    paneMenu: HTMLDivElement;
-    paneList: HTMLDivElement;
-  };
-
-  @Prop({ default: true })
-  dropdownIcon!: boolean;
-
-  @Prop({ default: null })
-  menuAlign!: string;
-
-  @Prop({ default: false })
-  openAbove!: boolean;
-
-  @Prop({ default: false })
-  autoHeight!: boolean;
-
-  @Prop({ default: true })
-  closeOnSelect!: boolean;
-
-  @Prop({ default: false })
-  custom!: boolean;
-
-  @Prop({ default: false })
-  relativeMenu!: boolean;
-
-  @Prop({ default: false })
-  simpleMenu!: boolean;
-
-  @Prop({ default: false })
-  hoverOption!: boolean;
-
-  @Prop({ default: false })
-  nested!: boolean;
-
-  paneMenuOpen = false;
-
-  created() {
-    document.addEventListener("click", this.documentClick);
+const props = withDefaults(
+  defineProps<{
+    dropdownIcon?: boolean;
+    menuAlign?: string | null;
+    openAbove?: boolean;
+    autoHeight?: boolean;
+    closeOnSelect?: boolean;
+    custom?: boolean;
+    relativeMenu?: boolean;
+    simpleMenu?: boolean;
+    hoverOption?: boolean;
+    nested?: boolean;
+  }>(),
+  {
+    dropdownIcon: true,
+    menuAlign: null,
+    openAbove: false,
+    autoHeight: false,
+    closeOnSelect: true,
+    custom: false,
+    relativeMenu: false,
+    simpleMenu: false,
+    hoverOption: false,
+    nested: false,
   }
+);
 
-  unmounted() {
-    document.removeEventListener("click", this.documentClick);
+const paneMenu = useTemplateRef<HTMLDivElement>("paneMenu");
+const paneList = useTemplateRef<HTMLDivElement>("paneList");
+
+const paneMenuOpen = ref(false);
+
+const menuClasses = computed(() => {
+  const classes: string[] = [];
+  if (props.menuAlign) classes.push(`s-pane-dropdown__menu--${props.menuAlign}`);
+  if (props.openAbove) classes.push("s-pane-dropdown__menu--top");
+  if (props.autoHeight) classes.push("s-pane-dropdown__menu--auto-height");
+  if (props.relativeMenu) classes.push("s-pane-dropdown__menu--relative");
+  if (props.simpleMenu) classes.push("s-pane-dropdown__menu--simple");
+  return classes;
+});
+
+watch(paneMenuOpen, (newVal) => {
+  if (newVal && !props.custom) {
+    const list = paneList.value;
+    if (!list) return;
+    const lastSlotItem = list.lastElementChild as HTMLElement;
+    const onTab = (e: KeyboardEvent) => {
+      if (e.keyCode === 9 && !e.shiftKey) hide();
+    };
+    lastSlotItem.addEventListener("keydown", onTab);
   }
+});
 
-  get menuClasses() {
-    let classes: string[] = [];
+function afterOpen(element: HTMLElement) {
+  element.style.height = "auto";
+}
 
-    if (this.menuAlign) {
-      classes.push(`s-pane-dropdown__menu--${this.menuAlign}`);
-    }
-
-    if (this.openAbove) {
-      classes.push("s-pane-dropdown__menu--top");
-    }
-
-    if (this.autoHeight) {
-      classes.push("s-pane-dropdown__menu--auto-height");
-    }
-
-    if (this.relativeMenu) {
-      classes.push("s-pane-dropdown__menu--relative");
-    }
-
-    if (this.simpleMenu) {
-      classes.push("s-pane-dropdown__menu--simple");
-    }
-
-    return classes;
-  }
-
-  @Watch("paneMenuOpen")
-  watchPaneMenuOpen(newVal) {
-    if (newVal && !this.custom) {
-      this.$nextTick(() => {
-        const list = this.$refs.paneList;
-        const lastSlotItem = list.lastElementChild as HTMLElement;
-        const onTab = e => {
-          if (e.keyCode === 9 && !e.shiftKey) this.hide();
-        };
-
-        lastSlotItem.addEventListener("keydown", onTab);
-      });
-    }
-  }
-
-  afterOpen(element) {
-    element.style.height = "auto";
-  }
-
-  open(element) {
-    let width = getComputedStyle(element).width;
-    element.style.width = width;
-    let maxWidth = getComputedStyle(element).width;
-    element.style.maxWidth = maxWidth;
-    element.style.position = `absolute`;
-    element.style.visibility = `hidden`;
-    element.style.height = `auto`;
-    let height = getComputedStyle(element).height;
-    element.style.width = null;
-    element.style.position = null;
-    element.style.visibility = null;
-    element.style.height = 0;
-    getComputedStyle(element).height;
-    setTimeout(() => {
-      element.style.height = height;
-    });
-  }
-
-  close(element) {
-    if ("target" in element) return;
-
-    let height = getComputedStyle(element).height;
+function open(element: HTMLElement) {
+  const width = getComputedStyle(element).width;
+  element.style.width = width;
+  const maxWidth = getComputedStyle(element).width;
+  element.style.maxWidth = maxWidth;
+  element.style.position = "absolute";
+  element.style.visibility = "hidden";
+  element.style.height = "auto";
+  const height = getComputedStyle(element).height;
+  element.style.width = "";
+  element.style.position = "";
+  element.style.visibility = "";
+  element.style.height = "0";
+  getComputedStyle(element).height;
+  setTimeout(() => {
     element.style.height = height;
-    getComputedStyle(element).height;
-    setTimeout(() => {
-      element.style.height = 0;
-    });
-  }
+  });
+}
 
-  documentClick(e: Event) {
-    let el: any = this.$refs.paneMenu;
-    let target = e.target;
-    if (el !== target && !el.contains(target)) {
-      this.paneMenuOpen = false;
-    }
-  }
+function close(element: HTMLElement | Event) {
+  if ("target" in element) return;
+  const el = element as HTMLElement;
+  const height = getComputedStyle(el).height;
+  el.style.height = height;
+  getComputedStyle(el).height;
+  setTimeout(() => {
+    el.style.height = "0";
+  });
+}
 
-  onMenuClick() {
-    this.closeOnSelect ? (this.paneMenuOpen = !this.paneMenuOpen) : null;
-  }
-
-  hide() {
-    this.paneMenuOpen = false;
-  }
-
-  show() {
-    this.paneMenuOpen = true;
+function documentClick(e: Event) {
+  const el = paneMenu.value;
+  const target = e.target;
+  if (el !== target && !el!.contains(target as Node)) {
+    paneMenuOpen.value = false;
   }
 }
+
+function onMenuClick() {
+  if (props.closeOnSelect) paneMenuOpen.value = !paneMenuOpen.value;
+}
+
+function hide() {
+  paneMenuOpen.value = false;
+}
+
+function show() {
+  paneMenuOpen.value = true;
+}
+
+defineExpose({ show, hide, el: paneMenu });
+
+onMounted(() => document.addEventListener("click", documentClick));
+onBeforeUnmount(() => document.removeEventListener("click", documentClick));
 </script>
 
 <style lang="less">
