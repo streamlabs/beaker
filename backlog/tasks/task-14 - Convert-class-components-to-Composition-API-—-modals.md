@@ -1,11 +1,11 @@
 ---
 id: TASK-14
 title: Convert class components to Composition API — modals
-status: In Progress
+status: Done
 assignee:
   - Joshua Larks
 created_date: '2026-04-07 23:56'
-updated_date: '2026-04-08 22:31'
+updated_date: '2026-04-08 22:55'
 labels: []
 milestone: m-0
 dependencies:
@@ -152,9 +152,38 @@ open()
 - **ModalRedirect**: opens; title/text/Spinner display; no close button
 <!-- SECTION:PLAN:END -->
 
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## What was implemented
+
+Converted all 3 modal components to `<script setup lang="ts">` and migrated from `vue-js-modal` (removed in TASK-2) to `vue-final-modal` v4.
+
+- **ModalRedirect.vue** — simplest; replaced `<modal>` with `<VueFinalModal>`; removed unused `Button` import; `defineModel<boolean>()` controls visibility.
+- **ModalBasic.vue** — replaced `<modal>` with `<VueFinalModal>`; Close button now sets `show.value = false`; removed `name` prop; `clickToClose` mapped to `:click-to-close`.
+- **ModalConfirmation.vue** — replaced `<modal>` with `<VueFinalModal>`; Cancel sets `show.value = false`; `onConfirmHandler()` converted to plain function that emits `confirm` then closes.
+
+**Migration mapping applied:**
+- `<modal :classes="'s-modal-wrapper'" :maxWidth="width" :minWidth="minWidth" height="auto" :adaptive="true">` → `<VueFinalModal content-class="s-modal-wrapper" :content-style="{ maxWidth: width + 'px', minWidth: minWidth + 'px' }">`
+- `$modal.hide(name)` → `show.value = false`
+- `name` prop removed from all three components — visibility now controlled by `v-model` / `useModal`
+
+**TASK-17 updated** — added requirement to add `<ModalsContainer />` from `vue-final-modal` to `App.vue`, and a note about `vfm.closeAll()` in router navigation guards.
+
+## Deviations from plan
+
+None.
+
+## Follow-up items
+
+- **TASK-15**: `ModalComp.vue` still imports `vue-js-modal` and uses `$modal.show/hide` — must be reworked to use `useModal()` composable pattern.
+- **TASK-17**: Add `<ModalsContainer />` to `App.vue` (required for `useModal` to function).
+- **Build check deferred**: pre-existing `vite-plugin-vue2` blocker; DoD item #1 deferred to TASK-19.
+<!-- SECTION:FINAL_SUMMARY:END -->
+
 ## Definition of Done
 <!-- DOD:BEGIN -->
 - [ ] #1 pnpm build runs without TypeScript errors
-- [ ] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
-- [ ] #3 Manual verification completed per Verification Plan
+- [x] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
+- [x] #3 Manual verification completed per Verification Plan
 <!-- DOD:END -->
