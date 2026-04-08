@@ -1,10 +1,11 @@
 ---
 id: TASK-8.2
 title: Replace v-on="$listeners" with v-bind="$attrs" in 11 components
-status: To Do
+status: In Progress
 assignee:
   - Claude Code
 created_date: '2026-04-08 14:01'
+updated_date: '2026-04-08 14:04'
 labels: []
 dependencies: []
 parent_task_id: TASK-8
