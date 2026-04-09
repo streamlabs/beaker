@@ -22,9 +22,6 @@
         @blur.stop.prevent="playClosingSequence"
         @keyup.stop.prevent="keyEvent"
       />
-      <!-- <div class="s-sitesearch-status__cont">
-        <div v-if="noResults">No Results</div>
-      </div> -->
     </div>
     <transition-group name="s-sitesearch--fadeY">
       <div
@@ -86,224 +83,169 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Watch, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, computed, watch, onMounted, useTemplateRef } from "vue";
 import Fuse from "fuse.js";
 
-@Component({})
-export default class SiteSearch extends Vue {
-  $refs!: {
-    search_input: HTMLInputElement;
-  };
-
-  result: any = [];
-  private isOpen: Boolean = false;
-  private phaseOne: Boolean = false;
-  private phaseTwo: Boolean = false;
-  private resultLimit: Number = 7;
-  private fuse: any = null;
-  private value: String = "";
-  private keyEvents: any = [];
-  private currentResult: number = 0;
-
-  @Prop()
-  jsonSearch!: any;
-
-  @Prop({ default: "" })
-  search!: String;
-
-  @Prop({ default: "fuseResultsUpdated" })
-  eventName!: string;
-
-  @Prop({ default: "fuseInputChanged" })
-  inputChangeEventName!: string;
-
-  @Prop()
-  quickLinks!: any[];
-
-  get suggestedLinks() {
-    return this.quickLinks.reduce((acc, i) => {
-      let jsonSearchIndex = this.jsonSearch.findIndex(
-        (data) => data.name === i.item.name
-      );
-
-      if (jsonSearchIndex > -1) {
-        acc.push({ ...i, jsonSearchIndex });
-      }
-
-      return acc;
-    }, []);
+const props = withDefaults(
+  defineProps<{
+    jsonSearch?: any;
+    search?: string;
+    eventName?: string;
+    inputChangeEventName?: string;
+    quickLinks?: any[];
+  }>(),
+  {
+    search: "",
+    eventName: "fuseResultsUpdated",
+    inputChangeEventName: "fuseInputChanged",
   }
+);
 
-  get options() {
-    let options = {
-      isCaseSensitive: false,
-      includeMatches: true,
-      includeScore: true,
-      findAllMatches: true,
-      shouldSort: true,
-      threshold: 0.3,
-      location: 0,
-      distance: 35,
-      maxPatternLength: 16,
-      minMatchCharLength: 1,
-      keys: [
-        {
-          name: "keywords",
-          weight: 0.3,
-        },
-        {
-          name: "title",
-          weight: 0.7,
-        },
-      ],
-    };
-    return options;
+const emit = defineEmits<{
+  (e: string, ...args: any[]): void;
+}>();
+
+const searchInput = useTemplateRef<HTMLInputElement>("search_input");
+
+const result = ref<any[]>([]);
+const isOpen = ref(false);
+const phaseOne = ref(false);
+const phaseTwo = ref(false);
+const resultLimit = ref(7);
+const fuse = ref<any>(null);
+const value = ref("");
+const currentResult = ref(0);
+
+const suggestedLinks = computed(() => {
+  if (!props.quickLinks) return [];
+  return props.quickLinks.reduce((acc: any[], i: any) => {
+    const jsonSearchIndex = props.jsonSearch.findIndex(
+      (data: any) => data.name === i.item.name
+    );
+    if (jsonSearchIndex > -1) acc.push({ ...i, jsonSearchIndex });
+    return acc;
+  }, []);
+});
+
+const options = computed(() => ({
+  isCaseSensitive: false,
+  includeMatches: true,
+  includeScore: true,
+  findAllMatches: true,
+  shouldSort: true,
+  threshold: 0.3,
+  location: 0,
+  distance: 35,
+  maxPatternLength: 16,
+  minMatchCharLength: 1,
+  keys: [
+    { name: "keywords", weight: 0.3 },
+    { name: "title", weight: 0.7 },
+  ],
+}));
+
+const noResults = computed(() => result.value.length === 0 && value.value !== "");
+
+const limitedResult = computed(() =>
+  resultLimit.value ? result.value.slice(0, resultLimit.value as number) : result.value
+);
+
+const calcHeight = computed(() => {
+  if (!phaseOne.value) return "height: 40px;";
+  if (result.value.length >= 1 && result.value.length <= 7) {
+    return `height: ${result.value.length * 32 + 47}px;`;
   }
+  return "height: 271px;";
+});
 
-  get noResults() {
-    if (this.result.length === 0 && this.value != "") {
-      return true;
+watch(
+  () => props.jsonSearch,
+  () => {
+    if (fuse.value) fuse.value.searchData = props.jsonSearch;
+    fuseSearch();
+  }
+);
+
+watch(
+  () => props.search,
+  (newVal) => {
+    value.value = newVal ?? "";
+  }
+);
+
+watch(value, () => {
+  emit(props.inputChangeEventName, value.value);
+  fuseSearch();
+});
+
+watch(result, (val, oldVal) => {
+  if (noResults.value || value.value === "" || val.length !== oldVal.length) {
+    currentResult.value = 0;
+  }
+  emit(props.eventName, result.value);
+});
+
+function keyEvent(event: KeyboardEvent) {
+  if (event.keyCode === 38 && currentResult.value > 0) currentResult.value--;
+  if (result.value.length === 0) {
+    if (event.keyCode === 40 && currentResult.value < 5) currentResult.value++;
+  } else {
+    if (event.keyCode === 40 && currentResult.value < 6) currentResult.value++;
+  }
+  if (event.keyCode === 13 && phaseOne.value) {
+    if (result.value.length <= 0) {
+      trackEvent(currentResult.value);
+      window.location.href = props.jsonSearch[suggestedLinks.value[currentResult.value].jsonSearchIndex].route;
     } else {
-      return false;
+      trackEvent(currentResult.value);
+      window.location.href = limitedResult.value[currentResult.value].item.route;
     }
+    blurSearch();
   }
+  if (event.keyCode === 27 && phaseOne.value) blurSearch();
+}
 
-  get limitedResult() {
-    return this.resultLimit
-      ? this.result.slice(0, this.resultLimit)
-      : this.result;
-  }
+function trackEvent(result: any) {
+  emit("trackSearchNav", result);
+}
 
-  get calcHeight() {
-    if (this.phaseOne === false) {
-      return "height: 40px;";
-    }
-    if (
-      this.result.length >= 1 &&
-      this.result.length <= 7 &&
-      this.phaseOne == true
-    ) {
-      let x = parseInt(this.result.length) * 32 + 47;
-      return "height: " + x + "px;";
-    } else {
-      return "height: 271px;";
-    }
-  }
-
-  @Watch("jsonSearch")
-  watchJsonSearch() {
-    this.fuse.searchData = this.jsonSearch;
-    this.fuseSearch();
-  }
-
-  @Watch("search")
-  watchSearch() {
-    this.value = this.search;
-  }
-
-  @Watch("value")
-  watchValue() {
-    this.$parent.$emit(this.inputChangeEventName, this.value);
-    this.$emit(this.inputChangeEventName, this.value);
-    this.fuseSearch();
-  }
-
-  @Watch("result")
-  watchResult(val: [], oldVal: []) {
-    if (this.noResults || this.value == "" || val.length != oldVal.length) {
-      this.currentResult = 0;
-    }
-    this.$emit(this.eventName, this.result);
-    this.$parent.$emit(this.eventName, this.result);
-  }
-
-  keyEvent(event) {
-    // KEYPRESS UP
-    if (event.keyCode === 38 && this.currentResult > 0) {
-      this.currentResult--;
-    }
-    // KEYPRESS DOWN
-    if (this.result.length === 0) {
-      if (event.keyCode === 40 && this.currentResult < 5) {
-        this.currentResult++;
-      }
-    } else {
-      if (event.keyCode === 40 && this.currentResult < 6) {
-        this.currentResult++;
-      }
-    }
-    // KEYPRESS ENTER
-    if (event.keyCode === 13 && this.phaseOne) {
-      if (this.result <= 0) {
-        this.trackEvent(this.currentResult);
-        window.location.href = this.jsonSearch[
-          this.suggestedLinks[this.currentResult].jsonSearchIndex
-        ].route;
-        this.blurSearch();
-      } else {
-        this.trackEvent(this.currentResult);
-        window.location.href = this.limitedResult[
-          this.currentResult
-        ].item.route;
-        this.blurSearch();
-      }
-    }
-    // KEYPRESS ESC
-    if (event.keyCode === 27 && this.phaseOne) {
-      this.blurSearch();
-    }
-  }
-
-  trackEvent(result) {
-    this.$emit("trackSearchNav", result);
-  }
-
-  playClosingSequence() {
-    if (this.phaseTwo) {
-      setTimeout(() => {
-        this.phaseTwo = !this.phaseTwo;
-      }, 100);
-      setTimeout(() => {
-        this.phaseOne = !this.phaseOne;
-      }, 200);
-    }
-  }
-
-  playOpeningSequence() {
-    if (!this.phaseOne) {
-      this.phaseOne = !this.phaseOne;
-      setTimeout(() => {
-        this.phaseTwo = !this.phaseTwo;
-      }, 100);
-    }
-  }
-
-  initFuse() {
-    this.fuse = new Fuse(this.jsonSearch, this.options);
-    if (this.search) {
-      this.value = this.search;
-    }
-  }
-
-  blurSearch() {
-    this.value = "";
-    this.$refs.search_input.blur();
-    this.currentResult = 0;
-  }
-
-  fuseSearch() {
-    if (this.value.trim() === "") {
-      this.result = [];
-    } else {
-      this.result = this.fuse.search(this.value.trim());
-    }
-  }
-
-  mounted() {
-    this.initFuse();
+function playClosingSequence() {
+  if (phaseTwo.value) {
+    setTimeout(() => { phaseTwo.value = !phaseTwo.value; }, 100);
+    setTimeout(() => { phaseOne.value = !phaseOne.value; }, 200);
   }
 }
+
+function playOpeningSequence() {
+  if (!phaseOne.value) {
+    phaseOne.value = !phaseOne.value;
+    setTimeout(() => { phaseTwo.value = !phaseTwo.value; }, 100);
+  }
+}
+
+function initFuse() {
+  fuse.value = new Fuse(props.jsonSearch, options.value);
+  if (props.search) value.value = props.search;
+}
+
+function blurSearch() {
+  value.value = "";
+  searchInput.value?.blur();
+  currentResult.value = 0;
+}
+
+function fuseSearch() {
+  if (value.value.trim() === "") {
+    result.value = [];
+  } else {
+    result.value = fuse.value.search(value.value.trim());
+  }
+}
+
+onMounted(() => {
+  initFuse();
+});
 </script>
 
 <style lang="less">
@@ -386,7 +328,7 @@ export default class SiteSearch extends Vue {
     align-items: center;
     height: 39px;
     color: @icon;
-    padding-bottom: 1px; // Aligns Icon Better Visually
+    padding-bottom: 1px;
   }
 
   .s-sitesearch-results__cont {
