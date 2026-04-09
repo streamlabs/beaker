@@ -1,15 +1,12 @@
 <template>
-  <modal
-    name="new-feature"
-    :adaptive="true"
-    :width="width"
-    :height="height"
-    classes="s-overlay__wrapper"
-    :clickToClose="true"
-    @opened="opened"
+  <VueFinalModal
+    v-model="show"
+    content-class="s-overlay__wrapper"
+    :content-style="{ width: width, height: height }"
+    v-bind="$attrs"
   >
-    <div slot="top-right" class="s-overlay__icon">
-      <span class="s-icon icon-close" @click="onDismiss"></span>
+    <div class="s-overlay__icon" @click="onDismiss">
+      <span class="s-icon icon-close"></span>
     </div>
     <div class="s-overlay__container" :class="containerMq">
       <div class="s-overlay__body">
@@ -27,18 +24,18 @@
             :href="buttonHref"
             :target="buttonTarget"
             :title="buttonTitle"
-            @click.native="onPrimaryAction"
+            @click="onPrimaryAction"
           ></Button>
           <router-link
             class="s-overlay__link"
             :to="dismissRoute"
-            @click.native="onDismiss"
+            @click="onDismiss"
             >{{ dismissText }}</router-link
           >
         </div>
       </div>
 
-      <div class="s-overlay__image-block" :class="overlay__imageBlockMq">
+      <div class="s-overlay__image-block" :class="overlayImageBlockMq">
         <img v-if="isImage" :src="overlayImage" class="s-overlay__image" />
         <video
           :controls="videoControls"
@@ -52,115 +49,74 @@
         </video>
       </div>
     </div>
-  </modal>
+  </VueFinalModal>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import { VueFinalModal } from "vue-final-modal";
+import { useMq } from "vue3-mq";
 import Button from "./../components/Button.vue";
-import VueMq from "vue-mq";
-import VModal from "vue-js-modal";
 
-Vue.use(VModal);
+const show = defineModel<boolean>({ default: false });
 
-Vue.use(VueMq, {
-  breakpoints: {
-    // default breakpoints - customize this
-    sm: 900,
-    md: 1250,
-    lg: Infinity
-  },
-  defaultBreakpoint: "sm" // customize this for SSR
-});
-
-@Component({
-  components: {
-    Button
+const props = withDefaults(
+  defineProps<{
+    width?: string | number;
+    height?: string | number;
+    label?: string;
+    title?: string;
+    media?: string;
+    buttonTitle?: string;
+    buttonRoute?: string;
+    buttonTag?: string;
+    buttonHref?: string;
+    buttonTarget?: string;
+    dismissRoute?: string;
+    dismissText?: string;
+    onOpen?: () => void;
+    onAction?: () => void;
+    videoControls?: boolean;
+  }>(),
+  {
+    width: "100%",
+    height: "auto",
+    buttonRoute: "/",
+    buttonTag: "router-link",
+    dismissRoute: "/",
+    dismissText: "Go to Dashboard",
+    videoControls: false,
   }
-})
-export default class NewFeatureOverlay extends Vue {
-  @Prop({ default: "100%" })
-  width!: string | number;
+);
 
-  @Prop({ default: "auto" })
-  height!: string | number;
+const mq = useMq();
+const isImage = ref(true);
 
-  @Prop()
-  label!: string;
+const overlayImage = computed(() => props.media);
 
-  @Prop()
-  title!: string;
+const containerMq = computed(() =>
+  mq.current === "sm" ? "s-overlay__container--mq" : ""
+);
 
-  @Prop()
-  media!: string;
+const overlayImageBlockMq = computed(() =>
+  mq.current === "sm" ? "s-overlay__image-block--mq" : ""
+);
 
-  @Prop()
-  buttonTitle!: string;
-
-  @Prop({ default: "/" })
-  buttonRoute!: string;
-
-  @Prop({ default: "router-link" })
-  buttonTag!: String;
-
-  @Prop()
-  buttonHref!: String;
-
-  @Prop()
-  buttonTarget!: String;
-
-  @Prop({ default: "/" })
-  dismissRoute!: string;
-
-  @Prop({ default: "Go to Dashboard" })
-  dismissText!: string;
-
-  @Prop()
-  onOpen!: Function;
-
-  @Prop()
-  onAction!: Function;
-
-  @Prop({ default: false })
-  videoControls!: boolean;
-
-  isImage: boolean = true;
-
-  get overlayImage() {
-    return this.media;
-  }
-
-  $mq!: string | string[];
-
-  get containerMq() {
-    return this.$mq === "sm" ? "s-overlay__container--mq" : "";
-  }
-
-  get overlay__imageBlockMq() {
-    return this.$mq === "sm" ? "s-overlay__image-block--mq" : "";
-  }
-
-  mounted() {
-    if (this.media.includes("mp4") || this.media.includes("webm")) {
-      this.isImage = false;
-    } else {
-      this.isImage = true;
-    }
-  }
-
-  opened(event) {
-    typeof this.onOpen === "function" && this.onOpen();
-  }
-
-  onPrimaryAction() {
-    typeof this.onAction === "function" && this.onAction();
-    this.onDismiss();
-  }
-
-  onDismiss() {
-    this.$modal.hide("new-feature");
-  }
+function onPrimaryAction() {
+  if (typeof props.onAction === "function") props.onAction();
+  onDismiss();
 }
+
+function onDismiss() {
+  show.value = false;
+}
+
+onMounted(() => {
+  if (props.media) {
+    isImage.value = !props.media.includes("mp4") && !props.media.includes("webm");
+  }
+  if (typeof props.onOpen === "function") props.onOpen();
+});
 </script>
 
 <style lang="less" scoped>
