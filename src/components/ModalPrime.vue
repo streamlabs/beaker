@@ -1,47 +1,37 @@
 <template>
-  <modal
-    :name="name"
-    classes="s-modal-wrapper"
-    :width="width"
-    :minWidth="minWidth"
-    height="auto"
-    :adaptive="true"
+  <VueFinalModal
+    v-model="show"
+    content-class="s-modal-wrapper"
+    :content-style="{ maxWidth: width + 'px', minWidth: minWidth + 'px' }"
     v-bind="$attrs"
   >
     <div class="modal-prime__close" v-if="hasPrimeCloseButton">
-      <i class="icon-close" @click="$modal.hide(name)"></i>
+      <i class="icon-close" @click="show = false"></i>
     </div>
     <welcome-prime :primeButtonText="primeButtonText" v-bind="$attrs">
       <slot></slot>
     </welcome-prime>
-  </modal>
+  </VueFinalModal>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { VueFinalModal } from "vue-final-modal";
 import WelcomePrime from "./../components/WelcomePrime.vue";
 
-@Component({
-  components: {
-    WelcomePrime
+const show = defineModel<boolean>({ default: false });
+
+withDefaults(
+  defineProps<{
+    width?: number;
+    minWidth?: number;
+    hasPrimeCloseButton?: boolean;
+    primeButtonText?: string;
+  }>(),
+  {
+    hasPrimeCloseButton: false,
+    primeButtonText: "Continue",
   }
-})
-export default class ModalPrime extends Vue {
-  @Prop({ default: "modal-welcome-prime" })
-  name!: string;
-
-  @Prop()
-  width!: number;
-
-  @Prop()
-  minWidth!: number;
-
-  @Prop({ default: false })
-  hasPrimeCloseButton!: boolean;
-
-  @Prop({ default: "Continue" })
-  primeButtonText!: string;
-}
+);
 </script>
 
 <style lang="less" scoped>
