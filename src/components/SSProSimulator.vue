@@ -31,52 +31,37 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import UrlBar from "./../components/UrlBar.vue";
 
-@Component({
-  components: {
-    UrlBar
+withDefaults(
+  defineProps<{ username?: string; icon?: string; domain?: string }>(),
+  {
+    username: "Awkward__Raccoon",
+    icon: "https://live.kickstarter.com/images/avatar/medium/avatars4.png",
+    domain: "https://awkwardraccoon.tv",
   }
-})
-export default class ScsroSimulator extends Vue {
-  @Prop({ default: "Awkward__Raccoon" })
-  username!: string;
+);
 
-  @Prop({
-    default: "https://live.kickstarter.com/images/avatar/medium/avatars4.png"
-  })
-  icon!: String;
+const themeClasses = ["teal", "orange", "purple", "electric-blue", "red", "lime"];
+const themeClass = ref("");
+let myInt: ReturnType<typeof setInterval>;
 
-  @Prop({ default: "https://awkwardraccoon.tv" })
-  domain!: string;
-
-  themeClasses = ["teal", "orange", "purple", "electric-blue", "red", "lime"];
-  themeClass = "";
-  myInt!: number;
-
-  rotateClasses() {
-    let it = this.themeClasses[Symbol.iterator]();
-    this.myInt = setInterval(() => {
-      // time interval
-      const next = it.next();
-      if (!next.done) {
-        this.themeClass = "s-cs-simulator__web-page--" + next.value;
-      } else {
-        it = this.themeClasses[Symbol.iterator]();
-      }
-    }, 2000);
-  }
-
-  beforeUnmount() {
-    clearInterval(this.myInt);
-  }
-
-  mounted() {
-    this.rotateClasses();
-  }
+function rotateClasses() {
+  let it = themeClasses[Symbol.iterator]();
+  myInt = setInterval(() => {
+    const next = it.next();
+    if (!next.done) {
+      themeClass.value = "s-cs-simulator__web-page--" + next.value;
+    } else {
+      it = themeClasses[Symbol.iterator]();
+    }
+  }, 2000);
 }
+
+onMounted(() => rotateClasses());
+onBeforeUnmount(() => clearInterval(myInt));
 </script>
 
 <style lang="less">

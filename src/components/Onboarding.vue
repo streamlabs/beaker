@@ -68,51 +68,43 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed } from "vue";
 import OnboardingStep from "./../components/OnboardingStep.vue";
 import Button from "./../components/Button.vue";
 
-@Component({
-  components: {
-    OnboardingStep,
-    Button
-  }
-})
-export default class Onboarding extends Vue {
-  @Prop() steps!: { name?: string; complete: boolean }[];
-  @Prop({ default: "left" }) stepLocation!: string;
-  @Prop() currentStep!: number;
-  @Prop() completeHandler!: Function;
-  @Prop() continueHandler!: Function;
-  @Prop() skipHandler!: Function;
-  @Prop() prevHandler!: Function;
-  @Prop() skippable!: boolean;
-  @Prop({ default: false }) disableControls!: boolean;
-  @Prop({ default: false }) hideSkip!: boolean;
-  @Prop({ default: false }) hideBack!: boolean;
-  @Prop({ default: false }) hideButton!: boolean;
+interface IStep { name?: string; complete: boolean }
 
-  get location() {
-    if (this.stepLocation === "left") return "s-onboarding__left";
-    if (this.stepLocation === "top") return "s-onboarding__top";
-  }
+const props = withDefaults(
+  defineProps<{
+    steps: IStep[];
+    stepLocation?: string;
+    currentStep?: number;
+    completeHandler?: () => void;
+    continueHandler?: () => void;
+    skipHandler?: () => void;
+    prevHandler?: () => void;
+    skippable?: boolean;
+    disableControls?: boolean;
+    hideSkip?: boolean;
+    hideBack?: boolean;
+    hideButton?: boolean;
+  }>(),
+  { stepLocation: "left", disableControls: false, hideSkip: false, hideBack: false, hideButton: false }
+);
 
-  get namedSteps() {
-    return this.steps.every(step => !!step.name);
-  }
+const location = computed(() => {
+  if (props.stepLocation === "left") return "s-onboarding__left";
+  if (props.stepLocation === "top") return "s-onboarding__top";
+});
+const namedSteps = computed(() => props.steps.every((s) => !!s.name));
+const isCompleted = computed(() => props.steps.every((s) => s.complete));
 
-  get isCompleted() {
-    return this.steps.every(step => step.complete);
-  }
-
-  currentStepStyle(index) {
-    return index + 1 === this.currentStep;
-  }
-
-  checkmarkStyle(index) {
-    return this.steps[index].complete;
-  }
+function currentStepStyle(index: number) {
+  return index + 1 === props.currentStep;
+}
+function checkmarkStyle(index: number) {
+  return props.steps[index].complete;
 }
 </script>
 

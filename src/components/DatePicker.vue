@@ -6,7 +6,7 @@
     :auto-height="true"
     :close-on-select="false"
   >
-    <div slot="title" class="s-date-picker__title">{{ dateTitle }}</div>
+    <template #title><div class="s-date-picker__title">{{ dateTitle }}</div></template>
     <vue-date-picker
       calendar-class="s-date-picker__calendar"
       v-bind="{ ...datePickerProps }"
@@ -20,107 +20,67 @@
   </pane-dropdown>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
 import PaneDropdown from "./PaneDropdown.vue";
-// import VueDatePicker from "vuejs-datepicker";
 
-interface selectedDate {
+interface SelectedDate {
   date: Date;
   selected: boolean;
 }
 
-@Component({
-  components: {
-    // VueDatePicker,
-    PaneDropdown
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+const props = withDefaults(
+  defineProps<{
+    variant?: string;
+    placeholder?: string;
+    view?: string;
+    startDate?: Date | string | null;
+  }>(),
+  { placeholder: "Select Date", view: "day", startDate: null }
+);
+
+const emit = defineEmits<{ selected: [date: Date] }>();
+
+const today = new Date();
+const selectedDate = ref<SelectedDate>({ date: new Date(), selected: false });
+
+const datePickerProps = computed(() => ({ ...props }));
+
+const maxView = computed(() => (props.view === "month" ? props.view : "year"));
+
+const dateTitle = computed(() => {
+  if (!selectedDate.value.selected) return props.placeholder;
+  const d = new Date(selectedDate.value.date.toString());
+  const day = d.getDate();
+  const month = d.getMonth();
+  const year = d.getFullYear();
+
+  if (day === today.getDate() - 1 && month === today.getMonth() && year === today.getFullYear()) {
+    return "Yesterday";
   }
-  // props: { ...VueDatePicker.props }
-})
-export default class DatePicker extends Vue {
-  @Prop({})
-  variant!: string;
+  if (props.view === "month") return `${MONTHS[month]} ${year}`;
+  if (props.view === "year") return `${year}`;
+  return `${day} ${MONTHS[month]} ${year}`;
+});
 
-  @Prop({ default: "Select Date", type: String })
-  placeholder!: string;
-
-  @Prop({ default: "day", type: String })
-  view!: string;
-
-  @Prop({ default: null, type: [Date, String] })
-  startDate!: Date | string;
-
-  today = new Date();
-  selectedDate: selectedDate = {
-    date: new Date(),
-    selected: false
-  };
-
-  created() {
-    if (this.startDate) {
-      let date = this.startDate;
-      if (typeof date === "string") {
-        date = new Date(this.startDate);
-      }
-      this.updateDate(date);
-    }
-  }
-
-  get datePickerProps() {
-    return { ...this.$props };
-  }
-
-  get dateTitle() {
-    if (this.selectedDate.selected) {
-      const selectedDate = new Date(this.selectedDate.date.toString());
-      const months = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ];
-      const day = selectedDate.getDate();
-      const month = selectedDate.getMonth();
-      const year = selectedDate.getFullYear();
-
-      if (
-        day === this.today.getDate() - 1 &&
-        month === this.today.getMonth() &&
-        year === this.today.getFullYear()
-      ) {
-        return "Yesterday";
-      }
-
-      if (this.view === "month") return `${months[month]} ${year}`;
-      if (this.view === "year") return `${year}`;
-
-      return `${day} ${months[month]} ${year}`;
-    }
-
-    return this.placeholder;
-  }
-
-  get maxView() {
-    return this.view === "month" ? this.view : "year";
-  }
-
-  updateDate(date) {
-    this.selectedDate = {
-      date,
-      selected: true
-    };
-
-    this.$emit("selected", date);
-  }
+function updateDate(date: Date) {
+  selectedDate.value = { date, selected: true };
+  emit("selected", date);
 }
+
+onMounted(() => {
+  if (props.startDate) {
+    const date = typeof props.startDate === "string"
+      ? new Date(props.startDate)
+      : props.startDate;
+    updateDate(date);
+  }
+});
 </script>
 
 <style lang="less">

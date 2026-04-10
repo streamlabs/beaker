@@ -12,22 +12,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import Button from "./../components/Button.vue";
-
-@Component({
-  components: {
-    Button
-  }
-})
-export default class OnboardingStep extends Vue {
-  @Prop()
-  title!: string;
-
-  @Prop()
-  desc!: string;
-}
+<script setup lang="ts">
+defineProps<{ title?: string; desc?: string }>();
 </script>
 
 <style lang="less">

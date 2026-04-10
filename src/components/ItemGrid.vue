@@ -4,14 +4,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-
-@Component({})
-export default class ItemGrid extends Vue {
-  @Prop()
-  items!: Object[];
-}
+<script setup lang="ts">
+defineProps<{ items?: object[] }>();
 </script>
 
 <style lang="less">

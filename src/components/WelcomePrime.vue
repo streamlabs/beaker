@@ -39,43 +39,35 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, computed, onMounted, useSlots } from "vue";
 import Button from "./../components/Button.vue";
 
-@Component({
-  components: {
-    "s-button": Button
-  }
-})
-export default class WelcomePrime extends Vue {
-  @Prop({ default: "Continue" })
-  primeButtonText!: string;
+withDefaults(defineProps<{ primeButtonText?: string }>(), {
+  primeButtonText: "Continue",
+});
 
-  primeFeatureListDefault: string[] = [
-    "100s of Stunning Themes",
-    "Every App is FREE",
-    "Merch Store with Wholesale Pricing",
-    "Custom Web Domain and Email Address",
-    "Automatic Gold All-Star Status"
-  ];
+const emit = defineEmits<{ onClickPrime: [] }>();
+const slots = useSlots();
 
-  isUserAgentEdge: boolean = false;
+const primeFeatureListDefault = [
+  "100s of Stunning Themes",
+  "Every App is FREE",
+  "Merch Store with Wholesale Pricing",
+  "Custom Web Domain and Email Address",
+  "Automatic Gold All-Star Status",
+];
 
-  onPrimeButtonHandler() {
-    this.$emit("onClickPrime");
-  }
+const isUserAgentEdge = ref(false);
+const hasSlot = computed(() => !!slots.default);
 
-  mounted() {
-    navigator.userAgent.indexOf("Edge") !== -1
-      ? (this.isUserAgentEdge = true)
-      : (this.isUserAgentEdge = false);
-  }
-
-  get hasSlot() {
-    return !(typeof this.$slots.default === "undefined");
-  }
+function onPrimeButtonHandler() {
+  emit("onClickPrime");
 }
+
+onMounted(() => {
+  isUserAgentEdge.value = navigator.userAgent.indexOf("Edge") !== -1;
+});
 </script>
 
 <style lang="less" scoped>

@@ -9,7 +9,7 @@
     </div>
     <div
       v-if="chooseLayout"
-      v-click-outside="showAddLayout"
+      v-on-click-outside="showAddLayout"
       class="s-cs-layout-picker__layouts-bar"
     >
       <slot name="layouts"></slot>
@@ -17,33 +17,21 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import ClickOutside from "vue-click-outside";
+<script setup lang="ts">
+import { ref } from "vue";
+import { vOnClickOutside } from "@vueuse/core";
 
-@Component({
-  directives: {
-    ClickOutside
-  }
-})
-export default class CSLayoutPicker extends Vue {
-  addLayout = true;
-  chooseLayout = false;
+const addLayout = ref(true);
+const chooseLayout = ref(false);
 
-  showChooseLayout() {
-    this.chooseLayout = true;
-    this.addLayout = false;
-  }
+function showChooseLayout() {
+  chooseLayout.value = true;
+  addLayout.value = false;
+}
 
-  showAddLayout() {
-    this.chooseLayout = false;
-    this.addLayout = true;
-  }
-
-  closeChooseLayout() {
-    this.chooseLayout = false;
-    this.addLayout = true;
-  }
+function showAddLayout() {
+  chooseLayout.value = false;
+  addLayout.value = true;
 }
 </script>
 

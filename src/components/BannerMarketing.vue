@@ -59,113 +59,61 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, watch, nextTick, onMounted, useTemplateRef } from "vue";
+import whatInput from "what-input";
 
-@Component({})
-export default class BannerMarketing extends Vue {
-  $refs!: {
-    banner: HTMLDivElement;
-    bottomWrapper: HTMLDivElement;
-  };
+const props = withDefaults(
+  defineProps<{
+    bgImageNight?: string;
+    bgImage: string;
+    label: string;
+    iconName?: string;
+    iconImage?: string;
+    title: string;
+    desc?: string;
+    linkDesc?: string;
+    bannerClosed?: boolean;
+    onToggle?: () => void;
+  }>(),
+  { bannerClosed: false }
+);
 
-  @Prop()
-  bgImageNight!: {
-    type: string;
-  };
+const banner = useTemplateRef<HTMLDivElement>("banner");
+const bottomWrapper = useTemplateRef<HTMLDivElement>("bottomWrapper");
+const closed = ref(false);
 
-  @Prop()
-  bgImage!: {
-    type: string;
-    required: true;
-  };
+watch(() => props.bannerClosed, (val) => {
+  closed.value = val;
+  updateBannerHeight();
+});
 
-  @Prop()
-  label!: {
-    type: string;
-    required: true;
-  };
+function toggleBanner() {
+  if (typeof props.onToggle === "function") props.onToggle();
+  closed.value = !closed.value;
+  updateBannerHeight();
 
-  @Prop()
-  iconName!: {
-    type: string;
-  };
-
-  @Prop()
-  iconImage!: {
-    type: string;
-  };
-
-  @Prop()
-  title!: {
-    type: string;
-    required: true;
-  };
-
-  @Prop()
-  desc!: {
-    type: string;
-    required: false;
-  };
-
-  @Prop()
-  linkDesc!: string;
-
-  @Prop({ default: false })
-  bannerClosed!: boolean;
-
-  @Prop()
-  onToggle!: Function;
-
-  @Watch("bannerClosed")
-  onBannerCloseStateChanged(val: boolean, oldVal: boolean) {
-    this.closed = val;
-    this.updateBannerHeight();
-  }
-
-  closed: boolean = false;
-
-  mounted() {
-    this.closed = this.bannerClosed;
-    this.updateBannerHeight();
-  }
-
-  toggleBanner() {
-    typeof this.onToggle === "function" && this.onToggle();
-    this.closed = !this.closed;
-    this.updateBannerHeight();
-
-    /*
-      For keyboard accessibility
-    */
-    if (this.$whatInput.ask() === "keyboard") {
-      const icons = this.$refs.banner.querySelectorAll(".icon-down");
-      let icon!: HTMLLIElement;
-
-      if (this.closed) {
-        icon = icons[1] as HTMLLIElement;
-      } else {
-        icon = icons[0] as HTMLLIElement;
-      }
-
-      let tabindex = parseInt(icon.getAttribute("tabindex") as string);
-      this.$nextTick(() => icon.focus());
-    }
-  }
-
-  updateBannerHeight() {
-    let banner = this.$refs.banner;
-    let bannerWrapper = this.$refs.bottomWrapper;
-
-    if (!this.closed) {
-      banner.style.maxHeight = "240px";
-    } else {
-      setTimeout(() => {
-        banner.style.maxHeight = `${bannerWrapper.scrollHeight + 32}px`;
-      }, 1);
-    }
+  if (whatInput.ask() === "keyboard") {
+    const icons = banner.value!.querySelectorAll(".icon-down");
+    const icon = (closed.value ? icons[1] : icons[0]) as HTMLLIElement;
+    nextTick(() => icon.focus());
   }
 }
+
+function updateBannerHeight() {
+  if (!closed.value) {
+    banner.value!.style.maxHeight = "240px";
+  } else {
+    setTimeout(() => {
+      banner.value!.style.maxHeight = `${bottomWrapper.value!.scrollHeight + 32}px`;
+    }, 1);
+  }
+}
+
+onMounted(() => {
+  closed.value = props.bannerClosed;
+  updateBannerHeight();
+});
 </script>
 
 <style lang="less">

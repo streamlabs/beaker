@@ -54,135 +54,67 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed } from "vue";
+import { useMq } from "vue3-mq";
 import Button from "./../components/Button.vue";
-import VueMq from "vue-mq";
 
-Vue.use(VueMq, {
-  breakpoints: {
-    // default breakpoints - customize this
-    sm: 900,
-    md: 1250,
-    lg: Infinity
-  },
-  defaultBreakpoint: "sm" // customize this for SSR
-});
-
-@Component({
-  components: {
-    Button
+const props = withDefaults(
+  defineProps<{
+    bgColor?: string;
+    titleColor?: string;
+    subTitleColor?: string;
+    thumbnail?: string;
+    hasThumbnail?: boolean;
+    thumbnailWidth?: number | string;
+    thumbnailHeight?: number | string;
+    thumbnailBg?: string;
+    thumbnailAlt?: string;
+    title?: string;
+    description?: string;
+    buttonVariation?: string;
+    buttonTitle?: string;
+    buttonDescription?: string;
+    buttonHref?: string;
+    buttonTo?: string;
+    buttonTag?: string;
+    buttonClick?: () => void;
+    buttonBg?: string;
+    buttonTextColor?: string;
+    customButtonSlot?: boolean;
+    bgPrime?: boolean;
+    buttonIcon?: string;
+  }>(),
+  {
+    thumbnail: "https://cdn.streamlabs.com/static/kevin-standard.svg",
+    hasThumbnail: true,
+    thumbnailWidth: 80,
+    thumbnailHeight: 80,
+    thumbnailAlt: "Get started by downloading Streamlabs OBS",
+    title: "Get started by downloading Streamlabs OBS",
+    description: "Over 800k creators use Streamlabs OBS daily, delivering entertainment.",
+    buttonVariation: "slobs-download",
+    buttonTitle: "Download Streamlabs OBS",
+    customButtonSlot: false,
+    bgPrime: false,
   }
-})
-export default class CallToAction extends Vue {
-  @Prop()
-  bgColor!: String;
+);
 
-  @Prop()
-  titleColor!: String;
+const mq = useMq();
 
-  @Prop()
-  subTitleColor!: String;
+const callToActiontitleColor = computed(() => ({ color: props.titleColor }));
+const callToActionSubTitleColor = computed(() => ({ color: props.subTitleColor }));
+const callToActionBg = computed(() => ({ backgroundColor: props.bgColor }));
+const callToActionThumb = computed(() => ({
+  width: `${props.thumbnailWidth}px`,
+  height: `${props.thumbnailHeight}px`,
+  backgroundColor: props.thumbnailBg,
+}));
 
-  @Prop({ default: "https://cdn.streamlabs.com/static/kevin-standard.svg" })
-  thumbnail!: String;
-
-  @Prop({ default: true })
-  hasThumbnail!: Boolean;
-
-  @Prop({ default: 80 })
-  thumbnailWidth!: number | string;
-
-  @Prop({ default: 80 })
-  thumbnailHeight!: number | string;
-
-  @Prop()
-  thumbnailBg!: String;
-
-  @Prop({ default: "Get started by downloading Streamlabs OBS" })
-  thumbnailAlt!: String;
-
-  @Prop({ default: "Get started by downloading Streamlabs OBS" })
-  title!: String;
-
-  @Prop({
-    default:
-      "Over 800k creators use Streamlabs OBS daily, delivering entertainment."
-  })
-  description!: String;
-
-  @Prop({ default: "slobs-download" })
-  buttonVariation!: String;
-
-  @Prop({ default: "Download Streamlabs OBS" })
-  buttonTitle!: String;
-
-  @Prop()
-  buttonDescription!: String;
-
-  @Prop()
-  buttonHref!: String;
-
-  @Prop()
-  buttonTo!: String;
-
-  @Prop()
-  buttonTag!: String;
-
-  @Prop()
-  buttonClick!: Function;
-
-  @Prop()
-  buttonBg!: String;
-
-  @Prop()
-  buttonTextColor!: String;
-
-  @Prop({ default: false })
-  customButtonSlot!: Boolean;
-
-  @Prop({ default: false })
-  bgPrime!: Boolean;
-
-  @Prop()
-  buttonIcon!: String;
-
-  $mq: any;
-
-  callToActiontitleColor: object = {
-    color: this.titleColor
-  };
-
-  callToActionSubTitleColor: object = {
-    color: this.subTitleColor
-  };
-
-  callToActionBg: object = {
-    backgroundColor: this.bgColor
-  };
-
-  callToActionThumb: object = {
-    width: `${this.thumbnailWidth}px`,
-    height: `${this.thumbnailHeight}px`,
-    backgroundColor: this.thumbnailBg
-  };
-
-  get callToActionMq() {
-    return this.$mq === "sm" ? "s-call-to-action-mq" : "";
-  }
-
-  get callToActionThumbMq() {
-    return this.$mq === "sm" ? "s-call-to-action__thumb-mq" : "";
-  }
-
-  get callToActionDescMq() {
-    return this.$mq === "sm" ? "s-call-to-action__description-mq" : "";
-  }
-
-  get titleMq() {
-    return this.$mq === "sm" ? "s-title-mq" : "";
-  }
-}
+const callToActionMq = computed(() => mq.current === "sm" ? "s-call-to-action-mq" : "");
+const callToActionThumbMq = computed(() => mq.current === "sm" ? "s-call-to-action__thumb-mq" : "");
+const callToActionDescMq = computed(() => mq.current === "sm" ? "s-call-to-action__description-mq" : "");
+const titleMq = computed(() => mq.current === "sm" ? "s-title-mq" : "");
 </script>
 
 <style lang="less">

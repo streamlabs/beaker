@@ -30,70 +30,35 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed, useAttrs } from "vue";
 
-@Component({})
-export default class VitualItem extends Vue {
-  @Prop(String)
-  name!: string;
+const props = withDefaults(
+  defineProps<{
+    name?: string;
+    value?: string;
+    preview?: string;
+    quantity?: number;
+    rarity?: string;
+    selected?: boolean;
+    selectionCount?: string;
+    remainingTime?: string;
+    hasWarning?: boolean;
+    isGiveaway?: boolean;
+    type?: string;
+  }>(),
+  { selected: false, hasWarning: false, isGiveaway: false }
+);
 
-  @Prop(String)
-  value!: string;
+const attrs = useAttrs();
 
-  @Prop(String)
-  preview!: string;
-
-  @Prop(Number)
-  quantity!: number;
-
-  @Prop(String)
-  rarity!: string;
-
-  @Prop({ default: false })
-  selected!: boolean;
-
-  @Prop(String)
-  selectionCount!: string;
-
-  @Prop(String)
-  remainingTime!: string;
-
-  @Prop({ default: false })
-  hasWarning!: boolean;
-
-  @Prop({ default: false })
-  isGiveaway!: boolean;
-
-  @Prop(String)
-  type!: string;
-
-  isClickable: boolean = false;
-
-  mounted() {
-    if (this.$attrs.onClick) {
-      this.isClickable = true;
-    }
-  }
-
-  get virtualItemClasses() {
-    const classes: any = [];
-
-    if (this.rarity) {
-      classes.push(`s-virtual-item--${this.rarity}`);
-    }
-
-    if (this.selected) {
-      classes.push("is-selected");
-    }
-
-    if (this.isClickable) {
-      classes.push("clickable");
-    }
-
-    return classes.join(" ");
-  }
-}
+const virtualItemClasses = computed(() => {
+  const classes: string[] = [];
+  if (props.rarity) classes.push(`s-virtual-item--${props.rarity}`);
+  if (props.selected) classes.push("is-selected");
+  if (attrs.onClick) classes.push("clickable");
+  return classes.join(" ");
+});
 </script>
 
 <style lang="less">

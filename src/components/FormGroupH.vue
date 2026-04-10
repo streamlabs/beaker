@@ -20,20 +20,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-
-@Component({})
-export default class FormGroupH extends Vue {
-  @Prop()
-  helpText!: string;
-
-  @Prop()
-  tooltip!: string;
-
-  @Prop()
-  title!: string;
-}
+<script setup lang="ts">
+defineProps<{ helpText?: string; tooltip?: string; title?: string }>();
 </script>
 
 <style lang="less">

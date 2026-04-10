@@ -16,20 +16,13 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+withDefaults(
+  defineProps<{ label?: string; size?: string; value?: boolean }>(),
+  { value: false }
+);
 
-@Component({})
-export default class StatusSwitch extends Vue {
-  @Prop()
-  label?: string;
-
-  @Prop()
-  size?: string;
-
-  @Prop({ default: false })
-  value?: boolean;
-}
+defineEmits<{ input: [val: boolean] }>();
 </script>
 
 <style lang="less">

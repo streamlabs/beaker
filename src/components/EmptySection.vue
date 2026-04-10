@@ -1,9 +1,9 @@
 <template>
   <div class="s-empty-section">
-    <i class="icon-search" v-if="this.variation === 'search'"></i>
-    <i class="icon-empty" v-if="this.variation === 'text'"></i>
-    <i class="icon-lock" v-if="this.variation === 'prime'"></i>
-    <i class="icon-error" v-if="this.variation === 'warning'"></i>
+    <i class="icon-search" v-if="variation === 'search'"></i>
+    <i class="icon-empty" v-if="variation === 'text'"></i>
+    <i class="icon-lock" v-if="variation === 'prime'"></i>
+    <i class="icon-error" v-if="variation === 'warning'"></i>
 
     <div v-if="titleSlot" class="s-empty-section__title">
       <slot name="title"></slot>
@@ -18,26 +18,23 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-
-@Component({})
-export default class Spinner extends Vue {
-  @Prop({ default: "text" })
-  variation!: String;
-
-  @Prop({ default: "Streamlabs.com" })
-  title!: String;
-
-  @Prop({ default: "" })
-  subtitle!: String;
-
-  @Prop({ default: false })
-  titleSlot!: Boolean;
-
-  @Prop({ default: false })
-  hasLink!: Boolean;
-}
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    variation?: string;
+    title?: string;
+    subtitle?: string;
+    titleSlot?: boolean;
+    hasLink?: boolean;
+  }>(),
+  {
+    variation: "text",
+    title: "Streamlabs.com",
+    subtitle: "",
+    titleSlot: false,
+    hasLink: false,
+  }
+);
 </script>
 
 <style lang="less">

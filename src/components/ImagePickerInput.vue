@@ -15,16 +15,15 @@
       @keydown.left.prevent="setValueByKeyPress('LEFT')"
       @keydown.right.prevent="setValueByKeyPress('RIGHT')"
       :tabindex="value === option.value ? '0' : '-1'"
-      ref="imagePickerItem"
+      :ref="(el) => el && (imagePickerItems[index] = el as HTMLDivElement)"
     >
       <img :src="option.image" />
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import ResizeObserver from "resize-observer-polyfill";
+<script setup lang="ts">
+import { ref, computed, nextTick, onMounted } from "vue";
 
 interface IOption {
   value: string;
@@ -32,174 +31,111 @@ interface IOption {
   image: string;
 }
 
-@Component({})
-export default class ImagePickerInput extends Vue {
-  $refs!: {
-    imagePickerItem: HTMLDivElement;
-  };
-
-  @Prop({ default: "above" })
-  value!: string;
-
-  @Prop(String)
-  width!: string;
-
-  @Prop(String)
-  height!: string;
-
-  @Prop({
-    default: () => [
-      {
-        value: "above",
-        title: "Above",
-        image: "https://cdn.streamlabs.com/layouts/img/above.png"
-      },
-      {
-        value: "banner",
-        title: "Banner",
-        image: "https://cdn.streamlabs.com/layouts/img/banner.png"
-      },
-      {
-        value: "side",
-        title: "Side",
-        image: "https://cdn.streamlabs.com/layouts/img/side.png"
-      }
-    ]
-  })
-  options!: Array<IOption>;
-
-  containerWidth: number = 0;
-
-  get selectedItemIndex(): number {
-    return this.options.findIndex(option => option.value === this.value);
+const props = withDefaults(
+  defineProps<{
+    value?: string;
+    width?: string;
+    height?: string;
+    options?: IOption[];
+  }>(),
+  {
+    value: "above",
+    options: () => [
+      { value: "above", title: "Above", image: "https://cdn.streamlabs.com/layouts/img/above.png" },
+      { value: "banner", title: "Banner", image: "https://cdn.streamlabs.com/layouts/img/banner.png" },
+      { value: "side", title: "Side", image: "https://cdn.streamlabs.com/layouts/img/side.png" },
+    ],
   }
+);
 
-  get totalRows(): number {
-    const items = this.options.length;
-    const itemsWidth = (parseInt(this.width, 10) || 64) + 8;
-    const total = items * itemsWidth;
-    return Math.ceil(total / this.containerWidth);
+const emit = defineEmits<{ input: [val: string] }>();
+
+// Array ref for v-for items
+const imagePickerItems = ref<HTMLDivElement[]>([]);
+const containerWidth = ref(0);
+
+const selectedItemIndex = computed(() =>
+  props.options.findIndex((o) => o.value === props.value)
+);
+
+const itemsPerRow = computed(() => {
+  const itemsWidth = (parseInt(props.width ?? "64", 10) || 64) + 8;
+  return Math.floor(containerWidth.value / itemsWidth);
+});
+
+const totalRows = computed(() => {
+  const itemsWidth = (parseInt(props.width ?? "64", 10) || 64) + 8;
+  return Math.ceil((props.options.length * itemsWidth) / containerWidth.value);
+});
+
+const itemsInFinalRow = computed(() => props.options.length % itemsPerRow.value);
+
+const itemPosMatrix = computed(() => {
+  const map: number[][] = [];
+  let row = 1, col = 1;
+  for (let i = 0; i < props.options.length; i++) {
+    map.push([row, col]);
+    col++;
+    if (col > itemsPerRow.value) { col = 1; row++; }
   }
+  return map;
+});
 
-  get itemsPerRow(): number {
-    const itemsWidth = (parseInt(this.width, 10) || 64) + 8;
-    return Math.floor(this.containerWidth / itemsWidth);
-  }
-
-  get itemsInFinalRow(): number {
-    return this.options.length % this.itemsPerRow;
-  }
-
-  get itemPosMatrix(): Array<number[]> {
-    let itemMap: Array<number[]> = [];
-    let currentRow = 1;
-    let currentColumn = 1;
-    let totalItems = this.options.length;
-    let count = 0;
-
-    while (count < totalItems) {
-      itemMap.push([currentRow, currentColumn]);
-      currentColumn++;
-
-      if (currentColumn > this.itemsPerRow) {
-        currentColumn = 1;
-        currentRow++;
-      }
-
-      count++;
-    }
-
-    return itemMap;
-  }
-
-  mounted() {
-    this.$nextTick(() => {
-      const imagePickerInput = document.querySelector(
-        ".s-image-picker-input"
-      ) as Element;
-
-      const ro = new ResizeObserver((entries, observer) => {
-        for (const entry of entries) {
-          const { left, top, width, height } = entry.contentRect;
-          this.containerWidth = width;
-        }
-      });
-
-      ro.observe(imagePickerInput);
-      this.containerWidth = imagePickerInput.clientWidth;
-    });
-  }
-
-  emitInput(val: string) {
-    this.$emit("input", val);
-  }
-
-  setValueByKeyPress(direction) {
-    let currentPosition = [...this.itemPosMatrix[this.selectedItemIndex]];
-    let posIndex = this.selectedItemIndex;
-    let value = "";
-
-    if (direction === "UP") {
-      if (currentPosition[0] <= 1) {
-        currentPosition[0] = 1;
-      } else {
-        currentPosition[0]--;
-      }
-    }
-
-    if (direction === "DOWN") {
-      if (currentPosition[0] >= this.totalRows) {
-        currentPosition[0] = this.totalRows;
-      } else {
-        currentPosition[0]++;
-
-        if (currentPosition[1] > this.itemsInFinalRow) {
-          currentPosition[1] = this.itemsInFinalRow;
-        }
-      }
-    }
-
-    if (direction === "LEFT") {
-      if (currentPosition[0] <= 1 && currentPosition[1] <= 1) {
-        currentPosition[1] = 1;
-      } else if (currentPosition[0] > 1 && currentPosition[1] === 1) {
-        currentPosition[0]--;
-        currentPosition[1] = this.itemsPerRow;
-      } else {
-        currentPosition[1]--;
-      }
-    }
-
-    if (direction === "RIGHT") {
-      if (
-        this.options.length < this.itemsPerRow &&
-        currentPosition[1] >= this.options.length
-      ) {
-        currentPosition[1] = this.options.length;
-      } else if (
-        currentPosition[1] >= this.itemsInFinalRow &&
-        currentPosition[0] === this.totalRows
-      ) {
-        currentPosition[1] = this.itemsInFinalRow;
-      } else if (
-        currentPosition[1] === this.itemsPerRow &&
-        currentPosition[0] < this.totalRows
-      ) {
-        currentPosition[0]++;
-        currentPosition[1] = 1;
-      } else {
-        currentPosition[1]++;
-      }
-    }
-
-    posIndex = this.itemPosMatrix.findIndex(
-      pos => pos[0] === currentPosition[0] && pos[1] === currentPosition[1]
-    );
-
-    this.$refs.imagePickerItem[posIndex].focus();
-    this.emitInput(this.options[posIndex].value);
-  }
+function emitInput(val: string) {
+  emit("input", val);
 }
+
+function setValueByKeyPress(direction: string) {
+  const currentPosition = [...itemPosMatrix.value[selectedItemIndex.value]];
+
+  if (direction === "UP") {
+    currentPosition[0] = Math.max(1, currentPosition[0] - 1);
+  } else if (direction === "DOWN") {
+    if (currentPosition[0] < totalRows.value) {
+      currentPosition[0]++;
+      if (currentPosition[1] > itemsInFinalRow.value) currentPosition[1] = itemsInFinalRow.value;
+    }
+  } else if (direction === "LEFT") {
+    if (currentPosition[0] <= 1 && currentPosition[1] <= 1) {
+      currentPosition[1] = 1;
+    } else if (currentPosition[0] > 1 && currentPosition[1] === 1) {
+      currentPosition[0]--;
+      currentPosition[1] = itemsPerRow.value;
+    } else {
+      currentPosition[1]--;
+    }
+  } else if (direction === "RIGHT") {
+    if (props.options.length < itemsPerRow.value && currentPosition[1] >= props.options.length) {
+      currentPosition[1] = props.options.length;
+    } else if (currentPosition[1] >= itemsInFinalRow.value && currentPosition[0] === totalRows.value) {
+      currentPosition[1] = itemsInFinalRow.value;
+    } else if (currentPosition[1] === itemsPerRow.value && currentPosition[0] < totalRows.value) {
+      currentPosition[0]++;
+      currentPosition[1] = 1;
+    } else {
+      currentPosition[1]++;
+    }
+  }
+
+  const posIndex = itemPosMatrix.value.findIndex(
+    (pos) => pos[0] === currentPosition[0] && pos[1] === currentPosition[1]
+  );
+
+  imagePickerItems.value[posIndex]?.focus();
+  emitInput(props.options[posIndex].value);
+}
+
+onMounted(() => {
+  nextTick(() => {
+    const el = document.querySelector(".s-image-picker-input") as HTMLElement;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) containerWidth.value = entry.contentRect.width;
+    });
+    ro.observe(el);
+    containerWidth.value = el.clientWidth;
+  });
+});
 </script>
 
 <style lang="less">

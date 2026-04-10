@@ -23,84 +23,39 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed } from "vue";
 
-@Component({})
-export default class Badge extends Vue {
-  /*
-    backgroundColor: STRING - pass in color name, rgba or hex code to set the color of the progress bar. Default is #31c3a2 (teal)
-    textColor: STRING - pass in color name, rgba or hex code to set the color of the bar text. Default is #fff (white)
-    current: INTEGER or FLOAT - indicates where the current progress should be. e.g. 5 in '5 out of 10.'
-    total: INTEGER or FLOAT - indicates what the maximum/completion value is. e.g. 10 in '5 out of 10.'
-    separator: STRING - whatever you want to separate the current and total e.g. 'out of' in '5 out of 10.' Could be '/', 'of', etc. Default is '/'
-    suffix: STRING - whatever you want to include at the end of the progress string. e.g. 'sold' in '5 out of 10 sold.'
-  */
-  @Prop({ default: "success" })
-  variant!: string;
+const props = withDefaults(
+  defineProps<{
+    variant?: string;
+    alignLeft?: boolean;
+    noMargin?: boolean;
+    backgroundColor?: string;
+    textColor?: string;
+    current?: number;
+    total?: number;
+    separator?: string;
+    suffix?: string;
+    small?: boolean;
+  }>(),
+  { variant: "success", alignLeft: false, noMargin: false, textColor: "#ffffff", separator: "/" }
+);
 
-  @Prop({ default: false })
-  alignLeft!: boolean;
-
-  @Prop({ default: false })
-  noMargin!: boolean;
-
-  @Prop()
-  backgroundColor!: string;
-
-  @Prop({ default: "#ffffff" })
-  textColor!: string;
-
-  @Prop()
-  current!: number;
-
-  @Prop()
-  total!: number;
-
-  @Prop({ default: "/" })
-  separator!: string;
-
-  @Prop()
-  suffix!: string;
-
-  @Prop()
-  small!: Boolean;
-
-  badgeProRewrite: any = {
-    background: this.backgroundColor,
-    color: this.textColor,
-  };
-
-  get badgeStyles() {
-    const styles: any = [];
-
-    if (this.backgroundColor && this.variant !== "progress") {
-      styles.push(this.badgeProRewrite);
-    }
-
-    return styles;
+const badgeStyles = computed(() => {
+  if (props.backgroundColor && props.variant !== "progress") {
+    return [{ background: props.backgroundColor, color: props.textColor }];
   }
+  return [];
+});
 
-  get badgeClasses() {
-    const classes: any = [];
-
-    classes.push(`s-badge--${this.variant}`);
-
-    if (this.alignLeft) {
-      classes.push(`s-badge--left`);
-    }
-
-    if (this.noMargin) {
-      classes.push("s-badge--no-margin");
-    }
-
-    if (this.small) {
-      classes.push("s-badge--small");
-    }
-
-    return classes;
-  }
-}
+const badgeClasses = computed(() => {
+  const classes = [`s-badge--${props.variant}`];
+  if (props.alignLeft) classes.push("s-badge--left");
+  if (props.noMargin) classes.push("s-badge--no-margin");
+  if (props.small) classes.push("s-badge--small");
+  return classes;
+});
 </script>
 
 <style lang="less">

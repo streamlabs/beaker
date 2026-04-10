@@ -47,263 +47,189 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Watch, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, computed, watch, onMounted, useTemplateRef } from "vue";
 import Fuse from "fuse.js";
 
-@Component({})
-export default class VariableMenu extends Vue {
-  $refs!: {
-    resultArea: HTMLDivElement;
-    inputCont: HTMLDivElement;
-    variableMenu: HTMLDivElement;
-  };
-
-  result: any = [];
-  private queryLength: number = 0;
-  private phaseOne: Boolean = false;
-  private phaseTwo: Boolean = false;
-  private searchFromClick: Boolean = false;
-  private fuse: any = null;
-  value: String = "";
-  private currentResult: number = 0;
-  private cursorPos: number = 0;
-
-  @Prop()
-  input_cursor!: number;
-
-  @Prop()
-  jsonSearch!: any;
-  searchData = this.jsonSearch;
-
-  @Prop({ default: "" })
-  search!: String;
-
-  @Prop({ default: "fuseResultsUpdated" })
-  eventName!: string;
-
-  @Prop({ default: "fuseInputChanged" })
-  inputChangeEventName!: string;
-
-  get options() {
-    let options = {
-      caseSensitive: false,
-      includeScore: true,
-      includeMatches: false,
-      tokenize: false,
-      matchAllTokens: false,
-      findAllMatches: true,
-      shouldSort: true,
-      threshold: 0.2,
-      location: 1,
-      distance: 10,
-      maxPatternLength: 12,
-      minMatchCharLength: 0,
-      keys: ["variable"]
-    };
-    return options;
+const props = withDefaults(
+  defineProps<{
+    input_cursor?: number;
+    jsonSearch?: any;
+    search?: string;
+    eventName?: string;
+    inputChangeEventName?: string;
+  }>(),
+  {
+    search: "",
+    eventName: "fuseResultsUpdated",
+    inputChangeEventName: "fuseInputChanged",
   }
+);
 
-  get noResults() {
-    if (this.result.length === 0 && this.value != "") {
-      return true;
+const emit = defineEmits<{ (e: string, ...args: any[]): void }>();
+
+const resultArea = useTemplateRef<HTMLDivElement>("resultArea");
+const variableMenu = useTemplateRef<HTMLDivElement>("variableMenu");
+
+const result = ref<any[]>([]);
+const queryLength = ref(0);
+const phaseOne = ref(false);
+const phaseTwo = ref(false);
+const fuse = ref<any>(null);
+const value = ref("");
+const currentResult = ref(0);
+const cursorPos = ref(0);
+
+const options = {
+  caseSensitive: false,
+  includeScore: true,
+  includeMatches: false,
+  findAllMatches: true,
+  shouldSort: true,
+  threshold: 0.2,
+  location: 1,
+  distance: 10,
+  maxPatternLength: 12,
+  minMatchCharLength: 0,
+  keys: ["variable"],
+};
+
+const noResults = computed(() => result.value.length === 0 && value.value !== "");
+const limitedResult = computed(() => [...result.value].reverse());
+const selectedResult = computed(() => limitedResult.value[currentResult.value]?.item.variable);
+const calcTransform = computed(() =>
+  `transform: translateY(-${variableMenu.value?.offsetHeight ?? 0}px);`
+);
+
+watch(value, () => {
+  emit(props.inputChangeEventName, value.value);
+  if (value.value.includes("{")) {
+    getSearchString();
+    if (noResults.value) playClosingSequence();
+    if (value.value.length <= 0) playClosingSequence();
+  }
+  if (value.value === "") result.value = [];
+}, { immediate: true });
+
+watch(result, (val, oldVal) => {
+  if (noResults.value || value.value === "" || val.length !== oldVal.length) {
+    currentResult.value = limitedResult.value.length - 1;
+  }
+  emit(props.eventName, result.value);
+  noResults.value ? playClosingSequence() : playOpeningSequence();
+});
+
+function afterOpen(element: HTMLElement) {
+  element.style.height = "auto";
+}
+
+function open(element: HTMLElement) {
+  const width = getComputedStyle(element).width;
+  element.style.width = width;
+  element.style.position = "absolute";
+  element.style.visibility = "hidden";
+  element.style.height = "auto";
+  const height = getComputedStyle(element).height;
+  element.style.width = "";
+  element.style.position = "";
+  element.style.visibility = "";
+  element.style.height = "0";
+  getComputedStyle(element).height;
+  setTimeout(() => { element.style.height = height; });
+}
+
+function close(element: HTMLElement) {
+  const height = getComputedStyle(element).height;
+  element.style.height = height;
+  getComputedStyle(element).height;
+  setTimeout(() => { element.style.height = "0"; });
+}
+
+function watchCursor(val: Event) {
+  cursorPos.value = (val.target as HTMLInputElement).selectionStart ?? 0;
+  getSearchString();
+  if (noResults.value) playClosingSequence();
+  if (value.value.length <= 0) playClosingSequence();
+}
+
+function watchInput(val: Event) {
+  value.value = (val.target as HTMLInputElement).value;
+}
+
+function getSearchString() {
+  if (value.value.trim() === "") {
+    result.value = [];
+  } else {
+    const pos = cursorPos.value;
+    const bracketOpen = value.value.lastIndexOf("{", pos - 1);
+    const searchValue = value.value.substring(bracketOpen, pos);
+    const bracketClose = searchValue.lastIndexOf("}");
+    if (pos > bracketOpen && bracketClose === -1 && bracketOpen !== -1) {
+      result.value = fuse.value.search(searchValue);
+      queryLength.value = searchValue.length;
     } else {
-      return false;
+      playClosingSequence();
     }
-  }
-
-  get limitedResult() {
-    return this.result.reverse();
-  }
-
-  get selectedResult() {
-    return this.limitedResult[this.currentResult].item.variable;
-  }
-
-  get currentLength() {
-    return this.value.length;
-  }
-
-  get calcTransform() {
-    let nudge = this.$refs.variableMenu.offsetHeight;
-    return "transform: translateY(-" + nudge + "px);";
-  }
-
-  afterOpen(element) {
-    element.style.height = "auto";
-  }
-
-  open(element) {
-    let width = getComputedStyle(element).width;
-    element.style.width = width;
-    element.style.position = `absolute`;
-    element.style.visibility = `hidden`;
-    element.style.height = `auto`;
-    let height = getComputedStyle(element).height;
-    element.style.width = null;
-    element.style.position = null;
-    element.style.visibility = null;
-    element.style.height = 0;
-    getComputedStyle(element).height;
-    setTimeout(() => {
-      element.style.height = height;
-    });
-  }
-
-  close(element) {
-    let height = getComputedStyle(element).height;
-    element.style.height = height;
-    getComputedStyle(element).height;
-    setTimeout(() => {
-      element.style.height = 0;
-    });
-  }
-
-  watchCursor(val) {
-    this.cursorPos = val.target.selectionStart;
-    this.getSearchString();
-    if (this.noResults) this.playClosingSequence();
-    if (this.value.length <= 0) this.playClosingSequence();
-  }
-
-  watchInput(val) {
-    this.value = val.target.value;
-  }
-
-  @Watch("value", { immediate: true })
-  watchValue() {
-    this.$parent.$emit(this.inputChangeEventName, this.value);
-    this.$emit(this.inputChangeEventName, this.value);
-    if (this.value.includes("{")) {
-      this.getSearchString();
-      if (this.noResults) this.playClosingSequence();
-      if (this.value.length <= 0) this.playClosingSequence();
-    }
-    if (this.value === "") this.result = [];
-  }
-
-  @Watch("result")
-  watchResult(val: [], oldVal: []) {
-    if (this.noResults || this.value == "" || val.length != oldVal.length) {
-      this.currentResult = this.limitedResult.length - 1;
-    }
-    this.$emit(this.eventName, this.result);
-    this.$parent.$emit(this.eventName, this.result);
-    this.noResults ? this.playClosingSequence() : this.playOpeningSequence();
-  }
-
-  getSearchString() {
-    if (this.value.trim() === "") {
-      this.result = [];
-    } else {
-      const cursorPos = this.cursorPos;
-      const bracketOpen = this.value.lastIndexOf("{", cursorPos - 1);
-      const searchValue = this.value.substring(bracketOpen, cursorPos);
-      const bracketClose = searchValue.lastIndexOf("}");
-      if (
-        cursorPos > bracketOpen &&
-        bracketClose === -1 &&
-        bracketOpen !== -1
-      ) {
-        this.result = this.fuse.search(searchValue);
-        this.queryLength = searchValue.length;
-      } else {
-        this.playClosingSequence();
-      }
-    }
-  }
-
-  keyEvent(event) {
-    // KEYPRESS UP
-    if (event.keyCode === 38 && this.currentResult > 0) {
-      if (this.currentResult <= this.limitedResult.length - 7) {
-        this.$refs.resultArea.scrollBy(0, -32);
-      }
-      event.preventDefault();
-      event.stopPropagation();
-      this.currentResult--;
-    }
-    // KEYPRESS DOWN
-    if (
-      event.keyCode === 40 &&
-      this.currentResult < this.limitedResult.length - 1
-    ) {
-      if (this.currentResult >= 6) {
-        this.$refs.resultArea.scrollBy(0, 32);
-      }
-      event.stopPropagation();
-      this.currentResult++;
-    }
-    // KEYPRESS ENTER
-    if (event.keyCode === 13 && this.phaseOne) {
-      if (this.result != []) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.mergeValues();
-      }
-    }
-    // KEYPRESS ESC
-    if (event.keyCode === 27 && this.phaseOne) {
-      this.blurSearch();
-    }
-    // KEYPRESS TAB
-    if (event.keyCode === 9 && this.phaseOne) {
-      if (this.result != []) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.mergeValues();
-      }
-    }
-  }
-
-  mergeValues() {
-    const cursor = this.cursorPos;
-    this.value =
-      this.value.substring(0, cursor) +
-      this.selectedResult.substring(this.queryLength) +
-      this.value.substring(cursor);
-    setTimeout(() => {
-      this.result = [];
-    });
-    this.$emit("update", this.value);
-    if (this.searchFromClick) !this.searchFromClick;
-  }
-
-  playClosingSequence() {
-    if (this.phaseTwo) {
-      setTimeout(() => {
-        this.phaseTwo = !this.phaseTwo;
-      }, 100);
-      setTimeout(() => {
-        this.phaseOne = !this.phaseOne;
-      }, 200);
-    }
-  }
-
-  playOpeningSequence() {
-    if (!this.phaseOne) {
-      this.phaseOne = !this.phaseOne;
-      setTimeout(() => {
-        this.phaseTwo = !this.phaseTwo;
-      }, 100);
-    }
-  }
-
-  initFuse() {
-    this.fuse = new Fuse(this.searchData, this.options);
-    if (this.search) {
-      this.value = this.search;
-    }
-  }
-
-  blurSearch() {
-    this.currentResult = 0;
-  }
-
-  mounted() {
-    this.initFuse();
   }
 }
+
+function keyEvent(event: KeyboardEvent) {
+  if (event.keyCode === 38 && currentResult.value > 0) {
+    if (currentResult.value <= limitedResult.value.length - 7) resultArea.value?.scrollBy(0, -32);
+    event.preventDefault();
+    event.stopPropagation();
+    currentResult.value--;
+  }
+  if (event.keyCode === 40 && currentResult.value < limitedResult.value.length - 1) {
+    if (currentResult.value >= 6) resultArea.value?.scrollBy(0, 32);
+    event.stopPropagation();
+    currentResult.value++;
+  }
+  if (event.keyCode === 13 && phaseOne.value) {
+    event.preventDefault();
+    event.stopPropagation();
+    mergeValues();
+  }
+  if (event.keyCode === 27 && phaseOne.value) blurSearch();
+  if (event.keyCode === 9 && phaseOne.value) {
+    event.preventDefault();
+    event.stopPropagation();
+    mergeValues();
+  }
+}
+
+function mergeValues() {
+  const cursor = cursorPos.value;
+  value.value =
+    value.value.substring(0, cursor) +
+    selectedResult.value.substring(queryLength.value) +
+    value.value.substring(cursor);
+  setTimeout(() => { result.value = []; });
+  emit("update", value.value);
+}
+
+function playClosingSequence() {
+  if (phaseTwo.value) {
+    setTimeout(() => { phaseTwo.value = !phaseTwo.value; }, 100);
+    setTimeout(() => { phaseOne.value = !phaseOne.value; }, 200);
+  }
+}
+
+function playOpeningSequence() {
+  if (!phaseOne.value) {
+    phaseOne.value = !phaseOne.value;
+    setTimeout(() => { phaseTwo.value = !phaseTwo.value; }, 100);
+  }
+}
+
+function blurSearch() {
+  currentResult.value = 0;
+}
+
+onMounted(() => {
+  fuse.value = new Fuse(props.jsonSearch, options);
+  if (props.search) value.value = props.search;
+});
 </script>
 
 <style lang="less">

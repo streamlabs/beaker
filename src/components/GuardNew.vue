@@ -13,7 +13,7 @@
       <TextInput
         readonly
         type="text"
-        v-model="value"
+        :model-value="value"
         @focus="checkSelectedText"
         @keydown.space.prevent="showText"
       />
@@ -21,43 +21,33 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 import TextInput from "./TextInput.vue";
 
-@Component({
-  components: {
-    TextInput
+const props = withDefaults(
+  defineProps<{ value?: string; placeholder?: string }>(),
+  { placeholder: "Click to show" }
+);
+
+const emit = defineEmits<{ click: [] }>();
+const visible = ref(false);
+
+function showText(e: MouseEvent | KeyboardEvent) {
+  if (!visible.value) {
+    visible.value = true;
+  } else {
+    emit("click");
   }
-})
-export default class GuardNew extends Vue {
-  @Prop()
-  value?: string;
-
-  @Prop({ default: "Click to show" })
-  placeholder!: string;
-
-  visible = false;
-
-  showText(e) {
-    if (!this.visible) {
-      this.visible = true;
-    } else {
-      this.$emit("click");
-    }
-
-    if (e.type === "keydown") {
-      setTimeout(() => e.target.select(), 200);
-    }
+  if (e.type === "keydown") {
+    setTimeout(() => (e.target as HTMLInputElement).select(), 200);
   }
+}
 
-  checkSelectedText(e) {
-    const target = e.target;
-
-    if (!this.visible) target.setSelectionRange(0, 0);
-
-    target.focus();
-  }
+function checkSelectedText(e: FocusEvent) {
+  const target = e.target as HTMLInputElement;
+  if (!visible.value) target.setSelectionRange(0, 0);
+  target.focus();
 }
 </script>
 

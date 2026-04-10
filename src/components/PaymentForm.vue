@@ -45,24 +45,13 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 import Checkbox from "./Checkbox.vue";
-import Radio from "./Radio.vue";
 import Selector from "./Selector.vue";
 import TextInput from "./TextInput.vue";
 
-@Component({
-  components: {
-    Checkbox,
-    Radio,
-    Selector,
-    TextInput
-  }
-})
-export default class PaymentForm extends Vue {
-  savePaymentMethod = true;
-}
+const savePaymentMethod = ref(true);
 </script>
 
 <style lang="less">

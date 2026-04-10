@@ -62,126 +62,84 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import { escape } from "lodash-es";
+<script setup lang="ts">
+import { ref, computed, watch, onMounted, useSlots } from "vue";
 
-@Component({})
-export default class Accordian extends Vue {
-  @Prop()
-  openedTitle!: string;
+const props = defineProps<{
+  openedTitle?: string;
+  closedTitle?: string;
+  title?: string;
+  isOpened?: boolean;
+  noBorder?: boolean;
+  leftNav?: boolean;
+  value?: boolean;
+}>();
 
-  @Prop()
-  closedTitle!: string;
+const emit = defineEmits<{
+  input: [val: boolean];
+  "content-opened": [payload: { isOpen: boolean; event: Event }];
+}>();
 
-  @Prop()
-  title!: string;
+const slots = useSlots();
+const isOpen = ref(false);
 
-  @Prop()
-  isOpened!: boolean;
+watch(() => props.value, (val) => { isOpen.value = !!val; });
+watch(isOpen, (val) => { emit("input", val); });
 
-  @Prop()
-  noBorder!: boolean;
+const accordionTitle = computed(() => {
+  if (props.title !== undefined) return props.title;
+  return isOpen.value ? props.openedTitle : props.closedTitle;
+});
 
-  @Prop()
-  leftNav!: boolean;
+const hasTitleSlot = computed(() => !!slots.title);
 
-  @Prop()
-  value!: boolean;
+const accordionClasses = computed(() => {
+  const classes: string[] = [];
+  if (props.noBorder) classes.push("no-border");
+  if (props.leftNav) classes.push("left-nav");
+  return classes.join(" ");
+});
 
-  private isOpen = false;
-  private focused = false;
-  private defaultBorder = false;
-
-  @Watch("value")
-  handleIsOpened(val) {
-    this.isOpen = val;
-  }
-
-  @Watch("isOpen")
-  handleIsOpen(val) {
-    this.$emit("input", val);
-  }
-
-  get accordionTitle() {
-    if (this.title !== undefined) {
-      return this.title;
-    } else {
-      if (this.isOpen) {
-        return this.openedTitle;
-      } else {
-        return this.closedTitle;
-      }
-    }
-  }
-
-  get hasTitleSlot() {
-    return !!this.$slots.title;
-  }
-
-  get accordionClasses() {
-    let classes: any = [];
-    if (this.noBorder) {
-      classes.push("no-border");
-    }
-    if (this.leftNav) {
-      classes.push("left-nav");
-    }
-    return classes.join(" ");
-  }
-
-  isKeyFocused(event) {
-    console.log("TCL: Accordian -> isKeyFocused -> event", event);
-  }
-
-  openContent(event: any) {
-    let blockedNodes = ["INPUT", "BUTTON", "LABEL"];
-    if (
-      blockedNodes.indexOf(event.target.nodeName) !== -1 ||
-      blockedNodes.indexOf(event.target.parentNode.parentNode.nodeName) !== -1
-    ) {
-      return;
-    }
-    this.isOpen = !this.isOpen;
-    this.$emit("content-opened", { isOpen: this.isOpen, event });
-  }
-
-  afterOpen(element) {
-    element.style.height = "auto";
-  }
-
-  open(element) {
-    let width = getComputedStyle(element).width;
-    element.style.width = width;
-    element.style.position = `absolute`;
-    element.style.visibility = `hidden`;
-    element.style.height = `auto`;
-    let height = getComputedStyle(element).height;
-    element.style.width = null;
-    element.style.position = null;
-    element.style.visibility = null;
-    element.style.height = 0;
-    getComputedStyle(element).height;
-    setTimeout(() => {
-      element.style.height = height;
-    });
-  }
-
-  close(element) {
-    let height = getComputedStyle(element).height;
-    element.style.height = height;
-    getComputedStyle(element).height;
-    setTimeout(() => {
-      element.style.height = 0;
-    });
-  }
-
-  mounted() {
-    if (this.value) {
-      this.isOpen = this.value;
-    }
-  }
+function openContent(event: Event) {
+  const target = event.target as HTMLElement;
+  const blockedNodes = ["INPUT", "BUTTON", "LABEL"];
+  if (
+    blockedNodes.includes(target.nodeName) ||
+    blockedNodes.includes((target.parentNode?.parentNode as HTMLElement)?.nodeName)
+  ) return;
+  isOpen.value = !isOpen.value;
+  emit("content-opened", { isOpen: isOpen.value, event });
 }
+
+function afterOpen(element: HTMLElement) {
+  element.style.height = "auto";
+}
+
+function open(element: HTMLElement) {
+  const width = getComputedStyle(element).width;
+  element.style.width = width;
+  element.style.position = "absolute";
+  element.style.visibility = "hidden";
+  element.style.height = "auto";
+  const height = getComputedStyle(element).height;
+  element.style.width = "";
+  element.style.position = "";
+  element.style.visibility = "";
+  element.style.height = "0";
+  getComputedStyle(element).height;
+  setTimeout(() => { element.style.height = height; });
+}
+
+function close(element: HTMLElement) {
+  const height = getComputedStyle(element).height;
+  element.style.height = height;
+  getComputedStyle(element).height;
+  setTimeout(() => { element.style.height = "0"; });
+}
+
+onMounted(() => {
+  if (props.value) isOpen.value = props.value;
+});
 </script>
 
 <style lang="less">

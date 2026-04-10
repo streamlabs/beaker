@@ -23,67 +23,30 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed } from "vue";
+import { useMq } from "vue3-mq";
 import Button from "./../components/Button.vue";
-import VueMq from "vue-mq";
 
-Vue.use(VueMq, {
-  breakpoints: {
-    // default breakpoints - customize this
-    sm: 900,
-    md: 1250,
-    lg: Infinity
-  },
-  defaultBreakpoint: "sm" // customize this for SSR
-});
+withDefaults(
+  defineProps<{
+    icon?: string;
+    btnVariation?: string;
+    btnTitle?: string;
+    buttonHref?: string;
+    buttonTo?: string;
+    buttonTag?: string;
+  }>(),
+  { btnVariation: "default", btnTitle: "Default", buttonTag: "button" }
+);
 
-@Component({
-  components: {
-    Button
-  }
-})
-export default class ContentRow extends Vue {
-  @Prop()
-  icon!: string;
+const mq = useMq();
 
-  @Prop({ default: "default" })
-  btnVariation!: string;
-
-  @Prop({ default: "Default" })
-  btnTitle!: string;
-
-  @Prop()
-  buttonHref!: String;
-
-  @Prop()
-  buttonTo!: String;
-
-  @Prop({ default: "button" })
-  buttonTag!: String;
-
-  $mq: any;
-
-  get contentRowMq() {
-    return this.$mq === "sm" ? "s-content-row-mq" : "";
-  }
-
-  get contentBoxMq() {
-    return this.$mq === "sm" ? "s-content-box-mq" : "";
-  }
-
-  get bannerIconMq() {
-    return this.$mq === "sm" ? "s-banner__icon-mq" : "";
-  }
-
-  get contentTitleMq() {
-    return this.$mq === "sm" ? "s-content__title-mq" : "";
-  }
-
-  get contentTextMq() {
-    return this.$mq === "sm" ? "s-content__text-mq" : "";
-  }
-}
+const contentRowMq = computed(() => mq.current === "sm" ? "s-content-row-mq" : "");
+const contentBoxMq = computed(() => mq.current === "sm" ? "s-content-box-mq" : "");
+const bannerIconMq = computed(() => mq.current === "sm" ? "s-banner__icon-mq" : "");
+const contentTitleMq = computed(() => mq.current === "sm" ? "s-content__title-mq" : "");
+const contentTextMq = computed(() => mq.current === "sm" ? "s-content__text-mq" : "");
 </script>
 
 <style lang="less">

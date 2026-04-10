@@ -1,7 +1,7 @@
 <template>
   <div class="s-image-picker">
     <div class="s-image-picker__thumb" @click="chooseImage">
-      <img :src="this.imageThumb" v-if="imageSelected" />
+      <img :src="imageThumb" v-if="imageSelected" />
       <div class="s-upload-icon" v-if="!imageSelected">
         <i class="icon-upload-image"></i>
       </div>
@@ -14,7 +14,7 @@
         accept=".jpg, .jpeg, .png, .gif, .svg"
         @change="onSelectFile"
       />
-      {{ this.imageFileName }}
+      {{ imageFileName }}
     </div>
     <div class="s-button-container s-button-container--right">
       <Button
@@ -34,52 +34,38 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Emit } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, useTemplateRef } from "vue";
 import Button from "./../components/Button.vue";
 
-@Component({
-  components: {
-    Button
-  }
-})
-export default class ImagePicker extends Vue {
-  $refs!: {
-    fileInput: HTMLElement;
-  };
+const emit = defineEmits<{ upload: [data: File] }>();
 
-  private imageData: any = null;
-  private imageFileName: any = "Click here to add image...";
-  private imageThumb: any = null;
-  private imageSelected: Boolean = false;
+const fileInput = useTemplateRef<HTMLInputElement>("fileInput");
+const imageData = ref<File | null>(null);
+const imageFileName = ref("Click here to add image...");
+const imageThumb = ref<string | null>(null);
+const imageSelected = ref(false);
 
-  chooseImage() {
-    if (!this.imageSelected) {
-      this.$refs.fileInput.click();
-    }
-  }
+function chooseImage() {
+  if (!imageSelected.value) fileInput.value!.click();
+}
 
-  deleteImage() {
-    this.imageFileName = "Click here to add image...";
-    this.imageThumb = null;
-    this.imageSelected = false;
-  }
+function deleteImage() {
+  imageFileName.value = "Click here to add image...";
+  imageThumb.value = null;
+  imageSelected.value = false;
+}
 
-  uploadImage() {
-    this.$emit("upload", this.imageData);
-  }
+function uploadImage() {
+  if (imageData.value) emit("upload", imageData.value);
+}
 
-  onSelectFile(event: any) {
-    var files = event.target.files;
-    var output: any = [];
-    for (var i = 0, f; (f = files[i]); i++) {
-      output.push(f.name, f.size);
-    }
-    this.imageFileName = output[0];
-    this.imageData = event.target.files[0];
-    this.imageThumb = URL.createObjectURL(files[0]);
-    this.imageSelected = true;
-  }
+function onSelectFile(event: Event) {
+  const files = (event.target as HTMLInputElement).files!;
+  imageFileName.value = files[0].name;
+  imageData.value = files[0];
+  imageThumb.value = URL.createObjectURL(files[0]);
+  imageSelected.value = true;
 }
 </script>
 

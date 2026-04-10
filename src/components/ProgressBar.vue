@@ -4,16 +4,11 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-@Component({})
-export default class ProgressBar extends Vue {
-  @Prop()
-  progressComplete!: Number;
-  get getProgress() {
-    return "width:" + this.progressComplete + "%";
-  }
-}
+<script setup lang="ts">
+import { computed } from "vue";
+
+const props = defineProps<{ progressComplete?: number }>();
+const getProgress = computed(() => `width:${props.progressComplete}%`);
 </script>
 
 <style lang="less">
