@@ -17,8 +17,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import demos from "../demos";
 
 const excludeFromComponentDemos = [
@@ -31,18 +30,16 @@ const excludeFromComponentDemos = [
   "typography"
 ];
 
-@Component({})
-export default class LeftNavigation extends Vue {
-  componentDemos = demos.filter(
-    ({ name }) => !excludeFromComponentDemos.includes(name)
-  );
+const componentDemos = demos.filter(
+  ({ name }) => !excludeFromComponentDemos.includes(name)
+);
 
-  @Prop()
-  activeSection!: string;
+defineProps<{ activeSection: string }>();
 
-  changeSection(activeSection: string) {
-    this.$emit("update-section", activeSection);
-  }
+const emit = defineEmits<{ "update-section": [activeSection: string] }>();
+
+function changeSection(activeSection: string) {
+  emit("update-section", activeSection);
 }
 </script>
 

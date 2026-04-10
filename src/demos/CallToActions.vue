@@ -241,28 +241,17 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import Button from "./../components/Button.vue";
 import CallToAction from "./../components/CallToAction.vue";
 import CallToActionCode from "./CallToActions.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
-import logo from './../assets/imgs/logo.svg';
+import logoSrc from './../assets/imgs/logo.svg';
 
-@Component({
-  components: {
-    Button,
-    CallToAction,
-    DemoSection
-  }
-})
-export default class CallToActions extends Vue {
-  demoCode = CallToActionCode;
+const demoCode = CallToActionCode;
+const logo = logoSrc;
 
-  logo = logo;
-
-  test() {
-    alert("test");
-  }
+function test() {
+  alert("test");
 }
 </script>

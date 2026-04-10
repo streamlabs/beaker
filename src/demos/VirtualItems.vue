@@ -142,76 +142,65 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
 import DemoSection from "./../components/DemoSection.vue";
 import ItemGrid from "./../components/ItemGrid.vue";
 import VirtualItem from "./../components/VirtualItem.vue";
 import VirtualItemsCode from "./VirtualItems.vue?raw";
 
-@Component({
-  components: {
-    DemoSection,
-    ItemGrid,
-    VirtualItem
+const itemImage = 'https://www.pngmart.com/files/21/3D-Download-PNG-Image.png';
+const demoCode = VirtualItemsCode;
+const masks = [
+  {
+    preview: itemImage,
+    name: "Robot",
+    rarity: "Common",
+    selectionCount: "1",
+    selected: true
+  },
+  {
+    preview: itemImage,
+    name: "Robot",
+    rarity: "Common",
+    selectionCount: "2",
+    selected: true
+  },
+  {
+    preview: itemImage,
+    name: "Robot",
+    rarity: "Common",
+    selectionCount: "3",
+    selected: true
+  },
+  {
+    preview: itemImage,
+    name: "Robot",
+    rarity: "Common"
+  },
+  {
+    preview: itemImage,
+    name: "Robot",
+    rarity: "Common"
+  },
+  {
+    preview: itemImage,
+    name: "Robot",
+    rarity: "Common"
+  },
+  {
+    preview: itemImage,
+    name: "Robot",
+    rarity: "Common"
+  },
+  {
+    preview: itemImage,
+    name: "Robot",
+    rarity: "Common"
   }
-})
-export default class VirtualItems extends Vue {
-  itemImage = 'https://www.pngmart.com/files/21/3D-Download-PNG-Image.png';
-  demoCode = VirtualItemsCode;
-  masks = [
-    {
-      preview: this.itemImage,
-      name: "Robot",
-      rarity: "Common",
-      selectionCount: "1",
-      selected: true
-    },
-    {
-      preview: this.itemImage,
-      name: "Robot",
-      rarity: "Common",
-      selectionCount: "2",
-      selected: true
-    },
-    {
-      preview: this.itemImage,
-      name: "Robot",
-      rarity: "Common",
-      selectionCount: "3",
-      selected: true
-    },
-    {
-      preview: this.itemImage,
-      name: "Robot",
-      rarity: "Common"
-    },
-    {
-      preview: this.itemImage,
-      name: "Robot",
-      rarity: "Common"
-    },
-    {
-      preview: this.itemImage,
-      name: "Robot",
-      rarity: "Common"
-    },
-    {
-      preview: this.itemImage,
-      name: "Robot",
-      rarity: "Common"
-    },
-    {
-      preview: this.itemImage,
-      name: "Robot",
-      rarity: "Common"
-    }
-  ];
+];
 
-  clickEvent() {
-    console.log("Hey you clicked me!");
-  }
+function clickEvent() {
+  console.log("Hey you clicked me!");
 }
 </script>
 

@@ -209,23 +209,15 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import Callout from "./../components/Callout.vue";
 import CalloutsCode from "./Callouts.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
-@Component({
-  components: {
-    Callout,
-    DemoSection
-  }
-})
-export default class Callouts extends Vue {
-  demoCode = CalloutsCode;
-  cookieCalloutClosed() {
-    console.log("cookie callout closed");
-  }
+const demoCode = CalloutsCode;
+
+function cookieCalloutClosed() {
+  console.log("cookie callout closed");
 }
 </script>
 

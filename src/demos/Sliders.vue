@@ -182,40 +182,30 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 import Slider from "./../components/Slider.vue";
 import SliderTwo from "./../components/SliderTwo.vue";
 import Accordion from "./../components/Accordion.vue";
 import SlidersCode from "./Sliders.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
-@Component({
-  components: {
-    Accordion,
-    DemoSection,
-    Slider,
-    SliderTwo
-  }
-})
-export default class Sliders extends Vue {
-  demoCode = SlidersCode;
-  localValue: number | string = 15;
 
-  updateLocalValue(value) {
-    this.localValue = value;
-  }
+const demoCode = SlidersCode;
+const localValue = ref<number | string>(15);
+const localValueTwo = ref<number | string>(15);
+const value = ref(50);
+const data = ["one", "two", "three", "four", "five", "six"];
 
-  localValueTwo: number | string = 15;
+function updateLocalValue(val: number | string) {
+  localValue.value = val;
+}
 
-  updateLocalValueTwo(value) {
-    this.localValueTwo = value;
-  }
+function updateLocalValueTwo(val: number | string) {
+  localValueTwo.value = val;
+}
 
-  value = 50;
-  data = ["one", "two", "three", "four", "five", "six"];
-  updateValue(value) {
-    console.log(value); // this function is required, it doesn't have to do anything, it just needs to exist.
-  }
+function updateValue(val: number | string) {
+  console.log(val);
 }
 </script>
 

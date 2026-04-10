@@ -22,13 +22,14 @@ components: {
       <DemoSection title="Form Group" :code="demoCode">
         <template #components>
           <FormGroup>
-            <TextInput
-              slot="input"
-              :type="textInputType"
-              :placeholder="textInputPlaceholder"
-              :label="title"
-              v-model="inputValue"
-            />
+            <template #input>
+              <TextInput
+                :type="textInputType"
+                :placeholder="textInputPlaceholder"
+                :label="title"
+                v-model="inputValue"
+              />
+            </template>
           </FormGroup>
         </template>
       </DemoSection>
@@ -40,12 +41,13 @@ components: {
       <DemoSection title="Horizontal Form Group" :code="demoCode">
         <template #components>
           <FormGroupH :title="title" :helpText="helpText" :tooltip="tooltip">
-            <TextInput
-              slot="input"
-              :type="textInputType"
-              :placeholder="textInputPlaceholder"
-              v-model="inputValue"
-            />
+            <template #input>
+              <TextInput
+                :type="textInputType"
+                :placeholder="textInputPlaceholder"
+                v-model="inputValue"
+              />
+            </template>
           </FormGroupH>
         </template>
       </DemoSection>
@@ -63,12 +65,13 @@ components: {
             :tooltip="tooltip"
             :helpText="helpText"
           >
-            <TextInput
-              slot="input"
-              :type="textInputType"
-              :placeholder="textInputPlaceholder"
-              v-model="inputValue"
-            />
+            <template #input>
+              <TextInput
+                :type="textInputType"
+                :placeholder="textInputPlaceholder"
+                v-model="inputValue"
+              />
+            </template>
           </FormGroupV>
         </template>
       </DemoSection>
@@ -86,9 +89,8 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import DemoSection from "./../components/DemoSection.vue";
 import FormsCode from "./Forms.vue?raw";
 import FormGroup from "./../components/FormGroup.vue";
@@ -97,23 +99,11 @@ import FormGroupV from "./../components/FormGroupV.vue";
 import PaymentForm from "./../components/PaymentForm.vue";
 import TextInput from "./../components/TextInput.vue";
 
-@Component({
-  components: {
-    DemoSection,
-    FormGroup,
-    FormGroupH,
-    FormGroupV,
-    PaymentForm,
-    TextInput
-  }
-})
-export default class Forms extends Vue {
-  demoCode = FormsCode;
-  title = "Text Input";
-  tooltip = "Input tooltip message.";
-  helpText = "This is help text";
-  textInputPlaceholder = "Text input placeholder";
-  textInputType = "text";
-  inputValue = "";
-}
+const demoCode = FormsCode;
+const title = ref("Text Input");
+const tooltip = ref("Input tooltip message.");
+const helpText = ref("This is help text");
+const textInputPlaceholder = ref("Text input placeholder");
+const textInputType = ref("text");
+const inputValue = ref("");
 </script>

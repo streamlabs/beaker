@@ -26,16 +26,17 @@ components: {
       <DemoSection title="Input Guard" :code="demoCode">
         <template #components>
           <Guard type="input">
-            <div slot="content">
-              <TextInput
-                slot="input"
-                label="Text input"
-                type="text"
-                :placeholder="textInputPlaceholder"
-                v-model="textInputValue"
-                name="textExample"
-              />
-            </div>
+            <template #content>
+              <div>
+                <TextInput
+                  label="Text input"
+                  type="text"
+                  :placeholder="textInputPlaceholder"
+                  v-model="textInputValue"
+                  name="textExample"
+                />
+              </div>
+            </template>
           </Guard>
         </template>
       </DemoSection>
@@ -80,28 +81,17 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import DemoSection from "./../components/DemoSection.vue";
 import Guard from "./../components/Guard.vue";
 import GuardNew from "./../components/GuardNew.vue";
 import GuardsCode from "./Guards.vue?raw";
 import TextInput from "./../components/TextInput.vue";
 
-@Component({
-  components: {
-    DemoSection,
-    Guard,
-    GuardNew,
-    TextInput
-  }
-})
-export default class Accordions extends Vue {
-  demoCode = GuardsCode;
-  textInputPlaceholder = "placeholder";
-  textInputValue = "This is something super secret...";
-}
+const demoCode = GuardsCode;
+const textInputPlaceholder = ref("placeholder");
+const textInputValue = ref("This is something super secret...");
 </script>
 
 <style lang="less">

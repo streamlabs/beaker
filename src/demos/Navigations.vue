@@ -11,15 +11,17 @@
         >
       </p>
       <accordion :openedTitle="'Hide Code'" :closedTitle="'Show Code'">
-        <div slot="content">
-          <pre>
+        <template #content>
+          <div>
+            <pre>
 <code>&lt;slider
   :min=&quot;0&quot;
   :max=&quot;100&quot;
   :interval=&quot;1&quot;
   :value=&quot;50&quot;&gt;
 &lt;/slider&gt;</code></pre>
-        </div>
+          </div>
+        </template>
       </accordion>
 
       <div class="row">
@@ -81,16 +83,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import Accordion from "./../components/Accordion.vue";
 import ScrollNav from "./../components/ScrollNav.vue";
-
-@Component({
-  components: {
-    ScrollNav,
-    Accordion
-  }
-})
-export default class Navigations extends Vue {}
 </script>

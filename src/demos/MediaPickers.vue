@@ -14,49 +14,47 @@ components: {
       <DemoSection title="Default" :code="demoCode">
         <template #components>
           <FormGroup>
-            <media-picker
-              slot="input"
-              variation="image"
-              :media-link="true"
-              :media-preview="false"
-              @select-media="selectVideoMedia"
-              @preview-media="previewVideoMedia"
-              @remove-media="removeVideoMedia"
-              title="Select Video Media"
-              v-model="videoMedia"
-            />
+            <template #input>
+              <media-picker
+                variation="image"
+                :media-link="true"
+                :media-preview="false"
+                @select-media="selectVideoMedia"
+                @preview-media="previewVideoMedia"
+                @remove-media="removeVideoMedia"
+                title="Select Video Media"
+                v-model="videoMedia"
+              />
 
-            <media-picker
-              slot="input"
-              variation="image"
-              :media-link="true"
-              :media-preview="false"
-              @select-media="selectImageMedia"
-              @preview-media="previewImageMedia"
-              @remove-media="removeImageMedia"
-              title="Select Image Media"
-              v-model="imageMedia"
-            />
+              <media-picker
+                variation="image"
+                :media-link="true"
+                :media-preview="false"
+                @select-media="selectImageMedia"
+                @preview-media="previewImageMedia"
+                @remove-media="removeImageMedia"
+                title="Select Image Media"
+                v-model="imageMedia"
+              />
 
-            <media-picker
-              slot="input"
-              variation="audio"
-              :media-link="true"
-              @select-media="selectAudioMedia"
-              @remove-media="removeAudioMedia"
-              v-model="audioMedia"
-            />
+              <media-picker
+                variation="audio"
+                :media-link="true"
+                @select-media="selectAudioMedia"
+                @remove-media="removeAudioMedia"
+                v-model="audioMedia"
+              />
 
-            <media-picker
-              slot="input"
-              variation="audio"
-              title="My Sample Title"
-              :media-link="true"
-              :controls-always-visible="true"
-              @select-media="selectAudioMedia"
-              @remove-media="removeAudioMedia"
-              v-model="audioMedia"
-            />
+              <media-picker
+                variation="audio"
+                title="My Sample Title"
+                :media-link="true"
+                :controls-always-visible="true"
+                @select-media="selectAudioMedia"
+                @remove-media="removeAudioMedia"
+                v-model="audioMedia"
+              />
+            </template>
           </FormGroup>
         </template>
       </DemoSection>
@@ -146,60 +144,53 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import FormGroup from "./../components/FormGroup.vue";
 import MediaPicker from "./../components/MediaPicker.vue";
 import MediaPickersCode from "./MediaPickers.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
-@Component({
-  components: {
-    DemoSection,
-    FormGroup,
-    MediaPicker
-  }
-})
-export default class ImagePickers extends Vue {
-  demoCode = MediaPickersCode;
-  msg = "Hi!";
-  audioMedia = "";
-  imageMedia = "";
-  videoMedia = "";
+const demoCode = MediaPickersCode;
+const msg = ref("Hi!");
+const audioMedia = ref("");
+const imageMedia = ref("");
+const videoMedia = ref("");
 
-  selectVideoMedia() {
-    this.videoMedia =
-      "https://cdn.streamlabs.com/static/imgs/intro-maker/highlight-key-info-before-your-stream.jpg.mp4";
-  }
-  selectImageMedia() {
-    this.imageMedia =
-      "https://uploads.twitchalerts.com/000/045/005/127/foolofsoul-design-1521842129-0.png";
-  }
+function selectVideoMedia() {
+  videoMedia.value =
+    "https://cdn.streamlabs.com/static/imgs/intro-maker/highlight-key-info-before-your-stream.jpg.mp4";
+}
 
-  selectAudioMedia() {
-    this.audioMedia =
-      "https://cdn1.twitchalerts.com/twitch-bits/sounds/bits.ogg";
-  }
+function selectImageMedia() {
+  imageMedia.value =
+    "https://uploads.twitchalerts.com/000/045/005/127/foolofsoul-design-1521842129-0.png";
+}
 
-  removeImageMedia() {
-    this.imageMedia = "";
-  }
-  removeVideoMedia() {
-    this.videoMedia = "";
-  }
+function selectAudioMedia() {
+  audioMedia.value =
+    "https://cdn1.twitchalerts.com/twitch-bits/sounds/bits.ogg";
+}
 
-  removeAudioMedia() {
-    this.audioMedia = "";
-  }
+function removeImageMedia() {
+  imageMedia.value = "";
+}
 
-  previewVideoMedia() {
-    console.log("Previewing Video");
-    window.open(this.videoMedia);
-  }
-  previewImageMedia() {
-    console.log("Previewing Media");
-    window.open(this.imageMedia);
-  }
+function removeVideoMedia() {
+  videoMedia.value = "";
+}
+
+function removeAudioMedia() {
+  audioMedia.value = "";
+}
+
+function previewVideoMedia() {
+  console.log("Previewing Video");
+  window.open(videoMedia.value);
+}
+
+function previewImageMedia() {
+  console.log("Previewing Media");
+  window.open(imageMedia.value);
 }
 </script>

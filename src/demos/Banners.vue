@@ -21,15 +21,16 @@
             link-desc="Win 7+  245.8 MB"
             :onToggle="test"
           >
-            <Button
-              slot="link"
-              type="a"
-              variation="action"
-              size="standard"
-              href="#"
-              title="Download"
-              icon="overview"
-            />
+            <template #link>
+              <Button
+                type="a"
+                variation="action"
+                size="standard"
+                href="#"
+                title="Download"
+                icon="overview"
+              />
+            </template>
           </banner-marketing>
         </template>
       </DemoSection>
@@ -47,14 +48,15 @@
         link-desc="$4.99/mo"
         :banner-closed="bannerClosed"
       >
-        <Button
-          slot="link"
-          type="a"
-          variation="action"
-          size="standard"
-          href="#"
-          title="Try It Now"
-        />
+        <template #link>
+          <Button
+            type="a"
+            variation="action"
+            size="standard"
+            href="#"
+            title="Try It Now"
+          />
+        </template>
       </banner-marketing>
 
       <table class="docs-table">
@@ -256,13 +258,14 @@
               "
             icon="information"
           >
-            <Button
-              slot="button"
-              type="button"
-              size="fixed-width"
-              variation="action"
-              title="Join"
-            />
+            <template #button>
+              <Button
+                type="button"
+                size="fixed-width"
+                variation="action"
+                title="Join"
+              />
+            </template>
           </Notice>
         </template>
       </DemoSection>
@@ -275,13 +278,14 @@
         title="Your donation link has expired"
         desc="Copy your new donation link and replace all instances containing twitchalerts.com."
       >
-        <Button
-          slot="button"
-          type="button"
-          size="fixed-width"
-          variation="default"
-          title="Copy Link"
-        />
+        <template #button>
+          <Button
+            type="button"
+            size="fixed-width"
+            variation="default"
+            title="Copy Link"
+          />
+        </template>
       </Notice>
 
       <table class="docs-table">
@@ -372,12 +376,13 @@
       <DemoSection title="Introduction Banner" :code="demoCode">
         <template #components>
           <BannerIntroduction bgColor="#5e3bec">
-            <img
-              slot="bgImage"
-              src="https://cdn.streamlabs.com/static/alert-box-sounds-banner-bg.png"
-              alt=""
-              class="banner-introduction-bgImage"
-            />
+            <template #bgImage>
+              <img
+                src="https://cdn.streamlabs.com/static/alert-box-sounds-banner-bg.png"
+                alt=""
+                class="banner-introduction-bgImage"
+              />
+            </template>
             <template #title
               >Introducing<span class="banner-introduction-title"
                 >Prime Alert Box Sounds</span
@@ -387,12 +392,13 @@
               >Modern, hype sounds you can add to your live alerts. All included
               with Prime.</template
             >
-            <Button
-              slot="button"
-              title="Browse Sounds"
-              :bgColor="'#000'"
-              :textColor="'#fff'"
-            ></Button>
+            <template #button>
+              <Button
+                title="Browse Sounds"
+                :bgColor="'#000'"
+                :textColor="'#fff'"
+              ></Button>
+            </template>
           </BannerIntroduction>
         </template>
       </DemoSection>
@@ -419,8 +425,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
 import BannersCode from "./Banners.vue?raw";
 import BannerDiscord from "./../components/BannerDiscord.vue";
 import BannerIntroduction from "./../components/BannerIntroduction.vue";
@@ -429,44 +435,30 @@ import BannerSale from "./../components/BannerSale.vue";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import Notice from "./../components/Notice.vue";
-import pretzelIcon from '../assets/imgs/pretzel-icon.png';
+import pretzelIconSrc from '../assets/imgs/pretzel-icon.png';
 
-@Component({
-  components: {
-    BannerDiscord,
-    BannerIntroduction,
-    BannerMarketing,
-    BannerSale,
-    Button,
-    DemoSection,
-    Notice
-  }
-})
-export default class Banners extends Vue {
-  demoCode = BannersCode;
-  pretzelIcon = pretzelIcon;
-  remainingSecs = 10;
+const demoCode = BannersCode;
+const pretzelIcon = pretzelIconSrc;
+const remainingSecs = ref(10);
+const bannerClosed = ref(false);
 
-  bannerClosed = false;
+onMounted(() => {
+  setInterval(() => {
+    remainingSecs.value--;
+    if (remainingSecs.value < 0) {
+      remainingSecs.value = 10;
+    }
+  }, 1000);
+});
 
-  mounted() {
-    setInterval(() => {
-      this.remainingSecs--;
-      if (this.remainingSecs < 0) {
-        this.remainingSecs = 10;
-      }
-    }, 1000);
-  }
+const secs = computed(() =>
+  remainingSecs.value < 10
+    ? `0${remainingSecs.value}`
+    : `${remainingSecs.value}`
+);
 
-  get secs() {
-    return this.remainingSecs < 10
-      ? `0${this.remainingSecs}`
-      : `${this.remainingSecs}`;
-  }
-
-  test() {
-    console.log("test");
-  }
+function test() {
+  console.log("test");
 }
 </script>
 
