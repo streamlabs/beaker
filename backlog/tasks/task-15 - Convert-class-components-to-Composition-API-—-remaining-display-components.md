@@ -1,11 +1,11 @@
 ---
 id: TASK-15
 title: Convert class components to Composition API — remaining display components
-status: In Progress
+status: Done
 assignee:
   - Joshua Larks
 created_date: '2026-04-07 23:56'
-updated_date: '2026-04-09 03:52'
+updated_date: '2026-04-10 16:17'
 labels: []
 milestone: m-0
 dependencies:
@@ -188,9 +188,42 @@ grep -r "@Component\|vue-property-decorator\|vue-class-component\|vue-js-modal\|
 - SiteSearch: typing searches; arrow keys navigate results; enter navigates; esc/blur closes
 <!-- SECTION:PLAN:END -->
 
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## What was implemented
+
+Converted all 50 remaining class components to `<script setup lang="ts">`. Also migrated several library APIs as part of the conversion.
+
+**Library migrations:**
+- `ModalPrime`, `ModalPrimeIntro`, `ModalSubscribe`: `<modal>` → `<VueFinalModal v-model="show">` (same pattern as TASK-14)
+- `ModalComp`: removed `vue-js-modal` entirely; now passes `v-model="show"` down to each child modal type
+- `NewFeatureOverlay`: `vue-js-modal` → `VueFinalModal`; `vue-mq` → `useMq()` from `vue3-mq`; `@click.native` → `@click`; `slot="top-right"` moved into content body
+- `Pagination`: `vuejs-paginate` → `vuejs-paginate-next` (added to package.json); native `ResizeObserver`; fixed duplicate `v-bind="$attrs"`
+- `ContentRow`, `CallToAction`: `Vue.use(VueMq)` at module level removed; `$mq` → `useMq()` composable; class body initializers → `computed()`
+- `CSLayoutPicker`: `vue-click-outside` → `vOnClickOutside` from `@vueuse/core`; `v-click-outside` → `v-on-click-outside` in template
+- `MediaPicker`: `vue-focus` mixin removed (replaced by native `v-focus` directive from main.ts); `resize-observer-polyfill` → native `ResizeObserver`
+- `ImagePickerInput`: `resize-observer-polyfill` → native `ResizeObserver`; array template ref pattern for `v-for` items
+- `ColorPicker`: `v-on="listeners"` (broken reference) → `v-bind="$attrs"`; `defineOptions({ inheritAttrs: false })`; `$refs` → `useTemplateRef`
+
+**Vue 2-ism fixes across the batch:**
+- `this.propName` in templates → bare prop name
+- `slot="name"` → `#name` (DemoSection, PrimeSection, DatePicker, WelcomePrime via slot checks)
+- `$slots.X` checks → `useSlots()` (Accordion, WelcomePrime, PrimeIntro, FormGroupV)
+- Class body initializers referencing `this.prop` → `computed()` (Badge, NavCallToAction, CallToAction, BannerMarketing)
+- `$parent.$emit` removed — Option A (own emit only) applied to VariableMenu
+- `BannerMarketing.vue` props with `required: true` buried in type annotation corrected to actual required props
+- Unused `VNode` import removed (DemoSection); unused `debounce` import removed (Accordion)
+
+**Accepted deviations:**
+- `DatePicker.vue`: `vue-date-picker` component remains commented out — it was already commented out before this task; the picker slot is effectively a no-op
+- `VariableMenu.vue`: `@focus` on wrapper div doesn't capture bubbled focus from child inputs (pre-existing bug); not fixed as it's out of scope
+- Build check deferred to TASK-19 as before
+<!-- SECTION:FINAL_SUMMARY:END -->
+
 ## Definition of Done
 <!-- DOD:BEGIN -->
 - [ ] #1 pnpm build runs without TypeScript errors
-- [ ] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
-- [ ] #3 Manual verification completed per Verification Plan
+- [x] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
+- [x] #3 Manual verification completed per Verification Plan
 <!-- DOD:END -->
