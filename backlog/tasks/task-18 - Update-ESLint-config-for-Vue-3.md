@@ -1,11 +1,11 @@
 ---
 id: TASK-18
 title: Update ESLint config for Vue 3
-status: In Progress
+status: Done
 assignee:
   - Joshua Larks
 created_date: '2026-04-07 23:57'
-updated_date: '2026-04-10 20:12'
+updated_date: '2026-04-10 20:34'
 labels: []
 milestone: m-0
 dependencies:
@@ -33,10 +33,10 @@ Update `.eslintrc.js` for Vue 3 and modern TypeScript linting.
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 No Vue 2-specific lint rules active
-- [ ] #2 @typescript-eslint/parser used
-- [ ] #3 pnpm lint runs without config errors
-- [ ] #4 Vue 3 specific rules catch common mistakes
+- [x] #1 No Vue 2-specific lint rules active
+- [x] #2 @typescript-eslint/parser used
+- [x] #3 pnpm lint runs without config errors
+- [x] #4 Vue 3 specific rules catch common mistakes
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -126,9 +126,53 @@ No unit tests apply (tooling config only).
 - AC #4: `vue/*` rules listed when running `pnpm exec eslint --print-config src/App.vue`
 <!-- SECTION:PLAN:END -->
 
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## What was implemented
+
+Migrated ESLint from v8 legacy config to ESLint v10 flat config.
+
+**Package changes (package.json devDependencies):**
+- `eslint` 8.57.1 → 10.2.0
+- Removed `@vue/eslint-config-prettier@3.0.5` (legacy-config-only Vue CLI wrapper)
+- Removed `@vue/eslint-config-typescript@3.2.1` (legacy-config-only Vue CLI wrapper)
+- Added `eslint-plugin-vue@10.8.0` — Vue 3 flat config presets
+- Added `typescript-eslint@8.58.1` — unified TypeScript parser + plugin
+- Added `eslint-config-prettier@10.1.8` — Prettier conflict disabling
+- Added `vue-eslint-parser@10.4.0` — explicit dep needed to restore the main parser for .vue files after tseslint.configs.recommended overwrites it
+- Fixed pre-existing `vuejs-paginate-next@^1.0.4` → `1.0.2` (^1.0.4 did not exist)
+- Lint script: `eslint 'src/**/*.{js,ts,vue}'` → `eslint src/`
+
+**Config: `.eslintrc.js` deleted, `eslint.config.mjs` created** with:
+- `pluginVue.configs['flat/essential']` (eslint-plugin-vue v10 dropped the `vue3-` prefix)
+- `tseslint.configs.recommended`
+- `eslint-config-prettier`
+- Explicit `files: ['**/*.vue']` block restoring `vue-eslint-parser` as main parser + `tseslint.parser` as sub-parser for `<script lang="ts">` blocks
+- `vue/multi-word-component-names: 'off'` — this is a component library; single-word names are the intentional public API
+
+**Deviations from plan:**
+- Needed `eslint-plugin-vue` v10 (not v9) because `flat/vue3-essential` was renamed to `flat/essential` in v10
+- Required adding `vue-eslint-parser` as an explicit devDependency — `tseslint.configs.recommended` sets `@typescript-eslint/parser` for ALL files with no `files` filter, overwriting the vue-eslint-parser set by `pluginVue.configs['flat/essential']`. Explicitly restoring it in a `files: ['**/*.vue']` block fixes the two-parser chain.
+
+**Pre-existing lint violations (89 errors, all in src/ code — not config issues):**
+- `@typescript-eslint/no-explicit-any` — widespread `any` usage across components
+- `@typescript-eslint/no-unused-vars` — unused imports and variables
+- `@typescript-eslint/no-unused-expressions` — expression statements in script blocks
+- `vue/return-in-computed-property` — computed functions missing return (Callout, Notice, Onboarding)
+- `vue/no-child-content` — Toggle.vue has child content inside v-html element
+- `vue/no-v-for-template-key-on-child` — LeftNavigation.vue v-for key placement
+- `vue/no-parsing-error` — Modals.vue has invalid characters (curly quotes) in template
+- `@typescript-eslint/no-empty-object-type` — shims-tsx.d.ts legacy Vue 2 shims
+These are pre-existing code quality issues to be addressed separately.
+
+**DoD #1 deferred to TASK-19:** `pnpm build` blocked by vite-plugin-vue2 (same as TASK-17).
+**DoD #2 N/A:** `eslint.config.mjs` is a tooling config file, not a Vue component.
+<!-- SECTION:FINAL_SUMMARY:END -->
+
 ## Definition of Done
 <!-- DOD:BEGIN -->
 - [ ] #1 pnpm build runs without TypeScript errors
-- [ ] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
-- [ ] #3 Manual verification completed per Verification Plan
+- [x] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
+- [x] #3 Manual verification completed per Verification Plan
 <!-- DOD:END -->
