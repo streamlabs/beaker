@@ -21,68 +21,63 @@ components: {
       <DemoSection title="Text Inputs" :code="demoCode">
         <template #components>
           <FormGroup>
-            <TextInput
-              slot="input"
-              type="text"
-              label="Text Input"
-              v-model="textInputValue"
-              name="textExample"
-              :placeholder="textInputPlaceholder"
-              autoComplete="on"
-            />
+            <template #input>
+              <TextInput
+                type="text"
+                label="Text Input"
+                v-model="textInputValue"
+                name="textExample"
+                :placeholder="textInputPlaceholder"
+                autoComplete="on"
+              />
 
-            <TextInput
-              slot="input"
-              type="number"
-              label="Number Input"
-              v-model="numberInputValue"
-              name="numberinputExample"
-              :placeholder="textInputPlaceholder"
-              :min="0"
-              :max="100"
-              v-validate="'required|between:0,100'"
-              :error="errors.first('numberinputExample')"
-            />
+              <TextInput
+                type="number"
+                label="Number Input"
+                v-model="numberInputValue"
+                name="numberinputExample"
+                :placeholder="textInputPlaceholder"
+                :min="0"
+                :max="100"
+                :error="numberInputError"
+              />
 
-            <TextInput
-              slot="input"
-              type="email"
-              label="Email Input"
-              v-model="emailInputValue"
-              name="emailExample"
-              :placeholder="emailInputPlaceholder"
-            />
+              <TextInput
+                type="email"
+                label="Email Input"
+                v-model="emailInputValue"
+                name="emailExample"
+                :placeholder="emailInputPlaceholder"
+              />
 
-            <TextInput
-              slot="input"
-              type="password"
-              label="Password Input"
-              v-model="passwordInputValue"
-              name="passwordExample"
-              :placeholder="passwordInputPlaceholder"
-              disabled
-            />
+              <TextInput
+                type="password"
+                label="Password Input"
+                v-model="passwordInputValue"
+                name="passwordExample"
+                :placeholder="passwordInputPlaceholder"
+                disabled
+              />
 
-            <TextInput
-              slot="input"
-              type="text"
-              label="Input With Error"
-              v-model="errorTextInputValue"
-              name="textExample"
-              :placeholder="textInputPlaceholder"
-              :error="'Enter a number'"
-            />
+              <TextInput
+                type="text"
+                label="Input With Error"
+                v-model="errorTextInputValue"
+                name="textExample"
+                :placeholder="textInputPlaceholder"
+                :error="'Enter a number'"
+              />
 
-            <TextArea
-              slot="input"
-              label="Text Area"
-              v-model="textAreaInputValue"
-              name="myarea"
-              placeholder="This is where you put some cool stuff"
-              autoResize="true"
-              :maxLength="1000"
-              :maxHeight="100"
-            />
+              <TextArea
+                label="Text Area"
+                v-model="textAreaInputValue"
+                name="myarea"
+                placeholder="This is where you put some cool stuff"
+                autoResize="true"
+                :maxLength="1000"
+                :maxHeight="100"
+              />
+            </template>
           </FormGroup>
         </template>
       </DemoSection>
@@ -98,26 +93,27 @@ components: {
       <DemoSection title="Variable Menu" :code="demoCode">
         <template #components>
           <VariableMenu :jsonSearch="varData">
-            <text-input
-              slot="input"
-              type="text"
-              v-model="variTextValue"
-              name="textExample"
-              :placeholder="'w/ Variable Menu'"
-            />
+            <template #input>
+              <text-input
+                type="text"
+                v-model="variTextValue"
+                name="textExample"
+                :placeholder="'w/ Variable Menu'"
+              />
+            </template>
           </VariableMenu>
 
           <VariableMenu :jsonSearch="varData">
-            <TextArea
-              slot="input"
-              ref="textArea"
-              v-model="variAreaValue"
-              name="myarea"
-              placeholder="w/ Variable Menu"
-              rows="3"
-              :maxLength="1000"
-              :maxHeight="100"
-            />
+            <template #input>
+              <TextArea
+                v-model="variAreaValue"
+                name="myarea"
+                placeholder="w/ Variable Menu"
+                rows="3"
+                :maxLength="1000"
+                :maxHeight="100"
+              />
+            </template>
           </VariableMenu>
         </template>
       </DemoSection>
@@ -225,43 +221,40 @@ components: {
       <DemoSection title="Selector" :code="demoCode">
         <template #components>
           <FormGroup>
-            <Selector
-              slot="input"
-              v-model="selected"
-              :options="['Option A', 'Option B', 'Option C']"
-            />
+            <template #input>
+              <Selector
+                v-model="selected"
+                :options="['Option A', 'Option B', 'Option C']"
+              />
 
-            <Selector
-              slot="input"
-              v-model="selectedGroup"
-              :options="optionGroups"
-              group-values="items"
-              group-label="group"
-              :searchable="false"
-            />
+              <Selector
+                v-model="selectedGroup"
+                :options="optionGroups"
+                group-values="items"
+                group-label="group"
+                :searchable="false"
+              />
 
-            <Selector
-              slot="input"
-              v-model="selected"
-              :options="['Option A', 'Option B', 'Option C']"
-              disabled
-            />
+              <Selector
+                v-model="selected"
+                :options="['Option A', 'Option B', 'Option C']"
+                disabled
+              />
 
-            <Selector
-              slot="input"
-              multiple
-              v-model="multipleSelected"
-              :options="['Option A', 'Option B', 'Option C']"
-              :searchable="false"
-            />
+              <Selector
+                multiple
+                v-model="multipleSelected"
+                :options="['Option A', 'Option B', 'Option C']"
+                :searchable="false"
+              />
 
-            <Selector
-              slot="input"
-              multiple
-              v-model="multipleSelected"
-              :options="['Option A', 'Option B', 'Option C']"
-              disabled
-            />
+              <Selector
+                multiple
+                v-model="multipleSelected"
+                :options="['Option A', 'Option B', 'Option C']"
+                disabled
+              />
+            </template>
           </FormGroup>
         </template>
       </DemoSection>
@@ -446,18 +439,18 @@ components: {
         <DemoSection title="Status Switch" :code="demoCode">
           <template #components>
             <FormGroup>
-              <StatusSwitch
-                slot="input"
-                v-model="statusValue"
-                label="Switch Label"
-              />
+              <template #input>
+                <StatusSwitch
+                  v-model="statusValue"
+                  label="Switch Label"
+                />
 
-              <StatusSwitch
-                slot="input"
-                size="small"
-                v-model="statusValue"
-                label="Small Switch Label"
-              />
+                <StatusSwitch
+                  size="small"
+                  v-model="statusValue"
+                  label="Small Switch Label"
+                />
+              </template>
             </FormGroup>
           </template>
         </DemoSection>
@@ -536,9 +529,9 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Watch, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
+import { useField } from "./../composables/useValidation";
 import Checkbox from "./../components/Checkbox.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import FormGroup from "./../components/FormGroup.vue";
@@ -553,178 +546,57 @@ import TextInput from "./../components/TextInput.vue";
 import varSearch from "./../components/cloudbotvariables.json";
 import VariableMenu from "./../components/VariableMenu.vue";
 
-@Component({
-  components: {
-    Checkbox,
-    DemoSection,
-    FormGroup,
-    ImagePickerInput,
-    Radio,
-    Selector,
-    StatusSwitch,
-    TaggingInput,
-    TextArea,
-    TextInput,
-    VariableMenu
-  }
-})
-export default class Inputs extends Vue {
-  demoCode = InputsCode;
-  data = "";
+const demoCode = InputsCode;
+const radioValue = ref(true);
+const checkboxValue1 = ref(true);
+const checkboxValue2 = ref(false);
+const checkboxValue3 = ref(true);
+const checkboxValue4 = ref(false);
+const selected = ref("Option A");
+const selectedGroup = ref("Option A");
+const multipleSelected = ref(["Option B", "Option C"]);
+const optionGroups = [
+  { group: "Group A", items: ["Option A", "Option B", "Option C"] },
+  { group: "Group B", items: ["Option A", "Option B", "Option C"] },
+  { group: "Group C", items: ["Option A", "Option B", "Option C"] }
+];
+const statusValue = ref(true);
+const layoutValue = ref("above");
+const jarValue = ref("glass-pint");
 
-  radioValue = true;
+// Variable Menu
+const varData = varSearch;
+const variAreaValue = ref("");
+const variTextValue = ref("");
 
-  checkboxValue1 = true;
-  checkboxValue2 = false;
-  checkboxValue3 = true;
-  checkboxValue4 = false;
-  selected = "Option A";
-  selectedGroup = "Option A";
-  multipleSelected = ["Option B", "Option C"];
-  optionGroups = [
-    {
-      group: "Group A",
-      items: ["Option A", "Option B", "Option C"]
-    },
-    {
-      group: "Group B",
-      items: ["Option A", "Option B", "Option C"]
-    },
-    {
-      group: "Group C",
-      items: ["Option A", "Option B", "Option C"]
-    }
-  ];
-  optionSelected = ["Glass Pint", "Glass Beer"];
-  objectSelected = {
-    value: "glass-pint",
-    title: "Glass Pint",
-    image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-pint.png"
-  };
-  statusValue = true;
-  testingInput = null;
+// Text inputs
+const textInputValue = ref("test");
+const { value: numberInputValue, errorMessage: numberInputError } =
+  useField<number>("numberinputExample", "required|between:0,100", { initialValue: 0 });
+const emailInputValue = ref("");
+const passwordInputValue = ref("");
+const errorTextInputValue = ref("");
+const textAreaInputValue = ref("");
+const textInputPlaceholder = "Placeholder";
+const emailInputPlaceholder = "Placeholder";
+const passwordInputPlaceholder = "Placeholder";
 
-  layoutValue = "above";
-  jarValue = "glass-pint";
-
-  // For Variable Menu
-  varData = varSearch;
-  variAreaValue = "";
-  variTextValue = "";
-
-  // Text inputs
-  textInputValue = "test";
-  numberInputValue = 0;
-  emailInputValue = "";
-  passwordInputValue = "";
-  errorTextInputValue = "";
-  textAreaInputValue = "";
-
-  textInputPlaceholder = "Placeholder";
-  emailInputPlaceholder = "Placeholder";
-  passwordInputPlaceholder = "Placeholder";
-
-  options = [
-    {
-      value: "glass-pint",
-      title: "Glass Pint",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-pint.png"
-    },
-    {
-      value: "glass-beer",
-      title: "Glass Beer",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer.png"
-    },
-    {
-      value: "glass-beer-2",
-      title: "Glass Beer 2",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer2.png"
-    },
-    {
-      value: "glass-coffee",
-      title: "Glass Coffee",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-coffee.png"
-    },
-    {
-      value: "glass-fancy",
-      title: "Glass Fancy",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-fancy.png"
-    },
-    {
-      value: "glass-whiskey",
-      title: "Glass Whiskey",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-whiskey.png"
-    },
-    {
-      value: "glass-burbon",
-      title: "Glass Burbon",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-burbon.png"
-    },
-    {
-      value: "glass-martini",
-      title: "Glass Martini",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-martini.png"
-    },
-    {
-      value: "glass-beer-3",
-      title: "Glass Beer 3",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer3.png"
-    },
-    {
-      value: "glass-wine",
-      title: "Glass Wine",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-wine.png"
-    },
-    {
-      value: "glass-baileys",
-      title: "Glass Baileys",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-baileys.png"
-    },
-    {
-      value: "glass-champagne",
-      title: "Glass Champagne",
-      image:
-        "https://cdn.streamlabs.com/static/tip-jar/jars/glass-champagne.png"
-    },
-    {
-      value: "glass-coffee-no-handle",
-      title: "Glass Coffee No Handle",
-      image:
-        "https://cdn.streamlabs.com/static/tip-jar/jars/glass-coffee-no-handle.png"
-    },
-    {
-      value: "glass-plinko",
-      title: "Glass Plinko",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-plinko.png"
-    },
-    {
-      value: "glass-stocking",
-      title: "Glass Stocking",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-stocking.png"
-    },
-    {
-      value: "glass-snowman",
-      title: "Glass Snowman",
-      image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-snowman.png"
-    }
-  ];
-
-  show = [
-    "Bounce",
-    "Bounce In",
-    "Bounce In Down",
-    "Bounce In Left",
-    "Bounce In Right",
-    "Bounce In Up",
-    "Fade In",
-    "Fade In Down",
-    "Fade In Down Big",
-    "Fade In Left",
-    "Fade In Left Big",
-    "Fade In Right",
-    "Fade In",
-    "Fade In Up",
-    "Fade In Up Big"
-  ];
-}
+const options = [
+  { value: "glass-pint", title: "Glass Pint", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-pint.png" },
+  { value: "glass-beer", title: "Glass Beer", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer.png" },
+  { value: "glass-beer-2", title: "Glass Beer 2", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer2.png" },
+  { value: "glass-coffee", title: "Glass Coffee", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-coffee.png" },
+  { value: "glass-fancy", title: "Glass Fancy", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-fancy.png" },
+  { value: "glass-whiskey", title: "Glass Whiskey", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-whiskey.png" },
+  { value: "glass-burbon", title: "Glass Burbon", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-burbon.png" },
+  { value: "glass-martini", title: "Glass Martini", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-martini.png" },
+  { value: "glass-beer-3", title: "Glass Beer 3", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer3.png" },
+  { value: "glass-wine", title: "Glass Wine", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-wine.png" },
+  { value: "glass-baileys", title: "Glass Baileys", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-baileys.png" },
+  { value: "glass-champagne", title: "Glass Champagne", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-champagne.png" },
+  { value: "glass-coffee-no-handle", title: "Glass Coffee No Handle", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-coffee-no-handle.png" },
+  { value: "glass-plinko", title: "Glass Plinko", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-plinko.png" },
+  { value: "glass-stocking", title: "Glass Stocking", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-stocking.png" },
+  { value: "glass-snowman", title: "Glass Snowman", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-snowman.png" }
+];
 </script>
