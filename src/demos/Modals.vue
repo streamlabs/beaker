@@ -14,7 +14,7 @@ components: {
       <DemoSection title="Modal Basic" :code="demoCode">
         <template #components>
           <ModalComp
-            name="modal-basic"
+            modalId="modal-basic"
             type="basic"
             title="UI Modal"
             subTitle="Subtitle"
@@ -33,7 +33,7 @@ components: {
         <Button
           variation="default"
           title="modal basic"
-          @click="$modal.show('modal-basic')"
+          @click="open('modal-basic')"
         />
       </div>
     </div>
@@ -45,6 +45,7 @@ components: {
       <DemoSection title="Modal Subscribe" :code="demoCode">
         <template #components>
           <ModalComp
+            modalId="modal-subscribe"
             type="subscribe"
             :scrollable="true"
             title="Streamlabs"
@@ -65,7 +66,7 @@ components: {
         <Button
           variation="default"
           title="modal subscribe"
-          @click="$modal.show('modal-subscribe')"
+          @click="open(‘modal-subscribe’)"
         />
       </div>
     </div>
@@ -77,6 +78,7 @@ components: {
       <DemoSection title="Modal Redirect" :code="demoCode">
         <template #components>
           <ModalComp
+            modalId="modal-redirect"
             type="redirect"
             title="Redirecting..."
             text="
@@ -91,7 +93,7 @@ components: {
         <Button
           variation="default"
           title="modal redirect"
-          @click="$modal.show('modal-redirect')"
+          @click="open('modal-redirect')"
         />
       </div>
     </div>
@@ -103,9 +105,10 @@ components: {
       <DemoSection title="Modal Confirm" :code="demoCode">
         <template #components>
           <ModalComp
+            modalId="modal-confirmation"
             type="confirmation"
             :width="400"
-            subTitle="Delete ‘Streamlabs Pillow'"
+            subTitle="Delete ‘Streamlabs Pillow’"
             text="
               Are you sure you want to delete the merch item ‘Streamlabs
               Pillow’? This action cannot be undone.
@@ -118,9 +121,9 @@ components: {
 
       <div class="button-container button-container--left">
         <Button
-          :variation="'warning'"
-          :title="'modal confirmation'"
-          @click="$modal.show('modal-confirmation')"
+          :variation="’warning’"
+          :title="’modal confirmation’"
+          @click="open(‘modal-confirmation’)"
         ></Button>
       </div>
     </div>
@@ -132,6 +135,7 @@ components: {
       <DemoSection title="Modal Welcome Prime" :code="demoCode">
         <template #components>
           <ModalComp
+            modalId="modal-welcome-prime"
             type="welcome-prime"
             :width="600"
             :hasPrimeCloseButton="true"
@@ -144,7 +148,7 @@ components: {
         <Button
           variation="default"
           title="modal welcome prime"
-          @click="$modal.show('modal-welcome-prime')"
+          @click="open('modal-welcome-prime')"
         />
       </div>
     </div>
@@ -346,24 +350,17 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { useVfm } from "vue-final-modal";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import ModalComp from "./../components/ModalComp.vue";
 import ModalsCode from "./Modals.vue?raw";
 
-@Component({
-  components: {
-    Button,
-    DemoSection,
-    ModalComp,
-  },
-})
-export default class Modals extends Vue {
-  demoCode = ModalsCode;
-  test() {
-    console.log("test");
-  }
+const demoCode = ModalsCode;
+const { open, close } = useVfm();
+
+function test() {
+  console.log("test");
 }
 </script>

@@ -91,6 +91,8 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({ inheritAttrs: false });
+
 import ModalBasic from "./../components/ModalBasic.vue";
 import ModalSubscribe from "./../components/ModalSubscribe.vue";
 import ModalRedirect from "./../components/ModalRedirect.vue";

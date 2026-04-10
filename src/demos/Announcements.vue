@@ -22,6 +22,7 @@ components: {
       <DemoSection title="New Feature Overlay" :code="demoCode">
         <template #components>
           <NewFeatureOverlay
+            modalId="new-feature"
             label="Introducing Merch Stores"
             title="Increase Your Revenue"
             media="
@@ -54,7 +55,7 @@ components: {
         <Button
           :variation="'default'"
           :title="'New Feature Overlay'"
-          @click="$modal.show('new-feature')"
+          @click="open('new-feature')"
         ></Button>
       </div>
     </div>
@@ -165,30 +166,21 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { useVfm } from "vue-final-modal";
 import AnnouncementsCode from "./Announcements.vue?raw";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import NewFeatureOverlay from "./../components/NewFeatureOverlay.vue";
 
-@Component({
-  components: {
-    Button,
-    DemoSection,
-    NewFeatureOverlay
-  }
-})
-export default class AnnoucementsDemo extends Vue {
-  demoCode = AnnouncementsCode;
-  trackingCodeComponent() {
-    console.log("componentEventTracking");
-    // ga('send','event', 'newfeatureoverlay', 'modal_shown', 'component');
-  }
+const demoCode = AnnouncementsCode;
+const { open } = useVfm();
 
-  trackingCodeButton() {
-    console.log("buttonEventTracking");
-    // ga('send','event', 'newfeatureoverlay', 'modal_click', 'button');
-  }
+function trackingCodeComponent() {
+  console.log("componentEventTracking");
+}
+
+function trackingCodeButton() {
+  console.log("buttonEventTracking");
 }
 </script>
