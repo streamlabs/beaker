@@ -5,7 +5,7 @@
         <img v-if="isNightTheme" src="./assets/imgs/beaker-full-night.svg" />
         <img v-else src="./assets/imgs/beaker-full.svg" />
       </div>
-      <toggle :values="themes" v-model="theme"></toggle>
+      <toggle :values="themes" :value="theme" @input="theme = $event"></toggle>
     </div>
 
     <documentation></documentation>
@@ -26,34 +26,27 @@
         <img src="./assets/imgs/npm.svg" />
       </a>
     </div>
+    <ModalsContainer />
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, computed } from "vue";
+import { ModalsContainer, useVfm } from "vue-final-modal";
+import { useRouter } from "vue-router";
 import Toggle from "./components/Toggle.vue";
 import Documentation from "./views/Documentation.vue";
 
-@Component({
-  components: {
-    Toggle,
-    Documentation
-  }
-})
-export default class App extends Vue {
-  appClass = "app-wrapper";
-  nightClasses = ["night", "night-theme"];
-  theme = "night";
+const appClass = "app-wrapper";
+const nightClasses = ["night", "night-theme"];
+const theme = ref("night");
+const themes = { day: "Day", night: "Night" };
 
-  themes = {
-    day: "Day",
-    night: "Night"
-  };
+const isNightTheme = computed(() => theme.value === "night");
 
-  get isNightTheme() {
-    return this.theme === "night";
-  }
-}
+const vfm = useVfm();
+const router = useRouter();
+router.beforeEach(() => { vfm.closeAll(); });
 </script>
 
 <style lang="less">
