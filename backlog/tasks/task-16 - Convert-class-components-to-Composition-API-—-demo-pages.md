@@ -1,11 +1,11 @@
 ---
 id: TASK-16
 title: Convert class components to Composition API — demo pages
-status: In Progress
+status: Done
 assignee:
   - Joshua Larks
 created_date: '2026-04-07 23:57'
-updated_date: '2026-04-10 16:39'
+updated_date: '2026-04-10 19:47'
 labels: []
 milestone: m-0
 dependencies:
@@ -34,9 +34,9 @@ Verify the full list by checking all `.vue` files in `src/demos/`.
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 No @Component decorator usage remains in src/demos/
+- [x] #1 No @Component decorator usage remains in src/demos/
 - [ ] #2 All demo pages render correctly in the dev site
-- [ ] #3 Demo pages using EventBus (Colors.vue, Icons.vue, Buttons.vue, Inputs.vue) updated to use useNotification() composable
+- [x] #3 Demo pages using EventBus (Colors.vue, Icons.vue, Buttons.vue, Inputs.vue) updated to use useNotification() composable
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -260,9 +260,33 @@ No test framework exists — all verification is manual and deferred to TASK-19 
 - **Paginations page**: Click page buttons — confirm page-selected event fires (check console)
 <!-- SECTION:PLAN:END -->
 
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## What was implemented
+
+All 40 demo pages in `src/demos/` converted from `vue-property-decorator` class components to `<script setup lang="ts">`.
+
+**Subtask breakdown:**
+- **TASK-16.1**: Batch converted 32 simple demos — class boilerplate removed, data → `ref()`, `mounted()` → `onMounted()`, methods → plain functions. All Vue 2 `slot="name"` attribute syntax converted to `<template #name>` across 12 files (Accordions, Banners, Forms, Guards, Layouts, MediaPickers, Navigations, PaneDropdowns, SiteSearchDemo, Steps, Typography, CalendarS).
+- **TASK-16.2**: Tabs.vue — dynamic slot `v-for` pattern `:slot="tab.value"` → `<template v-for="tab in tabs" #[tab.value] :key="tab.value">`.
+- **TASK-16.3**: Colors, Icons, Buttons — `EventBus.$emit("copy-success/copy-copy")` → `useNotification()` composable `success()`/`error()` calls. Dead `messages`/`visibleMessages` state removed from Colors.vue.
+- **TASK-16.4**: Inputs.vue — `v-validate="'required|between:0,100'"` + `errors.first()` → `useField()` from `useValidation.ts` composable (TASK-7 infrastructure). All `slot="input"` → `<template #input>` across FormGroup, FormGroupH, FormGroupV, VariableMenu.
+- **TASK-16.5**: Modals, Prime, Announcements — migrated from `$modal.show('name')` to `useVfm().open('modal-id')` pattern (closest to original vue-js-modal API). `ModalComp` got `defineOptions({ inheritAttrs: false })` so `modalId` attr flows via explicit `v-bind="$attrs"` through the component chain to `VueFinalModal` without touching any underlying modal components. No `ref<boolean>` per modal in the demo.
+
+**Deviations from plan:**
+- Section 5 used `useVfm().open(modalId)` instead of `ref<boolean>` + `v-model` (user preference — closer to old vue-js-modal pattern). Required adding `defineOptions({ inheritAttrs: false })` to ModalComp; zero changes to underlying modal components (ModalBasic etc.) because `v-bind="$attrs"` chain already handled modalId flow.
+- Prime.vue was moved from Section 1 to Section 5 (it needed the modal API treatment, not simple batch conversion).
+- Inputs.vue does not use EventBus (AC #3 description was inaccurate — only Colors, Icons, Buttons did).
+
+**Follow-up (TASK-17, TASK-19):**
+- AC #2 (demo pages render correctly) deferred to TASK-19 when the build is restored.
+- TASK-19 verification checklist includes manual testing of Colors/Icons/Buttons notification, Inputs validation, all modal open/close flows, Tabs overflow, Onboardings step progression.
+<!-- SECTION:FINAL_SUMMARY:END -->
+
 ## Definition of Done
 <!-- DOD:BEGIN -->
 - [ ] #1 pnpm build runs without TypeScript errors
-- [ ] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
+- [x] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
 - [ ] #3 Manual verification completed per Verification Plan
 <!-- DOD:END -->

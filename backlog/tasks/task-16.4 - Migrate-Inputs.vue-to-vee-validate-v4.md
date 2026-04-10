@@ -1,10 +1,11 @@
 ---
 id: TASK-16.4
 title: Migrate Inputs.vue to vee-validate v4
-status: To Do
+status: Done
 assignee:
   - Claude Code
 created_date: '2026-04-10 16:42'
+updated_date: '2026-04-10 17:57'
 labels: []
 dependencies: []
 parent_task_id: TASK-16

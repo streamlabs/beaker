@@ -1,10 +1,11 @@
 ---
 id: TASK-16.3
 title: 'Migrate EventBus → useNotification() in Colors, Icons, Buttons'
-status: To Do
+status: Done
 assignee:
   - Claude Code
 created_date: '2026-04-10 16:42'
+updated_date: '2026-04-10 17:45'
 labels: []
 dependencies: []
 parent_task_id: TASK-16

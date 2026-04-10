@@ -1,10 +1,11 @@
 ---
 id: TASK-16.2
 title: Convert Tabs.vue with dynamic slot v-for pattern
-status: To Do
+status: Done
 assignee:
   - Claude Code
 created_date: '2026-04-10 16:42'
+updated_date: '2026-04-10 17:42'
 labels: []
 dependencies: []
 parent_task_id: TASK-16
