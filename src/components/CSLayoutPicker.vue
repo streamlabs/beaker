@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { vOnClickOutside } from "@vueuse/core";
+import { vOnClickOutside } from "@vueuse/components";
 
 const addLayout = ref(true);
 const chooseLayout = ref(false);

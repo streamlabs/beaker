@@ -1,12 +1,9 @@
 import { defineConfig } from "vite";
-import { createVuePlugin } from "vite-plugin-vue2";
+import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
   base: "/beaker/",
-  plugins: [createVuePlugin()],
-  resolve: {
-    tsconfigPaths: true,
-  },
+  plugins: [vue()],
   build: {
     minify: false,
     sourcemap: true,

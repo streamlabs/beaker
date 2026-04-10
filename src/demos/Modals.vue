@@ -52,7 +52,7 @@ components: {
             subTitle="Never pay for GIFs and effects again!"
             text="
               Get unlimited free GIFs and effects that will show up on all
-              alerts on all channels! You’ll also get a fancy ‘Pro’ badge next
+              alerts on all channels! You'll also get a fancy 'Pro' badge next
               to your username on your donations.
             "
             subscribe-text="galazy83 donated $50.00!"
@@ -66,7 +66,7 @@ components: {
         <Button
           variation="default"
           title="modal subscribe"
-          @click="open(‘modal-subscribe’)"
+          @click="open('modal-subscribe')"
         />
       </div>
     </div>
@@ -108,10 +108,10 @@ components: {
             modalId="modal-confirmation"
             type="confirmation"
             :width="400"
-            subTitle="Delete ‘Streamlabs Pillow’"
+            subTitle="Delete 'Streamlabs Pillow'"
             text="
-              Are you sure you want to delete the merch item ‘Streamlabs
-              Pillow’? This action cannot be undone.
+              Are you sure you want to delete the merch item 'Streamlabs
+              Pillow'? This action cannot be undone.
             "
             @confirm="() => {}"
             confirmButtonText="Delete"
@@ -121,9 +121,9 @@ components: {
 
       <div class="button-container button-container--left">
         <Button
-          :variation="’warning’"
-          :title="’modal confirmation’"
-          @click="open(‘modal-confirmation’)"
+          :variation="'warning'"
+          :title="'modal confirmation'"
+          @click="open('modal-confirmation')"
         ></Button>
       </div>
     </div>
