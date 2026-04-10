@@ -47,22 +47,12 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
-import { EventBus } from "./../plugins/event-bus";
+<script setup lang="ts">
+import { useNotification } from "./../composables/useNotification";
 
-interface INotificationMsg {
-  id: number;
-  status: string;
-  msg: string;
-  timerStarted: boolean;
-}
+const { success, error } = useNotification();
 
-@Component({})
-export default class Colors extends Vue {
-  messages: INotificationMsg[] = [];
-
-  private colors = [
+const colors = [
     [
       { color: "Teal (Night primary)", hex: "#31C3A2", name: "@teal" },
       { color: "Dark Teal (Day primary)", hex: "#128079", name: "@teal-dark" },
@@ -128,30 +118,13 @@ export default class Colors extends Vue {
     ]
   ];
 
-  get visibleMessages() {
-    const msgs = this.messages.filter((msg, idx) => idx < 5);
 
-    msgs.forEach(msg => {
-      if (!msg.timerStarted) {
-        msg.timerStarted = true;
+function emitCopySuccess(e: { text: string }) {
+  success(`${e.text} copied`);
+}
 
-        setTimeout(() => {
-          const idx = this.messages.findIndex(message => msg.id === message.id);
-          this.messages.splice(idx, 1);
-        }, 5000);
-      }
-    });
-
-    return msgs;
-  }
-
-  emitCopySuccess(e) {
-    EventBus.$emit("copy-success", `${e.text} copied`);
-  }
-
-  emitCopyError(e) {
-    EventBus.$emit("copy-copy", e);
-  }
+function emitCopyError(e: unknown) {
+  error(String(e));
 }
 </script>
 

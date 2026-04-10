@@ -45,37 +45,36 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { EventBus } from "./../plugins/event-bus";
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { useNotification } from "./../composables/useNotification";
+
 const ICON_STYLESHEET_URL = 'https://cdn.streamlabs.com/icons/style.css';
 
-@Component({})
-export default class Icons extends Vue {
-  iconList:string[] = [];
-  selectedIcon = '';
+const { success, error } = useNotification();
+const iconList = ref<string[]>([]);
+const selectedIcon = ref('');
 
-  mounted() {
-    const styleSheetsList = Array.from(document.styleSheets);
-    const link = Array.from(styleSheetsList.find(ss => ss.href === ICON_STYLESHEET_URL)?.cssRules || []);
+onMounted(() => {
+  const styleSheetsList = Array.from(document.styleSheets);
+  const link = Array.from(styleSheetsList.find(ss => ss.href === ICON_STYLESHEET_URL)?.cssRules || []);
 
-    this.iconList = link
-      ?.filter(rule => rule.cssText.startsWith('.icon'))
-      .map(rule => rule.cssText.match(/([a-zA-Z0-9-])*(?=::before)/)?.[0] || '')
-      .sort();
-  }
+  iconList.value = link
+    ?.filter(rule => rule.cssText.startsWith('.icon'))
+    .map(rule => rule.cssText.match(/([a-zA-Z0-9-])*(?=::before)/)?.[0] || '')
+    .sort();
+});
 
-  selectIconData(icon) {
-    this.selectedIcon = icon;
-  }
+function selectIconData(icon: string) {
+  selectedIcon.value = icon;
+}
 
-  emitCopySuccess(e) {
-    EventBus.$emit("copy-success", `Copied "${e.text}" to clipboard`);
-  }
+function emitCopySuccess(e: { text: string }) {
+  success(`Copied "${e.text}" to clipboard`);
+}
 
-  emitCopyError(e) {
-    EventBus.$emit("copy-copy", e);
-  }
+function emitCopyError(e: unknown) {
+  error(String(e));
 }
 </script>
 
