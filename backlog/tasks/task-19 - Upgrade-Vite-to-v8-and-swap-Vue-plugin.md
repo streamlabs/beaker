@@ -1,9 +1,11 @@
 ---
 id: TASK-19
 title: Upgrade Vite to v8 and swap Vue plugin
-status: To Do
-assignee: []
+status: In Progress
+assignee:
+  - Joshua Larks
 created_date: '2026-04-07 23:57'
+updated_date: '2026-04-10 20:42'
 labels: []
 milestone: m-0
 dependencies:
@@ -39,3 +41,67 @@ Final infrastructure step — upgrade Vite and swap the Vue plugin once all comp
 - [ ] #5 pnpm build succeeds
 - [ ] #6 pnpm build:publish produces dist/ output
 <!-- AC:END -->
+
+## Implementation Plan
+
+<!-- SECTION:PLAN:BEGIN -->
+## Implementation Plan
+
+### Section 1: Update devDependencies in package.json
+
+- `vite: ^4.5.2` → `vite: 8.0.8` (hardcoded, latest stable)
+- Remove `vite-plugin-vue2` (incompatible with Vite 8, no longer needed)
+- Add `@vitejs/plugin-vue: 6.0.5` (released alongside Vite 8, Vue 3 only)
+- Move `vue-final-modal` from `dependencies` → `peerDependencies` (see Section 2 rationale)
+- Run `pnpm install`
+
+---
+
+### Section 2: Update both Vite config files (plugin swap + library improvements)
+
+**`vite.config.js` (docs site):**
+- Replace `import { createVuePlugin } from "vite-plugin-vue2"` → `import vue from "@vitejs/plugin-vue"`
+- Replace `plugins: [createVuePlugin()]` → `plugins: [vue()]`
+- Remove `resolve: { tsconfigPaths: true }` entirely — `tsconfigPaths` is not a Vite option; it has been silently ignored since the project was created. The tsconfig's `@/*` path alias is not used in any source file, so no replacement is needed.
+
+**`vite-publish.config.js` (library build):**
+- Replace `import { createVuePlugin } from "vite-plugin-vue2"` → `import vue from "@vitejs/plugin-vue"`
+- Replace `plugins: [createVuePlugin()]` → `plugins: [vue()]`
+- Remove `resolve: { tsconfigPaths: true }` (same reason as above)
+- Fix `__dirname` → ESM-native: remove `import { resolve } from "path"` and replace `resolve(__dirname, "src/system.js")` with `fileURLToPath(new URL("./src/system.js", import.meta.url))` using `import { fileURLToPath } from "url"`. The file already uses `import` syntax (ESM); `__dirname` is a CJS global that Vite injects as a compatibility shim — using the native ESM approach is cleaner and explicit.
+- Externalize `vue-final-modal`: add `"vue-final-modal"` to `rolldownOptions.external` and add `"vue-final-modal": "VueFinalModal"` to `rolldownOptions.output.globals`. **Rationale:** 7 library components import from `vue-final-modal`, and it requires `app.use(createVfm())` registration in the host app. If it's bundled into the library, consumers end up with two separate VFM plugin instances — one from their app registration and one from the bundle — which breaks modal behavior entirely. It must be a peer dep that the host app installs and registers.
+- `rolldownOptions` key is already correct for Vite 8 (Rolldown replaced Rollup) — no change needed
+- All other config (`minify`, `target`, `cssCodeSplit`, `lib.name`, `lib.fileName`, other externals) stays unchanged
+
+---
+
+### Verification Plan
+
+No unit tests apply (infrastructure change only).
+
+**Package verification:**
+- `pnpm list vite` — confirm `8.x`
+- `pnpm list @vitejs/plugin-vue` — confirm `6.x`
+- `pnpm list vite-plugin-vue2` — should return nothing
+
+**Build verification:**
+- `pnpm build` — docs site build; confirm exits 0 with no TypeScript errors
+- `pnpm build:publish` — library build; confirm `dist/beaker.es.js` and `dist/beaker.umd.js` are produced
+
+**Dev server verification (manual, run on Node 24):**
+- `pnpm dev` — confirm dev server starts and app loads in the browser
+- Toggle Day/Night theme — confirm class changes apply
+- Navigate between a few demo sections — confirm router-view updates without errors
+- Navigate to Modals demo, open a modal, then navigate away — confirm modal closes (router guard from TASK-17)
+
+**Deferred DoD sign-off from previous tasks:**
+- TASK-17 DoD #1 and #3 — check off once `pnpm build` exits 0 and dev server confirms end-to-end navigation
+- TASK-18 DoD #1 — same `pnpm build` run covers this
+<!-- SECTION:PLAN:END -->
+
+## Definition of Done
+<!-- DOD:BEGIN -->
+- [ ] #1 pnpm build runs without TypeScript errors
+- [ ] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
+- [ ] #3 Manual verification completed per Verification Plan
+<!-- DOD:END -->
