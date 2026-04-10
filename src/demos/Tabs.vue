@@ -18,9 +18,9 @@ components: {
             :update-route="false"
             selected="advanced"
           >
-            <div :slot="tab.value" v-for="tab in tabs" :key="tab.value">
-              {{ tab.name }}
-            </div>
+            <template v-for="tab in tabs" #[tab.value] :key="tab.value">
+              <div>{{ tab.name }}</div>
+            </template>
           </Tabs>
         </template>
       </DemoSection>
@@ -30,9 +30,9 @@ components: {
       <DemoSection title="New Tabs" :code="demoCode">
         <template #components>
           <TabsNew :tabs="tabs" size="small" selected="advanced">
-            <div :slot="tab.value" v-for="tab in tabs" :key="tab.value">
-              {{ tab.name }}
-            </div>
+            <template v-for="tab in tabs" #[tab.value] :key="tab.value">
+              <div>{{ tab.name }}</div>
+            </template>
           </TabsNew>
         </template>
       </DemoSection>
@@ -87,91 +87,27 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
 import DemoSection from "./../components/DemoSection.vue";
 import ScrollNav from "./../components/ScrollNav.vue";
 import Tabs from "./../components/Tabs.vue";
 import TabsNew from "./../components/TabsNew.vue";
 import TabsCode from "./Tabs.vue?raw";
 
-@Component({
-  components: {
-    DemoSection,
-    ScrollNav,
-    Tabs,
-    TabsNew
-  }
-})
-export default class TabsDemo extends Vue {
-  demoCode = TabsCode;
-  tabs = [
-    {
-      name: "General",
-      value: "general",
-      icon: "information"
-    },
-    {
-      name: "Advanced",
-      value: "advanced",
-      icon: ""
-    },
-    {
-      name: "Account",
-      value: "account",
-      icon: ""
-    },
-    {
-      name: "Integrations",
-      value: "integrations",
-      icon: ""
-    },
-    {
-      name: "Payments",
-      value: "payments",
-      icon: ""
-    },
-    {
-      name: "Donations",
-      value: "donations",
-      icon: ""
-    },
-    {
-      name: "Subscriptions",
-      value: "subscriptions",
-      icon: ""
-    },
-    {
-      name: "Preferences",
-      value: "preferences",
-      icon: ""
-    },
-    {
-      name: "Apps",
-      value: "apps",
-      icon: ""
-    },
-    {
-      name: "Merch",
-      value: "merch",
-      icon: ""
-    },
-    {
-      name: "API",
-      value: "api",
-      icon: ""
-    },
-    {
-      name: "Moderators",
-      value: "moderators",
-      icon: ""
-    },
-    {
-      name: "Themes",
-      value: "themes",
-      icon: ""
-    }
-  ];
-}
+const demoCode = TabsCode;
+const tabs = [
+  { name: "General", value: "general", icon: "information" },
+  { name: "Advanced", value: "advanced", icon: "" },
+  { name: "Account", value: "account", icon: "" },
+  { name: "Integrations", value: "integrations", icon: "" },
+  { name: "Payments", value: "payments", icon: "" },
+  { name: "Donations", value: "donations", icon: "" },
+  { name: "Subscriptions", value: "subscriptions", icon: "" },
+  { name: "Preferences", value: "preferences", icon: "" },
+  { name: "Apps", value: "apps", icon: "" },
+  { name: "Merch", value: "merch", icon: "" },
+  { name: "API", value: "api", icon: "" },
+  { name: "Moderators", value: "moderators", icon: "" },
+  { name: "Themes", value: "themes", icon: "" }
+];
 </script>
