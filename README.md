@@ -1,39 +1,48 @@
-# beaker
+# Beaker
 
-## Project setup
+A design system for Streamlabs-related products.
+
+## Installation
+
+**Vue 3 (current):**
+```sh
+pnpm add streamlabs-beaker@next    # pre-release — use until promoted to latest
+pnpm add streamlabs-beaker         # once promoted to latest
 ```
-yarn install
+
+**Vue 2 (legacy):**
+```sh
+pnpm add streamlabs-beaker@legacy
+```
+
+## Development
+
+### Install dependencies
+```sh
+pnpm install
 ```
 
 ### Compiles and hot-reloads for development
-```
-yarn run dev
-```
-
-### Compiles for production on GitHub
-```
-yarn run build
+```sh
+pnpm dev
 ```
 
-### Compiles for production
-```
-yarn run build:publish
-```
-
-### Run your tests
-```
-yarn run test
+### Compiles docs site for production
+```sh
+pnpm build
 ```
 
-### Lints and fixes files
+### Compiles library for publishing
+```sh
+pnpm build:publish
 ```
-yarn run lint
+
+### Lints files
+```sh
+pnpm lint
 ```
 
 ### Publish docs to GitHub Pages
+```sh
+pnpm deploy
 ```
-yarn deploy
-```
-
-- Base folder should be included first in every project.
--
