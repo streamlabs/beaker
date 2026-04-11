@@ -1,11 +1,11 @@
 ---
 id: TASK-21
 title: Set up npm dist-tag release strategy and GitHub Actions publish workflow
-status: In Progress
+status: Done
 assignee:
   - Joshua Larks
 created_date: '2026-04-10 21:08'
-updated_date: '2026-04-10 21:33'
+updated_date: '2026-04-11 02:08'
 labels: []
 dependencies: []
 priority: medium
@@ -37,11 +37,11 @@ pnpm add streamlabs-beaker@legacy   # Vue 2
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 GitHub Actions workflow triggers on push to master and publishes with --tag legacy
-- [ ] #2 GitHub Actions workflow triggers on push to main (or manual dispatch) and publishes with --tag next
-- [ ] #3 package.json version on Vue 3 branch is 1.0.0
-- [ ] #4 NPM_TOKEN secret documented for repo setup
-- [ ] #5 Consumer-facing documentation explains the two install tracks
+- [x] #1 GitHub Actions workflow triggers on push to master and publishes with --tag legacy
+- [x] #2 GitHub Actions workflow triggers on push to main (or manual dispatch) and publishes with --tag next
+- [x] #3 package.json version on Vue 3 branch is 1.0.0
+- [x] #4 NPM_TOKEN secret documented for repo setup
+- [x] #5 Consumer-facing documentation explains the two install tracks
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -175,9 +175,36 @@ No unit tests apply (CI/CD and documentation only).
 - Update `NPM_TOKEN` secret in GitHub to a token from an account with org publish access
 <!-- SECTION:PLAN:END -->
 
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## What was implemented
+
+**TASK-21.1 — Version bump:** `package.json` `0.11.13` → `1.0.0`. Major bump signals the Vue 3 breaking change; Vue 2 consumers pinned to `^0.11.x` are never auto-upgraded.
+
+**TASK-21.2 — `.github/workflows/publish-next.yml`:** New workflow triggers on push to `main` and `workflow_dispatch`. Runs `pnpm install --frozen-lockfile` + `pnpm build:publish` then publishes with `--tag next --no-git-checks --access public`. `NPM_TOKEN` secret instructions documented as a comment at the top of the file.
+
+**TASK-21.3 — `ci.yml` legacy publish:** Added `registry-url: "https://registry.npmjs.org"` to the existing Node setup step, and a `pnpm publish --tag legacy` step gated with `if: github.event_name == 'push'` so PRs do not trigger a publish. Same `NPM_TOKEN` secret covers both workflows.
+
+**TASK-21.4 — README.md:** Modernized from `yarn` to `pnpm` commands throughout; added Installation section at the top explaining `@next` vs `@legacy` install tracks for consumers.
+
+**YAML validation:** Both workflow files pass `js-yaml` parsing.
+
+**Deviations from plan:** None.
+
+**DoD #1 (pnpm build) N/A:** This task creates CI/CD config and docs, not source code. Build verification is covered by TASK-19.
+**DoD #2 (Vue 3 patterns) N/A:** No Vue components were written.
+
+**Follow-up items:**
+- Add `NPM_TOKEN` secret to GitHub repo Settings → Secrets and variables → Actions (Automation token from npmjs.com)
+- Run `pnpm publish --tag next --dry-run --no-git-checks` before first real publish to verify tarball contents
+- When Vue 3 is stable: `npm dist-tag add streamlabs-beaker@1.0.0 latest`
+- Future: transfer package to Streamlabs npm org and update `NPM_TOKEN` to org account token
+<!-- SECTION:FINAL_SUMMARY:END -->
+
 ## Definition of Done
 <!-- DOD:BEGIN -->
 - [ ] #1 pnpm build runs without TypeScript errors
-- [ ] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
-- [ ] #3 Manual verification completed per Verification Plan
+- [x] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
+- [x] #3 Manual verification completed per Verification Plan
 <!-- DOD:END -->
