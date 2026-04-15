@@ -8,6 +8,10 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment: npm-publish
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +25,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          registry-url: "https://registry.npmjs.org"
           cache: "pnpm"
 
       - name: Install dependencies
@@ -40,6 +43,4 @@ jobs:
           fi
 
       - name: Publish to npm
-        run: pnpm publish --tag ${{ steps.npm-tag.outputs.tag }} --no-git-checks --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --tag ${{ steps.npm-tag.outputs.tag }} --provenance --access public
