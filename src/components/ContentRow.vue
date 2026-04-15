@@ -14,19 +14,19 @@
         :size="'fixed-width'"
         :variation="btnVariation"
         :title="btnTitle"
-        :onClick="'buttonClick'"
+        @click="'buttonClick'"
         :href="buttonHref"
         :to="buttonTo"
         :tag="buttonTag"
-      ></Button>
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { useMq } from "vue3-mq";
-import Button from "./../components/Button.vue";
+import { computed } from 'vue';
+import { useMediaQuery } from '@vueuse/core';
+import Button from './../components/Button.vue';
 
 withDefaults(
   defineProps<{
@@ -37,20 +37,44 @@ withDefaults(
     buttonTo?: string;
     buttonTag?: string;
   }>(),
-  { btnVariation: "default", btnTitle: "Default", buttonTag: "button" }
+  { btnVariation: 'default', btnTitle: 'Default', buttonTag: 'button' },
 );
 
-const mq = useMq();
+const isMobile = useMediaQuery('(max-width: 899px)');
 
-const contentRowMq = computed(() => mq.current === "sm" ? "s-content-row-mq" : "");
-const contentBoxMq = computed(() => mq.current === "sm" ? "s-content-box-mq" : "");
-const bannerIconMq = computed(() => mq.current === "sm" ? "s-banner__icon-mq" : "");
-const contentTitleMq = computed(() => mq.current === "sm" ? "s-content__title-mq" : "");
-const contentTextMq = computed(() => mq.current === "sm" ? "s-content__text-mq" : "");
+const contentRowMq = computed(() =>
+  isMobile.value ? 's-content-row-mq' : '',
+);
+const contentBoxMq = computed(() =>
+  isMobile.value ? 's-content-box-mq' : '',
+);
+const bannerIconMq = computed(() =>
+  isMobile.value ? 's-banner__icon-mq' : '',
+);
+const contentTitleMq = computed(() =>
+  isMobile.value ? 's-content__title-mq' : '',
+);
+const contentTextMq = computed(() =>
+  isMobile.value ? 's-content__text-mq' : '',
+);
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
+
+.s-content-row {
+  background: @light-2;
+  .radius();
+  .padding(2);
+  .margin-bottom(2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    .margin-bottom(0);
+  }
+}
 
 .s-content-row-mq {
   flex-direction: column;
@@ -75,20 +99,6 @@ const contentTextMq = computed(() => mq.current === "sm" ? "s-content__text-mq" 
 
 .s-content__text-mq {
   .margin-top(2);
-}
-
-.s-content-row {
-  background: @light-2;
-  .radius();
-  .padding(2);
-  .margin-bottom(2);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  p {
-    .margin-bottom(0);
-  }
 }
 
 .s-content-box {

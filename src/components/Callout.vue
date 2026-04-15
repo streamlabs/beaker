@@ -149,7 +149,8 @@ function closeCallout() {
   &--prime {
     position: fixed;
     bottom: 0;
-    right: calc(~"0% + 9px");
+    /* right: calc(~"0% + 9px"); */
+    right: 0;
     left: 0%;
     z-index: 900;
     .radius(0);

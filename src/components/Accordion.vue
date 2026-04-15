@@ -47,9 +47,9 @@
     </div>
     <transition
       name="expand"
-      @enter="open"
-      @after-enter="afterOpen"
-      @leave="close"
+      @enter="(el) => open(el as HTMLElement)"
+      @after-enter="(el) => afterOpen(el as HTMLElement)"
+      @leave="(el) => close(el as HTMLElement)"
     >
       <div
         class="s-accordion__content"
@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, useSlots } from "vue";
+import { ref, computed, watch, onMounted, useSlots } from 'vue';
 
 const props = defineProps<{
   openedTitle?: string;
@@ -72,19 +72,26 @@ const props = defineProps<{
   isOpened?: boolean;
   noBorder?: boolean;
   leftNav?: boolean;
-  value?: boolean;
+  modelValue?: boolean | null;
 }>();
 
 const emit = defineEmits<{
-  input: [val: boolean];
-  "content-opened": [payload: { isOpen: boolean; event: Event }];
+  'update:modelValue': [val: boolean];
+  'content-opened': [payload: { isOpen: boolean; event: Event }];
 }>();
 
 const slots = useSlots();
 const isOpen = ref(false);
 
-watch(() => props.value, (val) => { isOpen.value = !!val; });
-watch(isOpen, (val) => { emit("input", val); });
+watch(
+  () => props.modelValue,
+  (val) => {
+    isOpen.value = !!val;
+  },
+);
+watch(isOpen, (val) => {
+  emit('update:modelValue', val);
+});
 
 const accordionTitle = computed(() => {
   if (props.title !== undefined) return props.title;
@@ -95,55 +102,62 @@ const hasTitleSlot = computed(() => !!slots.title);
 
 const accordionClasses = computed(() => {
   const classes: string[] = [];
-  if (props.noBorder) classes.push("no-border");
-  if (props.leftNav) classes.push("left-nav");
-  return classes.join(" ");
+  if (props.noBorder) classes.push('no-border');
+  if (props.leftNav) classes.push('left-nav');
+  return classes.join(' ');
 });
 
 function openContent(event: Event) {
   const target = event.target as HTMLElement;
-  const blockedNodes = ["INPUT", "BUTTON", "LABEL"];
+  const blockedNodes = ['INPUT', 'BUTTON', 'LABEL'];
   if (
     blockedNodes.includes(target.nodeName) ||
-    blockedNodes.includes((target.parentNode?.parentNode as HTMLElement)?.nodeName)
-  ) return;
+    blockedNodes.includes(
+      (target.parentNode?.parentNode as HTMLElement)?.nodeName,
+    )
+  )
+    return;
   isOpen.value = !isOpen.value;
-  emit("content-opened", { isOpen: isOpen.value, event });
+  emit('content-opened', { isOpen: isOpen.value, event });
 }
 
 function afterOpen(element: HTMLElement) {
-  element.style.height = "auto";
+  element.style.height = 'auto';
 }
 
 function open(element: HTMLElement) {
   const width = getComputedStyle(element).width;
   element.style.width = width;
-  element.style.position = "absolute";
-  element.style.visibility = "hidden";
-  element.style.height = "auto";
+  element.style.position = 'absolute';
+  element.style.visibility = 'hidden';
+  element.style.height = 'auto';
   const height = getComputedStyle(element).height;
-  element.style.width = "";
-  element.style.position = "";
-  element.style.visibility = "";
-  element.style.height = "0";
+  element.style.width = '';
+  element.style.position = '';
+  element.style.visibility = '';
+  element.style.height = '0';
   getComputedStyle(element).height;
-  setTimeout(() => { element.style.height = height; });
+  setTimeout(() => {
+    element.style.height = height;
+  });
 }
 
 function close(element: HTMLElement) {
   const height = getComputedStyle(element).height;
   element.style.height = height;
   getComputedStyle(element).height;
-  setTimeout(() => { element.style.height = "0"; });
+  setTimeout(() => {
+    element.style.height = '0';
+  });
 }
 
 onMounted(() => {
-  if (props.value) isOpen.value = props.value;
+  if (props.modelValue) isOpen.value = props.modelValue;
 });
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-accordion {
   .margin-bottom(3);
@@ -181,9 +195,6 @@ onMounted(() => {
     .s-accordion__button {
       .margin-right(1.5);
     }
-  }
-
-  &__container {
   }
 
   &__head {

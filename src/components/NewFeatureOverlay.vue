@@ -1,8 +1,8 @@
 <template>
   <VueFinalModal
     v-model="show"
+    overlay-class="s-overlay__vfm-overlay"
     content-class="s-overlay__wrapper"
-    :content-style="{ width: width, height: height }"
     v-bind="$attrs"
   >
     <div class="s-overlay__icon" @click="onDismiss">
@@ -55,7 +55,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { VueFinalModal } from "vue-final-modal";
-import { useMq } from "vue3-mq";
+import { useMediaQuery } from "@vueuse/core";
 import Button from "./../components/Button.vue";
 
 const show = defineModel<boolean>({ default: false });
@@ -85,21 +85,21 @@ const props = withDefaults(
     buttonTag: "router-link",
     dismissRoute: "/",
     dismissText: "Go to Dashboard",
-    videoControls: false,
+    videoControls: false
   }
 );
 
-const mq = useMq();
+const isMobile = useMediaQuery('(max-width: 899px)');
 const isImage = ref(true);
 
 const overlayImage = computed(() => props.media);
 
 const containerMq = computed(() =>
-  mq.current === "sm" ? "s-overlay__container--mq" : ""
+  isMobile.value ? "s-overlay__container--mq" : ""
 );
 
 const overlayImageBlockMq = computed(() =>
-  mq.current === "sm" ? "s-overlay__image-block--mq" : ""
+  isMobile.value ? "s-overlay__image-block--mq" : ""
 );
 
 function onPrimaryAction() {
@@ -113,7 +113,8 @@ function onDismiss() {
 
 onMounted(() => {
   if (props.media) {
-    isImage.value = !props.media.includes("mp4") && !props.media.includes("webm");
+    isImage.value =
+      !props.media.includes("mp4") && !props.media.includes("webm");
   }
   if (typeof props.onOpen === "function") props.onOpen();
 });
@@ -130,29 +131,16 @@ onMounted(() => {
   height: auto;
 }
 
-.v--modal-overlay {
-  background: @day-new-feature-overlay !important;
-}
-
-.s-overlay__wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
-  box-sizing: border-box;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 999;
-}
-
 .s-overlay__icon {
+  position: absolute;
+  top: 0;
+  right: 0;
   .padding(4);
 }
 
 .s-icon {
   cursor: pointer;
+  color: @dark-5;
 }
 
 .s-overlay__container {
@@ -198,6 +186,7 @@ onMounted(() => {
 
 .s-overlay__link {
   .margin-left(2);
+  font-size: 14px;
 }
 
 .s-overlay__image-block {
@@ -212,21 +201,69 @@ onMounted(() => {
   width: auto;
   .radius(2);
 }
-
-.night,
-.night-theme {
-  .v--modal-overlay {
-    background: @night-new-feature-overlay !important;
-  }
-
-  .s-overlay__label {
-    color: @white;
-  }
-}
 </style>
 
 <style lang="less">
 @import (reference) "./../styles/Imports";
+
+// .s-overlay__wrapper is applied via VueFinalModal's content-class prop, so it
+// is rendered outside this component's scoped CSS scope — must be global.
+.s-overlay__wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  box-sizing: border-box;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+
+// .s-overlay__vfm-overlay is VueFinalModal's overlay element, teleported to <body>
+// so it can't be reached by scoped styles — must be global.
+.s-overlay__vfm-overlay {
+  background: @day-new-feature-overlay !important;
+}
+
+// Close icon is inside the teleported modal — can't inherit from #app,
+// so color must be set explicitly. Same value in both day and night.
+.s-overlay__icon {
+  color: @light-4;
+}
+
+// .night is now on <html> directly, so a simple class selector reaches everything.
+html.night {
+  .vfm .s-icon {
+    color: @light-4;
+  }
+
+  .s-overlay__vfm-overlay {
+    background: @night-new-feature-overlay !important;
+  }
+
+  .s-overlay__label,
+  .s-overlay__title {
+    color: @white;
+  }
+
+  .s-overlay__text,
+  .s-overlay__text p {
+    color: @night-paragraph;
+  }
+
+  .s-overlay__link {
+    color: @night-link;
+  }
+
+  .s-overlay__wrapper {
+    .s-button--action {
+      background-color: @teal;
+      color: @dark-2;
+    }
+  }
+}
 
 .s-overlay__text {
   line-height: 21px;

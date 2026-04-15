@@ -4,8 +4,10 @@
       type="checkbox"
       :id="id"
       :name="name"
-      :checked="value"
-      @change="$emit('input', $event.target.checked)"
+      :checked="modelValue"
+      @change="
+        $emit('update:modelValue', ($event.target as HTMLInputElement).checked)
+      "
       tabindex="-1"
     />
     <label :for="id">{{ label }}</label>
@@ -17,20 +19,20 @@ const props = defineProps<{
   label: string;
   id: string;
   name?: string;
-  value: boolean;
+  modelValue: boolean;
 }>();
 
 const emit = defineEmits<{
-  input: [checked: boolean];
+  'update:modelValue': [checked: boolean];
 }>();
 
 function toggleCheck() {
-  emit("input", !props.value);
+  emit('update:modelValue', !props.modelValue);
 }
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-checkbox {
   position: relative;
@@ -66,24 +68,37 @@ function toggleCheck() {
       left: 0;
       width: 16px;
       height: 16px;
-      content: "";
+      content: '';
       background: transparent;
       .radius();
-      -webkit-transition: border 0.1s ease, opacity 0.1s ease,
-        box-shadow 0.1s ease, -webkit-transform 0.1s ease;
-      transition: border 0.1s ease, opacity 0.1s ease, box-shadow 0.1s ease,
+      -webkit-transition:
+        border 0.1s ease,
+        opacity 0.1s ease,
+        box-shadow 0.1s ease,
         -webkit-transform 0.1s ease;
-      transition: border 0.1s ease, opacity 0.1s ease, transform 0.1s ease,
+      transition:
+        border 0.1s ease,
+        opacity 0.1s ease,
+        box-shadow 0.1s ease,
+        -webkit-transform 0.1s ease;
+      transition:
+        border 0.1s ease,
+        opacity 0.1s ease,
+        transform 0.1s ease,
         box-shadow 0.1s ease;
-      transition: border 0.1s ease, opacity 0.1s ease, transform 0.1s ease,
-        box-shadow 0.1s ease, -webkit-transform 0.1s ease;
+      transition:
+        border 0.1s ease,
+        opacity 0.1s ease,
+        transform 0.1s ease,
+        box-shadow 0.1s ease,
+        -webkit-transform 0.1s ease;
       border: 1px solid @light-4;
       box-sizing: border-box;
     }
   }
 
-  input[type="checkbox"],
-  input[type="radio"] {
+  input[type='checkbox'],
+  input[type='radio'] {
     cursor: pointer;
     position: absolute;
     top: 0;
@@ -111,16 +126,16 @@ function toggleCheck() {
     top: 0px;
     opacity: 1;
     color: @white;
-    font-family: "Font Awesome 5 Free";
+    font-family: 'Font Awesome 5 Free';
     font-weight: 900;
-    content: "\f00c";
+    content: '\f00c';
     font-size: 10px;
   }
 }
 
 .s-radio.checkbox {
   label:before {
-    content: "";
+    content: '';
     transform: none;
     width: 16px;
     height: 16px;
@@ -130,7 +145,7 @@ function toggleCheck() {
   }
 
   input:checked ~ label:after {
-    content: "";
+    content: '';
     width: 8px;
     height: 8px;
     background-color: @white;

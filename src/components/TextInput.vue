@@ -3,14 +3,14 @@
     class="s-form-field"
     :class="{
       's-form-field--with-label': label,
-      's-form-field--disabled': disabled
+      's-form-field--disabled': disabled,
     }"
   >
     <div v-if="type === 'number'" class="s-arrows">
       <div
         :class="{
           's-arrow arrow-up': true,
-          's-arrow--disabled': isMaxReached
+          's-arrow--disabled': isMaxReached,
         }"
         @click="increment"
       >
@@ -19,7 +19,7 @@
       <div
         :class="{
           's-arrow arrow-down': true,
-          's-arrow--disabled': isMinReached
+          's-arrow--disabled': isMinReached,
         }"
         @click="decrement"
       >
@@ -33,7 +33,7 @@
       :name="name"
       :disabled="disabled"
       :readonly="readonly"
-      @blur="$emit('blur')"
+      @blur="$emit('blur', $event)"
       @focus="onFocus"
       @click="onClick"
       @keyup="onKeyUp"
@@ -44,14 +44,14 @@
       :class="{
         's-form-field__input': true,
         's-form-field__input--error': !!error,
-        's-form-field__input--disabled': disabled
+        's-form-field__input--disabled': disabled,
       }"
       v-on="filteredListeners"
       @mousewheel="mouseWheel"
     />
     <label
       :class="{
-        's-form-field__label--top': model !== '' && !disabled
+        's-form-field__label--top': model !== '' && !disabled,
       }"
       class="s-form-field__label"
       v-if="label"
@@ -68,12 +68,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useAttrs, useTemplateRef } from "vue";
-import { omit, isNil } from "lodash-es";
+import { computed, useAttrs, useTemplateRef } from 'vue';
+import { omit, isNil } from 'lodash-es';
 
 defineOptions({ inheritAttrs: false });
 
-const model = defineModel<string | number>({ default: "" });
+const model = defineModel<string | number>({ default: '' });
 
 const props = defineProps<{
   name?: string;
@@ -96,32 +96,32 @@ const emit = defineEmits<{
   keyup: [event: Event];
   focus: [event: Event];
   click: [event: Event];
+  blur: [event: Event];
 }>();
 
 const attrs = useAttrs();
-const inputRef = useTemplateRef<HTMLInputElement>("input");
+const inputRef = useTemplateRef<HTMLInputElement>('input');
 
-const filteredListeners = computed(() => omit(attrs, ["onInput"]));
+const filteredListeners = computed(() => omit(attrs, ['onInput']));
 
 const isMaxReached = computed(
   () =>
-    props.type === "number" &&
+    props.type === 'number' &&
     !isNil(props.max) &&
-    Number(model.value) >= props.max!
+    Number(model.value) >= props.max!,
 );
 
 const isMinReached = computed(
   () =>
-    props.type === "number" &&
+    props.type === 'number' &&
     !isNil(props.min) &&
-    Number(model.value) <= props.min!
+    Number(model.value) <= props.min!,
 );
 
 function handleInput(event: Event) {
   const target = event.target as HTMLInputElement;
-  model.value =
-    props.type === "number" ? Number(target.value) : target.value;
-  emit("onChange", model.value);
+  model.value = props.type === 'number' ? Number(target.value) : target.value;
+  emit('onChange', model.value);
 }
 
 function increment() {
@@ -135,7 +135,7 @@ function decrement() {
 }
 
 function mouseWheel(event: WheelEvent) {
-  if (props.type === "number") {
+  if (props.type === 'number') {
     if (event.deltaY > 0) decrement();
     else increment();
     event.preventDefault();
@@ -143,25 +143,25 @@ function mouseWheel(event: WheelEvent) {
 }
 
 function onKeyUp(event: Event) {
-  emit("keyup", event);
+  emit('keyup', event);
 }
 function onFocus(event: Event) {
-  emit("focus", event);
+  emit('focus', event);
 }
 function onClick(event: Event) {
-  emit("click", event);
+  emit('click', event);
 }
 
 defineExpose({
   focus: () => inputRef.value?.focus(),
   updateValue: (val: string) => {
     if (inputRef.value) inputRef.value.value = val;
-  }
+  },
 });
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-form-field {
   position: relative;
@@ -192,8 +192,8 @@ defineExpose({
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
   }
 
-  input[type="number"] {
-    -moz-appearance: textfield; /* Firefox */
+  input[type='number'] {
+    appearance: textfield;
     padding-right: 30px;
   }
 
@@ -263,21 +263,22 @@ defineExpose({
   label {
     order: -1;
     .transition();
-    transform: translateY(0px);
+    transform: translateY(0px) scale(1);
+    transform-origin: left top;
     pointer-events: none;
     background-color: @white;
     padding: 0 4px;
     line-height: 130%;
+    font-size: 14px;
   }
 
   .s-form-field__input:focus + label,
   .s-form-field__label--top {
-    transform: translateY(-20px);
-    font-size: 12px;
+    transform: translateY(-20px) scale(0.857);
     font-weight: 500;
   }
 
-  .s-form-field__input:not(".s-form-field__input--error"):focus + label {
+  .s-form-field__input:not('.s-form-field__input--error'):focus + label {
     color: @day-title;
   }
 
@@ -335,7 +336,7 @@ defineExpose({
   .s-form-field--with-label {
     position: relative;
 
-    .s-form-field__input:not("[class*=__input--error]"):focus + label {
+    .s-form-field__input:not('[class*=__input--error]'):focus + label {
       color: @night-title;
     }
   }

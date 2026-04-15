@@ -105,11 +105,11 @@
       <DemoSection title="Welcome Prime Modal" :code="demoCode">
         <template #components>
           <ModalComp
-            modalId="modal-welcome-prime"
+            modal-id="modal-welcome-prime"
             type="welcome-prime"
             :width="600"
-            @onClickPrime="testWelcomePrime"
-            :hasPrimeCloseButton="true"
+            @on-click-prime="testWelcomePrime"
+            :has-prime-close-button="true"
           />
 
           <div class="button-container button-container--left">
@@ -135,7 +135,7 @@
 
       <DemoSection title="Welcome Prime" :code="demoCode">
         <template #components>
-          <WelcomePrime class="welcome-prime" @onClickPrime="testClick" />
+          <WelcomePrime class="welcome-prime" @on-click-prime="testClick" />
         </template>
       </DemoSection>
     </div>
@@ -174,38 +174,38 @@
 </template>
 
 <script setup lang="ts">
-import { useVfm } from "vue-final-modal";
-import Badge from "./../components/Badge.vue";
-import Button from "./../components/Button.vue";
-import DemoSection from "./../components/DemoSection.vue";
-import ModalComp from "./../components/ModalComp.vue";
-import NavCallToAction from "./../components/NavCallToAction.vue";
-import PrimeCode from "./Prime.vue?raw";
-import PrimeSection from "./../components/PrimeSection.vue";
-import WelcomePrime from "./../components/WelcomePrime.vue";
+import { useVfm } from 'vue-final-modal';
+import Badge from './../components/Badge.vue';
+import Button from './../components/Button.vue';
+import DemoSection from './../components/DemoSection.vue';
+import ModalComp from './../components/ModalComp.vue';
+import NavCallToAction from './../components/NavCallToAction.vue';
+import PrimeCode from './Prime.vue?raw';
+import PrimeSection from './../components/PrimeSection.vue';
+import WelcomePrime from './../components/WelcomePrime.vue';
 
 const demoCode = PrimeCode;
 const { open } = useVfm();
 
 function testClick() {
-  console.log("test prime section click");
+  console.log('test prime section click');
 }
 
 function testNavClick() {
-  console.log("test prime nav click");
+  console.log('test prime nav click');
 }
 
 function testWelcomePrime() {
-  console.log("test welcome prime click");
+  console.log('test welcome prime click');
 }
 
 function testPrimeIntro() {
-  console.log("test prime info click");
+  console.log('test prime info click');
 }
 </script>
 
 <style lang="less" scoped>
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .cs-section {
   position: relative;

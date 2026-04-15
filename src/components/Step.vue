@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import Badge from "./../components/Badge.vue";
+import Badge from './../components/Badge.vue';
 
 withDefaults(
   defineProps<{
@@ -31,12 +31,12 @@ withDefaults(
     hasCheckmark?: boolean;
     hasPrime?: boolean;
   }>(),
-  { isCompleted: false, hasCheckmark: false, hasPrime: false }
+  { isCompleted: false, hasCheckmark: false, hasPrime: false },
 );
 </script>
 
 <style lang="less" scoped>
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-step {
   display: flex;
@@ -85,6 +85,10 @@ withDefaults(
     text-decoration: line-through;
   }
 }
+</style>
+
+<style lang="less">
+@import (reference) './../styles/Imports';
 
 .night,
 .night-theme {

@@ -24,7 +24,9 @@ components: {
             v-model="isOpened"
           >
             <template #content>
-              <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+              <div>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              </div>
             </template>
           </Accordion>
         </template>
@@ -39,10 +41,12 @@ components: {
           <Accordion
             opened-title="Hide Content"
             closed-title="Show Content"
-            :isOpened="true"
+            :is-opened="true"
           >
             <template #content>
-              <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+              <div>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              </div>
             </template>
           </Accordion>
         </template>
@@ -60,7 +64,9 @@ components: {
             :noBorder="true"
           >
             <template #content>
-              <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+              <div>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              </div>
             </template>
           </Accordion>
         </template>
@@ -148,7 +154,9 @@ components: {
               </transition>
             </template>
             <template #content>
-              <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+              <div>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              </div>
             </template>
           </Accordion>
         </template>

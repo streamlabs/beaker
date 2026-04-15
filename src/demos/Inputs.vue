@@ -73,7 +73,7 @@ components: {
                 v-model="textAreaInputValue"
                 name="myarea"
                 placeholder="This is where you put some cool stuff"
-                autoResize="true"
+                :auto-resize="true"
                 :maxLength="1000"
                 :maxHeight="100"
               />
@@ -92,7 +92,7 @@ components: {
 
       <DemoSection title="Variable Menu" :code="demoCode">
         <template #components>
-          <VariableMenu :jsonSearch="varData">
+          <VariableMenu :json-search="varData">
             <template #input>
               <text-input
                 type="text"
@@ -103,13 +103,13 @@ components: {
             </template>
           </VariableMenu>
 
-          <VariableMenu :jsonSearch="varData">
+          <VariableMenu :json-search="varData">
             <template #input>
               <TextArea
                 v-model="variAreaValue"
                 name="myarea"
                 placeholder="w/ Variable Menu"
-                rows="3"
+                :rows="3"
                 :maxLength="1000"
                 :maxHeight="100"
               />
@@ -201,8 +201,8 @@ components: {
           <TaggingInput
             name="aliases"
             placeholder="!hello"
-            maxItems="10"
-            inputValidation="required"
+            :max-items="10"
+            input-validation="required"
             @keydown.space.prevent
           />
         </template>
@@ -440,10 +440,7 @@ components: {
           <template #components>
             <FormGroup>
               <template #input>
-                <StatusSwitch
-                  v-model="statusValue"
-                  label="Switch Label"
-                />
+                <StatusSwitch v-model="statusValue" label="Switch Label" />
 
                 <StatusSwitch
                   size="small"
@@ -530,21 +527,21 @@ components: {
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useField } from "./../composables/useValidation";
-import Checkbox from "./../components/Checkbox.vue";
-import DemoSection from "./../components/DemoSection.vue";
-import FormGroup from "./../components/FormGroup.vue";
-import ImagePickerInput from "./../components/ImagePickerInput.vue";
-import InputsCode from "./Inputs.vue?raw";
-import Radio from "./../components/Radio.vue";
-import Selector from "./../components/Selector.vue";
-import StatusSwitch from "./../components/StatusSwitch.vue";
-import TaggingInput from "./../components/TaggingInput.vue";
-import TextArea from "./../components/TextArea.vue";
-import TextInput from "./../components/TextInput.vue";
-import varSearch from "./../components/cloudbotvariables.json";
-import VariableMenu from "./../components/VariableMenu.vue";
+import { ref } from 'vue';
+import { useField } from './../composables/useValidation';
+import Checkbox from './../components/Checkbox.vue';
+import DemoSection from './../components/DemoSection.vue';
+import FormGroup from './../components/FormGroup.vue';
+import ImagePickerInput from './../components/ImagePickerInput.vue';
+import InputsCode from './Inputs.vue?raw';
+import Radio from './../components/Radio.vue';
+import Selector from './../components/Selector.vue';
+import StatusSwitch from './../components/StatusSwitch.vue';
+import TaggingInput from './../components/TaggingInput.vue';
+import TextArea from './../components/TextArea.vue';
+import TextInput from './../components/TextInput.vue';
+import varSearch from './../components/cloudbotvariables.json';
+import VariableMenu from './../components/VariableMenu.vue';
 
 const demoCode = InputsCode;
 const radioValue = ref(true);
@@ -552,51 +549,118 @@ const checkboxValue1 = ref(true);
 const checkboxValue2 = ref(false);
 const checkboxValue3 = ref(true);
 const checkboxValue4 = ref(false);
-const selected = ref("Option A");
-const selectedGroup = ref("Option A");
-const multipleSelected = ref(["Option B", "Option C"]);
+const selected = ref('Option A');
+const selectedGroup = ref('Option A');
+const multipleSelected = ref(['Option B', 'Option C']);
 const optionGroups = [
-  { group: "Group A", items: ["Option A", "Option B", "Option C"] },
-  { group: "Group B", items: ["Option A", "Option B", "Option C"] },
-  { group: "Group C", items: ["Option A", "Option B", "Option C"] }
+  { group: 'Group A', items: ['Option A', 'Option B', 'Option C'] },
+  { group: 'Group B', items: ['Option A', 'Option B', 'Option C'] },
+  { group: 'Group C', items: ['Option A', 'Option B', 'Option C'] },
 ];
 const statusValue = ref(true);
-const layoutValue = ref("above");
-const jarValue = ref("glass-pint");
+const layoutValue = ref('above');
+const jarValue = ref('glass-pint');
 
 // Variable Menu
 const varData = varSearch;
-const variAreaValue = ref("");
-const variTextValue = ref("");
+const variAreaValue = ref('');
+const variTextValue = ref('');
 
 // Text inputs
-const textInputValue = ref("test");
+const textInputValue = ref('test');
 const { value: numberInputValue, errorMessage: numberInputError } =
-  useField<number>("numberinputExample", "required|between:0,100", { initialValue: 0 });
-const emailInputValue = ref("");
-const passwordInputValue = ref("");
-const errorTextInputValue = ref("");
-const textAreaInputValue = ref("");
-const textInputPlaceholder = "Placeholder";
-const emailInputPlaceholder = "Placeholder";
-const passwordInputPlaceholder = "Placeholder";
+  useField<number>('numberinputExample', 'required|between:0,100', {
+    initialValue: 0,
+  });
+const emailInputValue = ref('');
+const passwordInputValue = ref('');
+const errorTextInputValue = ref('');
+const textAreaInputValue = ref('');
+const textInputPlaceholder = 'Placeholder';
+const emailInputPlaceholder = 'Placeholder';
+const passwordInputPlaceholder = 'Placeholder';
 
 const options = [
-  { value: "glass-pint", title: "Glass Pint", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-pint.png" },
-  { value: "glass-beer", title: "Glass Beer", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer.png" },
-  { value: "glass-beer-2", title: "Glass Beer 2", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer2.png" },
-  { value: "glass-coffee", title: "Glass Coffee", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-coffee.png" },
-  { value: "glass-fancy", title: "Glass Fancy", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-fancy.png" },
-  { value: "glass-whiskey", title: "Glass Whiskey", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-whiskey.png" },
-  { value: "glass-burbon", title: "Glass Burbon", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-burbon.png" },
-  { value: "glass-martini", title: "Glass Martini", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-martini.png" },
-  { value: "glass-beer-3", title: "Glass Beer 3", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer3.png" },
-  { value: "glass-wine", title: "Glass Wine", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-wine.png" },
-  { value: "glass-baileys", title: "Glass Baileys", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-baileys.png" },
-  { value: "glass-champagne", title: "Glass Champagne", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-champagne.png" },
-  { value: "glass-coffee-no-handle", title: "Glass Coffee No Handle", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-coffee-no-handle.png" },
-  { value: "glass-plinko", title: "Glass Plinko", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-plinko.png" },
-  { value: "glass-stocking", title: "Glass Stocking", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-stocking.png" },
-  { value: "glass-snowman", title: "Glass Snowman", image: "https://cdn.streamlabs.com/static/tip-jar/jars/glass-snowman.png" }
+  {
+    value: 'glass-pint',
+    title: 'Glass Pint',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-pint.png',
+  },
+  {
+    value: 'glass-beer',
+    title: 'Glass Beer',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer.png',
+  },
+  {
+    value: 'glass-beer-2',
+    title: 'Glass Beer 2',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer2.png',
+  },
+  {
+    value: 'glass-coffee',
+    title: 'Glass Coffee',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-coffee.png',
+  },
+  {
+    value: 'glass-fancy',
+    title: 'Glass Fancy',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-fancy.png',
+  },
+  {
+    value: 'glass-whiskey',
+    title: 'Glass Whiskey',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-whiskey.png',
+  },
+  {
+    value: 'glass-burbon',
+    title: 'Glass Burbon',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-burbon.png',
+  },
+  {
+    value: 'glass-martini',
+    title: 'Glass Martini',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-martini.png',
+  },
+  {
+    value: 'glass-beer-3',
+    title: 'Glass Beer 3',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-beer3.png',
+  },
+  {
+    value: 'glass-wine',
+    title: 'Glass Wine',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-wine.png',
+  },
+  {
+    value: 'glass-baileys',
+    title: 'Glass Baileys',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-baileys.png',
+  },
+  {
+    value: 'glass-champagne',
+    title: 'Glass Champagne',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-champagne.png',
+  },
+  {
+    value: 'glass-coffee-no-handle',
+    title: 'Glass Coffee No Handle',
+    image:
+      'https://cdn.streamlabs.com/static/tip-jar/jars/glass-coffee-no-handle.png',
+  },
+  {
+    value: 'glass-plinko',
+    title: 'Glass Plinko',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-plinko.png',
+  },
+  {
+    value: 'glass-stocking',
+    title: 'Glass Stocking',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-stocking.png',
+  },
+  {
+    value: 'glass-snowman',
+    title: 'Glass Snowman',
+    image: 'https://cdn.streamlabs.com/static/tip-jar/jars/glass-snowman.png',
+  },
 ];
 </script>

@@ -2,7 +2,7 @@
   <div class="s-tagging-input">
     <div class="s-tagging-input__container">
       <TextInput
-        v-model="input"
+        v-model="textInput"
         :name="name"
         :label="label"
         :placeholder="placeholder"
@@ -15,14 +15,14 @@
         :title="buttonText"
         type="button"
         :variation="buttonVariation"
-        :disabled="value.length >= maxItems"
+        :disabled="modelValue.length >= maxItems"
         @click="onAdd"
       />
     </div>
 
     <div class="s-tagging-input__tags">
       <div
-        v-for="(tag, index) in value"
+        v-for="(tag, index) in tags"
         :key="index"
         class="s-tagging-input-tag"
         :class="[`s-tagging-input-tag--${tagVariation}`]"
@@ -38,10 +38,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import TextInput from "./TextInput.vue";
-import Button from "./Button.vue";
-import { useField } from "../composables/useValidation";
+import { ref, watch } from 'vue';
+import TextInput from './TextInput.vue';
+import Button from './Button.vue';
+import { validate } from 'vee-validate';
+import '../composables/useValidation';
 
 const props = withDefaults(
   defineProps<{
@@ -50,7 +51,7 @@ const props = withDefaults(
     placeholder?: string;
     buttonText?: string;
     buttonVariation?: string;
-    value?: string[];
+    modelValue?: string[];
     text?: string;
     inputValidation?: string;
     prefix?: string;
@@ -58,64 +59,65 @@ const props = withDefaults(
     maxItems?: number;
   }>(),
   {
-    buttonText: "Add Tag",
-    buttonVariation: "default",
-    value: () => [],
-    text: "",
-    tagVariation: "default",
-    maxItems: 25
-  }
+    buttonText: 'Add Tag',
+    buttonVariation: 'default',
+    modelValue: () => [],
+    text: '',
+    tagVariation: 'default',
+    maxItems: 25,
+  },
 );
 
 const emit = defineEmits<{
-  input: [tags: string[]];
+  'update:modelValue': [tags: string[]];
   change: [tags: string[]];
-  "update:value": [tags: string[]];
-  "update:text": [text: string];
+  'update:value': [tags: string[]];
+  'update:text': [text: string];
   add: [tags: string[]];
   remove: [tags: string[]];
   error: [errors: string[], maxReached: boolean];
 }>();
 
-const input = ref("");
 const tags = ref<string[]>([]);
-
-const { errorMessage, validate } = useField(
-  () => props.name,
-  () => props.inputValidation ?? ""
-);
+const textInput = ref('');
+const errorMessage = ref<string | undefined>(undefined);
 
 watch(
-  () => props.value,
-  newValue => {
+  () => props.modelValue,
+  (newValue) => {
     tags.value = newValue ?? [];
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(
   () => props.text,
-  newValue => {
-    input.value = newValue ?? "";
+  (newValue) => {
+    textInput.value = newValue ?? '';
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 async function onAdd() {
-  await validate();
-  if (errorMessage.value) {
-    emit("error", [errorMessage.value], false);
-    return;
+  errorMessage.value = undefined;
+
+  if (props.inputValidation) {
+    const result = await validate(textInput.value, props.inputValidation);
+    if (!result.valid) {
+      errorMessage.value = result.errors[0];
+      emit('error', result.errors, false);
+      return;
+    }
   }
 
   if (tags.value.length >= props.maxItems) {
-    emit("error", ["Max items reached"], true);
+    emit('error', ['Max items reached'], true);
     return;
   }
 
-  let inputValue = input.value.trim();
+  let inputValue = textInput.value.trim();
 
-  const found = tags.value.find(v => {
+  const found = tags.value.find((v) => {
     if (props.prefix && !inputValue.startsWith(props.prefix)) {
       return v.toLowerCase() === props.prefix + inputValue.trim().toLowerCase();
     } else {
@@ -128,25 +130,25 @@ async function onAdd() {
       inputValue = props.prefix + inputValue;
     }
     tags.value.push(inputValue);
-    input.value = "";
-    emitTagEvents("add");
+    textInput.value = '';
+    emitTagEvents('add');
   }
 }
 
 function onRemove(index: number) {
   tags.value.splice(index, 1);
-  emitTagEvents("remove");
+  emitTagEvents('remove');
 }
 
 function emitTagEvents(...events: string[]) {
-  ["input", "change", "update:value", ...events].forEach(event =>
-    emit(event as any, tags.value)
+  ['update:modelValue', 'change', 'update:value', ...events].forEach((event) =>
+    emit(event as keyof typeof emit, tags.value),
   );
 }
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-tagging-input {
   .s-tagging-input__container {

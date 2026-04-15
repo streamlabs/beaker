@@ -7,7 +7,7 @@
         class="s-tabs__tab"
         :class="{
           'is-active': tab.active,
-          'is-hidden': tab.hidden
+          'is-hidden': tab.hidden,
         }"
         :style="selectTabSize"
         @click="showTab(tab)"
@@ -19,7 +19,6 @@
       >
         <component
           :is="tabLinkTag"
-          :to="`#/${tab.value}`"
           tag="button"
           v-bind="tabLinkOptions(tab.value)"
           class="s-tabs__link"
@@ -74,10 +73,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, onMounted, onBeforeUnmount, useTemplateRef } from "vue";
-import { cloneDeep } from "lodash-es";
-import whatInput from "what-input";
-import PaneDropdown from "./PaneDropdown.vue";
+import {
+  ref,
+  computed,
+  nextTick,
+  onMounted,
+  onBeforeUnmount,
+  useTemplateRef,
+} from 'vue';
+import { cloneDeep } from 'lodash-es';
+import whatInput from 'what-input';
+import PaneDropdown from './PaneDropdown.vue';
 
 interface ITab {
   name: string;
@@ -102,14 +108,15 @@ const props = withDefaults(
   }>(),
   {
     updateRoute: true,
-  }
+  },
 );
 
-const emit = defineEmits<{ "tab-selected": [tab: string] }>();
+const emit = defineEmits<{ 'tab-selected': [tab: string] }>();
 
-const tabsNav = useTemplateRef<HTMLDivElement>("tabsNav");
-const tabsWrapper = useTemplateRef<HTMLDivElement>("tabsWrapper");
-const hiddenTabsDropdown = useTemplateRef<InstanceType<typeof PaneDropdown>>("hiddenTabsDropdown");
+const tabsNav = useTemplateRef<HTMLDivElement>('tabsNav');
+const tabsWrapper = useTemplateRef<HTMLDivElement>('tabsWrapper');
+const hiddenTabsDropdown =
+  useTemplateRef<InstanceType<typeof PaneDropdown>>('hiddenTabsDropdown');
 
 const isMounted = ref(false);
 const hasHiddenTabs = ref(true);
@@ -119,13 +126,17 @@ const dropdownIsActive = ref(false);
 const prevWidth = ref(0);
 const tabWidthsSet = ref(false);
 
-const tabLinkTag = computed(() => (props.updateRoute ? "router-link" : "button"));
+const tabLinkTag = computed(() =>
+  props.updateRoute ? 'router-link' : 'button',
+);
 
-const tabSize = computed(() => (props.size === "large" ? "16px" : "14px"));
+const tabSize = computed(() => (props.size === 'large' ? '16px' : '14px'));
 
 const selectTabSize = computed(() => ({ fontSize: tabSize.value }));
 
-const hiddenTabs = computed(() => modifiedTabs.value.filter((tab) => tab.hidden));
+const hiddenTabs = computed(() =>
+  modifiedTabs.value.filter((tab) => tab.hidden),
+);
 
 const activeTab = computed(() => {
   if (modifiedTabs.value.every((tab) => !tab.active)) {
@@ -134,7 +145,9 @@ const activeTab = computed(() => {
   return modifiedTabs.value.find((tab) => tab.active);
 });
 
-const hiddenActiveTab = computed(() => hiddenTabs.value.find((tab) => tab.active));
+const hiddenActiveTab = computed(() =>
+  hiddenTabs.value.find((tab) => tab.active),
+);
 
 function loadTabProperties() {
   modifiedTabs.value = cloneDeep(props.tabs).map((tab) => ({
@@ -146,15 +159,17 @@ function loadTabProperties() {
 }
 
 function setTabWidths() {
-  Array.from(tabsNav.value!.querySelectorAll(".s-tabs__tab")).forEach((tab, idx) => {
-    nextTick(() => {
-      const tabLink = tab.querySelector(".s-tabs__link") as HTMLDivElement;
-      modifiedTabs.value[idx].width =
-        idx !== modifiedTabs.value.length - 1
-          ? tabLink.offsetWidth + 16
-          : tabLink.offsetWidth;
-    });
-  });
+  Array.from(tabsNav.value!.querySelectorAll('.s-tabs__tab')).forEach(
+    (tab, idx) => {
+      nextTick(() => {
+        const tabLink = tab.querySelector('.s-tabs__link') as HTMLDivElement;
+        modifiedTabs.value[idx].width =
+          idx !== modifiedTabs.value.length - 1
+            ? tabLink.offsetWidth + 16
+            : tabLink.offsetWidth;
+      });
+    },
+  );
 }
 
 function loadResizeObserver() {
@@ -191,41 +206,51 @@ function setHiddenTabs() {
       }
     });
 
-    if (modifiedTabs.value.some((tab) => tab.hidden)) hasHiddenTabs.value = true;
+    if (modifiedTabs.value.some((tab) => tab.hidden))
+      hasHiddenTabs.value = true;
   });
 }
 
-function setTabOnKeyDown(event: KeyboardEvent, current: string, direction = "RIGHT") {
-  const currentIndex = modifiedTabs.value.findIndex((tab) => current === tab.value);
+function setTabOnKeyDown(
+  event: KeyboardEvent,
+  current: string,
+  direction = 'RIGHT',
+) {
+  const currentIndex = modifiedTabs.value.findIndex(
+    (tab) => current === tab.value,
+  );
   let newIndex = 0;
 
-  if (direction === "LEFT") {
-    newIndex = currentIndex === 0 ? modifiedTabs.value.length - 1 : currentIndex - 1;
+  if (direction === 'LEFT') {
+    newIndex =
+      currentIndex === 0 ? modifiedTabs.value.length - 1 : currentIndex - 1;
   } else {
-    newIndex = currentIndex === modifiedTabs.value.length - 1 ? 0 : currentIndex + 1;
+    newIndex =
+      currentIndex === modifiedTabs.value.length - 1 ? 0 : currentIndex + 1;
   }
 
   togglePaneDropdown(
     modifiedTabs.value[currentIndex].hidden,
-    modifiedTabs.value[newIndex].hidden
+    modifiedTabs.value[newIndex].hidden,
   );
 
   let newTab: HTMLSpanElement | HTMLAnchorElement | null = null;
 
   if (modifiedTabs.value[newIndex].hidden) {
     const newHiddenIndex = hiddenTabs.value.findIndex(
-      (tab) => modifiedTabs.value[newIndex].value === tab.value
+      (tab) => modifiedTabs.value[newIndex].value === tab.value,
     );
 
     nextTick(() => {
-      const newHiddenList = hiddenTabsDropdown.value!.$el.querySelectorAll<HTMLAnchorElement>(
-        ".s-pane-dropdown__list .s-tabs__link"
+      const newHiddenList = hiddenTabsDropdown.value!.$el.querySelectorAll(
+        '.s-pane-dropdown__list .s-tabs__link',
       );
       newTab = newHiddenList[newHiddenIndex];
     });
   } else {
-    const allTabElements = tabsNav.value!.querySelectorAll<HTMLDivElement>(".s-tabs__tab");
-    newTab = allTabElements[newIndex].querySelector(".s-tabs__link") as
+    const allTabElements =
+      tabsNav.value!.querySelectorAll<HTMLDivElement>('.s-tabs__tab');
+    newTab = allTabElements[newIndex].querySelector('.s-tabs__link') as
       | HTMLSpanElement
       | HTMLAnchorElement;
   }
@@ -264,9 +289,11 @@ function tabLinkOptions(tabValue: string) {
 function blurPaneDropDown() {
   nextTick(() => {
     const currentHiddenList = hiddenTabsDropdown.value!.$el.querySelectorAll(
-      ".s-pane-dropdown__list .s-tabs__link"
+      '.s-pane-dropdown__list .s-tabs__link',
     );
-    if ([...currentHiddenList].some((tabEl) => document.activeElement === tabEl)) {
+    if (
+      [...currentHiddenList].some((tabEl) => document.activeElement === tabEl)
+    ) {
       return;
     }
     hiddenTabFocused.value = false;
@@ -276,14 +303,13 @@ function blurPaneDropDown() {
 
 function focusActiveTab() {
   openPaneDropdown();
-  if (whatInput.ask("intent") === "keyboard") {
+  if (whatInput.ask('intent') === 'keyboard') {
     const activeTabIndex = hiddenTabs.value.findIndex((tab) => tab.active);
 
     nextTick(() => {
-      const currentHiddenList =
-        hiddenTabsDropdown.value!.$el.querySelectorAll<HTMLButtonElement | HTMLAnchorElement>(
-          ".s-pane-dropdown__list .s-tabs__link"
-        );
+      const currentHiddenList = hiddenTabsDropdown.value!.$el.querySelectorAll(
+        '.s-pane-dropdown__list .s-tabs__link',
+      );
       currentHiddenList[activeTabIndex]?.focus();
     });
   }
@@ -292,11 +318,11 @@ function focusActiveTab() {
 function showTab(tab: IModifiedTab) {
   modifiedTabs.value.forEach((t) => (t.active = false));
   tab.active = true;
-  emit("tab-selected", tab.value);
+  emit('tab-selected', tab.value);
 }
 
 onMounted(() => {
-  hiddenTabsDropdown.value!.$el.addEventListener("focus", focusActiveTab);
+  hiddenTabsDropdown.value!.$el.addEventListener('focus', focusActiveTab);
   loadTabProperties();
   isMounted.value = true;
 
@@ -317,12 +343,12 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  hiddenTabsDropdown.value!.$el.removeEventListener("focus", focusActiveTab);
+  hiddenTabsDropdown.value!.$el.removeEventListener('focus', focusActiveTab);
 });
 </script>
 
 <style lang="less" scoped>
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 .s-tabs {
   height: 100%;
 
@@ -367,7 +393,7 @@ onBeforeUnmount(() => {
     }
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       left: 0;
       bottom: -1px;
@@ -414,7 +440,7 @@ onBeforeUnmount(() => {
 
     .s-tabs__link {
       width: 100%;
-      font-family: "Roboto", sans-serif;
+      font-family: 'Roboto', sans-serif;
       .weight(@medium);
       text-align: left;
       .transition(color);
@@ -431,6 +457,10 @@ onBeforeUnmount(() => {
   overflow-y: auto;
   .padding-v-sides(3);
 }
+</style>
+
+<style lang="less">
+@import (reference) './../styles/Imports';
 
 .night,
 .night-theme {

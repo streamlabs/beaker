@@ -300,6 +300,10 @@ a {
   overflow-y: auto;
   .padding-v-sides(3);
 }
+</style>
+
+<style lang="less">
+@import (reference) "./../styles/Imports";
 
 .night,
 .night-theme {

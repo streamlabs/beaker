@@ -1,7 +1,7 @@
 <template>
   <div class="s-call-to-action" :class="callToActionMq" :style="callToActionBg">
     <i
-      v-if="(buttonVariation === 'prime') | (buttonVariation === 'prime-white')"
+      v-if="buttonVariation === 'prime' || buttonVariation === 'prime-white'"
       class="icon-prime prime-bg"
     ></i>
     <div
@@ -55,9 +55,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { useMq } from "vue3-mq";
-import Button from "./../components/Button.vue";
+import { computed } from 'vue';
+import { useMediaQuery } from '@vueuse/core';
+import Button from './../components/Button.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -86,24 +86,27 @@ const props = withDefaults(
     buttonIcon?: string;
   }>(),
   {
-    thumbnail: "https://cdn.streamlabs.com/static/kevin-standard.svg",
+    thumbnail: 'https://cdn.streamlabs.com/static/kevin-standard.svg',
     hasThumbnail: true,
     thumbnailWidth: 80,
     thumbnailHeight: 80,
-    thumbnailAlt: "Get started by downloading Streamlabs OBS",
-    title: "Get started by downloading Streamlabs OBS",
-    description: "Over 800k creators use Streamlabs OBS daily, delivering entertainment.",
-    buttonVariation: "slobs-download",
-    buttonTitle: "Download Streamlabs OBS",
+    thumbnailAlt: 'Get started by downloading Streamlabs OBS',
+    title: 'Get started by downloading Streamlabs OBS',
+    description:
+      'Over 800k creators use Streamlabs OBS daily, delivering entertainment.',
+    buttonVariation: 'slobs-download',
+    buttonTitle: 'Download Streamlabs OBS',
     customButtonSlot: false,
     bgPrime: false,
-  }
+  },
 );
 
-const mq = useMq();
+const isMobile = useMediaQuery('(max-width: 899px)');
 
 const callToActiontitleColor = computed(() => ({ color: props.titleColor }));
-const callToActionSubTitleColor = computed(() => ({ color: props.subTitleColor }));
+const callToActionSubTitleColor = computed(() => ({
+  color: props.subTitleColor,
+}));
 const callToActionBg = computed(() => ({ backgroundColor: props.bgColor }));
 const callToActionThumb = computed(() => ({
   width: `${props.thumbnailWidth}px`,
@@ -111,14 +114,20 @@ const callToActionThumb = computed(() => ({
   backgroundColor: props.thumbnailBg,
 }));
 
-const callToActionMq = computed(() => mq.current === "sm" ? "s-call-to-action-mq" : "");
-const callToActionThumbMq = computed(() => mq.current === "sm" ? "s-call-to-action__thumb-mq" : "");
-const callToActionDescMq = computed(() => mq.current === "sm" ? "s-call-to-action__description-mq" : "");
-const titleMq = computed(() => mq.current === "sm" ? "s-title-mq" : "");
+const callToActionMq = computed(() =>
+  isMobile.value ? 's-call-to-action-mq' : '',
+);
+const callToActionThumbMq = computed(() =>
+  isMobile.value ? 's-call-to-action__thumb-mq' : '',
+);
+const callToActionDescMq = computed(() =>
+  isMobile.value ? 's-call-to-action__description-mq' : '',
+);
+const titleMq = computed(() => (isMobile.value ? 's-title-mq' : ''));
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-call-to-action-mq {
   flex-direction: column !important;

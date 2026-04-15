@@ -10,9 +10,10 @@
     <input
       v-if="!isMini"
       type="text"
-      :value="value"
+      :value="modelValue"
       :placeholder="placeholder"
       @click="showPicker()"
+      @focus="showPicker"
       @input="updateFromInput"
       :class="{ 's-colorpicker__input--error': error }"
     />
@@ -33,26 +34,26 @@
 
     <div
       class="s-colorpicker__preview"
-      :style="{ backgroundColor: value }"
+      :style="{ backgroundColor: modelValue }"
       @click="showPicker()"
     ></div>
     <div class="s-colorpicker__preview--alpha"></div>
 
     <transition name="fade">
       <div v-if="displayPicker" class="s-colorpicker__picker-wrapper">
-        <picker
+        <ChromePicker
           ref="chrome-color-picker"
           class="s-colorpicker"
           :class="alphaClass"
-          :value="colors"
+          :tinyColor="colors"
           :disable-alpha="!hasAlpha"
           :disable-fields="!hasAlpha"
-          @input="updateFromPicker"
+          @update:tinyColor="updateFromPicker"
         />
         <input
           v-if="isMini"
           type="text"
-          :value="value"
+          :value="modelValue"
           :placeholder="placeholder"
           @input="updateFromInput"
           v-bind="$attrs"
@@ -66,13 +67,13 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, useTemplateRef } from "vue";
-import { Chrome } from "vue-color";
+import { ChromePicker, tinycolor } from "vue-color";
 
 defineOptions({ inheritAttrs: false });
 
 const props = withDefaults(
   defineProps<{
-    value?: any;
+    modelValue?: any;
     placeholder?: string;
     hasAlpha?: boolean;
     isMini?: boolean;
@@ -82,26 +83,26 @@ const props = withDefaults(
   { placeholder: "#31c3a2", hasAlpha: false, isMini: false }
 );
 
-const emit = defineEmits<{ input: [val: string] }>();
+const emit = defineEmits<{ 'update:modelValue': [val: string] }>();
 
 const colorpicker = useTemplateRef<HTMLElement>("colorpicker");
 const displayPicker = ref(false);
-const colors = ref<any>({ hex: props.value });
+const colors = ref(tinycolor(props.modelValue));
 
 const alphaClass = computed(() => {
   if (!props.hasAlpha) return false;
-  return colors.value["a"] === 1 ? "nonAlpha" : "alpha";
+  return colors.value.getAlpha() === 1 ? "nonAlpha" : "alpha";
 });
 
 function updateFromPicker(value: any) {
   colors.value = value;
-  emit("input", alphaClass.value === "alpha" ? value.hex8 : value.hex);
+  emit("update:modelValue", alphaClass.value === "alpha" ? value.toHex8String() : value.toHexString());
 }
 
 function updateFromInput(event: Event) {
   const val = (event.target as HTMLInputElement).value;
-  colors.value = val;
-  emit("input", val);
+  colors.value = tinycolor(val);
+  emit("update:modelValue", val);
 }
 
 function hidePicker() {
@@ -151,7 +152,7 @@ function documentClick(e: Event) {
     border: 1px solid black;
     border-color: #4f5e65;
     background: transparent;
-    color: #ffffff;
+    color: @dark-2;
     height: 40px;
     border-radius: 4px;
     font-family: "Roboto";
@@ -187,7 +188,7 @@ function documentClick(e: Event) {
     }
   }
 
-  &.vc-chrome {
+  &.vc-chrome-picker {
     position: relative;
     left: 0;
     top: 0;
@@ -195,38 +196,37 @@ function documentClick(e: Event) {
     .day-shadow();
   }
 
-  .vc-chrome-active-color {
+  .active-color {
     border: 1px solid fade(@dark-2, 12%);
     .radius();
   }
 
-  .vc-chrome-body {
+  .body {
     padding: 12px;
     border-radius: 0 0 4px 4px;
   }
 
-  .vc-chrome-toggle-btn,
-  .vc-chrome-fields-wrap {
+  .toggle-btn {
     display: none;
   }
 
   &.alpha {
-    .vc-chrome-fields:not(:nth-child(2)) {
-      display: none;
+    .fields:not(:nth-child(2)) {
+      display: none !important;
     }
 
-    .vc-chrome-fields:nth-child(2) {
-      display: flex;
+    .fields:nth-child(2) {
+      display: flex !important;
     }
 
-    .vc-alpha-checkboard-wrap {
+    .color-wrap .vc-checkerboard {
       border-radius: 2px 4px 4px 2px;
     }
   }
 
   &.alpha,
   &.nonAlpha {
-    .vc-chrome-color-wrap {
+    .color-wrap {
       width: 42px;
 
       .vc-checkerboard {
@@ -242,12 +242,16 @@ function documentClick(e: Event) {
       border-color: fade(@white, 16%);
     }
 
-    .vc-chrome-body {
+    .body {
       background-color: @dark-4;
     }
 
-    .vc-chrome-active-color {
+    .active-color {
       border-color: fade(@white, 16%);
+    }
+
+    &__mini-wrapper {
+      color: @light-1;
     }
   }
 }

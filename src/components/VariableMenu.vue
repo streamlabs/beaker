@@ -10,9 +10,9 @@
   >
     <transition
       name="expand"
-      @enter="open"
-      @after-enter="afterOpen"
-      @leave="close"
+      @enter="(el) => open(el as HTMLElement)"
+      @after-enter="(el) => afterOpen(el as HTMLElement)"
+      @leave="(el) => close(el as HTMLElement)"
       tag="div"
     >
       <div
@@ -48,8 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, useTemplateRef } from "vue";
-import Fuse from "fuse.js";
+import { ref, computed, watch, onMounted, useTemplateRef } from 'vue';
+import Fuse from 'fuse.js';
 
 const props = withDefaults(
   defineProps<{
@@ -60,23 +60,23 @@ const props = withDefaults(
     inputChangeEventName?: string;
   }>(),
   {
-    search: "",
-    eventName: "fuseResultsUpdated",
-    inputChangeEventName: "fuseInputChanged",
-  }
+    search: '',
+    eventName: 'fuseResultsUpdated',
+    inputChangeEventName: 'fuseInputChanged',
+  },
 );
 
 const emit = defineEmits<{ (e: string, ...args: any[]): void }>();
 
-const resultArea = useTemplateRef<HTMLDivElement>("resultArea");
-const variableMenu = useTemplateRef<HTMLDivElement>("variableMenu");
+const resultArea = useTemplateRef<HTMLDivElement>('resultArea');
+const variableMenu = useTemplateRef<HTMLDivElement>('variableMenu');
 
 const result = ref<any[]>([]);
 const queryLength = ref(0);
 const phaseOne = ref(false);
 const phaseTwo = ref(false);
 const fuse = ref<any>(null);
-const value = ref("");
+const value = ref('');
 const currentResult = ref(0);
 const cursorPos = ref(0);
 
@@ -91,28 +91,36 @@ const options = {
   distance: 10,
   maxPatternLength: 12,
   minMatchCharLength: 0,
-  keys: ["variable"],
+  keys: ['variable'],
 };
 
-const noResults = computed(() => result.value.length === 0 && value.value !== "");
+const noResults = computed(
+  () => result.value.length === 0 && value.value !== '',
+);
 const limitedResult = computed(() => [...result.value].reverse());
-const selectedResult = computed(() => limitedResult.value[currentResult.value]?.item.variable);
-const calcTransform = computed(() =>
-  `transform: translateY(-${variableMenu.value?.offsetHeight ?? 0}px);`
+const selectedResult = computed(
+  () => limitedResult.value[currentResult.value]?.item.variable,
+);
+const calcTransform = computed(
+  () => `transform: translateY(-${variableMenu.value?.offsetHeight ?? 0}px);`,
 );
 
-watch(value, () => {
-  emit(props.inputChangeEventName, value.value);
-  if (value.value.includes("{")) {
-    getSearchString();
-    if (noResults.value) playClosingSequence();
-    if (value.value.length <= 0) playClosingSequence();
-  }
-  if (value.value === "") result.value = [];
-}, { immediate: true });
+watch(
+  value,
+  () => {
+    emit(props.inputChangeEventName, value.value);
+    if (value.value.includes('{')) {
+      getSearchString();
+      if (noResults.value) playClosingSequence();
+      if (value.value.length <= 0) playClosingSequence();
+    }
+    if (value.value === '') result.value = [];
+  },
+  { immediate: true },
+);
 
 watch(result, (val, oldVal) => {
-  if (noResults.value || value.value === "" || val.length !== oldVal.length) {
+  if (noResults.value || value.value === '' || val.length !== oldVal.length) {
     currentResult.value = limitedResult.value.length - 1;
   }
   emit(props.eventName, result.value);
@@ -120,29 +128,33 @@ watch(result, (val, oldVal) => {
 });
 
 function afterOpen(element: HTMLElement) {
-  element.style.height = "auto";
+  element.style.height = 'auto';
 }
 
 function open(element: HTMLElement) {
   const width = getComputedStyle(element).width;
   element.style.width = width;
-  element.style.position = "absolute";
-  element.style.visibility = "hidden";
-  element.style.height = "auto";
+  element.style.position = 'absolute';
+  element.style.visibility = 'hidden';
+  element.style.height = 'auto';
   const height = getComputedStyle(element).height;
-  element.style.width = "";
-  element.style.position = "";
-  element.style.visibility = "";
-  element.style.height = "0";
+  element.style.width = '';
+  element.style.position = '';
+  element.style.visibility = '';
+  element.style.height = '0';
   getComputedStyle(element).height;
-  setTimeout(() => { element.style.height = height; });
+  setTimeout(() => {
+    element.style.height = height;
+  });
 }
 
 function close(element: HTMLElement) {
   const height = getComputedStyle(element).height;
   element.style.height = height;
   getComputedStyle(element).height;
-  setTimeout(() => { element.style.height = "0"; });
+  setTimeout(() => {
+    element.style.height = '0';
+  });
 }
 
 function watchCursor(val: Event) {
@@ -157,13 +169,13 @@ function watchInput(val: Event) {
 }
 
 function getSearchString() {
-  if (value.value.trim() === "") {
+  if (value.value.trim() === '') {
     result.value = [];
   } else {
     const pos = cursorPos.value;
-    const bracketOpen = value.value.lastIndexOf("{", pos - 1);
+    const bracketOpen = value.value.lastIndexOf('{', pos - 1);
     const searchValue = value.value.substring(bracketOpen, pos);
-    const bracketClose = searchValue.lastIndexOf("}");
+    const bracketClose = searchValue.lastIndexOf('}');
     if (pos > bracketOpen && bracketClose === -1 && bracketOpen !== -1) {
       result.value = fuse.value.search(searchValue);
       queryLength.value = searchValue.length;
@@ -174,24 +186,28 @@ function getSearchString() {
 }
 
 function keyEvent(event: KeyboardEvent) {
-  if (event.keyCode === 38 && currentResult.value > 0) {
-    if (currentResult.value <= limitedResult.value.length - 7) resultArea.value?.scrollBy(0, -32);
+  if (event.key === 'ArrowUp' && currentResult.value > 0) {
+    if (currentResult.value <= limitedResult.value.length - 7)
+      resultArea.value?.scrollBy(0, -32);
     event.preventDefault();
     event.stopPropagation();
     currentResult.value--;
   }
-  if (event.keyCode === 40 && currentResult.value < limitedResult.value.length - 1) {
+  if (
+    event.key === 'ArrowDown' &&
+    currentResult.value < limitedResult.value.length - 1
+  ) {
     if (currentResult.value >= 6) resultArea.value?.scrollBy(0, 32);
     event.stopPropagation();
     currentResult.value++;
   }
-  if (event.keyCode === 13 && phaseOne.value) {
+  if (event.key === 'Enter' && phaseOne.value) {
     event.preventDefault();
     event.stopPropagation();
     mergeValues();
   }
-  if (event.keyCode === 27 && phaseOne.value) blurSearch();
-  if (event.keyCode === 9 && phaseOne.value) {
+  if (event.key === 'Escape' && phaseOne.value) blurSearch();
+  if (event.key === 'Tab' && phaseOne.value) {
     event.preventDefault();
     event.stopPropagation();
     mergeValues();
@@ -204,21 +220,29 @@ function mergeValues() {
     value.value.substring(0, cursor) +
     selectedResult.value.substring(queryLength.value) +
     value.value.substring(cursor);
-  setTimeout(() => { result.value = []; });
-  emit("update", value.value);
+  setTimeout(() => {
+    result.value = [];
+  });
+  emit('update', value.value);
 }
 
 function playClosingSequence() {
   if (phaseTwo.value) {
-    setTimeout(() => { phaseTwo.value = !phaseTwo.value; }, 100);
-    setTimeout(() => { phaseOne.value = !phaseOne.value; }, 200);
+    setTimeout(() => {
+      phaseTwo.value = !phaseTwo.value;
+    }, 100);
+    setTimeout(() => {
+      phaseOne.value = !phaseOne.value;
+    }, 200);
   }
 }
 
 function playOpeningSequence() {
   if (!phaseOne.value) {
     phaseOne.value = !phaseOne.value;
-    setTimeout(() => { phaseTwo.value = !phaseTwo.value; }, 100);
+    setTimeout(() => {
+      phaseTwo.value = !phaseTwo.value;
+    }, 100);
   }
 }
 
@@ -233,7 +257,7 @@ onMounted(() => {
 </script>
 
 <style lang="less">
-@import "./../styles/Imports";
+@import './../styles/Imports';
 
 .s-variablemenu {
   position: relative;
@@ -303,8 +327,12 @@ onMounted(() => {
     background-color: @dark-5;
     border: 4px solid rgba(0, 0, 0, 0.04);
     background-clip: padding-box;
-    -webkit-box-shadow: inset -1px -1px 0px @dark-5, inset 1px 1px 0px @dark-5;
-    box-shadow: inset -1px -1px 0px @dark-5, inset 1px 1px 0px @dark-5;
+    -webkit-box-shadow:
+      inset -1px -1px 0px @dark-5,
+      inset 1px 1px 0px @dark-5;
+    box-shadow:
+      inset -1px -1px 0px @dark-5,
+      inset 1px 1px 0px @dark-5;
   }
 
   .s-variablemenu-results {

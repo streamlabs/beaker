@@ -85,7 +85,9 @@
       :hasPrimeCloseButton="hasPrimeCloseButton"
       v-bind="$attrs"
     >
-      <slot></slot>
+      <template v-if="hasDefaultSlot">
+        <slot></slot>
+      </template>
     </ModalPrimeIntro>
   </div>
 </template>
@@ -93,13 +95,13 @@
 <script setup lang="ts">
 defineOptions({ inheritAttrs: false });
 
-import ModalBasic from "./../components/ModalBasic.vue";
-import ModalSubscribe from "./../components/ModalSubscribe.vue";
-import ModalRedirect from "./../components/ModalRedirect.vue";
-import ModalConfirmation from "./../components/ModalConfirmation.vue";
-import ModalPrime from "./../components/ModalPrime.vue";
-import ModalPrimeIntro from "./../components/ModalPrimeIntro.vue";
-
+import ModalBasic from './../components/ModalBasic.vue';
+import ModalSubscribe from './../components/ModalSubscribe.vue';
+import ModalRedirect from './../components/ModalRedirect.vue';
+import ModalConfirmation from './../components/ModalConfirmation.vue';
+import ModalPrime from './../components/ModalPrime.vue';
+import ModalPrimeIntro from './../components/ModalPrimeIntro.vue';
+import { Comment, computed, useSlots } from 'vue';
 const show = defineModel<boolean>({ default: false });
 
 withDefaults(
@@ -129,6 +131,11 @@ withDefaults(
   {
     width: 600,
     minWidth: 600,
-  }
+  },
+);
+
+const slots = useSlots();
+const hasDefaultSlot = computed(() =>
+  slots.default?.().some((n) => n.type !== Comment),
 );
 </script>

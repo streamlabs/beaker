@@ -1,32 +1,32 @@
 <template>
   <div
     class="s-status-switch"
-    :class="{ enabled: !!value }"
-    @click="$emit('input', !value)"
-    @keydown.prevent.space="$emit('input', !value)"
-    @keydown.prevent.enter="$emit('input', !value)"
+    :class="{ enabled: !!modelValue }"
+    @click="$emit('update:modelValue', !modelValue)"
+    @keydown.prevent.space="$emit('update:modelValue', !modelValue)"
+    @keydown.prevent.enter="$emit('update:modelValue', !modelValue)"
     tabindex="0"
   >
     <div
       class="s-status-switch__paddle"
       :class="{ 's-status-switch__paddle--small': size === 'small' }"
-    ></div>
+    />
     <label v-if="label">{{ label }}</label>
-    <slot></slot>
+    <slot />
   </div>
 </template>
 
 <script setup lang="ts">
 withDefaults(
-  defineProps<{ label?: string; size?: string; value?: boolean }>(),
-  { value: false }
+  defineProps<{ label?: string; size?: string; modelValue?: boolean }>(),
+  { modelValue: false },
 );
 
-defineEmits<{ input: [val: boolean] }>();
+defineEmits<{ 'update:modelValue': [val: boolean] }>();
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-status-switch {
   user-select: none;
@@ -51,7 +51,7 @@ defineEmits<{ input: [val: boolean] }>();
     transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       width: 16px;
       height: 16px;

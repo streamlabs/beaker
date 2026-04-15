@@ -43,20 +43,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUpdated, onBeforeUnmount, useTemplateRef } from "vue";
+import {
+  ref,
+  computed,
+  watch,
+  onMounted,
+  onUpdated,
+  onBeforeUnmount,
+  useTemplateRef,
+} from 'vue';
 
 const props = withDefaults(
   defineProps<{
     interval?: number;
     steps?: number;
-    data?: any[];
+    data?: any[] | null;
     dataIndexing?: boolean;
     value?: string | number;
     min?: number;
     max?: number;
-    tooltip?: "always" | false;
-    suffix?: string;
-    prefix?: string;
+    tooltip?: 'always' | false;
+    suffix?: string | null;
+    prefix?: string | null;
     simpleTheme?: boolean;
     marks?: boolean;
     labels?: boolean;
@@ -71,7 +79,7 @@ const props = withDefaults(
     value: 0,
     min: 0,
     max: 100,
-    tooltip: "always",
+    tooltip: 'always',
     suffix: null,
     prefix: null,
     simpleTheme: false,
@@ -79,7 +87,7 @@ const props = withDefaults(
     labels: false,
     isDisabled: false,
     draggable: true,
-  }
+  },
 );
 
 const emit = defineEmits<{
@@ -89,10 +97,10 @@ const emit = defineEmits<{
   callbackRange: [val: any];
 }>();
 
-const wrap = useTemplateRef<HTMLDivElement>("wrap");
-const elem = useTemplateRef<HTMLDivElement>("elem");
-const processEl = useTemplateRef<HTMLDivElement>("process");
-const handle = useTemplateRef<HTMLDivElement>("handle");
+const wrap = useTemplateRef<HTMLDivElement>('wrap');
+const elem = useTemplateRef<HTMLDivElement>('elem');
+const processEl = useTemplateRef<HTMLDivElement>('process');
+const handle = useTemplateRef<HTMLDivElement>('handle');
 
 const isDragging = ref(false);
 const size = ref(0);
@@ -129,24 +137,30 @@ const val = computed({
 
 const displayValue = computed(() => {
   if (props.data) {
-    return props.dataIndexing ? props.data[currentIndex.value] : currentValue.value;
+    return props.dataIndexing
+      ? props.data[currentIndex.value]
+      : currentValue.value;
   } else {
     return currentValue.value;
   }
 });
 
-const currentIndex = computed(() => (currentValue.value - minimum.value) / spacing.value);
+const currentIndex = computed(
+  () => (currentValue.value - minimum.value) / spacing.value,
+);
 
 const indexRange = computed(() => [0, currentIndex.value]);
 
 const minimum = computed(() => (props.data ? 0 : props.min));
 
-const maximum = computed(() => (props.data ? props.data.length - 1 : props.max));
+const maximum = computed(() =>
+  props.data ? props.data.length - 1 : props.max,
+);
 
 const spacing = computed(() => (props.data ? 1 : props.interval));
 
 const multiple = computed(() => {
-  const decimals = `${props.interval}`.split(".")[1];
+  const decimals = `${props.interval}`.split('.')[1];
   return decimals ? Math.pow(10, decimals.length) : 1;
 });
 
@@ -158,7 +172,7 @@ const total = computed(() => {
       (props.interval * multiple.value) !==
     0
   ) {
-    console.error("[ERROR]: Prop[interval] must be a divisor of [max] - [min]");
+    console.error('[ERROR]: Prop[interval] must be a divisor of [max] - [min]');
   }
   return (maximum.value - minimum.value) / props.interval;
 });
@@ -166,7 +180,7 @@ const total = computed(() => {
 const gap = computed(() => size.value / total.value);
 
 const position = computed(
-  () => ((currentValue.value - minimum.value) / spacing.value) * gap.value
+  () => ((currentValue.value - minimum.value) / spacing.value) * gap.value,
 );
 
 const limit = computed(() => [0, size.value]);
@@ -177,7 +191,7 @@ watch(
   () => props.value,
   (newVal) => {
     setValue(newVal);
-  }
+  },
 );
 
 function scheduleResize() {
@@ -206,37 +220,37 @@ function dnr() {
 }
 
 function resizeSensor(el: HTMLDivElement) {
-  const expand = document.createElement("div");
-  expand.classList.add("s-slider-expand-watch");
-  expand.style.position = "absolute";
-  expand.style.left = "0px";
-  expand.style.top = "0px";
-  expand.style.right = "0px";
-  expand.style.bottom = "0px";
-  expand.style.overflow = "hidden";
-  expand.style.visibility = "hidden";
-  const expandChild = document.createElement("div");
-  expandChild.style.position = "absolute";
-  expandChild.style.left = "0px";
-  expandChild.style.top = "0px";
-  expandChild.style.width = "10000000px";
-  expandChild.style.height = "10000000px";
+  const expand = document.createElement('div');
+  expand.classList.add('s-slider-expand-watch');
+  expand.style.position = 'absolute';
+  expand.style.left = '0px';
+  expand.style.top = '0px';
+  expand.style.right = '0px';
+  expand.style.bottom = '0px';
+  expand.style.overflow = 'hidden';
+  expand.style.visibility = 'hidden';
+  const expandChild = document.createElement('div');
+  expandChild.style.position = 'absolute';
+  expandChild.style.left = '0px';
+  expandChild.style.top = '0px';
+  expandChild.style.width = '10000000px';
+  expandChild.style.height = '10000000px';
   expand.appendChild(expandChild);
-  const shrink = document.createElement("div");
-  shrink.classList.add("s-slider-shrink-watch");
-  shrink.style.position = "absolute";
-  shrink.style.left = "0px";
-  shrink.style.top = "0px";
-  shrink.style.right = "0px";
-  shrink.style.bottom = "0px";
-  shrink.style.overflow = "hidden";
-  shrink.style.visibility = "hidden";
-  const shrinkChild = document.createElement("div");
-  shrinkChild.style.position = "absolute";
-  shrinkChild.style.left = "0px";
-  shrinkChild.style.top = "0px";
-  shrinkChild.style.width = "200%";
-  shrinkChild.style.height = "200%";
+  const shrink = document.createElement('div');
+  shrink.classList.add('s-slider-shrink-watch');
+  shrink.style.position = 'absolute';
+  shrink.style.left = '0px';
+  shrink.style.top = '0px';
+  shrink.style.right = '0px';
+  shrink.style.bottom = '0px';
+  shrink.style.overflow = 'hidden';
+  shrink.style.visibility = 'hidden';
+  const shrinkChild = document.createElement('div');
+  shrinkChild.style.position = 'absolute';
+  shrinkChild.style.left = '0px';
+  shrinkChild.style.top = '0px';
+  shrinkChild.style.width = '200%';
+  shrinkChild.style.height = '200%';
   shrink.appendChild(shrinkChild);
   el.appendChild(expand);
   el.appendChild(shrink);
@@ -247,26 +261,35 @@ function resizeSensor(el: HTMLDivElement) {
 }
 
 function setSensorScroll(el: HTMLDivElement) {
-  el.querySelector(".s-slider-expand-watch")!.scrollLeft = 10000000;
-  (el.querySelector(".s-slider-expand-watch") as HTMLElement).scrollTop = 10000000;
-  (el.querySelector(".s-slider-shrink-watch") as HTMLElement).scrollLeft = 10000000;
-  (el.querySelector(".s-slider-shrink-watch") as HTMLElement).scrollTop = 10000000;
+  el.querySelector('.s-slider-expand-watch')!.scrollLeft = 10000000;
+  (el.querySelector('.s-slider-expand-watch') as HTMLElement).scrollTop =
+    10000000;
+  (el.querySelector('.s-slider-shrink-watch') as HTMLElement).scrollLeft =
+    10000000;
+  (el.querySelector('.s-slider-shrink-watch') as HTMLElement).scrollTop =
+    10000000;
 }
 
 function bindEvents(el: HTMLElement) {
-  document.addEventListener("mousemove", moving);
-  document.addEventListener("mouseup", moveEnd);
-  document.addEventListener("mouseleave", moveEnd);
-  el.querySelector(".s-slider-shrink-watch")!.addEventListener("scroll", dnr);
-  el.querySelector(".s-slider-expand-watch")!.addEventListener("scroll", dnr);
+  document.addEventListener('mousemove', moving);
+  document.addEventListener('mouseup', moveEnd);
+  document.addEventListener('mouseleave', moveEnd);
+  el.querySelector('.s-slider-shrink-watch')!.addEventListener('scroll', dnr);
+  el.querySelector('.s-slider-expand-watch')!.addEventListener('scroll', dnr);
 }
 
 function unbindEvents(el: HTMLElement) {
-  document.removeEventListener("mousemove", moving);
-  document.removeEventListener("mouseup", moveEnd);
-  document.removeEventListener("mouseleave", moveEnd);
-  el.querySelector(".s-slider-shrink-watch")!.removeEventListener("scroll", dnr);
-  el.querySelector(".s-slider-expand-watch")!.removeEventListener("scroll", dnr);
+  document.removeEventListener('mousemove', moving);
+  document.removeEventListener('mouseup', moveEnd);
+  document.removeEventListener('mouseleave', moveEnd);
+  el.querySelector('.s-slider-shrink-watch')!.removeEventListener(
+    'scroll',
+    dnr,
+  );
+  el.querySelector('.s-slider-expand-watch')!.removeEventListener(
+    'scroll',
+    dnr,
+  );
 }
 
 function getPos(e: MouseEvent) {
@@ -283,7 +306,7 @@ function wrapClick(e: MouseEvent) {
 function moveStart() {
   if (!props.draggable) return;
   isDragging.value = true;
-  emit("dragStart");
+  emit('dragStart');
 }
 
 function moving(e: MouseEvent) {
@@ -295,7 +318,7 @@ function moving(e: MouseEvent) {
 
 function moveEnd(e: MouseEvent) {
   if (isDragging.value && props.draggable) {
-    emit("dragEnd");
+    emit('dragEnd');
     setValue(limitValue(props.value));
     setTransitionTime(0.125);
     setTransform(position.value);
@@ -318,12 +341,12 @@ function setValueOnPos(pos: number, isDrag: boolean) {
     setCurrentValue(v, isDrag);
   } else if (pos < range[0]) {
     halt.value = true;
-    console.log("overshoot1");
+    console.log('overshoot1');
     setTransform(range[0]);
     setCurrentValue(valueRange[0], true);
   } else {
     halt.value = true;
-    console.log("overshoot2");
+    console.log('overshoot2');
     setTransform(range[1]);
     setCurrentValue(valueRange[1], true);
   }
@@ -340,7 +363,7 @@ function createMarks() {
       (props.interval * multiple.value) !==
     0
   ) {
-    console.error("[ERROR]: Prop[interval] must be a divisor of [max] - [min]");
+    console.error('[ERROR]: Prop[interval] must be a divisor of [max] - [min]');
   } else {
     const ticks = (props.max - props.min) / props.interval;
     let t = 0 - props.interval;
@@ -387,15 +410,12 @@ function setTransform(v: number) {
   const value = v - (handle.value!.scrollWidth - 2) / 2;
   const translateValue = `translateX(${value}px)`;
   handle.value!.style.transform = translateValue;
-  handle.value!.style.webkitTransform = translateValue;
   processEl.value!.style.width = `${v}px`;
 }
 
 function setTransitionTime(t: number) {
   handle.value!.style.transitionDuration = `${t}s`;
-  handle.value!.style.webkitTransitionDuration = `${t}s`;
   processEl.value!.style.transitionDuration = `${t}s`;
-  processEl.value!.style.webkitTransitionDuration = `${t}s`;
 }
 
 function limitValue(v: any) {
@@ -413,9 +433,9 @@ function limitValue(v: any) {
 function syncValue() {
   const v = val.value;
   if (range.value.length) {
-    emit("callbackRange", range.value[currentIndex.value]);
+    emit('callbackRange', range.value[currentIndex.value]);
   }
-  emit("input", v);
+  emit('input', v);
 }
 
 function getValue() {
@@ -445,7 +465,7 @@ defineExpose({ getValue, getIndex });
 
 onMounted(() => {
   if (props.steps !== 0) {
-    console.error("[ERROR]: Prop[steps] has been replaced with Prop[interval]");
+    console.error('[ERROR]: Prop[steps] has been replaced with Prop[interval]');
   }
   getStaticData();
   setValue(limitValue(props.value));
@@ -475,7 +495,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="less" scoped>
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-slider {
   display: flex;
@@ -533,14 +553,14 @@ onBeforeUnmount(() => {
       &:before,
       &:after {
         border: none;
-        font-family: "icomoon";
+        font-family: 'icomoon';
         font-weight: 900;
         position: absolute;
         top: 0px;
         color: @light-4;
         font-size: 11px;
         line-height: 15px;
-        content: "\e996";
+        content: '\e996';
         display: inline-block;
       }
 
@@ -619,6 +639,10 @@ onBeforeUnmount(() => {
 .s-slider--ani__ticks-move {
   transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
+</style>
+
+<style lang="less">
+@import (reference) './../styles/Imports';
 
 .night,
 .night-theme {

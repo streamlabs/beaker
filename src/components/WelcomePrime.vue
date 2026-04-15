@@ -40,39 +40,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, useSlots } from "vue";
-import Button from "./../components/Button.vue";
+import { ref, computed, onMounted, useSlots } from 'vue';
+import Button from './../components/Button.vue';
 
 withDefaults(defineProps<{ primeButtonText?: string }>(), {
-  primeButtonText: "Continue",
+  primeButtonText: 'Continue',
 });
 
 const emit = defineEmits<{ onClickPrime: [] }>();
 const slots = useSlots();
 
 const primeFeatureListDefault = [
-  "100s of Stunning Themes",
-  "Every App is FREE",
-  "Merch Store with Wholesale Pricing",
-  "Custom Web Domain and Email Address",
-  "Automatic Gold All-Star Status",
+  '100s of Stunning Themes',
+  'Every App is FREE',
+  'Merch Store with Wholesale Pricing',
+  'Custom Web Domain and Email Address',
+  'Automatic Gold All-Star Status',
 ];
 
 const isUserAgentEdge = ref(false);
 const hasSlot = computed(() => !!slots.default);
 
 function onPrimeButtonHandler() {
-  emit("onClickPrime");
+  emit('onClickPrime');
 }
 
 onMounted(() => {
-  isUserAgentEdge.value = navigator.userAgent.indexOf("Edge") !== -1;
+  isUserAgentEdge.value = navigator.userAgent.indexOf('Edge') !== -1;
 });
 </script>
 
 <style lang="less" scoped>
-@import "./../styles/Imports";
-@import "./../styles/components/Modals";
+@import './../styles/Imports';
+@import './../styles/components/Modals';
 
 .s-modal-welcome-prime {
   position: relative;
@@ -109,7 +109,7 @@ onMounted(() => {
   }
 
   .modal-prime__heading {
-    font-family: "Barlow", sans-serif;
+    font-family: 'Barlow', sans-serif;
     font-size: 32px !important;
     font-weight: 800;
     text-align: center;
@@ -137,12 +137,15 @@ onMounted(() => {
       width: 516px;
       margin: 0 auto;
       display: block;
-      background: url("https://cdn.streamlabs.com/static/imgs/compressed/streamer-4.png"),
-        url("https://cdn.streamlabs.com/static/imgs/landing/streamer-2.png");
+      background:
+        url('https://cdn.streamlabs.com/static/imgs/compressed/streamer-4.png'),
+        url('https://cdn.streamlabs.com/static/imgs/landing/streamer-2.png');
       height: 238px;
       background-repeat: no-repeat;
       background-size: 48%, 39%;
-      background-position: 229px -25px, 103px 0;
+      background-position:
+        229px -25px,
+        103px 0;
     }
   }
 
@@ -189,6 +192,10 @@ onMounted(() => {
     }
   }
 }
+</style>
+
+<style lang="less">
+@import './../styles/Imports';
 
 .night,
 .night-theme {

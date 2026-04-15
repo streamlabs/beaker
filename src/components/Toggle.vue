@@ -3,50 +3,47 @@
     <button
       type="button"
       v-for="(val, key) in values"
-      :key="val.id"
+      :key="key"
       :title="capitalize(key)"
-      @click="$emit('input', key)"
+      @click="$emit('update:modelValue', key)"
       :class="[
         's-toggle__option',
-        { 's-toggle__option--active': value === key }
+        { 's-toggle__option--active': modelValue === key },
       ]"
       v-html="val"
     />
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed } from 'vue';
 
 const props = defineProps<{
-  values: object;
-  value: string;
+  values: Record<string | number, string>;
+  modelValue: string;
   variation?: string;
 }>();
 
 defineEmits<{
-  input: [key: string];
+  'update:modelValue': [key: string];
 }>();
 
 const toggleClass = computed(() =>
-  props.variation ? `s-toggle--${props.variation}` : undefined
+  props.variation ? `s-toggle--${props.variation}` : undefined,
 );
 
 function capitalize(value: string): string {
-  if (!value) return "";
+  if (!value) return '';
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-toggle {
   display: inline-flex;
-  .radius();
   .transition();
-  overflow: hidden;
   .weight(@medium);
 
   &__option {
@@ -58,11 +55,21 @@ function capitalize(value: string): string {
     .transition();
     outline: none;
     display: flex;
-    font-family: "Roboto", sans-serif;
+    font-family: 'Roboto', sans-serif;
 
     &--active {
       background-color: @dark-2;
       color: @white;
+    }
+
+    &:first-of-type {
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    &:last-of-type {
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
     }
   }
 

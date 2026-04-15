@@ -14,14 +14,13 @@
         <span class="modal-prime-intro__heading--bold">Prime</span>
         <br />
 
-        <slot v-if="hasSlot"></slot>
-        <div v-else>
+        <slot>
           <span>to customize your tip page!</span>
 
           <div class="modal-prime-intro__heading--subtitle">
-            <slot v-if="hasSubtitleSlot" name="subtitle"></slot>
+            <slot name="subtitle"></slot>
           </div>
-        </div>
+        </slot>
       </div>
       <ul class="modal-prime-intro__list">
         <li class="modal-prime-intro__list__item">
@@ -42,40 +41,34 @@
       </ul>
       <span class="modal-prime-intro__price">...only from $12/month</span>
       <div class="modal-prime-intro__button">
-        <s-button
+        <SButton
           size="large"
           variation="prime-white"
           :title="primeButtonText"
           @click="onPrimeButtonHandler"
-        ></s-button>
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, useSlots } from "vue";
-import Button from "./../components/Button.vue";
+import SButton from './../components/Button.vue';
 
 withDefaults(defineProps<{ primeButtonText?: string }>(), {
-  primeButtonText: "Join Prime",
+  primeButtonText: 'Join Prime',
 });
 
 const emit = defineEmits<{ onClickPrime: [] }>();
-const slots = useSlots();
-
-const hasTitleSlot = computed(() => !!slots.title);
-const hasSubtitleSlot = computed(() => !!slots.subtitle);
-const hasSlot = computed(() => !!slots.default);
 
 function onPrimeButtonHandler() {
-  emit("onClickPrime");
+  emit('onClickPrime');
 }
 </script>
 
 <style lang="less" scoped>
-@import "./../styles/Imports";
-@import "./../styles/components/Modals";
+@import './../styles/Imports';
+@import './../styles/components/Modals';
 
 .s-modal-prime-intro {
   background-color: @prime;
@@ -93,6 +86,7 @@ function onPrimeButtonHandler() {
 .modal-prime-intro {
   position: relative;
   z-index: 1;
+  font-family: 'Roboto', sans-serif;
   &__bg {
     position: absolute;
     z-index: 0;
@@ -126,7 +120,7 @@ function onPrimeButtonHandler() {
     }
 
     &--bold {
-      font-family: "Barlow";
+      font-family: 'Barlow';
       font-weight: 900;
     }
   }

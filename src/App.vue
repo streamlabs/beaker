@@ -1,29 +1,27 @@
 <template>
-  <div id="app" :class="[isNightTheme ? nightClasses : '', appClass]">
-    <div id="nav">
+  <div class="app-wrapper">
+    <header class="app-header">
       <div class="logo">
-        <img v-if="isNightTheme" src="./assets/imgs/beaker-full-night.svg" />
-        <img v-else src="./assets/imgs/beaker-full.svg" />
+        <img :src="isDark ? nightLogo : dayLogo" alt="Beaker Logo" />
       </div>
-      <toggle :values="themes" :value="theme" @input="theme = $event"></toggle>
-    </div>
+    </header>
 
-    <documentation></documentation>
+    <Documentation />
 
     <div class="floating-links">
       <a
         class="floating-link"
         target="_blank"
-        href="https://github.com/mbiemiller/beaker"
+        href="https://github.com/streamlabs/beaker"
       >
-        <img src="./assets/imgs/github.png" />
+        <img src="./assets/imgs/github.png" alt="Github Logo" />
       </a>
       <a
         class="floating-link"
         target="_blank"
         href="https://www.npmjs.com/package/streamlabs-beaker"
       >
-        <img src="./assets/imgs/npm.svg" />
+        <img src="./assets/imgs/npm.svg" alt="NPM Logo" />
       </a>
     </div>
     <ModalsContainer />
@@ -31,48 +29,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { ModalsContainer, useVfm } from "vue-final-modal";
-import { useRouter } from "vue-router";
-import Toggle from "./components/Toggle.vue";
-import Documentation from "./views/Documentation.vue";
+import { ModalsContainer } from 'vue-final-modal';
+import Documentation from './views/Documentation.vue';
+import { useDark } from '@vueuse/core';
 
-const appClass = "app-wrapper";
-const nightClasses = ["night", "night-theme"];
-const theme = ref("night");
-const themes = { day: "Day", night: "Night" };
+import dayLogo from './assets/imgs/beaker-full.svg';
+import nightLogo from './assets/imgs/beaker-full-night.svg';
 
-const isNightTheme = computed(() => theme.value === "night");
-
-const vfm = useVfm();
-const router = useRouter();
-router.beforeEach(() => { vfm.closeAll(); });
+const isDark = useDark();
 </script>
 
 <style lang="less">
-@import "./styles/App";
-@import "./styles/Imports";
+@import './styles/App';
+@import './styles/Imports';
 
-#nav {
-  border-bottom: 1px solid @day-border;
-  .margin-bottom(3);
+.app-header {
   position: relative;
+  .margin-bottom(3);
   .padding-bottom();
-
-  a {
-    .weight(@medium);
-    color: @day-paragraph;
-
-    &.router-link-exact-active {
-      color: @teal;
-    }
-  }
-
-  .s-toggle {
-    position: absolute;
-    left: 0;
-    bottom: -54px;
-  }
+  border-bottom: 1px solid @day-border;
 }
 
 .app-wrapper {
@@ -86,7 +61,7 @@ router.beforeEach(() => { vfm.closeAll(); });
 }
 
 .floating-links {
-  position: absolute;
+  position: fixed;
   bottom: 40px;
   right: 40px;
 }
@@ -105,7 +80,7 @@ router.beforeEach(() => { vfm.closeAll(); });
 
 .night,
 .night-theme {
-  #nav {
+  .app-header {
     border-bottom-color: @night-border;
   }
 }

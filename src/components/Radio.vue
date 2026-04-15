@@ -4,9 +4,9 @@
       type="radio"
       :id="id"
       :name="name"
-      :checked="val == value"
+      :checked="val == modelValue"
       :value="val"
-      @input="$emit('input', val)"
+      @input="$emit('update:modelValue', val)"
       @click="$emit('on-click')"
     />
     <label :for="id">{{ label }}</label>
@@ -18,18 +18,18 @@ defineProps<{
   label: string;
   id: string;
   name: string;
-  value: string | boolean;
+  modelValue: string | boolean;
   val: string | boolean;
 }>();
 
 defineEmits<{
-  input: [val: string | boolean];
-  "on-click": [];
+  'update:modelValue': [val: string | boolean];
+  'on-click': [];
 }>();
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-checkbox {
   input:checked ~ label {
@@ -47,16 +47,16 @@ defineEmits<{
     top: 0px;
     opacity: 1;
     color: @white;
-    font-family: "Font Awesome 5 Free";
+    font-family: 'Font Awesome 5 Free';
     font-weight: 900;
-    content: "\f00c";
+    content: '\f00c';
     font-size: 10px;
   }
 }
 
 .s-radio.s-checkbox {
   label:before {
-    content: "";
+    content: '';
     transform: none;
     width: 16px;
     height: 16px;
@@ -66,7 +66,7 @@ defineEmits<{
   }
 
   input:checked ~ label:after {
-    content: "";
+    content: '';
     width: 8px;
     height: 8px;
     background-color: @white;

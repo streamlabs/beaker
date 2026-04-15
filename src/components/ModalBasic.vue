@@ -39,8 +39,8 @@
 </template>
 
 <script setup lang="ts">
-import { VueFinalModal } from "vue-final-modal";
-import Button from "./../components/Button.vue";
+import { VueFinalModal } from 'vue-final-modal';
+import Button from './../components/Button.vue';
 
 const show = defineModel<boolean>({ default: false });
 
@@ -58,17 +58,17 @@ withDefaults(
   {
     width: 600,
     minWidth: 600,
-    confirmButtonText: "Confirm",
+    confirmButtonText: 'Confirm',
     clickToClose: true,
-  }
+  },
 );
 
 defineEmits<{ confirm: [] }>();
 </script>
 
 <style lang="less" scoped>
-@import (reference) "./../styles/Imports";
-@import "./../styles/components/Modals";
+@import (reference) './../styles/Imports';
+@import './../styles/components/Modals';
 
 .s-modal-body {
   border-radius: 8px 8px 0 0;
@@ -90,6 +90,10 @@ defineEmits<{ confirm: [] }>();
   align-items: center;
   flex-direction: row;
 }
+</style>
+
+<style lang="less">
+@import (reference) './../styles/Imports';
 
 .night,
 .night-theme {

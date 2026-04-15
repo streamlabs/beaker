@@ -12,7 +12,7 @@
     :type="type"
     class="s-button ripple"
     :class="[buttonClasses, { 'ripple-animate': rippleAnimate }]"
-    :disabled="state === 'disabled' || state === 'loading'"
+    :disabled="state === 'disabled' || state === 'loading' || undefined"
     @click="$emit('click')"
     :target="target"
     @mousedown="pressDown"
@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -99,12 +99,12 @@ const props = withDefaults(
     osType?: string;
   }>(),
   {
-    iconPosition: "left",
-    target: "_self",
-    tag: "button",
-    slobsDownloadTitle: "Download Streamlabs",
-    osType: "windows",
-  }
+    iconPosition: 'left',
+    target: '_self',
+    tag: 'button',
+    slobsDownloadTitle: 'Download Streamlabs',
+    osType: 'windows',
+  },
 );
 
 defineEmits<{ click: [] }>();
@@ -114,9 +114,9 @@ const rootEl = ref<HTMLElement>();
 const rippleStartX = ref(0);
 const rippleStartY = ref(0);
 const rippleSize = ref(0);
-const rippleColor = ref("#000000");
+const rippleColor = ref('#000000');
 const rippleOpacity = ref(0.075);
-const rippleDuration = ref("");
+const rippleDuration = ref('');
 const rippleAnimate = ref(false);
 
 const buttonClasses = computed(() => {
@@ -124,61 +124,61 @@ const buttonClasses = computed(() => {
   if (props.variation) classes.push(`s-button--${props.variation}`);
   if (props.size) classes.push(`s-button--${props.size}`);
   if (props.state) classes.push(`is-${props.state}`);
-  return classes.join(" ");
+  return classes.join(' ');
 });
 
 const iconClass = computed(() => {
   const classes: string[] = [];
   if (props.icon) {
-    if (props.icon.indexOf("fa-") !== -1) {
+    if (props.icon.indexOf('fa-') !== -1) {
       classes.push(props.icon);
     } else {
       classes.push(`icon-${props.icon}`);
     }
   }
-  return classes.join(" ");
+  return classes.join(' ');
 });
 
 const slobsDownloadIconClass = computed(() =>
-  props.osType === "windows" ? "icon-windows" : "icon-app-store"
+  props.osType === 'windows' ? 'icon-windows' : 'icon-app-store',
 );
 
 const slobsDownloadText = computed(() => {
   const texts: string[] = [];
-  texts.push("Free");
-  texts.push(props.osType === "windows" ? "Win" : "macOS 10.15+");
-  texts.push(props.osType === "windows" ? "~240MB" : "309MB");
+  texts.push('Free');
+  texts.push(props.osType === 'windows' ? 'Win' : 'macOS 10.15+');
+  texts.push(props.osType === 'windows' ? '~240MB' : '309MB');
   return texts;
 });
 
 const buttonStyle = computed(
   () =>
-    "--ripple-x:" +
+    '--ripple-x:' +
     rippleStartX.value +
-    "px; --ripple-y:" +
+    'px; --ripple-y:' +
     rippleStartY.value +
-    "px; --ripple-size:" +
+    'px; --ripple-size:' +
     rippleSize.value +
-    "px; --ripple-color:" +
+    'px; --ripple-color:' +
     rippleColor.value +
-    "; --ripple-opacity:" +
+    '; --ripple-opacity:' +
     rippleOpacity.value +
-    "; --ripple-duration:" +
+    '; --ripple-duration:' +
     rippleDuration.value +
-    "; background-color:" +
+    '; background-color:' +
     props.bgColor +
-    "; color:" +
-    props.textColor
+    '; color:' +
+    props.textColor,
 );
 
 function rippleAnimation() {
   return new Promise<void>((resolve) => {
     rippleAnimate.value = true;
     const animationEnded = () => {
-      rootEl.value!.removeEventListener("animationend", animationEnded);
+      rootEl.value!.removeEventListener('animationend', animationEnded);
       resolve();
     };
-    rootEl.value!.addEventListener("animationend", animationEnded);
+    rootEl.value!.addEventListener('animationend', animationEnded);
   });
 }
 
@@ -189,28 +189,28 @@ function pressDown(e: MouseEvent) {
   const buttonSize = JSON.stringify(props.size);
   rippleSize.value = Math.floor(buttonRect.width * 2);
   rippleStartX.value = Math.floor(
-    Math.abs(buttonRect.left - clickLoc.x) - rippleSize.value / 2
+    Math.abs(buttonRect.left - clickLoc.x) - rippleSize.value / 2,
   );
   rippleStartY.value = Math.floor(
-    Math.abs(buttonRect.top - clickLoc.y) - rippleSize.value / 2
+    Math.abs(buttonRect.top - clickLoc.y) - rippleSize.value / 2,
   );
 
   if (buttonVar === '"paypal"') {
-    rippleColor.value = "#e3b63b";
-    rippleDuration.value = "800ms";
+    rippleColor.value = '#e3b63b';
+    rippleDuration.value = '800ms';
     rippleOpacity.value = 0.5;
   }
   if (buttonVar === '"warning"') {
-    rippleColor.value = "#ce4a38";
+    rippleColor.value = '#ce4a38';
   }
   if (
     buttonVar === '"subscribe"' ||
     buttonSize === '"full-width"' ||
     buttonVar === '"paypal"'
   ) {
-    rippleDuration.value = "800ms";
+    rippleDuration.value = '800ms';
   } else {
-    rippleDuration.value = "400ms";
+    rippleDuration.value = '400ms';
   }
 
   if (!rippleAnimate.value) {
@@ -227,7 +227,7 @@ function pressDown(e: MouseEvent) {
 </style>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-button {
   position: relative;
@@ -236,7 +236,7 @@ function pressDown(e: MouseEvent) {
   .input-padding();
   border: 1px solid transparent;
   .radius();
-  font-family: "Roboto";
+  font-family: 'Roboto';
   font-size: 14px;
   .weight(@medium);
   text-align: center;
@@ -246,8 +246,7 @@ function pressDown(e: MouseEvent) {
   background: @day-button;
   color: @day-paragraph;
   vertical-align: middle;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+  user-select: none;
   white-space: nowrap;
   overflow: hidden;
   .transition(background-color);
@@ -299,10 +298,12 @@ function pressDown(e: MouseEvent) {
 
     &:before {
       display: block;
-      content: "\f1ce";
-      font-family: "Font Awesome 5 Free";
+      content: '\f1ce';
+      font-family: 'Font Awesome 5 Free';
       font-weight: 900;
-      animation: fade-in 275ms ease, spin 1s ease infinite;
+      animation:
+        fade-in 275ms ease,
+        spin 1s ease infinite;
     }
 
     span {
@@ -322,7 +323,7 @@ function pressDown(e: MouseEvent) {
       }
     }
     &:after {
-      content: "";
+      content: '';
       position: absolute;
       top: var(--ripple-y, 0);
       left: var(--ripple-x, 0);
@@ -540,9 +541,9 @@ function pressDown(e: MouseEvent) {
   .btn-variant(@paypal-yellow);
 
   &:before {
-    content: "\f1ed";
+    content: '\f1ed';
     position: absolute;
-    font-family: "Font Awesome 5 Brands";
+    font-family: 'Font Awesome 5 Brands';
     font-size: 24px;
     color: @white;
   }
@@ -762,7 +763,7 @@ function pressDown(e: MouseEvent) {
 }
 
 .s-button--ultra::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   .ultra-border();
@@ -958,8 +959,15 @@ function pressDown(e: MouseEvent) {
   }
 
   .s-button--ultra {
-    background: linear-gradient(270deg, #FFFFFF 0%, rgba(255, 255, 255, 0.16) 100%),
-    linear-gradient(123.53deg, #2DE8B0 25.56%, #CBE953 60.27%, #FFAB48 79.52%, #FF5151 96.69%);
+    background:
+      linear-gradient(270deg, #ffffff 0%, rgba(255, 255, 255, 0.16) 100%),
+      linear-gradient(
+        123.53deg,
+        #2de8b0 25.56%,
+        #cbe953 60.27%,
+        #ffab48 79.52%,
+        #ff5151 96.69%
+      );
     color: @ultra-black;
     border-radius: 8px;
     .icon-ultra {

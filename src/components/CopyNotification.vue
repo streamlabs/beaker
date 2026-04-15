@@ -14,8 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from "vue";
-import { useNotification } from "./../composables/useNotification";
+import { computed, watch } from 'vue';
+import { useNotification } from './../composables/useNotification';
 
 // Consumers that previously used EventBus.$emit("copy-success", text) or
 // EventBus.$emit("copy-error") should now call useNotification().success(text)
@@ -34,12 +34,12 @@ watch(
       }
     });
   },
-  { deep: true, immediate: true }
+  { deep: true, immediate: true },
 );
 </script>
 
 <style lang="less" scoped>
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .notifications {
   position: absolute;
@@ -65,6 +65,10 @@ watch(
     margin-bottom: 0;
   }
 }
+</style>
+
+<style lang="less">
+@import (reference) './../styles/Imports';
 
 .night {
   .notification-msg {

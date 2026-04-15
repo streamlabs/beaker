@@ -1,28 +1,36 @@
-import { fileURLToPath } from "url";
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import autoprefixer from 'autoprefixer';
+import dts from 'unplugin-dts/vite';
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    dts({
+      processor: 'vue',
+      tsconfigPath: './tsconfig.json',
+      cleanVueFileName: true,
+      staticImport: true,
+      insertTypesEntry: true,
+    }),
+  ],
+  css: {
+    postcss: {
+      plugins: [autoprefixer()],
+    },
+  },
   build: {
     minify: false,
-    target: "es2020",
     cssCodeSplit: false,
     lib: {
-      entry: fileURLToPath(new URL("./src/system.js", import.meta.url)),
-      name: "Beaker",
-      fileName: (format) => `beaker.${format}.js`,
+      entry: './src/system.ts',
+      name: 'Beaker',
+      formats: ['es'],
+      fileName: () => 'beaker.es.js',
+      cssFileName: 'style',
     },
     rolldownOptions: {
-      external: ["vue", "vue-router", "lodash-es", "vue-final-modal"],
-      output: {
-        globals: {
-          vue: "Vue",
-          "vue-router": "VueRouter",
-          "lodash-es": "_",
-          "vue-final-modal": "VueFinalModal",
-        },
-      },
+      external: ['vue', 'vue-router', 'lodash-es', 'vue-final-modal'],
     },
   },
 });
