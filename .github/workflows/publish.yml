@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - "v*"
-  workflow_dispatch:
 
 jobs:
   publish:
@@ -39,4 +38,4 @@ jobs:
           fi
 
       - name: Publish to npm
-        run: npm publish --tag ${{ steps.npm-tag.outputs.tag }} --provenance --access public --dry-run
+        run: npm publish --tag ${{ steps.npm-tag.outputs.tag }} --provenance --access public
