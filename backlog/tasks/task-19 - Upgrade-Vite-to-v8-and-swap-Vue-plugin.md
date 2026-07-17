@@ -1,11 +1,11 @@
 ---
 id: TASK-19
 title: Upgrade Vite to v8 and swap Vue plugin
-status: In Progress
+status: Done
 assignee:
   - Joshua Larks
 created_date: '2026-04-07 23:57'
-updated_date: '2026-04-10 20:42'
+updated_date: '2026-07-17 19:18'
 labels: []
 milestone: m-0
 dependencies:
@@ -34,12 +34,12 @@ Final infrastructure step — upgrade Vite and swap the Vue plugin once all comp
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 vite@8.x installed
-- [ ] #2 @vitejs/plugin-vue installed
-- [ ] #3 vite-plugin-vue2 removed
-- [ ] #4 pnpm dev starts without errors
-- [ ] #5 pnpm build succeeds
-- [ ] #6 pnpm build:publish produces dist/ output
+- [x] #1 vite@8.x installed
+- [x] #2 @vitejs/plugin-vue installed
+- [x] #3 vite-plugin-vue2 removed
+- [x] #4 pnpm dev starts without errors
+- [x] #5 pnpm build succeeds
+- [x] #6 pnpm build:publish produces dist/ output
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -99,9 +99,21 @@ No unit tests apply (infrastructure change only).
 - TASK-18 DoD #1 — same `pnpm build` run covers this
 <!-- SECTION:PLAN:END -->
 
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Vite v8 + @vitejs/plugin-vue swap completed (from earlier commits), plus the remaining TypeScript errors blocking a clean build were resolved on branch chore/vue3-release-prep:
+
+- Externalized vue-slider-component (alongside vue-final-modal) in vite-publish.config.js rolldownOptions, matching the peer-dependency treatment needed to avoid duplicate library instances in consuming apps.
+- Fixed Selector.vue (forward `options` prop explicitly so Multiselect's required prop type-checks) and Slider.vue (map `tooltip: false` to the underlying library's `'none'`).
+- Fixed unrelated pre-existing type errors surfaced by the stricter build: PaneDropdown.vue transition hook typing, GuardNew.vue focus handler type, ImagePicker.vue null/undefined mismatch, Onboarding.vue (including a real bug: `currentStep === steps` was comparing a number to an array and could never be true, fixed to `currentStep === steps.length`), and an ambient module declaration for untyped vuejs-paginate-next.
+
+Verified: `pnpm build` and `pnpm build:publish` both exit 0 with zero TypeScript errors across repeated runs. `pnpm lint` has 79 pre-existing failures, all in unrelated src/demos/*.vue files — out of scope for this task, not introduced by it.
+<!-- SECTION:FINAL_SUMMARY:END -->
+
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 pnpm build runs without TypeScript errors
-- [ ] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
-- [ ] #3 Manual verification completed per Verification Plan
+- [x] #1 pnpm build runs without TypeScript errors
+- [x] #2 Code follows Vue 3 Composition API patterns (script setup, typed props/emits)
+- [x] #3 Manual verification completed per Verification Plan
 <!-- DOD:END -->
