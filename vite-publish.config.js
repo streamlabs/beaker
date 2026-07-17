@@ -30,7 +30,13 @@ export default defineConfig({
       cssFileName: 'style',
     },
     rolldownOptions: {
-      external: ['vue', 'vue-router', 'lodash-es', 'vue-final-modal'],
+      external: [
+        'vue',
+        'vue-router',
+        'lodash-es',
+        'vue-final-modal',
+        'vue-slider-component',
+      ],
     },
   },
 });
