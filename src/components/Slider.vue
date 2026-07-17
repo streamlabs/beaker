@@ -9,7 +9,7 @@
     :width="width"
     :height="8"
     :dot-size="[24, 16]"
-    :tooltip="tooltip"
+    :tooltip="tooltip === false ? 'none' : tooltip"
     tooltip-placement="bottom"
     :min="min"
     :max="max"

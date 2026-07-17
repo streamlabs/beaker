@@ -1,7 +1,7 @@
 <template>
   <div class="s-image-picker">
     <div class="s-image-picker__thumb" @click="chooseImage">
-      <img :src="imageThumb" v-if="imageSelected" />
+      <img :src="imageThumb ?? undefined" v-if="imageSelected" />
       <div class="s-upload-icon" v-if="!imageSelected">
         <i class="icon-upload-image"></i>
       </div>

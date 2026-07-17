@@ -2,6 +2,7 @@
   <div class="s-selector">
     <Multiselect
       v-bind="$attrs"
+      :options="options"
       :style="styleObject"
     >
       <template v-for="(_, name) in $slots" #[name]="slotProps">
@@ -18,6 +19,7 @@ import Multiselect from "vue-multiselect";
 const props = defineProps<{
   width?: string;
   multiple?: boolean;
+  options: any[];
 }>();
 
 const styleObject = computed(() => ({

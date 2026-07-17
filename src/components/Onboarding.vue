@@ -45,7 +45,7 @@
         </p>
 
         <div
-          v-if="skippable && currentStep === steps && !isCompleted"
+          v-if="skippable && currentStep === steps.length && !isCompleted"
           class="s-onboarding-skip__warning"
         >
           You skipped a step
@@ -55,12 +55,12 @@
           :variation="'action'"
           :title="currentStep === steps.length ? 'Complete' : 'Continue'"
           @click="
-            currentStep === steps.length ? completeHandler() : continueHandler()
+            currentStep === steps.length ? completeHandler?.() : continueHandler?.()
           "
           :state="
             disableControls || (currentStep === steps.length && !isCompleted)
               ? 'disabled'
-              : null
+              : undefined
           "
         ></Button>
       </div>

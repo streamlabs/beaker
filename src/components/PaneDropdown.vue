@@ -106,30 +106,31 @@ watch(paneMenuOpen, (newVal) => {
   }
 });
 
-function afterOpen(element: HTMLElement) {
-  element.style.height = "auto";
+function afterOpen(element: Element) {
+  (element as HTMLElement).style.height = "auto";
 }
 
-function open(element: HTMLElement) {
-  const width = getComputedStyle(element).width;
-  element.style.width = width;
-  const maxWidth = getComputedStyle(element).width;
-  element.style.maxWidth = maxWidth;
-  element.style.position = "absolute";
-  element.style.visibility = "hidden";
-  element.style.height = "auto";
-  const height = getComputedStyle(element).height;
-  element.style.width = "";
-  element.style.position = "";
-  element.style.visibility = "";
-  element.style.height = "0";
-  getComputedStyle(element).height;
+function open(element: Element) {
+  const el = element as HTMLElement;
+  const width = getComputedStyle(el).width;
+  el.style.width = width;
+  const maxWidth = getComputedStyle(el).width;
+  el.style.maxWidth = maxWidth;
+  el.style.position = "absolute";
+  el.style.visibility = "hidden";
+  el.style.height = "auto";
+  const height = getComputedStyle(el).height;
+  el.style.width = "";
+  el.style.position = "";
+  el.style.visibility = "";
+  el.style.height = "0";
+  getComputedStyle(el).height;
   setTimeout(() => {
-    element.style.height = height;
+    el.style.height = height;
   });
 }
 
-function close(element: HTMLElement | Event) {
+function close(element: Element | Event) {
   if ("target" in element) return;
   const el = element as HTMLElement;
   const height = getComputedStyle(el).height;

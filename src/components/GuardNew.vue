@@ -44,7 +44,7 @@ function showText(e: MouseEvent | KeyboardEvent) {
   }
 }
 
-function checkSelectedText(e: FocusEvent) {
+function checkSelectedText(e: Event) {
   const target = e.target as HTMLInputElement;
   if (!visible.value) target.setSelectionRange(0, 0);
   target.focus();

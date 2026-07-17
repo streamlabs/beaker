@@ -5,7 +5,7 @@
       :style="{
         'background-image': `linear-gradient(
           to right,
-          ${backgroundColor} ${parseInt((current / total) * 100)}%,
+          ${backgroundColor} ${Math.floor(((current ?? 0) / (total ?? 100)) * 100)}%,
           rgba(0,0,0,0) 0%
         )`,
         color: textColor
