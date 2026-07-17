@@ -53,11 +53,13 @@ import {
   useTemplateRef,
 } from 'vue';
 
+type SliderValue = number | string;
+
 const props = withDefaults(
   defineProps<{
     interval?: number;
     steps?: number;
-    data?: any[] | null;
+    data?: SliderValue[] | null;
     dataIndexing?: boolean;
     value?: string | number;
     min?: number;
@@ -91,10 +93,10 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  input: [val: any];
+  input: [val: SliderValue];
   dragStart: [];
   dragEnd: [];
-  callbackRange: [val: any];
+  callbackRange: [val: SliderValue];
 }>();
 
 const wrap = useTemplateRef<HTMLDivElement>('wrap');
@@ -104,23 +106,25 @@ const handle = useTemplateRef<HTMLDivElement>('handle');
 
 const isDragging = ref(false);
 const size = ref(0);
-const currentValue = ref<any>(0);
+const currentValue = ref<SliderValue>(0);
 const lazy = ref(false);
-const offset = ref<any>(null);
-const range = ref<any[]>([]);
+const offset = ref<number | null>(null);
+const range = ref<SliderValue[]>([]);
 const currentWidth = ref(0);
 const currentHeight = ref(0);
 const bounced = ref(false);
 const halt = ref(false);
 
-const val = computed({
+const val = computed<SliderValue>({
   get() {
     if (props.dataIndexing) {
       return props.data
-        ? props.data.indexOf(props.data[currentValue.value])
+        ? props.data.indexOf(props.data[currentValue.value as number])
         : currentValue.value;
     } else {
-      return props.data ? props.data[currentValue.value] : currentValue.value;
+      return props.data
+        ? props.data[currentValue.value as number]
+        : currentValue.value;
     }
   },
   set(newVal) {
@@ -146,10 +150,8 @@ const displayValue = computed(() => {
 });
 
 const currentIndex = computed(
-  () => (currentValue.value - minimum.value) / spacing.value,
+  () => ((currentValue.value as number) - minimum.value) / spacing.value,
 );
-
-const indexRange = computed(() => [0, currentIndex.value]);
 
 const minimum = computed(() => (props.data ? 0 : props.min));
 
@@ -180,7 +182,9 @@ const total = computed(() => {
 const gap = computed(() => size.value / total.value);
 
 const position = computed(
-  () => ((currentValue.value - minimum.value) / spacing.value) * gap.value,
+  () =>
+    (((currentValue.value as number) - minimum.value) / spacing.value) *
+    gap.value,
 );
 
 const limit = computed(() => [0, size.value]);
@@ -293,13 +297,13 @@ function unbindEvents(el: HTMLElement) {
 }
 
 function getPos(e: MouseEvent) {
-  return e.clientX - offset.value;
+  return e.clientX - offset.value!;
 }
 
 function wrapClick(e: MouseEvent) {
   if (props.isDisabled) return;
   const pos = getPos(e);
-  setValueOnPos(pos, false);
+  setValueOnPos(pos);
   if (!isDragging.value) setTransform(position.value);
 }
 
@@ -312,11 +316,11 @@ function moveStart() {
 function moving(e: MouseEvent) {
   if (!isDragging.value || !props.draggable) return;
   e.preventDefault();
-  setValueOnPos(getPos(e), true);
+  setValueOnPos(getPos(e));
   if (!halt.value) setTransform(getPos(e));
 }
 
-function moveEnd(e: MouseEvent) {
+function moveEnd() {
   if (isDragging.value && props.draggable) {
     emit('dragEnd');
     setValue(limitValue(props.value));
@@ -329,7 +333,7 @@ function moveEnd(e: MouseEvent) {
   }
 }
 
-function setValueOnPos(pos: number, isDrag: boolean) {
+function setValueOnPos(pos: number) {
   const range = limit.value;
   const valueRange = valueLimit.value;
   if (pos >= range[0] && pos <= range[1]) {
@@ -338,17 +342,17 @@ function setValueOnPos(pos: number, isDrag: boolean) {
       (Math.round(pos / gap.value) * (spacing.value * multiple.value) +
         minimum.value * multiple.value) /
       multiple.value;
-    setCurrentValue(v, isDrag);
+    setCurrentValue(v);
   } else if (pos < range[0]) {
     halt.value = true;
     console.log('overshoot1');
     setTransform(range[0]);
-    setCurrentValue(valueRange[0], true);
+    setCurrentValue(valueRange[0]);
   } else {
     halt.value = true;
     console.log('overshoot2');
     setTransform(range[1]);
-    setCurrentValue(valueRange[1], true);
+    setCurrentValue(valueRange[1]);
   }
 }
 
@@ -374,17 +378,17 @@ function createMarks() {
   }
 }
 
-function isDiff(a: any, b: any) {
+function isDiff(a: unknown, b: unknown) {
   if (Object.prototype.toString.call(a) !== Object.prototype.toString.call(b)) {
     return true;
-  } else if (Array.isArray(a) && a.length === b.length) {
+  } else if (Array.isArray(a) && Array.isArray(b) && a.length === b.length) {
     return a.some((v, i) => v !== b[i]);
   }
   return a !== b;
 }
 
-function setCurrentValue(v: any, bool: boolean) {
-  if (v < minimum.value || v > maximum.value) return;
+function setCurrentValue(v: SliderValue) {
+  if ((v as number) < minimum.value || (v as number) > maximum.value) return;
   if (isDiff(currentValue.value, v)) {
     currentValue.value = v;
     if (!lazy.value || !isDragging.value) {
@@ -393,12 +397,7 @@ function setCurrentValue(v: any, bool: boolean) {
   }
 }
 
-function setIndex(v: number) {
-  const newVal = spacing.value * v + minimum.value;
-  setCurrentValue(newVal, true);
-}
-
-function setValue(v: any) {
+function setValue(v: SliderValue) {
   if (isDiff(val.value, v)) {
     const resetVal = limitValue(v);
     val.value = resetVal;
@@ -418,7 +417,7 @@ function setTransitionTime(t: number) {
   processEl.value!.style.transitionDuration = `${t}s`;
 }
 
-function limitValue(v: any) {
+function limitValue(v: SliderValue): SliderValue {
   if (props.data) {
     return v;
   }
@@ -427,7 +426,7 @@ function limitValue(v: any) {
     if (n > props.max) return props.max;
     return n;
   };
-  return inRange(v);
+  return inRange(v as number);
 }
 
 function syncValue() {

@@ -85,15 +85,27 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, useTemplateRef } from "vue";
-import Fuse from "fuse.js";
+import Fuse, { type FuseResult } from "fuse.js";
+
+interface SearchEntry {
+  name: string;
+  title: string;
+  route: string;
+  image: string;
+  keywords?: string[];
+}
+
+interface QuickLinkItem {
+  item: { name: string };
+}
 
 const props = withDefaults(
   defineProps<{
-    jsonSearch?: any;
+    jsonSearch: SearchEntry[];
     search?: string;
     eventName?: string;
     inputChangeEventName?: string;
-    quickLinks?: any[];
+    quickLinks?: QuickLinkItem[];
   }>(),
   {
     search: "",
@@ -103,25 +115,25 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (e: string, ...args: any[]): void;
+  (e: string, ...args: unknown[]): void;
 }>();
 
 const searchInput = useTemplateRef<HTMLInputElement>("search_input");
 
-const result = ref<any[]>([]);
+const result = ref<FuseResult<SearchEntry>[]>([]);
 const isOpen = ref(false);
 const phaseOne = ref(false);
 const phaseTwo = ref(false);
 const resultLimit = ref(7);
-const fuse = ref<any>(null);
+const fuse = ref<Fuse<SearchEntry> | null>(null);
 const value = ref("");
 const currentResult = ref(0);
 
 const suggestedLinks = computed(() => {
   if (!props.quickLinks) return [];
-  return props.quickLinks.reduce((acc: any[], i: any) => {
+  return props.quickLinks.reduce((acc: (QuickLinkItem & { jsonSearchIndex: number })[], i) => {
     const jsonSearchIndex = props.jsonSearch.findIndex(
-      (data: any) => data.name === i.item.name
+      (data) => data.name === i.item.name
     );
     if (jsonSearchIndex > -1) acc.push({ ...i, jsonSearchIndex });
     return acc;
@@ -162,7 +174,7 @@ const calcHeight = computed(() => {
 watch(
   () => props.jsonSearch,
   () => {
-    if (fuse.value) fuse.value.searchData = props.jsonSearch;
+    if (fuse.value) fuse.value.setCollection(props.jsonSearch);
     fuseSearch();
   }
 );
@@ -206,7 +218,7 @@ function keyEvent(event: KeyboardEvent) {
   if (event.keyCode === 27 && phaseOne.value) blurSearch();
 }
 
-function trackEvent(result: any) {
+function trackEvent(result: string | number) {
   emit("trackSearchNav", result);
 }
 
@@ -239,7 +251,7 @@ function fuseSearch() {
   if (value.value.trim() === "") {
     result.value = [];
   } else {
-    result.value = fuse.value.search(value.value.trim());
+    result.value = fuse.value!.search(value.value.trim());
   }
 }
 

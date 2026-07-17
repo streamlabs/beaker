@@ -23,7 +23,12 @@
         :title="'Select Image'"
         @click="chooseImage"
       />
-      <Button v-if="imageSelected" :variation="'action'" :title="'Upload'" />
+      <Button
+        v-if="imageSelected"
+        :variation="'action'"
+        :title="'Upload'"
+        @click="uploadImage"
+      />
       <Button
         v-if="imageSelected"
         variation="default"

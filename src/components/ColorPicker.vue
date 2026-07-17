@@ -66,14 +66,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 import { ChromePicker, tinycolor } from "vue-color";
 
 defineOptions({ inheritAttrs: false });
 
+// tinycolor2 (used internally by vue-color) ships no TypeScript types —
+// this captures only the members this component actually calls.
+interface TinyColorLike {
+  getAlpha(): number;
+  toHex8String(): string;
+  toHexString(): string;
+}
+
 const props = withDefaults(
   defineProps<{
-    modelValue?: any;
+    modelValue?: string;
     placeholder?: string;
     hasAlpha?: boolean;
     isMini?: boolean;
@@ -87,14 +95,14 @@ const emit = defineEmits<{ 'update:modelValue': [val: string] }>();
 
 const colorpicker = useTemplateRef<HTMLElement>("colorpicker");
 const displayPicker = ref(false);
-const colors = ref(tinycolor(props.modelValue));
+const colors = ref<TinyColorLike>(tinycolor(props.modelValue));
 
 const alphaClass = computed(() => {
   if (!props.hasAlpha) return false;
   return colors.value.getAlpha() === 1 ? "nonAlpha" : "alpha";
 });
 
-function updateFromPicker(value: any) {
+function updateFromPicker(value: TinyColorLike) {
   colors.value = value;
   emit("update:modelValue", alphaClass.value === "alpha" ? value.toHex8String() : value.toHexString());
 }

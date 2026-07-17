@@ -19,7 +19,7 @@ import Multiselect from "vue-multiselect";
 const props = defineProps<{
   width?: string;
   multiple?: boolean;
-  options: any[];
+  options: unknown[];
 }>();
 
 const styleObject = computed(() => ({

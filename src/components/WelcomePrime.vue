@@ -26,14 +26,14 @@
       </div>
       <div class="modal-prime__button">
         <slot v-if="hasSlot"></slot>
-        <s-button
+        <Button
           v-else
           size="large"
           variation="prime"
           icon="prime"
           :title="primeButtonText"
           @click="onPrimeButtonHandler"
-        ></s-button>
+        ></Button>
       </div>
     </div>
   </div>

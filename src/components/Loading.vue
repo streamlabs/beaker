@@ -22,7 +22,7 @@ import Spinner from "./../components/Spinner.vue";
 
 const props = withDefaults(
   defineProps<{
-    loadingStrs?: any[] | string;
+    loadingStrs?: string[] | string;
     semiOpaque?: boolean;
     isRandom?: boolean;
     swapMode?: boolean;
@@ -41,7 +41,7 @@ const loaderText = ref("");
 const index = ref(0);
 
 function loopText() {
-  const strs = props.loadingStrs as any[];
+  const strs = props.loadingStrs as string[];
   loaderText.value = strs[index.value];
   index.value++;
   if (index.value === strs.length) index.value = 0;
@@ -49,7 +49,7 @@ function loopText() {
 }
 
 function loopRandomText() {
-  const strs = props.loadingStrs as any[];
+  const strs = props.loadingStrs as string[];
   const randomIndex = Math.floor(Math.random() * strs.length);
   if (loaderText.value === strs[randomIndex]) {
     loopRandomText();
@@ -60,9 +60,13 @@ function loopRandomText() {
 }
 
 function distinguishNumberOfArrays() {
-  const strs = props.loadingStrs as any[];
+  const strs = props.loadingStrs as string[];
   if (strs.length > 1) {
-    props.isRandom ? loopRandomText() : loopText();
+    if (props.isRandom) {
+      loopRandomText();
+    } else {
+      loopText();
+    }
   } else {
     loaderText.value = strs[0];
   }

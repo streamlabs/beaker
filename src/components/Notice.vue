@@ -35,6 +35,7 @@ const iconType = computed(() => {
   switch (props.variation) {
     case "default": return "information";
     case "warning": return "error";
+    default: return undefined;
   }
 });
 

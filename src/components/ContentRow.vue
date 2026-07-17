@@ -48,9 +48,6 @@ const contentRowMq = computed(() =>
 const contentBoxMq = computed(() =>
   isMobile.value ? 's-content-box-mq' : '',
 );
-const bannerIconMq = computed(() =>
-  isMobile.value ? 's-banner__icon-mq' : '',
-);
 const contentTitleMq = computed(() =>
   isMobile.value ? 's-content__title-mq' : '',
 );
