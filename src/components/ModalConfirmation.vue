@@ -34,7 +34,7 @@ import Button from "./../components/Button.vue";
 
 const show = defineModel<boolean>({ default: false });
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     width?: number;
     minWidth?: number;

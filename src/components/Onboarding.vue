@@ -70,7 +70,6 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import OnboardingStep from "./../components/OnboardingStep.vue";
 import Button from "./../components/Button.vue";
 
 interface IStep { name?: string; complete: boolean }
@@ -96,6 +95,7 @@ const props = withDefaults(
 const location = computed(() => {
   if (props.stepLocation === "left") return "s-onboarding__left";
   if (props.stepLocation === "top") return "s-onboarding__top";
+  return undefined;
 });
 const namedSteps = computed(() => props.steps.every((s) => !!s.name));
 const isCompleted = computed(() => props.steps.every((s) => s.complete));

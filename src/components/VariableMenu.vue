@@ -49,12 +49,17 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, useTemplateRef } from 'vue';
-import Fuse from 'fuse.js';
+import Fuse, { type FuseResult } from 'fuse.js';
+
+interface VariableEntry {
+  variable: string;
+  description?: string;
+}
 
 const props = withDefaults(
   defineProps<{
     input_cursor?: number;
-    jsonSearch?: any;
+    jsonSearch?: VariableEntry[];
     search?: string;
     eventName?: string;
     inputChangeEventName?: string;
@@ -66,16 +71,16 @@ const props = withDefaults(
   },
 );
 
-const emit = defineEmits<{ (e: string, ...args: any[]): void }>();
+const emit = defineEmits<{ (e: string, ...args: unknown[]): void }>();
 
 const resultArea = useTemplateRef<HTMLDivElement>('resultArea');
 const variableMenu = useTemplateRef<HTMLDivElement>('variableMenu');
 
-const result = ref<any[]>([]);
+const result = ref<FuseResult<VariableEntry>[]>([]);
 const queryLength = ref(0);
 const phaseOne = ref(false);
 const phaseTwo = ref(false);
-const fuse = ref<any>(null);
+const fuse = ref<Fuse<VariableEntry> | null>(null);
 const value = ref('');
 const currentResult = ref(0);
 const cursorPos = ref(0);
@@ -124,7 +129,11 @@ watch(result, (val, oldVal) => {
     currentResult.value = limitedResult.value.length - 1;
   }
   emit(props.eventName, result.value);
-  noResults.value ? playClosingSequence() : playOpeningSequence();
+  if (noResults.value) {
+    playClosingSequence();
+  } else {
+    playOpeningSequence();
+  }
 });
 
 function afterOpen(element: HTMLElement) {
@@ -142,7 +151,7 @@ function open(element: HTMLElement) {
   element.style.position = '';
   element.style.visibility = '';
   element.style.height = '0';
-  getComputedStyle(element).height;
+  void getComputedStyle(element).height;
   setTimeout(() => {
     element.style.height = height;
   });
@@ -151,7 +160,7 @@ function open(element: HTMLElement) {
 function close(element: HTMLElement) {
   const height = getComputedStyle(element).height;
   element.style.height = height;
-  getComputedStyle(element).height;
+  void getComputedStyle(element).height;
   setTimeout(() => {
     element.style.height = '0';
   });
@@ -177,7 +186,7 @@ function getSearchString() {
     const searchValue = value.value.substring(bracketOpen, pos);
     const bracketClose = searchValue.lastIndexOf('}');
     if (pos > bracketOpen && bracketClose === -1 && bracketOpen !== -1) {
-      result.value = fuse.value.search(searchValue);
+      result.value = fuse.value!.search(searchValue);
       queryLength.value = searchValue.length;
     } else {
       playClosingSequence();
@@ -251,7 +260,7 @@ function blurSearch() {
 }
 
 onMounted(() => {
-  fuse.value = new Fuse(props.jsonSearch, options);
+  fuse.value = new Fuse(props.jsonSearch ?? [], options);
   if (props.search) value.value = props.search;
 });
 </script>

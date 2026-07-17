@@ -136,7 +136,7 @@ function open(element: HTMLElement) {
   element.style.position = '';
   element.style.visibility = '';
   element.style.height = '0';
-  getComputedStyle(element).height;
+  void getComputedStyle(element).height;
   setTimeout(() => {
     element.style.height = height;
   });
@@ -145,7 +145,7 @@ function open(element: HTMLElement) {
 function close(element: HTMLElement) {
   const height = getComputedStyle(element).height;
   element.style.height = height;
-  getComputedStyle(element).height;
+  void getComputedStyle(element).height;
   setTimeout(() => {
     element.style.height = '0';
   });

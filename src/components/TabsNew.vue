@@ -124,7 +124,6 @@ const hiddenTabFocused = ref(false);
 const modifiedTabs = ref<IModifiedTab[]>([]);
 const dropdownIsActive = ref(false);
 const prevWidth = ref(0);
-const tabWidthsSet = ref(false);
 
 const tabLinkTag = computed(() =>
   props.updateRoute ? 'router-link' : 'button',
@@ -137,13 +136,6 @@ const selectTabSize = computed(() => ({ fontSize: tabSize.value }));
 const hiddenTabs = computed(() =>
   modifiedTabs.value.filter((tab) => tab.hidden),
 );
-
-const activeTab = computed(() => {
-  if (modifiedTabs.value.every((tab) => !tab.active)) {
-    return props.selected || modifiedTabs.value[0]?.value;
-  }
-  return modifiedTabs.value.find((tab) => tab.active);
-});
 
 const hiddenActiveTab = computed(() =>
   hiddenTabs.value.find((tab) => tab.active),

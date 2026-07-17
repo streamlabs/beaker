@@ -56,6 +56,8 @@ const calloutIcon = computed(() => {
     case "info":
     case "cookies":
       return "icon-information";
+    default:
+      return undefined;
   }
 });
 
@@ -64,7 +66,7 @@ const isPrime = computed(() => props.variation === "prime");
 function closeCallout() {
   calloutClosedClass.value = "callout--closed";
   setTimeout(() => {
-    typeof props.onClose === "function" && props.onClose();
+    if (typeof props.onClose === "function") props.onClose();
   }, 275);
 }
 </script>

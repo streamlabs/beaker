@@ -25,7 +25,7 @@
 import { ref } from "vue";
 import TextInput from "./TextInput.vue";
 
-const props = withDefaults(
+withDefaults(
   defineProps<{ value?: string; placeholder?: string }>(),
   { placeholder: "Click to show" }
 );
