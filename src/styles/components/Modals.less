@@ -1,47 +1,78 @@
-.v--modal-overlay {
-    background: @day-modal-mask !important;
+@import (reference) './../Imports';
+
+// .vfm is position:fixed; top:0; right:0; bottom:0; left:0 — it fills the viewport.
+// We make it a flex container to center the content element inside it.
+.vfm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vfm__overlay {
+  background: @day-modal-mask !important;
+}
+
+// vfm__content is the direct child of .vfm that receives our content-class.
+// It must not stretch to fill the parent, so we override any block sizing.
+.vfm__content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
 .s-modal-container {
-    background: @white;
-    .radius(2);
+  background: @white;
+  .radius(2);
 }
 
 .s-modal-body {
-    background: @white;
-    .padding(4);
-    .padding-bottom(3);
+  background: @white;
+  .padding(4);
+  .padding-bottom(3);
 }
 
 .s-modal-title,
 .s-modal-sub-title {
-    color: @day-title;
-    .margin-bottom(3);
+  color: @day-title;
+  .margin-bottom(3);
 }
 
 .s-modal-sub-title {
-    .margin-bottom(2);
-    .weight(@medium);
+  .margin-bottom(2);
+  .weight(@medium);
 }
 
 .s-modal-default-button {
-    float: right;
+  float: right;
 }
 
 .night,
 .night-theme {
-    .v--modal-overlay {
-        background-color: @night-modal-mask !important;
-    }
+  .vfm__overlay {
+    background-color: @night-modal-mask !important;
+  }
 
-    .s-modal-container {
-        background: @dark-3;
-        box-shadow: 0px 4px 8px @night-shadow;
-    }
+  .s-modal-container {
+    background: @dark-3;
+    box-shadow: 0px 4px 8px @night-shadow;
+  }
 
-    .s-modal-title,
-    .s-modal-sub-title {
-        color: @night-title;
-    }
+  .s-modal-body {
+    background: @dark-3;
+  }
 
+  .s-modal-title,
+  .s-modal-sub-title {
+    color: @night-title;
+  }
+
+  .s-modal-footer {
+    background: @dark-2;
+  }
+
+  .s-modal-text {
+    color: @night-paragraph;
+  }
 }

@@ -18,37 +18,28 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed } from "vue";
 
-@Component({})
-export default class Notice extends Vue {
-  @Prop({ default: "default" })
-  variation!: string;
+const props = withDefaults(
+  defineProps<{
+    variation?: string;
+    title: string;
+    desc: string;
+    icon?: string;
+  }>(),
+  { variation: "default" }
+);
 
-  @Prop({ required: true })
-  title!: string;
-
-  @Prop({ required: true })
-  desc!: string;
-
-  @Prop()
-  icon!: string;
-
-  get iconType() {
-    switch (this.variation) {
-      case "default":
-        return "information";
-      case "warning":
-        return "error";
-    }
+const iconType = computed(() => {
+  switch (props.variation) {
+    case "default": return "information";
+    case "warning": return "error";
+    default: return undefined;
   }
+});
 
-  get iconClass() {
-    const iconSrc = this.icon ? this.icon : this.iconType;
-    return `icon-${iconSrc}`;
-  }
-}
+const iconClass = computed(() => `icon-${props.icon ?? iconType.value}`);
 </script>
 
 <style lang="less">

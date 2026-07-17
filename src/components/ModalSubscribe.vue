@@ -1,17 +1,13 @@
 <template>
-  <modal
-    :name="name"
-    :classes="'s-modal-wrapper'"
-    :maxWidth="width"
-    :minWidth="minWidth"
-    height="auto"
-    :adaptive="true"
-    :scrollable="scrollable"
-    v-on="$listeners"
+  <VueFinalModal
+    v-model="show"
+    content-class="s-modal-wrapper"
+    :content-style="{ maxWidth: width + 'px', minWidth: minWidth + 'px' }"
+    v-bind="$attrs"
   >
     <div class="s-modal-container">
       <div class="s-subscribe-icon-box">
-        <i class="icon-close" @click="$modal.hide(name)"></i>
+        <i class="icon-close" @click="show = false"></i>
       </div>
       <div class="s-subscribe-upper">
         <div class="s-subscribe-title-box">
@@ -56,69 +52,51 @@
         <p class="s-modal-notes">{{ notes }}</p>
       </div>
     </div>
-  </modal>
+  </VueFinalModal>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { VueFinalModal } from "vue-final-modal";
 import Button from "./../components/Button.vue";
 import Badge from "./../components/Badge.vue";
 
-@Component({
-  components: {
-    Button,
-    Badge
+const show = defineModel<boolean>({ default: false });
+
+withDefaults(
+  defineProps<{
+    width?: number;
+    minWidth?: number;
+    scrollable?: boolean;
+    title?: string;
+    subTitle?: string;
+    text?: string;
+    notes?: string;
+    subscribeText?: string;
+    subscribeMessage?: string;
+    proBadge?: boolean;
+    customPreview?: boolean;
+    buttonTitle?: string;
+    buttonPrice?: string;
+    buttonVariation?: string;
+    cancelTitle?: string;
+  }>(),
+  {
+    width: 600,
+    minWidth: 600,
+    scrollable: false,
+    proBadge: true,
+    customPreview: false,
+    buttonTitle: "Subscribe with PayPal",
+    buttonPrice: "$5.99/mo",
+    buttonVariation: "subscribe",
+    cancelTitle: "Cancel",
   }
-})
-export default class ModalSubscribe extends Vue {
-  @Prop()
-  name!: string;
+);
 
-  @Prop({ default: 600 })
-  width!: number;
-
-  @Prop({ default: 600 })
-  minWidth!: number;
-
-  @Prop({ default: false })
-  scrollable!: boolean;
-
-  @Prop()
-  title!: string;
-
-  @Prop()
-  subTitle!: string;
-
-  @Prop()
-  text!: string;
-
-  @Prop()
-  notes!: string;
-
-  @Prop()
-  subscribeText!: string;
-
-  @Prop()
-  subscribeMessage!: string;
-
-  @Prop({ default: true })
-  proBadge!: boolean;
-
-  @Prop({ default: false })
-  customPreview!: boolean;
-
-  @Prop({ default: "Subscribe with PayPal" })
-  buttonTitle!: string;
-
-  @Prop({ default: "$5.99/mo" })
-  buttonPrice!: string;
-
-  @Prop({ default: "subscribe" })
-  buttonVariation!: string;
-
-  @Prop({ default: "Cancel" })
-  cancelTitle!: string;
-}
+defineEmits<{
+  "subscribe-click": [];
+  "cancel-click": [];
+}>();
 </script>
 
 <style lang="less" scoped>

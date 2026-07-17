@@ -81,22 +81,13 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import DemoSection from "./../components/DemoSection.vue";
 import Toggle from "./../components/Toggle.vue";
 import TogglesCode from "./Toggles.vue?raw";
 
-@Component({
-  components: {
-    DemoSection,
-    Toggle
-  }
-})
-export default class Toggles extends Vue {
-  demoCode = TogglesCode;
-  selectedOption = "show";
-  selectedTextOption = "revenue";
-}
+const demoCode = TogglesCode;
+const selectedOption = ref("show");
+const selectedTextOption = ref("revenue");
 </script>

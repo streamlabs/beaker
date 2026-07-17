@@ -17,53 +17,38 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, computed } from "vue";
 
-@Component({})
-export default class Guard extends Vue {
-  @Prop()
-  value?: string;
+const props = withDefaults(
+  defineProps<{
+    value?: string;
+    placeholder?: string;
+    showOnClick?: boolean;
+    variation?: string;
+    type?: string;
+  }>(),
+  { placeholder: "Click to show", showOnClick: true, variation: "normal", type: "text" }
+);
 
-  @Prop({ default: "Click to show" })
-  placeholder!: string;
+const emit = defineEmits<{ click: [] }>();
+const visible = ref(true);
 
-  @Prop({ default: true })
-  showOnClick!: boolean;
+const prefix = computed(() =>
+  props.type === "input" ? "s-input-guard" : "s-text-guard"
+);
 
-  @Prop({ default: "normal" })
-  variation!: string;
+const guardClasses = computed(() => {
+  const classes = [visible.value ? prefix.value : `${prefix.value}--readable`];
+  if (props.variation === "alt") classes.push(`${prefix.value}--alt`);
+  return classes;
+});
 
-  @Prop({ default: "text" })
-  type!: string;
-
-  visible: boolean = true;
-
-  get prefix() {
-    return this.type === "input" ? "s-input-guard" : "s-text-guard";
-  }
-
-  showText() {
-    if (this.showOnClick) {
-      this.visible = false;
-    } else {
-      this.$emit("click");
-    }
-  }
-
-  get guardClasses() {
-    const classes: string[] = [];
-    if (this.visible) {
-      classes.push(this.prefix);
-    } else {
-      classes.push(`${this.prefix}--readable`);
-    }
-
-    if (this.variation === "alt") {
-      classes.push(`${this.prefix}--alt`);
-    }
-
-    return classes;
+function showText() {
+  if (props.showOnClick) {
+    visible.value = false;
+  } else {
+    emit("click");
   }
 }
 </script>

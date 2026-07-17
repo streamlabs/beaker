@@ -1,27 +1,42 @@
-import { resolve } from "path";
-import { defineConfig } from "vite";
-import { createVuePlugin } from "vite-plugin-vue2";
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import autoprefixer from 'autoprefixer';
+import dts from 'unplugin-dts/vite';
 
 export default defineConfig({
-  plugins: [createVuePlugin()],
+  plugins: [
+    vue(),
+    dts({
+      processor: 'vue',
+      tsconfigPath: './tsconfig.json',
+      cleanVueFileName: true,
+      staticImport: true,
+      insertTypesEntry: true,
+    }),
+  ],
+  css: {
+    postcss: {
+      plugins: [autoprefixer()],
+    },
+  },
   build: {
     minify: false,
-    target: "chrome61",
-    commonjsOptions: {
-      requireReturnsDefault: true,
-    },
+    cssCodeSplit: false,
     lib: {
-      entry: resolve(__dirname, "src/system.js"),
-      name: "Beaker",
-      fileName: (format) => `beaker.${format}.js`,
+      entry: './src/system.ts',
+      name: 'Beaker',
+      formats: ['es'],
+      fileName: () => 'beaker.es.js',
+      cssFileName: 'style',
     },
-    rollupOptions: {
-      external: ["vue"],
-      output: {
-        globals: {
-          vue: "Vue",
-        },
-      },
+    rolldownOptions: {
+      external: [
+        'vue',
+        'vue-router',
+        'lodash-es',
+        'vue-final-modal',
+        'vue-slider-component',
+      ],
     },
   },
 });

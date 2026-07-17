@@ -14,7 +14,8 @@
       </p>
 
       <Accordion :openedTitle="'Hide Code'" :closedTitle="'Show Code'">
-        <div slot="content">
+        <template #content>
+        <div>
           <pre>
 <code>import { DatePicker } from 'streamlabs-beaker';
 
@@ -30,6 +31,7 @@ components: {
   @selected=&quot;logDate&quot;
 &gt;&lt;/s-date-picker&gt;</code></pre>
         </div>
+        </template>
       </Accordion>
 
       <s-date-picker
@@ -104,33 +106,21 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
 import moment from "moment";
 import Accordion from "./../components/Accordion.vue";
-import DatePicker from "./../components/DatePicker.vue";
+import SDatePicker from "./../components/DatePicker.vue";
 
-@Component({
-  components: {
-    Accordion,
-    "s-date-picker": DatePicker
+const state = {
+  disabledDates: {
+    dates: [new Date()]
   }
-})
-export default class Calendars extends Vue {
-  state = {
-    disabledDates: {
-      dates: [new Date()]
-    }
-  };
+};
 
-  tomorrow = moment()
-    .add(1, "days")
-    .format();
+const tomorrow = moment().add(1, "days").format();
 
-  logDate(date) {
-    console.log(date);
-  }
+function logDate(date: unknown) {
+  console.log(date);
 }
 </script>
 

@@ -1,14 +1,17 @@
-import { defineConfig } from "vite";
-import { createVuePlugin } from "vite-plugin-vue2";
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
-  base: "/beaker/",
-  plugins: [createVuePlugin()],
+  base: '/beaker/',
+  plugins: [vue()],
+  css: {
+    postcss: {
+      plugins: [autoprefixer()],
+    },
+  },
   build: {
     minify: false,
     sourcemap: true,
-    commonjsOptions: {
-      requireReturnsDefault: true,
-    },
   },
 });

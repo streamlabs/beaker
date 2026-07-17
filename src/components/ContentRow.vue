@@ -14,80 +14,64 @@
         :size="'fixed-width'"
         :variation="btnVariation"
         :title="btnTitle"
-        :onClick="'buttonClick'"
+        @click="'buttonClick'"
         :href="buttonHref"
         :to="buttonTo"
         :tag="buttonTag"
-      ></Button>
+      />
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import Button from "./../components/Button.vue";
-import VueMq from "vue-mq";
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useMediaQuery } from '@vueuse/core';
+import Button from './../components/Button.vue';
 
-Vue.use(VueMq, {
-  breakpoints: {
-    // default breakpoints - customize this
-    sm: 900,
-    md: 1250,
-    lg: Infinity
-  },
-  defaultBreakpoint: "sm" // customize this for SSR
-});
+withDefaults(
+  defineProps<{
+    icon?: string;
+    btnVariation?: string;
+    btnTitle?: string;
+    buttonHref?: string;
+    buttonTo?: string;
+    buttonTag?: string;
+  }>(),
+  { btnVariation: 'default', btnTitle: 'Default', buttonTag: 'button' },
+);
 
-@Component({
-  components: {
-    Button
-  }
-})
-export default class ContentRow extends Vue {
-  @Prop()
-  icon!: string;
+const isMobile = useMediaQuery('(max-width: 899px)');
 
-  @Prop({ default: "default" })
-  btnVariation!: string;
-
-  @Prop({ default: "Default" })
-  btnTitle!: string;
-
-  @Prop()
-  buttonHref!: String;
-
-  @Prop()
-  buttonTo!: String;
-
-  @Prop({ default: "button" })
-  buttonTag!: String;
-
-  $mq: any;
-
-  get contentRowMq() {
-    return this.$mq === "sm" ? "s-content-row-mq" : "";
-  }
-
-  get contentBoxMq() {
-    return this.$mq === "sm" ? "s-content-box-mq" : "";
-  }
-
-  get bannerIconMq() {
-    return this.$mq === "sm" ? "s-banner__icon-mq" : "";
-  }
-
-  get contentTitleMq() {
-    return this.$mq === "sm" ? "s-content__title-mq" : "";
-  }
-
-  get contentTextMq() {
-    return this.$mq === "sm" ? "s-content__text-mq" : "";
-  }
-}
+const contentRowMq = computed(() =>
+  isMobile.value ? 's-content-row-mq' : '',
+);
+const contentBoxMq = computed(() =>
+  isMobile.value ? 's-content-box-mq' : '',
+);
+const contentTitleMq = computed(() =>
+  isMobile.value ? 's-content__title-mq' : '',
+);
+const contentTextMq = computed(() =>
+  isMobile.value ? 's-content__text-mq' : '',
+);
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
+
+.s-content-row {
+  background: @light-2;
+  .radius();
+  .padding(2);
+  .margin-bottom(2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    .margin-bottom(0);
+  }
+}
 
 .s-content-row-mq {
   flex-direction: column;
@@ -112,20 +96,6 @@ export default class ContentRow extends Vue {
 
 .s-content__text-mq {
   .margin-top(2);
-}
-
-.s-content-row {
-  background: @light-2;
-  .radius();
-  .padding(2);
-  .margin-bottom(2);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  p {
-    .margin-bottom(0);
-  }
 }
 
 .s-content-box {

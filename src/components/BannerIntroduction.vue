@@ -15,14 +15,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-
-@Component({})
-export default class BannerIntroduction extends Vue {
-  @Prop(String)
-  bgColor!: string;
-}
+<script setup lang="ts">
+defineProps<{ bgColor?: string }>();
 </script>
 
 <style lang="less">

@@ -1,13 +1,10 @@
 <template>
-  <modal
-    :name="name"
-    :classes="'s-modal-wrapper'"
-    :maxWidth="width"
-    :minWidth="minWidth"
-    height="auto"
-    :adaptive="true"
-    v-on="$listeners"
-    :clickToClose="clickToClose"
+  <VueFinalModal
+    v-model="show"
+    content-class="s-modal-wrapper"
+    :content-style="{ maxWidth: width + 'px', minWidth: minWidth + 'px' }"
+    :click-to-close="clickToClose"
+    v-bind="$attrs"
   >
     <div class="s-modal-container">
       <div class="s-modal-body">
@@ -27,7 +24,7 @@
             :variation="'default'"
             :title="'Close'"
             :size="'fixed-width'"
-            @click="$modal.hide(name)"
+            @click="show = false"
           ></Button>
           <Button
             :variation="'action'"
@@ -38,51 +35,40 @@
         </div>
       </div>
     </div>
-  </modal>
+  </VueFinalModal>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import Button from "./../components/Button.vue";
+<script setup lang="ts">
+import { VueFinalModal } from 'vue-final-modal';
+import Button from './../components/Button.vue';
 
-@Component({
-  components: {
-    Button
-  }
-})
-export default class ModalBasic extends Vue {
-  @Prop()
-  name!: string;
+const show = defineModel<boolean>({ default: false });
 
-  @Prop({ default: 600 })
-  width!: number;
+withDefaults(
+  defineProps<{
+    width?: number;
+    minWidth?: number;
+    title?: string;
+    subTitle?: string;
+    text?: string;
+    hideActionButtons?: string;
+    confirmButtonText?: string;
+    clickToClose?: boolean;
+  }>(),
+  {
+    width: 600,
+    minWidth: 600,
+    confirmButtonText: 'Confirm',
+    clickToClose: true,
+  },
+);
 
-  @Prop({ default: 600 })
-  minWidth!: number;
-
-  @Prop()
-  title!: string;
-
-  @Prop()
-  subTitle!: string;
-
-  @Prop()
-  text!: string;
-
-  @Prop()
-  hideActionButtons!: string;
-
-  @Prop({ default: "Confirm" })
-  confirmButtonText!: string;
-
-  @Prop({ default: true })
-  clickToClose!: boolean;
-}
+defineEmits<{ confirm: [] }>();
 </script>
 
 <style lang="less" scoped>
-@import (reference) "./../styles/Imports";
-@import "./../styles/components/Modals";
+@import (reference) './../styles/Imports';
+@import './../styles/components/Modals';
 
 .s-modal-body {
   border-radius: 8px 8px 0 0;
@@ -104,6 +90,10 @@ export default class ModalBasic extends Vue {
   align-items: center;
   flex-direction: row;
 }
+</style>
+
+<style lang="less">
+@import (reference) './../styles/Imports';
 
 .night,
 .night-theme {

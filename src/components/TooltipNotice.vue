@@ -27,57 +27,46 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed } from "vue";
 import Button from "./Button.vue";
 
-@Component({
-  components: {
-    Button
+const props = withDefaults(
+  defineProps<{
+    title: string;
+    desc: string;
+    buttonTitle?: string;
+    secondaryActionTitle?: string;
+    arrowPosition?: string;
+    hasButton?: boolean;
+    hasSecondaryAction?: boolean;
+    width?: number;
+  }>(),
+  {
+    buttonTitle: "Got it",
+    secondaryActionTitle: "Learn More",
+    arrowPosition: "left",
+    hasButton: true,
+    hasSecondaryAction: false,
+    width: 200,
   }
-})
-export default class TooltipNotice extends Vue {
-  @Prop({ required: true })
-  title!: string;
+);
 
-  @Prop({ default: "Got it" })
-  buttonTitle!: string;
+const emit = defineEmits<{
+  "handle-tooltip": [];
+  "handle-tooltip-secondary": [];
+}>();
 
-  @Prop({ default: "Learn More" })
-  secondaryActionTitle!: string;
+const arrowClasses = computed(() =>
+  props.arrowPosition ? [`s-tooltip-notice__arrow--${props.arrowPosition}`] : []
+);
 
-  @Prop({ required: true })
-  desc!: string;
+function clickHandler() {
+  emit("handle-tooltip");
+}
 
-  @Prop({ default: "left" })
-  arrowPosition!: string;
-
-  @Prop({ default: true })
-  hasButton!: boolean;
-
-  @Prop({ default: false })
-  hasSecondaryAction!: boolean;
-
-  @Prop({ default: 200 })
-  width!: number;
-
-  clickHandler() {
-    this.$emit("handle-tooltip");
-  }
-
-  secondaryClickHandler() {
-    this.$emit("handle-tooltip-secondary");
-  }
-
-  get arrowClasses() {
-    let classes: string[] = [];
-
-    if (this.arrowPosition) {
-      classes.push(`s-tooltip-notice__arrow--${this.arrowPosition}`);
-    }
-
-    return classes;
-  }
+function secondaryClickHandler() {
+  emit("handle-tooltip-secondary");
 }
 </script>
 

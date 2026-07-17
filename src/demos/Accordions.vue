@@ -23,9 +23,11 @@ components: {
             closed-title="Show Content"
             v-model="isOpened"
           >
-            <div slot="content">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            </div>
+            <template #content>
+              <div>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              </div>
+            </template>
           </Accordion>
         </template>
       </DemoSection>
@@ -39,11 +41,13 @@ components: {
           <Accordion
             opened-title="Hide Content"
             closed-title="Show Content"
-            :isOpened="true"
+            :is-opened="true"
           >
-            <div slot="content">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            </div>
+            <template #content>
+              <div>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              </div>
+            </template>
           </Accordion>
         </template>
       </DemoSection>
@@ -59,9 +63,11 @@ components: {
             closed-title="Show Content"
             :noBorder="true"
           >
-            <div slot="content">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            </div>
+            <template #content>
+              <div>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              </div>
+            </template>
           </Accordion>
         </template>
       </DemoSection>
@@ -76,7 +82,7 @@ components: {
             opened-title="Hide Inner Accordion"
             closed-title="Show Inner Accordion"
           >
-            <div slot="content">
+            <template #content>
               <div class="section">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -87,14 +93,16 @@ components: {
                 closed-title="Show Content"
                 v-model="isOpened"
               >
-                <div slot="content">
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur.
-                </div>
+                <template #content>
+                  <div>
+                    Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                    laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                    irure dolor in reprehenderit in voluptate velit esse cillum
+                    dolore eu fugiat nulla pariatur.
+                  </div>
+                </template>
               </Accordion>
-            </div>
+            </template>
           </Accordion>
         </template>
       </DemoSection>
@@ -106,8 +114,8 @@ components: {
       <DemoSection title="Left Navigation" :code="demoCode">
         <template #components>
           <Accordion :leftNav="true">
-            <div slot="title">Left Navigation</div>
-            <div slot="content">
+            <template #title><div>Left Navigation</div></template>
+            <template #content>
               <div class="fake-nav">
                 <a href="#" class="fake-nav-item">
                   <div class="fake-nav-icon">
@@ -128,7 +136,7 @@ components: {
                   <div class="fake-nav-title">Slot and navigation.less</div>
                 </a>
               </div>
-            </div>
+            </template>
           </Accordion>
         </template>
       </DemoSection>
@@ -145,9 +153,11 @@ components: {
                 <i v-else key="close" class="icon-back" />
               </transition>
             </template>
-            <div slot="content">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            </div>
+            <template #content>
+              <div>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              </div>
+            </template>
           </Accordion>
         </template>
       </DemoSection>
@@ -212,26 +222,17 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import Accordion from "./../components/Accordion.vue";
 import AccordionCode from "./Accordions.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
-@Component({
-  components: {
-    Accordion,
-    DemoSection
-  }
-})
-export default class Accordions extends Vue {
-  demoCode = AccordionCode;
-  isOpened: boolean | null = true;
+const demoCode = AccordionCode;
+const isOpened = ref<boolean | null>(true);
 
-  openAccordion(bool) {
-    this.isOpened = bool;
-  }
+function openAccordion(bool: boolean) {
+  isOpened.value = bool;
 }
 </script>
 

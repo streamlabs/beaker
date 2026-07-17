@@ -1,39 +1,32 @@
 <template>
   <div
     class="s-status-switch"
-    :class="{ enabled: !!value }"
-    @click="$emit('input', !value)"
-    @keydown.prevent.space="$emit('input', !value)"
-    @keydown.prevent.enter="$emit('input', !value)"
+    :class="{ enabled: !!modelValue }"
+    @click="$emit('update:modelValue', !modelValue)"
+    @keydown.prevent.space="$emit('update:modelValue', !modelValue)"
+    @keydown.prevent.enter="$emit('update:modelValue', !modelValue)"
     tabindex="0"
   >
     <div
       class="s-status-switch__paddle"
       :class="{ 's-status-switch__paddle--small': size === 'small' }"
-    ></div>
+    />
     <label v-if="label">{{ label }}</label>
-    <slot></slot>
+    <slot />
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+withDefaults(
+  defineProps<{ label?: string; size?: string; modelValue?: boolean }>(),
+  { modelValue: false },
+);
 
-@Component({})
-export default class StatusSwitch extends Vue {
-  @Prop()
-  label?: string;
-
-  @Prop()
-  size?: string;
-
-  @Prop({ default: false })
-  value?: boolean;
-}
+defineEmits<{ 'update:modelValue': [val: boolean] }>();
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-status-switch {
   user-select: none;
@@ -58,7 +51,7 @@ export default class StatusSwitch extends Vue {
     transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       width: 16px;
       height: 16px;

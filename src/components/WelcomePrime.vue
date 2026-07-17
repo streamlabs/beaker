@@ -26,61 +26,53 @@
       </div>
       <div class="modal-prime__button">
         <slot v-if="hasSlot"></slot>
-        <s-button
+        <Button
           v-else
           size="large"
           variation="prime"
           icon="prime"
           :title="primeButtonText"
           @click="onPrimeButtonHandler"
-        ></s-button>
+        ></Button>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import Button from "./../components/Button.vue";
+<script setup lang="ts">
+import { ref, computed, onMounted, useSlots } from 'vue';
+import Button from './../components/Button.vue';
 
-@Component({
-  components: {
-    "s-button": Button
-  }
-})
-export default class WelcomePrime extends Vue {
-  @Prop({ default: "Continue" })
-  primeButtonText!: string;
+withDefaults(defineProps<{ primeButtonText?: string }>(), {
+  primeButtonText: 'Continue',
+});
 
-  primeFeatureListDefault: string[] = [
-    "100s of Stunning Themes",
-    "Every App is FREE",
-    "Merch Store with Wholesale Pricing",
-    "Custom Web Domain and Email Address",
-    "Automatic Gold All-Star Status"
-  ];
+const emit = defineEmits<{ onClickPrime: [] }>();
+const slots = useSlots();
 
-  isUserAgentEdge: boolean = false;
+const primeFeatureListDefault = [
+  '100s of Stunning Themes',
+  'Every App is FREE',
+  'Merch Store with Wholesale Pricing',
+  'Custom Web Domain and Email Address',
+  'Automatic Gold All-Star Status',
+];
 
-  onPrimeButtonHandler() {
-    this.$emit("onClickPrime");
-  }
+const isUserAgentEdge = ref(false);
+const hasSlot = computed(() => !!slots.default);
 
-  mounted() {
-    navigator.userAgent.indexOf("Edge") !== -1
-      ? (this.isUserAgentEdge = true)
-      : (this.isUserAgentEdge = false);
-  }
-
-  get hasSlot() {
-    return !(typeof this.$slots.default === "undefined");
-  }
+function onPrimeButtonHandler() {
+  emit('onClickPrime');
 }
+
+onMounted(() => {
+  isUserAgentEdge.value = navigator.userAgent.indexOf('Edge') !== -1;
+});
 </script>
 
 <style lang="less" scoped>
-@import "./../styles/Imports";
-@import "./../styles/components/Modals";
+@import './../styles/Imports';
+@import './../styles/components/Modals';
 
 .s-modal-welcome-prime {
   position: relative;
@@ -117,7 +109,7 @@ export default class WelcomePrime extends Vue {
   }
 
   .modal-prime__heading {
-    font-family: "Barlow", sans-serif;
+    font-family: 'Barlow', sans-serif;
     font-size: 32px !important;
     font-weight: 800;
     text-align: center;
@@ -145,12 +137,15 @@ export default class WelcomePrime extends Vue {
       width: 516px;
       margin: 0 auto;
       display: block;
-      background: url("https://cdn.streamlabs.com/static/imgs/compressed/streamer-4.png"),
-        url("https://cdn.streamlabs.com/static/imgs/landing/streamer-2.png");
+      background:
+        url('https://cdn.streamlabs.com/static/imgs/compressed/streamer-4.png'),
+        url('https://cdn.streamlabs.com/static/imgs/landing/streamer-2.png');
       height: 238px;
       background-repeat: no-repeat;
       background-size: 48%, 39%;
-      background-position: 229px -25px, 103px 0;
+      background-position:
+        229px -25px,
+        103px 0;
     }
   }
 
@@ -197,6 +192,10 @@ export default class WelcomePrime extends Vue {
     }
   }
 }
+</style>
+
+<style lang="less">
+@import './../styles/Imports';
 
 .night,
 .night-theme {

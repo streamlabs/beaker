@@ -19,49 +19,30 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed } from "vue";
 import Button from "./../components/Button.vue";
 
-@Component({
-  components: {
-    Button
+const props = withDefaults(
+  defineProps<{
+    bgColor?: string;
+    description?: string;
+    buttonVariation?: string;
+    buttonTitle?: string;
+    buttonHref?: string;
+    buttonTo?: string;
+    buttonTag?: string;
+  }>(),
+  {
+    description: "Over 800k creators use Streamlabs OBS daily, delivering entertainment.",
+    buttonVariation: "slobs-download",
+    buttonTitle: "Download Streamlabs OBS",
   }
-})
-export default class NavCallToAction extends Vue {
-  @Prop()
-  bgColor!: String;
+);
 
-  @Prop({
-    default:
-      "Over 800k creators use Streamlabs OBS daily, delivering entertainment."
-  })
-  description!: String;
+defineEmits<{ click: [] }>();
 
-  @Prop({ default: "slobs-download" })
-  buttonVariation!: String;
-
-  @Prop({ default: "Download Streamlabs OBS" })
-  buttonTitle!: String;
-
-  @Prop()
-  buttonHref!: String;
-
-  @Prop()
-  buttonTo!: String;
-
-  @Prop()
-  buttonTag!: String;
-
-  @Prop()
-  onClick!: {
-    type: Function;
-  };
-
-  callToActionBg: object = {
-    backgroundColor: this.bgColor
-  };
-}
+const callToActionBg = computed(() => ({ backgroundColor: props.bgColor }));
 </script>
 
 <style lang="less">

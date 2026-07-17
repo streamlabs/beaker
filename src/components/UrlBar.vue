@@ -9,16 +9,10 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-
-@Component({})
-export default class UrlBar extends Vue {
-  @Prop({
-    default: "https://awkwardraccoon.com"
-  })
-  domain!: String;
-}
+<script setup lang="ts">
+withDefaults(defineProps<{ domain?: string }>(), {
+  domain: "https://awkwardraccoon.com",
+});
 </script>
 
 <style lang="less">

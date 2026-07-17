@@ -10,9 +10,10 @@
     <input
       v-if="!isMini"
       type="text"
-      :value="value"
+      :value="modelValue"
       :placeholder="placeholder"
       @click="showPicker()"
+      @focus="showPicker"
       @input="updateFromInput"
       :class="{ 's-colorpicker__input--error': error }"
     />
@@ -33,29 +34,29 @@
 
     <div
       class="s-colorpicker__preview"
-      :style="{ backgroundColor: value }"
+      :style="{ backgroundColor: modelValue }"
       @click="showPicker()"
     ></div>
     <div class="s-colorpicker__preview--alpha"></div>
 
     <transition name="fade">
       <div v-if="displayPicker" class="s-colorpicker__picker-wrapper">
-        <picker
+        <ChromePicker
           ref="chrome-color-picker"
           class="s-colorpicker"
           :class="alphaClass"
-          :value="colors"
+          :tinyColor="colors"
           :disable-alpha="!hasAlpha"
           :disable-fields="!hasAlpha"
-          @input="updateFromPicker"
+          @update:tinyColor="updateFromPicker"
         />
         <input
           v-if="isMini"
           type="text"
-          :value="value"
+          :value="modelValue"
           :placeholder="placeholder"
           @input="updateFromInput"
-          v-on="listeners"
+          v-bind="$attrs"
           class="s-colorpicker__input--mini"
           :class="{ 's-colorpicker__input--error': error }"
         />
@@ -64,89 +65,68 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { Chrome } from "vue-color";
+<script setup lang="ts">
+import { ref, computed, useTemplateRef } from "vue";
+import { ChromePicker, tinycolor } from "vue-color";
 
-@Component({
-  inheritAttrs: false,
-  components: {
-    picker: Chrome
-  }
-})
-export default class ColorPicker extends Vue {
-  $refs!: {
-    colorpicker: HTMLElement;
-  };
+defineOptions({ inheritAttrs: false });
 
-  @Prop()
-  value!: any;
+// tinycolor2 (used internally by vue-color) ships no TypeScript types —
+// this captures only the members this component actually calls.
+interface TinyColorLike {
+  getAlpha(): number;
+  toHex8String(): string;
+  toHexString(): string;
+}
 
-  @Prop({ default: "#31c3a2" })
-  placeholder!: string;
+const props = withDefaults(
+  defineProps<{
+    modelValue?: string;
+    placeholder?: string;
+    hasAlpha?: boolean;
+    isMini?: boolean;
+    icon?: string;
+    error?: string;
+  }>(),
+  { placeholder: "#31c3a2", hasAlpha: false, isMini: false }
+);
 
-  @Prop({ default: false })
-  hasAlpha!: boolean;
+const emit = defineEmits<{ 'update:modelValue': [val: string] }>();
 
-  @Prop({ default: false })
-  isMini!: boolean;
+const colorpicker = useTemplateRef<HTMLElement>("colorpicker");
+const displayPicker = ref(false);
+const colors = ref<TinyColorLike>(tinycolor(props.modelValue));
 
-  @Prop()
-  icon!: string;
+const alphaClass = computed(() => {
+  if (!props.hasAlpha) return false;
+  return colors.value.getAlpha() === 1 ? "nonAlpha" : "alpha";
+});
 
-  @Prop()
-  error!: string;
+function updateFromPicker(value: TinyColorLike) {
+  colors.value = value;
+  emit("update:modelValue", alphaClass.value === "alpha" ? value.toHex8String() : value.toHexString());
+}
 
-  private displayPicker: Boolean = false;
-  private backgroundColor: String = "";
+function updateFromInput(event: Event) {
+  const val = (event.target as HTMLInputElement).value;
+  colors.value = tinycolor(val);
+  emit("update:modelValue", val);
+}
 
-  colors: object = {};
+function hidePicker() {
+  document.removeEventListener("click", documentClick);
+  displayPicker.value = false;
+}
 
-  get alphaClass() {
-    return this.hasAlpha
-      ? this.colors["a"] === 1
-        ? "nonAlpha"
-        : "alpha"
-      : false;
-  }
+function showPicker() {
+  document.addEventListener("click", documentClick);
+  displayPicker.value = true;
+}
 
-  created() {
-    this.colors = Object.assign({}, this.colors, {
-      hex: this.value
-    });
-  }
-
-  updateFromPicker(value: any) {
-    this.colors = value;
-    if (this.alphaClass === "alpha") {
-      this.$emit("input", value.hex8);
-    } else {
-      this.$emit("input", value.hex);
-    }
-  }
-
-  updateFromInput(event: any) {
-    this.colors = event.target.value;
-    this.$emit("input", event.target.value);
-  }
-
-  hidePicker() {
-    document.removeEventListener("click", this.documentClick);
-    this.displayPicker = false;
-  }
-
-  showPicker() {
-    document.addEventListener("click", this.documentClick);
-    this.displayPicker = true;
-  }
-
-  documentClick(e: any) {
-    let el = this.$refs.colorpicker;
-    let target = e.target;
-    if (el && el !== target && !el.contains(target)) {
-      this.hidePicker();
-    }
-  }
+function documentClick(e: Event) {
+  const el = colorpicker.value;
+  const target = e.target as Node;
+  if (el && el !== target && !el.contains(target)) hidePicker();
 }
 </script>
 
@@ -180,7 +160,7 @@ export default class ColorPicker extends Vue {
     border: 1px solid black;
     border-color: #4f5e65;
     background: transparent;
-    color: #ffffff;
+    color: @dark-2;
     height: 40px;
     border-radius: 4px;
     font-family: "Roboto";
@@ -216,7 +196,7 @@ export default class ColorPicker extends Vue {
     }
   }
 
-  &.vc-chrome {
+  &.vc-chrome-picker {
     position: relative;
     left: 0;
     top: 0;
@@ -224,38 +204,37 @@ export default class ColorPicker extends Vue {
     .day-shadow();
   }
 
-  .vc-chrome-active-color {
+  .active-color {
     border: 1px solid fade(@dark-2, 12%);
     .radius();
   }
 
-  .vc-chrome-body {
+  .body {
     padding: 12px;
     border-radius: 0 0 4px 4px;
   }
 
-  .vc-chrome-toggle-btn,
-  .vc-chrome-fields-wrap {
+  .toggle-btn {
     display: none;
   }
 
   &.alpha {
-    .vc-chrome-fields:not(:nth-child(2)) {
-      display: none;
+    .fields:not(:nth-child(2)) {
+      display: none !important;
     }
 
-    .vc-chrome-fields:nth-child(2) {
-      display: flex;
+    .fields:nth-child(2) {
+      display: flex !important;
     }
 
-    .vc-alpha-checkboard-wrap {
+    .color-wrap .vc-checkerboard {
       border-radius: 2px 4px 4px 2px;
     }
   }
 
   &.alpha,
   &.nonAlpha {
-    .vc-chrome-color-wrap {
+    .color-wrap {
       width: 42px;
 
       .vc-checkerboard {
@@ -271,12 +250,16 @@ export default class ColorPicker extends Vue {
       border-color: fade(@white, 16%);
     }
 
-    .vc-chrome-body {
+    .body {
       background-color: @dark-4;
     }
 
-    .vc-chrome-active-color {
+    .active-color {
       border-color: fade(@white, 16%);
+    }
+
+    &__mini-wrapper {
+      color: @light-1;
     }
   }
 }

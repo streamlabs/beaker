@@ -6,47 +6,29 @@
       :subtitle="subtitle"
       :hasLink="true"
     >
-      <div slot="title">
+      <template #title>
         <Badge :align-left="true" :variant="'prime-alt'"></Badge>Feature
-      </div>
-      <div slot="link">
+      </template>
+      <template #link>
         <Button
-          @click="$emit('click')"
+          @click="emit('click')"
           :tag="'a'"
           :variation="'link'"
           :href="href"
           :title="'Try Prime Now'"
         ></Button>
-      </div>
+      </template>
     </empty-section>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import Badge from "./Badge.vue";
 import Button from "./Button.vue";
 import EmptySection from "./EmptySection.vue";
 
-@Component({
-  components: {
-    Badge,
-    Button,
-    EmptySection
-  }
-})
-export default class PrimeSection extends Vue {
-  @Prop({})
-  subtitle!: string;
-
-  @Prop({})
-  href!: string;
-
-  @Prop()
-  onClick!: {
-    type: Function;
-  };
-}
+defineProps<{ subtitle?: string; href?: string }>();
+const emit = defineEmits<{ click: [] }>();
 </script>
 
 <style lang="less">

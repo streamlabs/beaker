@@ -13,7 +13,7 @@
         :rows="rows"
         :placeholder="placeholder"
         :maxlength="maxLength"
-        :value="value"
+        :value="model"
         @input="onValueChange"
         @focus="onFocus"
         @click="onClick"
@@ -23,7 +23,7 @@
 
       <label
         :class="{
-          's-form-area__label--top': value !== ''
+          's-form-area__label--top': model !== ''
         }"
         class="s-form-area__label"
         v-if="label"
@@ -49,115 +49,95 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed, nextTick, onMounted, onUpdated, ref, useAttrs, useTemplateRef } from "vue";
 import { omit } from "lodash-es";
 
-@Component({})
-export default class TextArea extends Vue {
-  $refs!: {
-    textArea: HTMLTextAreaElement;
-  };
+defineOptions({ inheritAttrs: false });
 
-  @Prop()
-  name!: string;
+const model = defineModel<string>({ default: "" });
 
-  @Prop()
-  label!: string;
+const props = defineProps<{
+  name?: string;
+  label?: string;
+  placeholder?: string;
+  error?: string;
+  helpText?: string;
+  cols?: number;
+  rows?: number;
+  maxLength?: number;
+  autoResize?: boolean;
+  maxHeight?: number;
+}>();
 
-  @Prop()
-  placeholder!: string;
+const emit = defineEmits<{
+  keyup: [pos: number | null];
+  focus: [pos: number | null];
+  click: [pos: number | null];
+}>();
 
-  @Prop()
-  value!: string;
+const attrs = useAttrs();
+const textAreaRef = useTemplateRef<HTMLTextAreaElement>("textArea");
+const hasScroll = ref(false);
 
-  @Prop()
-  error!: string;
+const filteredListeners = computed(() => omit(attrs, ["onInput"]));
+const currentLength = computed(() => model.value.length);
 
-  @Prop()
-  helpText!: string;
+onMounted(() => {
+  updateSize();
+  updateCountPos();
+});
 
-  @Prop({ default: 100 })
-  cols!: number;
+onUpdated(() => {
+  updateCountPos();
+});
 
-  @Prop({ default: 3 })
-  rows!: number;
+function onValueChange(event: Event) {
+  model.value = (event.target as HTMLTextAreaElement).value;
+  updateSize();
+}
 
-  @Prop()
-  maxLength!: number;
+function onKeyUp(event: Event) {
+  emit("keyup", (event.target as HTMLTextAreaElement).selectionStart);
+}
+function onFocus(event: Event) {
+  emit("focus", (event.target as HTMLTextAreaElement).selectionStart);
+}
+function onClick(event: Event) {
+  emit("click", (event.target as HTMLTextAreaElement).selectionStart);
+}
 
-  @Prop()
-  autoResize!: boolean;
-
-  @Prop()
-  maxHeight!: number;
-
-  private localValue: string = "";
-  private hasScroll: boolean = false;
-
-  created() {
-    this.$parent.$on("update", this.updateValue);
-  }
-
-  mounted() {
-    this.updateSize();
-    this.updateCountPos();
-  }
-
-  focus() {
-    this.$refs.textArea.focus();
-  }
-
-  get filteredListeners() {
-    return omit(this.$listeners, ["input"]);
-  }
-
-  get currentLength() {
-    return this.value.length;
-  }
-
-  updated() {
-    this.updateCountPos();
-  }
-
-  onValueChange(event: { target: HTMLTextAreaElement }) {
-    this.$emit("input", event.target.value);
-    this.updateSize();
-  }
-
-  onKeyUp(event: { target: HTMLTextAreaElement }) {
-    this.$emit("keyup", event.target.selectionStart);
-  }
-  onFocus(event: { target: HTMLTextAreaElement }) {
-    this.$emit("focus", event.target.selectionStart);
-  }
-  onClick(event: { target: HTMLTextAreaElement }) {
-    this.$emit("click", event.target.selectionStart);
-  }
-
-  updateValue(val) {
-    this.$refs.textArea.value = val;
-    this.$emit("input", val);
-  }
-
-  updateSize() {
-    if (this.autoResize) {
-      this.$refs.textArea.style.cssText = "height:auto;";
-      const newHeight =
-        this.$refs.textArea.scrollHeight > this.maxHeight && this.maxHeight
-          ? this.maxHeight + 2
-          : this.$refs.textArea.scrollHeight + 2;
-      this.$refs.textArea.style.cssText = "height:" + newHeight + "px";
-    }
-  }
-
-  updateCountPos() {
-    this.$nextTick(() => {
-      const textArea = this.$refs.textArea;
-      this.hasScroll = textArea.scrollHeight > textArea.clientHeight;
-    });
+function updateSize() {
+  if (props.autoResize && textAreaRef.value) {
+    textAreaRef.value.style.cssText = "height:auto;";
+    const newHeight =
+      textAreaRef.value.scrollHeight > (props.maxHeight ?? 0) && props.maxHeight
+        ? props.maxHeight + 2
+        : textAreaRef.value.scrollHeight + 2;
+    textAreaRef.value.style.cssText = "height:" + newHeight + "px";
   }
 }
+
+function updateCountPos() {
+  nextTick(() => {
+    if (textAreaRef.value) {
+      hasScroll.value =
+        textAreaRef.value.scrollHeight > textAreaRef.value.clientHeight;
+    }
+  });
+}
+
+function updateValue(val: string) {
+  if (textAreaRef.value) {
+    textAreaRef.value.value = val;
+    model.value = val;
+  }
+}
+
+defineExpose({
+  focus: () => textAreaRef.value?.focus(),
+  updateValue
+});
 </script>
 
 <style lang="less">

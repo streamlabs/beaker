@@ -73,16 +73,20 @@
             buttonVariation="prime"
             @click="testNavClick"
           >
-            <div slot="title">
-              Unlock unlimited themes with
-              <Badge variant="prime-alt" />
-            </div>
-            <div slot="extras">
-              <div>Prime also includes:</div>
-              <div>Custom Domain Name</div>
-              <div>30+ Professional Themes</div>
-              <div>Advanced SEO & Analytics</div>
-            </div>
+            <template #title>
+              <div>
+                Unlock unlimited themes with
+                <Badge variant="prime-alt" />
+              </div>
+            </template>
+            <template #extras>
+              <div>
+                <div>Prime also includes:</div>
+                <div>Custom Domain Name</div>
+                <div>30+ Professional Themes</div>
+                <div>Advanced SEO & Analytics</div>
+              </div>
+            </template>
           </NavCallToAction>
         </template>
       </DemoSection>
@@ -101,17 +105,18 @@
       <DemoSection title="Welcome Prime Modal" :code="demoCode">
         <template #components>
           <ModalComp
+            modal-id="modal-welcome-prime"
             type="welcome-prime"
             :width="600"
-            @onClickPrime="testWelcomePrime"
-            :hasPrimeCloseButton="true"
+            @on-click-prime="testWelcomePrime"
+            :has-prime-close-button="true"
           />
 
           <div class="button-container button-container--left">
             <Button
               variation="default"
               title="modal welcome prime"
-              @click="$modal.show('modal-welcome-prime')"
+              @click="open('modal-welcome-prime')"
             />
           </div>
         </template>
@@ -130,7 +135,7 @@
 
       <DemoSection title="Welcome Prime" :code="demoCode">
         <template #components>
-          <WelcomePrime class="welcome-prime" @onClickPrime="testClick" />
+          <WelcomePrime class="welcome-prime" @on-click-prime="testClick" />
         </template>
       </DemoSection>
     </div>
@@ -148,6 +153,7 @@
       <DemoSection title="Prime Intro Modal" :code="demoCode">
         <template #components>
           <ModalComp
+            modalId="modal-prime-intro"
             type="prime-intro"
             :width="680"
             @onClickPrime="testPrimeIntro"
@@ -158,7 +164,7 @@
             <Button
               variation="default"
               title="Modal Prime Intro"
-              @click="$modal.show('modal-prime-intro')"
+              @click="open('modal-prime-intro')"
             />
           </div>
         </template>
@@ -167,52 +173,39 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { useVfm } from 'vue-final-modal';
+import Badge from './../components/Badge.vue';
+import Button from './../components/Button.vue';
+import DemoSection from './../components/DemoSection.vue';
+import ModalComp from './../components/ModalComp.vue';
+import NavCallToAction from './../components/NavCallToAction.vue';
+import PrimeCode from './Prime.vue?raw';
+import PrimeSection from './../components/PrimeSection.vue';
+import WelcomePrime from './../components/WelcomePrime.vue';
 
-import Badge from "./../components/Badge.vue";
-import Button from "./../components/Button.vue";
-import DemoSection from "./../components/DemoSection.vue";
-import ModalComp from "./../components/ModalComp.vue";
-import NavCallToAction from "./../components/NavCallToAction.vue";
-import PrimeCode from "./Prime.vue?raw";
-import PrimeSection from "./../components/PrimeSection.vue";
-import WelcomePrime from "./../components/WelcomePrime.vue";
+const demoCode = PrimeCode;
+const { open } = useVfm();
 
-@Component({
-  components: {
-    Badge,
-    Button,
-    DemoSection,
-    ModalComp,
-    NavCallToAction,
-    PrimeSection,
-    WelcomePrime
-  }
-})
-export default class PrimeComponents extends Vue {
-  demoCode = PrimeCode;
+function testClick() {
+  console.log('test prime section click');
+}
 
-  testClick() {
-    console.log("test prime section click");
-  }
+function testNavClick() {
+  console.log('test prime nav click');
+}
 
-  testNavClick() {
-    console.log("test prime nav click");
-  }
+function testWelcomePrime() {
+  console.log('test welcome prime click');
+}
 
-  testWelcomePrime() {
-    console.log("test welcome prime click");
-  }
-
-  testPrimeIntro() {
-    console.log("test prime info click");
-  }
+function testPrimeIntro() {
+  console.log('test prime info click');
 }
 </script>
 
 <style lang="less" scoped>
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .cs-section {
   position: relative;

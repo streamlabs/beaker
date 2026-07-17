@@ -4,39 +4,35 @@
       type="checkbox"
       :id="id"
       :name="name"
-      :checked="value"
-      @change="$emit('input', $event.target.checked)"
+      :checked="modelValue"
+      @change="
+        $emit('update:modelValue', ($event.target as HTMLInputElement).checked)
+      "
       tabindex="-1"
     />
     <label :for="id">{{ label }}</label>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+const props = defineProps<{
+  label: string;
+  id: string;
+  name?: string;
+  modelValue: boolean;
+}>();
 
-@Component({})
-export default class Checkbox extends Vue {
-  @Prop({ type: String, required: true })
-  label!: string;
+const emit = defineEmits<{
+  'update:modelValue': [checked: boolean];
+}>();
 
-  @Prop({ type: String, required: true })
-  id!: string;
-
-  @Prop({ type: String })
-  name!: string;
-
-  @Prop({ type: Boolean, required: true })
-  value!: boolean;
-
-  toggleCheck() {
-    this.$emit("input", !this.value);
-  }
+function toggleCheck() {
+  emit('update:modelValue', !props.modelValue);
 }
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-checkbox {
   position: relative;
@@ -72,24 +68,37 @@ export default class Checkbox extends Vue {
       left: 0;
       width: 16px;
       height: 16px;
-      content: "";
+      content: '';
       background: transparent;
       .radius();
-      -webkit-transition: border 0.1s ease, opacity 0.1s ease,
-        box-shadow 0.1s ease, -webkit-transform 0.1s ease;
-      transition: border 0.1s ease, opacity 0.1s ease, box-shadow 0.1s ease,
+      -webkit-transition:
+        border 0.1s ease,
+        opacity 0.1s ease,
+        box-shadow 0.1s ease,
         -webkit-transform 0.1s ease;
-      transition: border 0.1s ease, opacity 0.1s ease, transform 0.1s ease,
+      transition:
+        border 0.1s ease,
+        opacity 0.1s ease,
+        box-shadow 0.1s ease,
+        -webkit-transform 0.1s ease;
+      transition:
+        border 0.1s ease,
+        opacity 0.1s ease,
+        transform 0.1s ease,
         box-shadow 0.1s ease;
-      transition: border 0.1s ease, opacity 0.1s ease, transform 0.1s ease,
-        box-shadow 0.1s ease, -webkit-transform 0.1s ease;
+      transition:
+        border 0.1s ease,
+        opacity 0.1s ease,
+        transform 0.1s ease,
+        box-shadow 0.1s ease,
+        -webkit-transform 0.1s ease;
       border: 1px solid @light-4;
       box-sizing: border-box;
     }
   }
 
-  input[type="checkbox"],
-  input[type="radio"] {
+  input[type='checkbox'],
+  input[type='radio'] {
     cursor: pointer;
     position: absolute;
     top: 0;
@@ -117,16 +126,16 @@ export default class Checkbox extends Vue {
     top: 0px;
     opacity: 1;
     color: @white;
-    font-family: "Font Awesome 5 Free";
+    font-family: 'Font Awesome 5 Free';
     font-weight: 900;
-    content: "\f00c";
+    content: '\f00c';
     font-size: 10px;
   }
 }
 
 .s-radio.checkbox {
   label:before {
-    content: "";
+    content: '';
     transform: none;
     width: 16px;
     height: 16px;
@@ -136,7 +145,7 @@ export default class Checkbox extends Vue {
   }
 
   input:checked ~ label:after {
-    content: "";
+    content: '';
     width: 8px;
     height: 8px;
     background-color: @white;

@@ -21,9 +21,7 @@
     <div
       v-if="iconList.length"
       class="icon__grid"
-      v-clipboard:copy="selectedIcon"
-      v-clipboard:success="emitCopySuccess"
-      v-clipboard:error="emitCopyError"
+      @click="handleCopy(selectedIcon)"
     >
       <div
         v-for="icon in iconList"
@@ -40,47 +38,60 @@
     </div>
 
     <h1 class="icon__error" v-else>
-      <i class="icon-error"/>
-      There was an error loading the icons</h1>
+      <i class="icon-error" />
+      There was an error loading the icons
+    </h1>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { EventBus } from "./../plugins/event-bus";
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { useNotification } from './../composables/useNotification';
+import { useClipboard } from '@vueuse/core';
+
 const ICON_STYLESHEET_URL = 'https://cdn.streamlabs.com/icons/style.css';
 
-@Component({})
-export default class Icons extends Vue {
-  iconList:string[] = [];
-  selectedIcon = '';
+const { copy } = useClipboard();
+const { success, error } = useNotification();
+const iconList = ref<string[]>([]);
+const selectedIcon = ref('');
 
-  mounted() {
-    const styleSheetsList = Array.from(document.styleSheets);
-    const link = Array.from(styleSheetsList.find(ss => ss.href === ICON_STYLESHEET_URL)?.cssRules || []);
+onMounted(() => {
+  const styleSheetsList = Array.from(document.styleSheets);
+  const link = Array.from(
+    styleSheetsList.find((ss) => ss.href === ICON_STYLESHEET_URL)?.cssRules ||
+      [],
+  );
+  iconList.value = link
+    ?.filter((rule) => rule.cssText.startsWith('.icon'))
+    .map((rule) => rule.cssText.match(/([a-zA-Z0-9-])*(?=::before)/)?.[0] || '')
+    .sort();
+});
 
-    this.iconList = link
-      ?.filter(rule => rule.cssText.startsWith('.icon'))
-      .map(rule => rule.cssText.match(/([a-zA-Z0-9-])*(?=::before)/)?.[0] || '')
-      .sort();
+function selectIconData(icon: string) {
+  selectedIcon.value = icon;
+}
+
+async function handleCopy(text: string) {
+  try {
+    await copy(text);
+    success(`Copied: '${text}'`);
+  } catch (e: unknown) {
+    error(String(e));
   }
+}
 
-  selectIconData(icon) {
-    this.selectedIcon = icon;
-  }
+function emitCopySuccess(e: { text: string }) {
+  success(`Copied "${e.text}" to clipboard`);
+}
 
-  emitCopySuccess(e) {
-    EventBus.$emit("copy-success", `Copied "${e.text}" to clipboard`);
-  }
-
-  emitCopyError(e) {
-    EventBus.$emit("copy-copy", e);
-  }
+function emitCopyError(e: unknown) {
+  error(String(e));
 }
 </script>
 
 <style lang="less" scoped>
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .icons {
   position: relative;

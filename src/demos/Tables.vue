@@ -29,12 +29,10 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 
-@Component({})
-export default class Tables extends Vue {
-  users = [
+const users = ref([
     {
       name: "Morgan",
       date: "10/22/2018",
@@ -71,6 +69,5 @@ export default class Tables extends Vue {
       event: "Donation",
       amount: "$20.50"
     }
-  ];
-}
+  ]);
 </script>

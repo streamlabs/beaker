@@ -10,22 +10,19 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-
-@Component({})
-export default class FakeAlert extends Vue {
-  @Prop({ default: "galazy83 donated $50.00" })
-  alertText!: string;
-
-  @Prop({ default: "Thanks for the stream. Go CivRyan!" })
-  alertMessage!: string;
-
-  @Prop({
-    default: "https://thumbs.gfycat.com/PleasedIcyCod-size_restricted.gif"
-  })
-  alertImage!: string;
-}
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    alertText?: string;
+    alertMessage?: string;
+    alertImage?: string;
+  }>(),
+  {
+    alertText: "galazy83 donated $50.00",
+    alertMessage: "Thanks for the stream. Go CivRyan!",
+    alertImage: "https://thumbs.gfycat.com/PleasedIcyCod-size_restricted.gif",
+  }
+);
 </script>
 
 <style lang="less">

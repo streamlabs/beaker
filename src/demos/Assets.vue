@@ -54,11 +54,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
-@Component({})
-export default class Assets extends Vue {}
+<script setup lang="ts">
 </script>
 
 <style lang="less" scoped>

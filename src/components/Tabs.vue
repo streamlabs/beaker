@@ -64,109 +64,82 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Watch, Prop, Vue } from "vue-property-decorator";
-@Component({})
-export default class Tabs extends Vue {
-  @Prop()
-  tabs!: [
-    {
-      name: string;
-      value: string;
-      icon: string;
-    }
-  ];
+<script setup lang="ts">
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount, useTemplateRef } from "vue";
 
-  @Watch("tabs", { deep: true })
-  onTabsChange() {
-    this.$nextTick(() => this.calculateScrolls());
-  }
-
-  @Prop()
-  size!: string;
-
-  @Prop()
-  selected!: string;
-
-  @Prop()
-  className!: string;
-
-  @Prop()
-  hideContent!: boolean;
-
-  @Prop({ default: true })
-  updateRoute!: boolean;
-
-  $refs!: {
-    scrollable_tabs: HTMLDivElement;
-  };
-
-  isMounted = false;
-  tabsContainer: HTMLDivElement = null as any;
-  canScroll = false;
-  hasNext = false;
-  hasPrev = false;
-  private scrollIncrement = 100;
-  selectedTab: string = "";
-  selectTabSize = {
-    fontSize: this.tabSize
-  };
-
-  get tabSize() {
-    if (this.size === "small") {
-      return "14px";
-    } else if (this.size === "large") {
-      return "16px";
-    } else {
-      return "14px";
-    }
-  }
-
-  created() {
-    window.addEventListener("resize", this.calculateScrolls);
-  }
-
-  destroyed() {
-    window.removeEventListener("resize", this.calculateScrolls);
-  }
-
-  mounted() {
-    this.isMounted = true;
-    this.tabsContainer = this.$refs.scrollable_tabs;
-    this.calculateScrolls();
-    if (this.selected) {
-      this.selectedTab = this.selected;
-    } else {
-      this.selectedTab = this.tabs[0].value;
-    }
-  }
-
-  scrollLeft() {
-    this.tabsContainer.scrollLeft =
-      this.tabsContainer.scrollLeft - this.scrollIncrement;
-  }
-
-  scrollRight() {
-    this.tabsContainer.scrollLeft =
-      this.tabsContainer.scrollLeft + this.scrollIncrement;
-  }
-
-  calculateScrolls() {
-    if (!this.isMounted) return false;
-    this.canScroll =
-      this.tabsContainer.scrollWidth > this.tabsContainer.clientWidth;
-    this.hasPrev = this.tabsContainer.scrollLeft > 0;
-    const scrollRight =
-      this.tabsContainer.scrollWidth -
-      (this.tabsContainer.scrollLeft + this.tabsContainer.clientWidth);
-    this.hasNext = scrollRight > 0;
-  }
-
-  showTab(tab: string) {
-    this.selectedTab = tab;
-    this.$emit("tab-selected", tab);
-  }
+interface ITab {
+  name: string;
+  value: string;
+  icon?: string;
 }
+
+const props = withDefaults(
+  defineProps<{
+    tabs: ITab[];
+    size?: string;
+    selected?: string;
+    className?: string;
+    hideContent?: boolean;
+    updateRoute?: boolean;
+  }>(),
+  {
+    updateRoute: true,
+  }
+);
+
+const emit = defineEmits<{ "tab-selected": [tab: string] }>();
+
+const scrollableTabs = useTemplateRef<HTMLDivElement>("scrollable_tabs");
+
+const canScroll = ref(false);
+const hasNext = ref(false);
+const hasPrev = ref(false);
+const selectedTab = ref("");
+const scrollIncrement = 100;
+
+const tabSize = computed(() => {
+  if (props.size === "large") return "16px";
+  return "14px";
+});
+
+const selectTabSize = computed(() => ({ fontSize: tabSize.value }));
+
+watch(
+  () => props.tabs,
+  () => nextTick(() => calculateScrolls()),
+  { deep: true }
+);
+
+function scrollLeft() {
+  scrollableTabs.value!.scrollLeft -= scrollIncrement;
+}
+
+function scrollRight() {
+  scrollableTabs.value!.scrollLeft += scrollIncrement;
+}
+
+function calculateScrolls() {
+  const el = scrollableTabs.value;
+  if (!el) return;
+  canScroll.value = el.scrollWidth > el.clientWidth;
+  hasPrev.value = el.scrollLeft > 0;
+  hasNext.value = el.scrollWidth - (el.scrollLeft + el.clientWidth) > 0;
+}
+
+function showTab(tab: string) {
+  selectedTab.value = tab;
+  emit("tab-selected", tab);
+}
+
+onMounted(() => {
+  calculateScrolls();
+  selectedTab.value = props.selected || props.tabs[0].value;
+  window.addEventListener("resize", calculateScrolls);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", calculateScrolls);
+});
 </script>
 
 <style lang="less" scoped>
@@ -327,6 +300,10 @@ a {
   overflow-y: auto;
   .padding-v-sides(3);
 }
+</style>
+
+<style lang="less">
+@import (reference) "./../styles/Imports";
 
 .night,
 .night-theme {

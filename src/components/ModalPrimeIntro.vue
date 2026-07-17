@@ -1,47 +1,38 @@
 <template>
   <!-- TODO: Update to ultra naming -->
-  <modal
-    :name="name"
-    classes="s-modal-wrapper"
-    :width="width"
-    :minWidth="minWidth"
-    height="auto"
-    :adaptive="true"
-    v-on="$listeners"
-    :scrollable="true"
+  <VueFinalModal
+    v-model="show"
+    content-class="s-modal-wrapper"
+    :content-style="{ maxWidth: width + 'px', minWidth: minWidth + 'px' }"
+    v-bind="$attrs"
   >
     <div class="modal-prime__close" v-if="hasPrimeCloseButton">
-      <i class="icon-close" @click="$modal.hide(name)"></i>
+      <i class="icon-close" @click="show = false"></i>
     </div>
-    <PrimeIntro :primeButtonText="primeButtonText" v-on="$listeners">
+    <PrimeIntro :primeButtonText="primeButtonText" v-bind="$attrs">
       <slot></slot>
     </PrimeIntro>
-  </modal>
+  </VueFinalModal>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { VueFinalModal } from "vue-final-modal";
 import PrimeIntro from "./PrimeIntro.vue";
 
-@Component({
-  components: { PrimeIntro }
-})
-export default class ModalPrimeIntro extends Vue {
-  @Prop({ default: "modal-prime-intro" })
-  name!: string;
+const show = defineModel<boolean>({ default: false });
 
-  @Prop()
-  width!: number;
-
-  @Prop()
-  minWidth!: number;
-
-  @Prop({ default: false })
-  hasPrimeCloseButton!: boolean;
-
-  @Prop({ default: "Join Ultra" })
-  primeButtonText!: string;
-}
+withDefaults(
+  defineProps<{
+    width?: number;
+    minWidth?: number;
+    hasPrimeCloseButton?: boolean;
+    primeButtonText?: string;
+  }>(),
+  {
+    hasPrimeCloseButton: false,
+    primeButtonText: "Join Ultra",
+  }
+);
 </script>
 
 <style lang="less" scoped>

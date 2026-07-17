@@ -36,67 +36,60 @@
     <h4 class="s-typography__header">TYPE SCALE</h4>
     <span class="subtitle">Marketing</span>
     <FormGroup>
-      <div slot="input" class="section">
-        <div class="type-scale barlow extrabold s48">
-          H1: Barlow ExtraBold 48px
+      <template #input>
+        <div class="section">
+          <div class="type-scale barlow extrabold s48">
+            H1: Barlow ExtraBold 48px
+          </div>
+          <div class="type-scale barlow bold s32">
+            H2: Barlow Bold 32px
+          </div>
         </div>
-        <div class="type-scale barlow bold s32">
-          H2: Barlow Bold 32px
-        </div>
-      </div>
 
-      <span slot="input" class="subtitle">Dashboard and Marketing</span>
-      <div slot="input" class="type-scale bold s22">
-        Marketing Title: Roboto Bold 22px
-      </div>
-      <div slot="input" class="type-scale bold s20">
-        Title: Roboto Bold 20px
-      </div>
-      <div slot="input" class="type-scale medium s18">
-        Marketing Subtitle: Roboto Medium 18px
-      </div>
-      <div slot="input" class="type-scale medium s16">
-        Subtitle: Roboto Medium 16px
-      </div>
-      <div slot="input" class="type-scale gray s16">
-        Marketing Paragraph: Roboto Regular 16px
-      </div>
-      <div slot="input" class="type-scale gray s14">
-        Subtitle: Roboto Regular 14px
-      </div>
-      <div slot="input" class="type-scale gray medium underline s16">
-        Marketing Link: Roboto Medium 16px
-      </div>
-      <div slot="input" class="type-scale gray medium underline s14">
-        Link: Roboto Medium 14px
-      </div>
-      <div slot="input" class="type-scale teal medium s16">
-        Marketing Label: Roboto Medium 16px
-      </div>
-      <div slot="input" class="type-scale teal medium s14">
-        Label: Roboto Medium 14px
-      </div>
-      <div slot="input" class="type-scale gray s14">
-        Marketing Caption: Roboto Regular 14px
-      </div>
-      <div slot="input" class="type-scale gray s12">
-        Caption: Roboto Regular 12px
-      </div>
+        <span class="subtitle">Dashboard and Marketing</span>
+        <div class="type-scale bold s22">
+          Marketing Title: Roboto Bold 22px
+        </div>
+        <div class="type-scale bold s20">
+          Title: Roboto Bold 20px
+        </div>
+        <div class="type-scale medium s18">
+          Marketing Subtitle: Roboto Medium 18px
+        </div>
+        <div class="type-scale medium s16">
+          Subtitle: Roboto Medium 16px
+        </div>
+        <div class="type-scale gray s16">
+          Marketing Paragraph: Roboto Regular 16px
+        </div>
+        <div class="type-scale gray s14">
+          Subtitle: Roboto Regular 14px
+        </div>
+        <div class="type-scale gray medium underline s16">
+          Marketing Link: Roboto Medium 16px
+        </div>
+        <div class="type-scale gray medium underline s14">
+          Link: Roboto Medium 14px
+        </div>
+        <div class="type-scale teal medium s16">
+          Marketing Label: Roboto Medium 16px
+        </div>
+        <div class="type-scale teal medium s14">
+          Label: Roboto Medium 14px
+        </div>
+        <div class="type-scale gray s14">
+          Marketing Caption: Roboto Regular 14px
+        </div>
+        <div class="type-scale gray s12">
+          Caption: Roboto Regular 12px
+        </div>
+      </template>
     </FormGroup>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
 import FormGroup from "./../components/FormGroup.vue";
-
-@Component({
-  components: {
-    FormGroup
-  }
-})
-export default class Typography extends Vue {}
 </script>
 
 <style lang="less">

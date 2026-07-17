@@ -1,5 +1,6 @@
 <template>
   <component
+    ref="rootEl"
     :icon="icon"
     :icon-img="iconImg"
     :title="title"
@@ -11,7 +12,7 @@
     :type="type"
     class="s-button ripple"
     :class="[buttonClasses, { 'ripple-animate': rippleAnimate }]"
-    :disabled="state === 'disabled' || state === 'loading'"
+    :disabled="state === 'disabled' || state === 'loading' || undefined"
     @click="$emit('click')"
     :target="target"
     @mousedown="pressDown"
@@ -19,7 +20,7 @@
   >
     <span v-if="!$slots.custom">
       <span>
-        <span v-if="variation === 'prime-simple' && this.primeTitle">
+        <span v-if="variation === 'prime-simple' && primeTitle">
           {{ primeTitle }}
         </span>
         <span v-else-if="variation === 'prime-simple'" class="prime-simple">
@@ -70,255 +71,150 @@
   </component>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, computed } from 'vue';
 
-@Component({})
-export default class Button extends Vue {
-  @Prop()
-  onClick!: {
-    type: Function;
-  };
+const props = withDefaults(
+  defineProps<{
+    bgColor?: string;
+    textColor?: string;
+    icon?: string;
+    iconPosition?: string;
+    iconImg?: string;
+    title?: string;
+    price?: string;
+    description?: string;
+    href?: string;
+    target?: string;
+    size?: string;
+    state?: string;
+    type?: string;
+    to?: string;
+    tag?: string;
+    variation?: string;
+    primeBgColor?: string;
+    primeTitle?: string;
+    ultraTitle?: string;
+    slobsDownloadTitle?: string;
+    osType?: string;
+  }>(),
+  {
+    iconPosition: 'left',
+    target: '_self',
+    tag: 'button',
+    slobsDownloadTitle: 'Download Streamlabs',
+    osType: 'windows',
+  },
+);
 
-  @Prop()
-  bgColor!: {
-    type: string;
-  };
+defineEmits<{ click: [] }>();
 
-  @Prop()
-  textColor!: {
-    type: string;
-  };
+const rootEl = ref<HTMLElement>();
 
-  @Prop(String)
-  icon!: string;
+const rippleStartX = ref(0);
+const rippleStartY = ref(0);
+const rippleSize = ref(0);
+const rippleColor = ref('#000000');
+const rippleOpacity = ref(0.075);
+const rippleDuration = ref('');
+const rippleAnimate = ref(false);
 
-  @Prop({ default: "left" })
-  iconPosition!: {
-    type: String;
-  };
+const buttonClasses = computed(() => {
+  const classes: string[] = [];
+  if (props.variation) classes.push(`s-button--${props.variation}`);
+  if (props.size) classes.push(`s-button--${props.size}`);
+  if (props.state) classes.push(`is-${props.state}`);
+  return classes.join(' ');
+});
 
-  @Prop()
-  iconImg!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop()
-  title!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop()
-  price!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop()
-  description!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop()
-  href!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop({ default: "_self" })
-  target!: String;
-
-  // standard, medium, large, square
-  @Prop()
-  size!: {
-    type: String;
-    size: null;
-  };
-
-  // hover, focus, loading, disabled
-  @Prop()
-  state!: {
-    type: String;
-    default: null;
-  };
-
-  // set buttons type to "submit"
-  @Prop()
-  type!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop()
-  to!: {
-    type: String;
-    default: null;
-  };
-
-  // button, a, router-link
-  @Prop({ default: "button" })
-  tag!: String;
-
-  @Prop()
-  variation!: {
-    type: String;
-    default: "default";
-  };
-
-  @Prop()
-  primeBgColor!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop()
-  primeTitle!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop()
-  ultraTitle!: {
-    type: String;
-    default: null;
-  };
-
-  @Prop({ default: "Download Streamlabs" })
-  slobsDownloadTitle!: {
-    type: String;
-  };
-
-  @Prop({ default: "windows" })
-  osType!: string;
-
-  private rippleStartX = 0;
-  private rippleStartY = 0;
-  private rippleSize = 0;
-  private rippleColor = "#000000";
-  private rippleOpacity = 0.075;
-  private rippleDuration = "";
-  private rippleAnimate = false;
-
-  get buttonClasses() {
-    const classes: any = [];
-
-    if (this.variation) {
-      classes.push(`s-button--${this.variation}`);
-    }
-
-    if (this.size) {
-      classes.push(`s-button--${this.size}`);
-    }
-
-    if (this.state) {
-      classes.push(`is-${this.state}`);
-    }
-
-    return classes.join(" ");
-  }
-
-  get iconClass() {
-    const classes: any = [];
-
-    if (this.icon) {
-      if (this.icon.indexOf("fa-") !== -1) {
-        classes.push(this.icon);
-      } else {
-        classes.push(`icon-${this.icon}`);
-      }
-    }
-
-    return classes.join(" ");
-  }
-
-  get slobsDownloadIconClass() {
-    return this.osType === "windows" ? "icon-windows" : "icon-app-store";
-  }
-
-  get slobsDownloadText() {
-    const tests: any = [];
-
-    tests.push("Free");
-    tests.push(this.osType === "windows" ? "Win" : "macOS 10.15+");
-    tests.push(this.osType === "windows" ? "~240MB" : "309MB");
-
-    return tests;
-  }
-
-  get buttonStyle() {
-    let s =
-      "--ripple-x:" +
-      this.rippleStartX +
-      "px; --ripple-y:" +
-      this.rippleStartY +
-      "px; --ripple-size:" +
-      this.rippleSize +
-      "px; --ripple-color:" +
-      this.rippleColor +
-      "; --ripple-opacity:" +
-      this.rippleOpacity +
-      "; --ripple-duration:" +
-      this.rippleDuration +
-      "; background-color:" +
-      this.bgColor +
-      "; color:" +
-      this.textColor;
-    ";";
-    return s;
-  }
-
-  // get _variation() {
-  //   return this.bgColor ? "custom" : this.variation;
-  // }
-
-  rippleAnimation() {
-    return new Promise((resolve) => {
-      this.rippleAnimate = true;
-      let animationEnded = (e) => {
-        this.$el.removeEventListener("animationnend", animationEnded);
-        resolve();
-      };
-      this.$el.addEventListener("animationend", animationEnded);
-    });
-  }
-
-  pressDown(e) {
-    let buttonRect = this.$el.getBoundingClientRect();
-    let clickLoc = { x: e.pageX, y: e.pageY };
-    let buttonVar = JSON.stringify(this.variation);
-    let buttonSize = JSON.stringify(this.size);
-    this.rippleSize = Math.floor(buttonRect.width * 2);
-    this.rippleStartX = Math.floor(
-      Math.abs(buttonRect.left - clickLoc.x) - this.rippleSize / 2
-    );
-    this.rippleStartY = Math.floor(
-      Math.abs(buttonRect.top - clickLoc.y) - this.rippleSize / 2
-    );
-
-    if (buttonVar === '"paypal"') {
-      this.rippleColor = "#e3b63b";
-      this.rippleDuration = "800ms";
-      this.rippleOpacity = 0.5;
-    }
-    if (buttonVar === '"warning"') {
-      this.rippleColor = "#ce4a38";
-    }
-    if (
-      buttonVar === '"subscribe"' ||
-      buttonSize === '"full-width"' ||
-      buttonVar === '"paypal"'
-    ) {
-      this.rippleDuration = "800ms";
+const iconClass = computed(() => {
+  const classes: string[] = [];
+  if (props.icon) {
+    if (props.icon.indexOf('fa-') !== -1) {
+      classes.push(props.icon);
     } else {
-      this.rippleDuration = "400ms";
+      classes.push(`icon-${props.icon}`);
     }
+  }
+  return classes.join(' ');
+});
 
-    if (!this.rippleAnimate) {
-      this.rippleAnimation().then(() => (this.rippleAnimate = false));
-    }
+const slobsDownloadIconClass = computed(() =>
+  props.osType === 'windows' ? 'icon-windows' : 'icon-app-store',
+);
+
+const slobsDownloadText = computed(() => {
+  const texts: string[] = [];
+  texts.push('Free');
+  texts.push(props.osType === 'windows' ? 'Win' : 'macOS 10.15+');
+  texts.push(props.osType === 'windows' ? '~240MB' : '309MB');
+  return texts;
+});
+
+const buttonStyle = computed(
+  () =>
+    '--ripple-x:' +
+    rippleStartX.value +
+    'px; --ripple-y:' +
+    rippleStartY.value +
+    'px; --ripple-size:' +
+    rippleSize.value +
+    'px; --ripple-color:' +
+    rippleColor.value +
+    '; --ripple-opacity:' +
+    rippleOpacity.value +
+    '; --ripple-duration:' +
+    rippleDuration.value +
+    '; background-color:' +
+    props.bgColor +
+    '; color:' +
+    props.textColor,
+);
+
+function rippleAnimation() {
+  return new Promise<void>((resolve) => {
+    rippleAnimate.value = true;
+    const animationEnded = () => {
+      rootEl.value!.removeEventListener('animationend', animationEnded);
+      resolve();
+    };
+    rootEl.value!.addEventListener('animationend', animationEnded);
+  });
+}
+
+function pressDown(e: MouseEvent) {
+  const buttonRect = rootEl.value!.getBoundingClientRect();
+  const clickLoc = { x: e.pageX, y: e.pageY };
+  const buttonVar = JSON.stringify(props.variation);
+  const buttonSize = JSON.stringify(props.size);
+  rippleSize.value = Math.floor(buttonRect.width * 2);
+  rippleStartX.value = Math.floor(
+    Math.abs(buttonRect.left - clickLoc.x) - rippleSize.value / 2,
+  );
+  rippleStartY.value = Math.floor(
+    Math.abs(buttonRect.top - clickLoc.y) - rippleSize.value / 2,
+  );
+
+  if (buttonVar === '"paypal"') {
+    rippleColor.value = '#e3b63b';
+    rippleDuration.value = '800ms';
+    rippleOpacity.value = 0.5;
+  }
+  if (buttonVar === '"warning"') {
+    rippleColor.value = '#ce4a38';
+  }
+  if (
+    buttonVar === '"subscribe"' ||
+    buttonSize === '"full-width"' ||
+    buttonVar === '"paypal"'
+  ) {
+    rippleDuration.value = '800ms';
+  } else {
+    rippleDuration.value = '400ms';
+  }
+
+  if (!rippleAnimate.value) {
+    rippleAnimation().then(() => (rippleAnimate.value = false));
   }
 }
 </script>
@@ -331,7 +227,7 @@ export default class Button extends Vue {
 </style>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-button {
   position: relative;
@@ -340,7 +236,7 @@ export default class Button extends Vue {
   .input-padding();
   border: 1px solid transparent;
   .radius();
-  font-family: "Roboto";
+  font-family: 'Roboto';
   font-size: 14px;
   .weight(@medium);
   text-align: center;
@@ -350,8 +246,7 @@ export default class Button extends Vue {
   background: @day-button;
   color: @day-paragraph;
   vertical-align: middle;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+  user-select: none;
   white-space: nowrap;
   overflow: hidden;
   .transition(background-color);
@@ -403,10 +298,12 @@ export default class Button extends Vue {
 
     &:before {
       display: block;
-      content: "\f1ce";
-      font-family: "Font Awesome 5 Free";
+      content: '\f1ce';
+      font-family: 'Font Awesome 5 Free';
       font-weight: 900;
-      animation: fade-in 275ms ease, spin 1s ease infinite;
+      animation:
+        fade-in 275ms ease,
+        spin 1s ease infinite;
     }
 
     span {
@@ -426,7 +323,7 @@ export default class Button extends Vue {
       }
     }
     &:after {
-      content: "";
+      content: '';
       position: absolute;
       top: var(--ripple-y, 0);
       left: var(--ripple-x, 0);
@@ -644,9 +541,9 @@ export default class Button extends Vue {
   .btn-variant(@paypal-yellow);
 
   &:before {
-    content: "\f1ed";
+    content: '\f1ed';
     position: absolute;
-    font-family: "Font Awesome 5 Brands";
+    font-family: 'Font Awesome 5 Brands';
     font-size: 24px;
     color: @white;
   }
@@ -866,7 +763,7 @@ export default class Button extends Vue {
 }
 
 .s-button--ultra::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   .ultra-border();
@@ -1062,8 +959,15 @@ export default class Button extends Vue {
   }
 
   .s-button--ultra {
-    background: linear-gradient(270deg, #FFFFFF 0%, rgba(255, 255, 255, 0.16) 100%),
-    linear-gradient(123.53deg, #2DE8B0 25.56%, #CBE953 60.27%, #FFAB48 79.52%, #FF5151 96.69%);
+    background:
+      linear-gradient(270deg, #ffffff 0%, rgba(255, 255, 255, 0.16) 100%),
+      linear-gradient(
+        123.53deg,
+        #2de8b0 25.56%,
+        #cbe953 60.27%,
+        #ffab48 79.52%,
+        #ff5151 96.69%
+      );
     color: @ultra-black;
     border-radius: 8px;
     .icon-ultra {

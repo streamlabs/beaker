@@ -93,16 +93,17 @@ components: {
       <DemoSection title="Layout Picker" :code="demoCode">
         <template #components>
           <CSLayoutPicker>
-            <div
-              slot="layouts"
-              v-for="layout in webLayouts"
-              :key="layout.id"
-              class="s-cs-layout-picker__layout"
-            >
-              <div>
-                <img :src="layout.src" />
+            <template #layouts>
+              <div
+                v-for="layout in webLayouts"
+                :key="layout.src"
+                class="s-cs-layout-picker__layout"
+              >
+                <div>
+                  <img :src="layout.src" />
+                </div>
               </div>
-            </div>
+            </template>
           </CSLayoutPicker>
         </template>
       </DemoSection>
@@ -110,9 +111,7 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
 import Accordion from "./../components/Accordion.vue";
 import CreatorSitesCode from "./CreatorSites.vue?raw";
 import CSLayoutPicker from "./../components/CSLayoutPicker.vue";
@@ -120,24 +119,14 @@ import DemoSection from "./../components/DemoSection.vue";
 import SSProSimulator from "./../components/SSProSimulator.vue";
 import UrlBar from "./../components/UrlBar.vue";
 
-@Component({
-  components: {
-    Accordion,
-    CSLayoutPicker,
-    DemoSection,
-    UrlBar,
-    SSProSimulator
-  }
-})
-export default class CreatorSitesDemo extends Vue {
-  demoCode = CreatorSitesCode;
-  username = "morganleee";
-  icon =
-    "https://static-cdn.jtvnw.net/jtv_user_pictures/9dfce03d-25cc-4737-96d2-2ecf6924bebe-profile_image-70x70.jpg";
+const demoCode = CreatorSitesCode;
+const username = "morganleee";
+const icon =
+  "https://static-cdn.jtvnw.net/jtv_user_pictures/9dfce03d-25cc-4737-96d2-2ecf6924bebe-profile_image-70x70.jpg";
 
-  domain = "morganleeeeeeeeeee.com";
+const domain = "morganleeeeeeeeeee.com";
 
-  webLayouts = [
+const webLayouts = [
     {
       src:
         "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
@@ -187,7 +176,6 @@ export default class CreatorSitesDemo extends Vue {
         "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/1280px-Aspect-ratio-16x9.svg.png"
     }
   ];
-}
 </script>
 
 <style lang="less" scoped>

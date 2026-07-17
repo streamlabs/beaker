@@ -19,38 +19,24 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import Badge from "./../components/Badge.vue";
+<script setup lang="ts">
+import Badge from './../components/Badge.vue';
 
-@Component({
-  components: {
-    Badge
-  }
-})
-export default class Step extends Vue {
-  @Prop(String)
-  title!: string;
-
-  @Prop(String)
-  icon!: string;
-
-  @Prop({ default: false })
-  isCompleted!: boolean;
-
-  @Prop(String)
-  completedText!: string;
-
-  @Prop({ default: false })
-  hasCheckmark!: boolean;
-
-  @Prop({ default: false })
-  hasPrime!: boolean;
-}
+withDefaults(
+  defineProps<{
+    title?: string;
+    icon?: string;
+    isCompleted?: boolean;
+    completedText?: string;
+    hasCheckmark?: boolean;
+    hasPrime?: boolean;
+  }>(),
+  { isCompleted: false, hasCheckmark: false, hasPrime: false },
+);
 </script>
 
 <style lang="less" scoped>
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-step {
   display: flex;
@@ -99,6 +85,10 @@ export default class Step extends Vue {
     text-decoration: line-through;
   }
 }
+</style>
+
+<style lang="less">
+@import (reference) './../styles/Imports';
 
 .night,
 .night-theme {

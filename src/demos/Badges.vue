@@ -205,26 +205,14 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-
+<script setup lang="ts">
 import Accordion from "./../components/Accordion.vue";
 import Badge from "./../components/Badge.vue";
 import BadgesCode from "./Badges.vue?raw";
 import Callout from "./../components/Callout.vue";
 import DemoSection from "./../components/DemoSection.vue";
 
-@Component({
-  components: {
-    Accordion,
-    Badge,
-    Callout,
-    DemoSection
-  }
-})
-export default class Badges extends Vue {
-  demoCode = BadgesCode;
-}
+const demoCode = BadgesCode;
 </script>
 
 <style lang="less" scoped>

@@ -8,7 +8,7 @@
       :variation="'custom'"
       :bgColor="'#FFFFFF'"
       :textColor="'#7289DA'"
-      v-on="$listeners"
+      v-bind="$attrs"
       :tag="'a'"
       :href="'https://discord.gg/stream'"
       :target="'_blank'"
@@ -16,21 +16,13 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import Button from "./../components/Button.vue";
 
-@Component({
-  components: {
-    Button
-  }
-})
-export default class BannerDiscord extends Vue {
-  @Prop({
-    default: "Join the Streamlabs OBS Discussion on <span>Discord</span>"
-  })
-  title!: string;
-}
+withDefaults(
+  defineProps<{ title?: string }>(),
+  { title: "Join the Streamlabs OBS Discussion on <span>Discord</span>" }
+);
 </script>
 
 <style lang="less">

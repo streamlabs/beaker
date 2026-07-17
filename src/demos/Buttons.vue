@@ -80,10 +80,12 @@ components: {
               />
 
               <Button variation="action" @click="buttonClick('Custom Slot')">
-                <div slot="custom" class="custom-html">
-                  <i class="icon-add-circle"></i>
-                  <span>Custom Slot</span>
-                </div>
+                <template #custom>
+                  <div class="custom-html">
+                    <i class="icon-add-circle"></i>
+                    <span>Custom Slot</span>
+                  </div>
+                </template>
               </Button>
             </div>
           </template>
@@ -709,29 +711,20 @@ components: {
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 import Accordion from "./../components/Accordion.vue";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import ButtonCode from "./Buttons.vue?raw";
-import { EventBus } from "./../plugins/event-bus";
+import { useNotification } from "./../composables/useNotification";
 
-@Component({
-  components: {
-    Accordion,
-    Button,
-    DemoSection
-  }
-})
-export default class Forms extends Vue {
-  isLoading = true;
-  isLoadingExample = false;
-  demoCode = ButtonCode;
+const { success } = useNotification();
+const isLoadingExample = ref(false);
+const demoCode = ButtonCode;
 
-  buttonClick(buttonType) {
-    EventBus.$emit("copy-success", `"${buttonType}" button clicked`);
-  }
+function buttonClick(buttonType: string) {
+  success(`"${buttonType}" button clicked`);
 }
 </script>
 

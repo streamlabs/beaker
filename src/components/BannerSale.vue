@@ -30,54 +30,35 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed } from "vue";
 
-@Component({})
-export default class BannerSale extends Vue {
-  @Prop({ required: true })
-  title!: string;
-
-  @Prop({ required: true })
-  desc!: string;
-
-  @Prop({ default: "00", required: true })
-  days!: string;
-
-  @Prop({ default: "00", required: true })
-  hours!: string;
-
-  @Prop({ default: "00", required: true })
-  minutes!: string;
-
-  @Prop({ default: "00", required: true })
-  seconds!: string;
-
-  @Prop()
-  timeDesc!: string;
-
-  @Prop({ default: "rgba(248, 86, 64, 0.33)" })
-  borderColor!: string;
-
-  @Prop({ default: "rgba(248, 86, 64, 0.08)" })
-  backgroundColor!: string;
-
-  get daysDone() {
-    return this.days === "00";
+const props = withDefaults(
+  defineProps<{
+    title: string;
+    desc: string;
+    days?: string;
+    hours?: string;
+    minutes?: string;
+    seconds?: string;
+    timeDesc?: string;
+    borderColor?: string;
+    backgroundColor?: string;
+  }>(),
+  {
+    days: "00",
+    hours: "00",
+    minutes: "00",
+    seconds: "00",
+    borderColor: "rgba(248, 86, 64, 0.33)",
+    backgroundColor: "rgba(248, 86, 64, 0.08)",
   }
+);
 
-  get hoursDone() {
-    return this.daysDone && this.hours === "00";
-  }
-
-  get minutesDone() {
-    return this.hoursDone && this.minutes === "00";
-  }
-
-  get secondsDone() {
-    return this.minutesDone && this.seconds === "00";
-  }
-}
+const daysDone = computed(() => props.days === "00");
+const hoursDone = computed(() => daysDone.value && props.hours === "00");
+const minutesDone = computed(() => hoursDone.value && props.minutes === "00");
+const secondsDone = computed(() => minutesDone.value && props.seconds === "00");
 </script>
 
 <style lang="less">

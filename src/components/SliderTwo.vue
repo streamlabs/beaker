@@ -42,485 +42,459 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Watch, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import {
+  ref,
+  computed,
+  watch,
+  onMounted,
+  onUpdated,
+  onBeforeUnmount,
+  useTemplateRef,
+} from 'vue';
 
-@Component({})
-export default class SliderTwo extends Vue {
-  $refs!: {
-    elem: HTMLDivElement;
-    process: HTMLDivElement;
-    handle: HTMLDivElement;
-    wrap: HTMLDivElement;
-  };
+type SliderValue = number | string;
 
-  private isDragging: boolean = false;
-  private size: number = 0;
-  private currentValue: any = 0;
-  private lazy: boolean = false;
-  private offset: any = null;
-  private range: any[] = [];
-  private currentWidth: number = 0;
-  private currentHeight: number = 0;
-  private bounced: boolean = false;
-  private halt: boolean = false;
+const props = withDefaults(
+  defineProps<{
+    interval?: number;
+    steps?: number;
+    data?: SliderValue[] | null;
+    dataIndexing?: boolean;
+    value?: string | number;
+    min?: number;
+    max?: number;
+    tooltip?: 'always' | false;
+    suffix?: string | null;
+    prefix?: string | null;
+    simpleTheme?: boolean;
+    marks?: boolean;
+    labels?: boolean;
+    isDisabled?: boolean;
+    draggable?: boolean;
+  }>(),
+  {
+    interval: 1,
+    steps: 0,
+    data: null,
+    dataIndexing: true,
+    value: 0,
+    min: 0,
+    max: 100,
+    tooltip: 'always',
+    suffix: null,
+    prefix: null,
+    simpleTheme: false,
+    marks: false,
+    labels: false,
+    isDisabled: false,
+    draggable: true,
+  },
+);
 
-  @Prop({ default: 1 })
-  interval!: number;
+const emit = defineEmits<{
+  input: [val: SliderValue];
+  dragStart: [];
+  dragEnd: [];
+  callbackRange: [val: SliderValue];
+}>();
 
-  @Prop({ default: 0 })
-  steps!: number;
+const wrap = useTemplateRef<HTMLDivElement>('wrap');
+const elem = useTemplateRef<HTMLDivElement>('elem');
+const processEl = useTemplateRef<HTMLDivElement>('process');
+const handle = useTemplateRef<HTMLDivElement>('handle');
 
-  @Prop({ default: null })
-  data!: any[];
+const isDragging = ref(false);
+const size = ref(0);
+const currentValue = ref<SliderValue>(0);
+const lazy = ref(false);
+const offset = ref<number | null>(null);
+const range = ref<SliderValue[]>([]);
+const currentWidth = ref(0);
+const currentHeight = ref(0);
+const bounced = ref(false);
+const halt = ref(false);
 
-  @Prop({ default: true })
-  dataIndexing!: boolean;
-
-  @Prop({ default: 0 })
-  value!: [string, number];
-
-  @Prop({ default: 0 })
-  min!: number;
-
-  @Prop({ default: 100 })
-  max!: number;
-
-  @Prop({ default: "always" })
-  tooltip!: "always" | false;
-
-  @Prop({ default: null })
-  suffix!: string;
-
-  @Prop({ default: null })
-  prefix!: string;
-
-  @Prop({ default: false })
-  simpleTheme!: boolean;
-
-  @Prop({ default: false })
-  marks!: boolean;
-
-  @Prop({ default: false })
-  labels!: boolean;
-
-  @Prop({ default: false })
-  isDisabled!: boolean;
-
-  @Prop({ default: true })
-  draggable!: boolean;
-
-  get val() {
-    if (this.dataIndexing) {
-      return this.data
-        ? this.data.indexOf(this.data[this.currentValue])
-        : this.currentValue;
+const val = computed<SliderValue>({
+  get() {
+    if (props.dataIndexing) {
+      return props.data
+        ? props.data.indexOf(props.data[currentValue.value as number])
+        : currentValue.value;
     } else {
-      return this.data ? this.data[this.currentValue] : this.currentValue;
+      return props.data
+        ? props.data[currentValue.value as number]
+        : currentValue.value;
     }
-  }
-  set val(newVal) {
-    if (this.data) {
-      let index = this.data.indexOf(newVal);
+  },
+  set(newVal) {
+    if (props.data) {
+      const index = props.data.indexOf(newVal);
       if (index > -1) {
-        this.currentValue = index;
+        currentValue.value = index;
       }
     } else {
-      this.currentValue = newVal;
+      currentValue.value = newVal;
     }
-  }
+  },
+});
 
-  get displayValue() {
-    if (this.data) {
-      return this.dataIndexing
-        ? this.data[this.currentIndex]
-        : this.currentValue;
-    } else {
-      return this.currentValue;
+const displayValue = computed(() => {
+  if (props.data) {
+    return props.dataIndexing
+      ? props.data[currentIndex.value]
+      : currentValue.value;
+  } else {
+    return currentValue.value;
+  }
+});
+
+const currentIndex = computed(
+  () => ((currentValue.value as number) - minimum.value) / spacing.value,
+);
+
+const minimum = computed(() => (props.data ? 0 : props.min));
+
+const maximum = computed(() =>
+  props.data ? props.data.length - 1 : props.max,
+);
+
+const spacing = computed(() => (props.data ? 1 : props.interval));
+
+const multiple = computed(() => {
+  const decimals = `${props.interval}`.split('.')[1];
+  return decimals ? Math.pow(10, decimals.length) : 1;
+});
+
+const total = computed(() => {
+  if (props.data) {
+    return props.data.length - 1;
+  } else if (
+    Math.floor((maximum.value - minimum.value) * multiple.value) %
+      (props.interval * multiple.value) !==
+    0
+  ) {
+    console.error('[ERROR]: Prop[interval] must be a divisor of [max] - [min]');
+  }
+  return (maximum.value - minimum.value) / props.interval;
+});
+
+const gap = computed(() => size.value / total.value);
+
+const position = computed(
+  () =>
+    (((currentValue.value as number) - minimum.value) / spacing.value) *
+    gap.value,
+);
+
+const limit = computed(() => [0, size.value]);
+
+const valueLimit = computed(() => [minimum.value, maximum.value]);
+
+watch(
+  () => props.value,
+  (newVal) => {
+    setValue(newVal);
+  },
+);
+
+function scheduleResize() {
+  return new Promise<void>((resolve) => {
+    if (!bounced.value) {
+      bounced.value = true;
+      setTimeout(() => {
+        bounced.value = false;
+        resolve();
+      }, 100);
     }
-  }
+  });
+}
 
-  get currentIndex() {
-    return (this.currentValue - this.minimum) / this.spacing;
-  }
-
-  get indexRange() {
-    return [0, this.currentIndex];
-  }
-
-  get minimum() {
-    return this.data ? 0 : this.min;
-  }
-
-  get maximum() {
-    return this.data ? this.data.length - 1 : this.max;
-  }
-
-  get spacing() {
-    return this.data ? 1 : this.interval;
-  }
-
-  get multiple() {
-    let decimals = `${this.interval}`.split(".")[1];
-    return decimals ? Math.pow(10, decimals.length) : 1;
-  }
-
-  get total() {
-    if (this.data) {
-      return this.data.length - 1;
-    } else if (
-      Math.floor((this.maximum - this.minimum) * this.multiple) %
-        (this.interval * this.multiple) !==
-      0
-    ) {
-      console.error(
-        "[ERROR]: Prop[interval] must be a divisor of [max] - [min]"
-      );
+function dnr() {
+  scheduleResize().then(() => {
+    const s = elem.value!.getBoundingClientRect();
+    const newWidth = s.width;
+    const newHeight = s.height;
+    if (newWidth != currentWidth.value || newHeight != currentHeight.value) {
+      currentWidth.value = newWidth;
+      currentHeight.value = newHeight;
+      refresh(elem.value!);
     }
-    return (this.maximum - this.minimum) / this.interval;
-  }
+  });
+}
 
-  get gap() {
-    return this.size / this.total;
-  }
+function resizeSensor(el: HTMLDivElement) {
+  const expand = document.createElement('div');
+  expand.classList.add('s-slider-expand-watch');
+  expand.style.position = 'absolute';
+  expand.style.left = '0px';
+  expand.style.top = '0px';
+  expand.style.right = '0px';
+  expand.style.bottom = '0px';
+  expand.style.overflow = 'hidden';
+  expand.style.visibility = 'hidden';
+  const expandChild = document.createElement('div');
+  expandChild.style.position = 'absolute';
+  expandChild.style.left = '0px';
+  expandChild.style.top = '0px';
+  expandChild.style.width = '10000000px';
+  expandChild.style.height = '10000000px';
+  expand.appendChild(expandChild);
+  const shrink = document.createElement('div');
+  shrink.classList.add('s-slider-shrink-watch');
+  shrink.style.position = 'absolute';
+  shrink.style.left = '0px';
+  shrink.style.top = '0px';
+  shrink.style.right = '0px';
+  shrink.style.bottom = '0px';
+  shrink.style.overflow = 'hidden';
+  shrink.style.visibility = 'hidden';
+  const shrinkChild = document.createElement('div');
+  shrinkChild.style.position = 'absolute';
+  shrinkChild.style.left = '0px';
+  shrinkChild.style.top = '0px';
+  shrinkChild.style.width = '200%';
+  shrinkChild.style.height = '200%';
+  shrink.appendChild(shrinkChild);
+  el.appendChild(expand);
+  el.appendChild(shrink);
+  setSensorScroll(elem.value!);
+  const s = el.getBoundingClientRect();
+  currentWidth.value = s.width;
+  currentHeight.value = s.height;
+}
 
-  get position() {
-    return ((this.currentValue - this.minimum) / this.spacing) * this.gap;
-  }
+function setSensorScroll(el: HTMLDivElement) {
+  el.querySelector('.s-slider-expand-watch')!.scrollLeft = 10000000;
+  (el.querySelector('.s-slider-expand-watch') as HTMLElement).scrollTop =
+    10000000;
+  (el.querySelector('.s-slider-shrink-watch') as HTMLElement).scrollLeft =
+    10000000;
+  (el.querySelector('.s-slider-shrink-watch') as HTMLElement).scrollTop =
+    10000000;
+}
 
-  get limit() {
-    return [0, this.size];
-  }
+function bindEvents(el: HTMLElement) {
+  document.addEventListener('mousemove', moving);
+  document.addEventListener('mouseup', moveEnd);
+  document.addEventListener('mouseleave', moveEnd);
+  el.querySelector('.s-slider-shrink-watch')!.addEventListener('scroll', dnr);
+  el.querySelector('.s-slider-expand-watch')!.addEventListener('scroll', dnr);
+}
 
-  get valueLimit() {
-    return [this.minimum, this.maximum];
-  }
+function unbindEvents(el: HTMLElement) {
+  document.removeEventListener('mousemove', moving);
+  document.removeEventListener('mouseup', moveEnd);
+  document.removeEventListener('mouseleave', moveEnd);
+  el.querySelector('.s-slider-shrink-watch')!.removeEventListener(
+    'scroll',
+    dnr,
+  );
+  el.querySelector('.s-slider-expand-watch')!.removeEventListener(
+    'scroll',
+    dnr,
+  );
+}
 
-  @Watch("value")
-  watchValue(newVal) {
-    this.setValue(newVal);
-  }
+function getPos(e: MouseEvent) {
+  return e.clientX - offset.value!;
+}
 
-  debounce() {
-    return new Promise(resolve => {
-      if (!this.bounced) {
-        this.bounced = true;
-        setTimeout(() => {
-          this.bounced = false;
-          resolve();
-        }, 100);
-      }
-    });
-  }
+function wrapClick(e: MouseEvent) {
+  if (props.isDisabled) return;
+  const pos = getPos(e);
+  setValueOnPos(pos);
+  if (!isDragging.value) setTransform(position.value);
+}
 
-  dnr() {
-    this.debounce().then(() => {
-      let size = this.$refs.elem.getBoundingClientRect();
-      let newWidth = size.width;
-      let newHeight = size.height;
-      if (newWidth != this.currentWidth || newHeight != this.currentHeight) {
-        this.currentWidth = newWidth;
-        this.currentHeight = newHeight;
-        this.refresh(this.$refs.elem);
-      }
-    });
-  }
+function moveStart() {
+  if (!props.draggable) return;
+  isDragging.value = true;
+  emit('dragStart');
+}
 
-  resizeSensor(el: HTMLDivElement) {
-    let expand = document.createElement("div");
-    expand.classList.add("s-slider-expand-watch");
-    expand.style.position = "absolute";
-    expand.style.left = "0px";
-    expand.style.top = "0px";
-    expand.style.right = "0px";
-    expand.style.bottom = "0px";
-    expand.style.overflow = "hidden";
-    expand.style.visibility = "hidden";
-    let expandChild = document.createElement("div");
-    expandChild.style.position = "absolute";
-    expandChild.style.left = "0px";
-    expandChild.style.top = "0px";
-    expandChild.style.width = "10000000px";
-    expandChild.style.height = "10000000px";
-    expand.appendChild(expandChild);
-    let shrink = document.createElement("div");
-    shrink.classList.add("s-slider-shrink-watch");
-    shrink.style.position = "absolute";
-    shrink.style.left = "0px";
-    shrink.style.top = "0px";
-    shrink.style.right = "0px";
-    shrink.style.bottom = "0px";
-    shrink.style.overflow = "hidden";
-    shrink.style.visibility = "hidden";
-    let shrinkChild = document.createElement("div");
-    shrinkChild.style.position = "absolute";
-    shrinkChild.style.left = "0px";
-    shrinkChild.style.top = "0px";
-    shrinkChild.style.width = "200%";
-    shrinkChild.style.height = "200%";
-    shrink.appendChild(shrinkChild);
-    el.appendChild(expand);
-    el.appendChild(shrink);
-    this.setSensorScroll(this.$refs.elem);
-    let size = el.getBoundingClientRect();
-    this.currentWidth = size.width;
-    this.currentHeight = size.height;
-  }
+function moving(e: MouseEvent) {
+  if (!isDragging.value || !props.draggable) return;
+  e.preventDefault();
+  setValueOnPos(getPos(e));
+  if (!halt.value) setTransform(getPos(e));
+}
 
-  setSensorScroll(el) {
-    el.querySelector(".s-slider-expand-watch").scrollLeft = 10000000;
-    el.querySelector(".s-slider-expand-watch").scrollTop = 10000000;
-    el.querySelector(".s-slider-shrink-watch").scrollLeft = 10000000;
-    el.querySelector(".s-slider-shrink-watch").scrollTop = 10000000;
-  }
-
-  bindEvents(el: any) {
-    document.addEventListener("mousemove", this.moving);
-    document.addEventListener("mouseup", this.moveEnd);
-    document.addEventListener("mouseleave", this.moveEnd);
-    el.querySelector(".s-slider-shrink-watch").addEventListener(
-      "scroll",
-      this.dnr
-    );
-    el.querySelector(".s-slider-expand-watch").addEventListener(
-      "scroll",
-      this.dnr
-    );
-  }
-
-  unbindEvents(el: any) {
-    document.removeEventListener("mousemove", this.moving);
-    document.removeEventListener("mouseup", this.moveEnd);
-    document.removeEventListener("mouseleave", this.moveEnd);
-    el.querySelector(".s-slider-shrink-watch").removeEventListener(
-      "scroll",
-      this.dnr
-    );
-    el.querySelector(".s-slider-expand-watch").removeEventListener(
-      "scroll",
-      this.dnr
-    );
-  }
-
-  getPos(e) {
-    return e.clientX - this.offset;
-  }
-
-  wrapClick(e) {
-    if (this.isDisabled) return false;
-    let pos = this.getPos(e);
-    this.setValueOnPos(pos, false);
-    if (!this.isDragging) this.setTransform(this.position);
-  }
-
-  moveStart() {
-    if (!this.draggable) return false;
-    this.isDragging = true;
-    this.$emit("dragStart", this);
-  }
-
-  moving(e) {
-    if (!this.isDragging || !this.draggable) return false;
-    e.preventDefault();
-    this.setValueOnPos(this.getPos(e), true);
-    if (!this.halt) this.setTransform(this.getPos(e));
-  }
-
-  moveEnd(e) {
-    if (this.isDragging && this.draggable) {
-      this.$emit("dragEnd", this);
-      this.setValue(this.limitValue(this.value));
-      this.setTransitionTime(0.125);
-      this.setTransform(this.position);
-      this.isDragging = false;
-      if (this.lazy && this.isDiff(this.val, this.value)) {
-        this.syncValue();
-      }
-    } else {
-      return false;
-    }
-  }
-
-  setValueOnPos(pos, isDrag) {
-    let range = this.limit;
-    let valueRange = this.valueLimit;
-    if (pos >= range[0] && pos <= range[1]) {
-      this.halt = false;
-      let v =
-        (Math.round(pos / this.gap) * (this.spacing * this.multiple) +
-          this.minimum * this.multiple) /
-        this.multiple;
-      this.setCurrentValue(v, isDrag);
-    } else if (pos < range[0]) {
-      this.halt = true;
-      console.log("overshoot1");
-      this.setTransform(range[0]);
-      this.setCurrentValue(valueRange[0], true);
-    } else {
-      this.halt = true;
-      console.log("overshoot2");
-      this.setTransform(range[1]);
-      this.setCurrentValue(valueRange[1], true);
-    }
-  }
-
-  createMarks() {
-    if (Array.isArray(this.data)) {
-      let ticks = this.data.length;
-      for (let i = 0; i < ticks; i++) {
-        this.range.push(this.data[i]);
-      }
-    } else if (
-      Math.floor((this.maximum - this.minimum) * this.multiple) %
-        (this.interval * this.multiple) !==
-      0
-    ) {
-      console.error(
-        "[ERROR]: Prop[interval] must be a divisor of [max] - [min]"
-      );
-    } else {
-      let ticks = (this.max - this.min) / this.interval;
-      let t = 0 - this.interval;
-      for (let i = -1; i < ticks; i++) {
-        t = t + this.interval;
-        this.range.push(t);
-      }
-    }
-  }
-
-  isDiff(a, b) {
-    if (
-      Object.prototype.toString.call(a) !== Object.prototype.toString.call(b)
-    ) {
-      return true;
-    } else if (Array.isArray(a) && a.length === b.length) {
-      return a.some((v, i) => v !== b[i]);
-    }
-    return a !== b;
-  }
-
-  setCurrentValue(val, bool) {
-    if (val < this.minimum || val > this.maximum) return false;
-    if (this.isDiff(this.currentValue, val)) {
-      this.currentValue = val;
-      if (!this.lazy || !this.isDragging) {
-        this.syncValue();
-      }
-    }
-  }
-
-  setIndex(val) {
-    val = this.spacing * val + this.minimum;
-    this.setCurrentValue(val, true);
-  }
-
-  setValue(val) {
-    if (this.isDiff(this.val, val)) {
-      let resetVal = this.limitValue(val);
-      this.val = resetVal;
-      this.syncValue();
-      //this.refresh(this.$refs.elem);
-    }
-  }
-
-  setTransform(val) {
-    let value = val - (this.$refs.handle.scrollWidth - 2) / 2;
-    let translateValue = `translateX(${value}px)`;
-    this.$refs.handle.style.transform = translateValue;
-    this.$refs.handle.style.webkitTransform = translateValue;
-    this.$refs.handle.style.transform = translateValue;
-    this.$refs.process.style.width = `${val}px`;
-  }
-
-  setTransitionTime(t) {
-    this.$refs.handle.style.transitionDuration = `${t}s`;
-    this.$refs.handle.style.webkitTransitionDuration = `${t}s`;
-    this.$refs.process.style.transitionDuration = `${t}s`;
-    this.$refs.process.style.webkitTransitionDuration = `${t}s`;
-  }
-
-  limitValue(val) {
-    if (this.data) {
-      return val;
-    }
-    const inRange = v => {
-      if (v < this.min) {
-        return this.min;
-      } else if (v > this.max) {
-        return this.max;
-      }
-      return v;
-    };
-    return inRange(val);
-  }
-
-  syncValue() {
-    let val = this.val;
-    if (this.range) {
-      this.$emit("callbackRange", this.range[this.currentIndex]);
-    }
-    this.$emit("input", val);
-  }
-
-  getValue() {
-    return this.val;
-  }
-
-  getIndex() {
-    return this.currentIndex;
-  }
-
-  getStaticData() {
-    if (this.$refs.elem) {
-      this.size = this.$refs.elem.offsetWidth;
-      this.offset = this.$refs.elem.getBoundingClientRect().left;
-    }
-  }
-
-  refresh(el) {
-    if (el) {
-      this.getStaticData();
-      this.setTransform(this.position);
-      this.setSensorScroll(el);
-    }
-  }
-
-  mounted() {
-    if (this.steps !== 0) {
-      console.error(
-        "[ERROR]: Prop[steps] has been replaced with Prop[interval]"
-      );
-    }
-    this.getStaticData();
-    this.setValue(this.limitValue(this.value));
-    this.setTransform(this.position);
-    if (this.marks) {
-      this.createMarks();
-    }
-    if (this.$refs.elem) {
-      this.resizeSensor(this.$refs.elem);
-      this.bindEvents(this.$refs.elem);
-    }
-  }
-
-  updated() {
-    if (!this.isDragging) {
-      this.setTransitionTime(0.25);
-    } else {
-      this.setTransitionTime(0);
-    }
-  }
-
-  beforeDestroy() {
-    if (this.$refs.elem) {
-      this.unbindEvents(this.$refs.elem);
+function moveEnd() {
+  if (isDragging.value && props.draggable) {
+    emit('dragEnd');
+    setValue(limitValue(props.value));
+    setTransitionTime(0.125);
+    setTransform(position.value);
+    isDragging.value = false;
+    if (lazy.value && isDiff(val.value, props.value)) {
+      syncValue();
     }
   }
 }
+
+function setValueOnPos(pos: number) {
+  const range = limit.value;
+  const valueRange = valueLimit.value;
+  if (pos >= range[0] && pos <= range[1]) {
+    halt.value = false;
+    const v =
+      (Math.round(pos / gap.value) * (spacing.value * multiple.value) +
+        minimum.value * multiple.value) /
+      multiple.value;
+    setCurrentValue(v);
+  } else if (pos < range[0]) {
+    halt.value = true;
+    console.log('overshoot1');
+    setTransform(range[0]);
+    setCurrentValue(valueRange[0]);
+  } else {
+    halt.value = true;
+    console.log('overshoot2');
+    setTransform(range[1]);
+    setCurrentValue(valueRange[1]);
+  }
+}
+
+function createMarks() {
+  if (Array.isArray(props.data)) {
+    const ticks = props.data.length;
+    for (let i = 0; i < ticks; i++) {
+      range.value.push(props.data[i]);
+    }
+  } else if (
+    Math.floor((maximum.value - minimum.value) * multiple.value) %
+      (props.interval * multiple.value) !==
+    0
+  ) {
+    console.error('[ERROR]: Prop[interval] must be a divisor of [max] - [min]');
+  } else {
+    const ticks = (props.max - props.min) / props.interval;
+    let t = 0 - props.interval;
+    for (let i = -1; i < ticks; i++) {
+      t = t + props.interval;
+      range.value.push(t);
+    }
+  }
+}
+
+function isDiff(a: unknown, b: unknown) {
+  if (Object.prototype.toString.call(a) !== Object.prototype.toString.call(b)) {
+    return true;
+  } else if (Array.isArray(a) && Array.isArray(b) && a.length === b.length) {
+    return a.some((v, i) => v !== b[i]);
+  }
+  return a !== b;
+}
+
+function setCurrentValue(v: SliderValue) {
+  if ((v as number) < minimum.value || (v as number) > maximum.value) return;
+  if (isDiff(currentValue.value, v)) {
+    currentValue.value = v;
+    if (!lazy.value || !isDragging.value) {
+      syncValue();
+    }
+  }
+}
+
+function setValue(v: SliderValue) {
+  if (isDiff(val.value, v)) {
+    const resetVal = limitValue(v);
+    val.value = resetVal;
+    syncValue();
+  }
+}
+
+function setTransform(v: number) {
+  const value = v - (handle.value!.scrollWidth - 2) / 2;
+  const translateValue = `translateX(${value}px)`;
+  handle.value!.style.transform = translateValue;
+  processEl.value!.style.width = `${v}px`;
+}
+
+function setTransitionTime(t: number) {
+  handle.value!.style.transitionDuration = `${t}s`;
+  processEl.value!.style.transitionDuration = `${t}s`;
+}
+
+function limitValue(v: SliderValue): SliderValue {
+  if (props.data) {
+    return v;
+  }
+  const inRange = (n: number) => {
+    if (n < props.min) return props.min;
+    if (n > props.max) return props.max;
+    return n;
+  };
+  return inRange(v as number);
+}
+
+function syncValue() {
+  const v = val.value;
+  if (range.value.length) {
+    emit('callbackRange', range.value[currentIndex.value]);
+  }
+  emit('input', v);
+}
+
+function getValue() {
+  return val.value;
+}
+
+function getIndex() {
+  return currentIndex.value;
+}
+
+function getStaticData() {
+  if (elem.value) {
+    size.value = elem.value.offsetWidth;
+    offset.value = elem.value.getBoundingClientRect().left;
+  }
+}
+
+function refresh(el: HTMLDivElement) {
+  if (el) {
+    getStaticData();
+    setTransform(position.value);
+    setSensorScroll(el);
+  }
+}
+
+defineExpose({ getValue, getIndex });
+
+onMounted(() => {
+  if (props.steps !== 0) {
+    console.error('[ERROR]: Prop[steps] has been replaced with Prop[interval]');
+  }
+  getStaticData();
+  setValue(limitValue(props.value));
+  setTransform(position.value);
+  if (props.marks) {
+    createMarks();
+  }
+  if (elem.value) {
+    resizeSensor(elem.value);
+    bindEvents(elem.value);
+  }
+});
+
+onUpdated(() => {
+  if (!isDragging.value) {
+    setTransitionTime(0.25);
+  } else {
+    setTransitionTime(0);
+  }
+});
+
+onBeforeUnmount(() => {
+  if (elem.value) {
+    unbindEvents(elem.value);
+  }
+});
 </script>
 
 <style lang="less" scoped>
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-slider {
   display: flex;
@@ -578,14 +552,14 @@ export default class SliderTwo extends Vue {
       &:before,
       &:after {
         border: none;
-        font-family: "icomoon";
+        font-family: 'icomoon';
         font-weight: 900;
         position: absolute;
         top: 0px;
         color: @light-4;
         font-size: 11px;
         line-height: 15px;
-        content: "\e996";
+        content: '\e996';
         display: inline-block;
       }
 
@@ -664,6 +638,10 @@ export default class SliderTwo extends Vue {
 .s-slider--ani__ticks-move {
   transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
+</style>
+
+<style lang="less">
+@import (reference) './../styles/Imports';
 
 .night,
 .night-theme {

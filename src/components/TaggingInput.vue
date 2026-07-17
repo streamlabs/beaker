@@ -1,15 +1,13 @@
 <template>
   <div class="s-tagging-input">
     <div class="s-tagging-input__container">
-      <text-input
-        v-model="input"
-        v-validate="inputValidation"
-        slot="input"
+      <TextInput
+        v-model="textInput"
         :name="name"
         :label="label"
         :placeholder="placeholder"
         type="text"
-        :error="errors.first(name)"
+        :error="errorMessage"
         @input="$emit('update:text', $event)"
         @keydown.enter.prevent="onAdd"
       />
@@ -17,14 +15,14 @@
         :title="buttonText"
         type="button"
         :variation="buttonVariation"
-        :disabled="value.length >= maxItems"
+        :disabled="modelValue.length >= maxItems"
         @click="onAdd"
       />
     </div>
 
     <div class="s-tagging-input__tags">
       <div
-        v-for="(tag, index) in value"
+        v-for="(tag, index) in tags"
         :key="index"
         class="s-tagging-input-tag"
         :class="[`s-tagging-input-tag--${tagVariation}`]"
@@ -39,113 +37,118 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import TextInput from "./TextInput.vue";
-import TextArea from "./TextArea.vue";
-import Button from "./Button.vue";
+<script setup lang="ts">
+import { ref, watch } from 'vue';
+import TextInput from './TextInput.vue';
+import Button from './Button.vue';
+import { validate } from 'vee-validate';
+import '../composables/useValidation';
 
-@Component({
-  components: {
-    TextInput,
-    TextArea,
-    Button,
+const props = withDefaults(
+  defineProps<{
+    name: string;
+    label?: string;
+    placeholder?: string;
+    buttonText?: string;
+    buttonVariation?: string;
+    modelValue?: string[];
+    text?: string;
+    inputValidation?: string;
+    prefix?: string;
+    tagVariation?: string;
+    maxItems?: number;
+  }>(),
+  {
+    buttonText: 'Add Tag',
+    buttonVariation: 'default',
+    modelValue: () => [],
+    text: '',
+    tagVariation: 'default',
+    maxItems: 25,
   },
-})
-export default class TaggingInput extends Vue {
-  @Prop()
-  name!: string;
+);
 
-  @Prop()
-  label!: string;
+const emit = defineEmits<{
+  'update:modelValue': [tags: string[]];
+  change: [tags: string[]];
+  'update:value': [tags: string[]];
+  'update:text': [text: string];
+  add: [tags: string[]];
+  remove: [tags: string[]];
+  error: [errors: string[], maxReached: boolean];
+}>();
 
-  @Prop()
-  placeholder!: string;
+const tags = ref<string[]>([]);
+const textInput = ref('');
+const errorMessage = ref<string | undefined>(undefined);
 
-  @Prop({ default: "Add Tag" })
-  buttonText!: string;
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    tags.value = newValue ?? [];
+  },
+  { immediate: true },
+);
 
-  @Prop({ default: "default" })
-  buttonVariation!: string;
+watch(
+  () => props.text,
+  (newValue) => {
+    textInput.value = newValue ?? '';
+  },
+  { immediate: true },
+);
 
-  @Prop({ default: () => [] })
-  value!: string[];
+async function onAdd() {
+  errorMessage.value = undefined;
 
-  @Prop({ default: "" })
-  text!: string;
-
-  @Prop()
-  inputValidation!: string;
-
-  @Prop()
-  prefix!: string;
-
-  @Prop({ default: "default" })
-  tagVariation!: string;
-
-  @Prop({ default: 25 })
-  maxItems!: number;
-
-  input: string = "";
-  tags: string[] = [];
-
-  @Watch("value", { immediate: true })
-  watchValue(newValue) {
-    this.tags = newValue;
-  }
-
-  @Watch("text", { immediate: true })
-  watchText(newValue) {
-    this.input = newValue;
-  }
-
-  onAdd() {
-    if (this.$validator.errors.items.length !== 0) {
-      this.$emit("error", this.$validator.errors.items, false);
+  if (props.inputValidation) {
+    const result = await validate(textInput.value, props.inputValidation);
+    if (!result.valid) {
+      errorMessage.value = result.errors[0];
+      emit('error', result.errors, false);
       return;
     }
-
-    if (this.tags.length >= this.maxItems) {
-      this.$emit("error", ["Max items reached"], true);
-      return;
-    }
-
-    let inputValue = this.input.trim();
-
-    const found = this.tags.find((v) => {
-      if (this.prefix && !inputValue.startsWith(this.prefix)) {
-        return (
-          v.toLowerCase() === this.prefix + inputValue.trim().toLowerCase()
-        );
-      } else {
-        return v.toLowerCase() === inputValue.trim().toLowerCase();
-      }
-    });
-
-    if (!found && inputValue.length !== 0) {
-      if (this.prefix && !inputValue.startsWith(this.prefix)) {
-        inputValue = this.prefix + inputValue;
-      }
-      this.tags.push(inputValue);
-      this.input = "";
-      this.emitTagEvents("add");
-    }
   }
 
-  onRemove(index: number) {
-    this.tags.splice(index, 1);
-    this.emitTagEvents("remove");
+  if (tags.value.length >= props.maxItems) {
+    emit('error', ['Max items reached'], true);
+    return;
   }
 
-  emitTagEvents(...events) {
-    ["input", "change", "update:value", ...events].forEach((event) =>
-      this.$emit(event, this.tags)
-    );
+  let inputValue = textInput.value.trim();
+
+  const found = tags.value.find((v) => {
+    if (props.prefix && !inputValue.startsWith(props.prefix)) {
+      return v.toLowerCase() === props.prefix + inputValue.trim().toLowerCase();
+    } else {
+      return v.toLowerCase() === inputValue.trim().toLowerCase();
+    }
+  });
+
+  if (!found && inputValue.length !== 0) {
+    if (props.prefix && !inputValue.startsWith(props.prefix)) {
+      inputValue = props.prefix + inputValue;
+    }
+    tags.value.push(inputValue);
+    textInput.value = '';
+    emitTagEvents('add');
   }
 }
+
+function onRemove(index: number) {
+  tags.value.splice(index, 1);
+  emitTagEvents('remove');
+}
+
+function emitTagEvents(...events: string[]) {
+  ['update:modelValue', 'change', 'update:value', ...events].forEach((event) =>
+    emit(event as keyof typeof emit, tags.value),
+  );
+}
 </script>
+
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .s-tagging-input {
   .s-tagging-input__container {

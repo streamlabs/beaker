@@ -1,9 +1,8 @@
 <template>
-  <div ref="pagination" class="pagination__container">
-    <vue-paginate-component
+  <div ref="paginationEl" class="pagination__container">
+    <Paginate
       :class="{ 'pagination--bg': nightBg }"
       v-bind="$attrs"
-      v-on="$listeners"
       :page-count="pageCount"
       :page-range="pageRange"
       :click-handler="selectPage"
@@ -24,59 +23,46 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import ResizeObserver from "resize-observer-polyfill";
-import VuePaginateComponent from "vuejs-paginate";
+<script setup lang="ts">
+import { ref, computed, onMounted, useTemplateRef } from "vue";
+import Paginate from "vuejs-paginate-next";
 
-@Component({
-  components: {
-    VuePaginateComponent
+const props = withDefaults(
+  defineProps<{
+    nightBg?: boolean;
+    itemsPerPage?: number;
+    totalItemCount?: number;
+    totalPageCount?: number;
+  }>(),
+  {
+    nightBg: false,
+    totalPageCount: 0,
   }
-})
-export default class Pagination extends Vue {
-  pageRange: number = 3;
+);
 
-  $refs!: {
-    pagination: HTMLDivElement;
-  };
+const emit = defineEmits<{ "page-selected": [page: number] }>();
 
-  @Prop({ default: false })
-  nightBg!: boolean;
+const paginationEl = useTemplateRef<HTMLDivElement>("paginationEl");
+const pageRange = ref(3);
 
-  @Prop()
-  itemsPerPage!: number;
+const pageCount = computed(() => {
+  if (props.totalPageCount && props.totalPageCount > 0) return props.totalPageCount;
+  const remainder = (props.totalItemCount ?? 0) % (props.itemsPerPage ?? 1) > 0 ? 1 : 0;
+  return Math.floor((props.totalItemCount ?? 0) / (props.itemsPerPage ?? 1)) + remainder;
+});
 
-  @Prop()
-  totalItemCount!: number;
-
-  @Prop({ default: 0 })
-  totalPageCount!: number;
-
-  mounted() {
-    const ro = new ResizeObserver((entries, observer) => {
-      for (const entry of entries) {
-        const { left, top, width, height } = entry.contentRect;
-
-        if (width < 456) this.pageRange = 1;
-      }
-    });
-
-    ro.observe(this.$refs.pagination);
-  }
-
-  get pageCount() {
-    if (this.totalPageCount && this.totalPageCount > 0)
-      return this.totalPageCount;
-
-    let remainder = this.totalItemCount % this.itemsPerPage > 0 ? 1 : 0;
-    return Math.floor(this.totalItemCount / this.itemsPerPage) + remainder;
-  }
-
-  selectPage(page: number) {
-    this.$emit("page-selected", page);
-  }
+function selectPage(page: number) {
+  emit("page-selected", page);
 }
+
+onMounted(() => {
+  const ro = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.contentRect.width < 456) pageRange.value = 1;
+    }
+  });
+  if (paginationEl.value) ro.observe(paginationEl.value);
+});
 </script>
 
 <style lang="less">

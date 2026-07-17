@@ -13,80 +13,33 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { EventBus } from "./../plugins/event-bus";
+<script setup lang="ts">
+import { computed, watch } from 'vue';
+import { useNotification } from './../composables/useNotification';
 
-interface INotificationMsg {
-  id: number;
-  status: string;
-  msg: string;
-  timerStarted: boolean;
-}
+// Consumers that previously used EventBus.$emit("copy-success", text) or
+// EventBus.$emit("copy-error") should now call useNotification().success(text)
+// or useNotification().error() directly.
+const { messages, remove } = useNotification();
 
-@Component({})
-export default class Icons extends Vue {
-  messages: INotificationMsg[] = [];
+const visibleMessages = computed(() => messages.value.slice(0, 5));
 
-  get visibleMessages() {
-    const msgs = this.messages.filter((msg, idx) => idx < 5);
-
-    msgs.forEach(msg => {
+watch(
+  messages,
+  (msgs) => {
+    msgs.forEach((msg) => {
       if (!msg.timerStarted) {
         msg.timerStarted = true;
-        setTimeout(() => {
-          const idx = this.messages.findIndex(message => msg.id === message.id);
-          this.messages.splice(idx, 1);
-        }, 5000);
+        setTimeout(() => remove(msg.id), 5000);
       }
     });
-
-    return msgs;
-  }
-
-  created() {
-    EventBus.$on("copy-success", this.onCopySuccess);
-    EventBus.$on("copy-error", this.onCopyError);
-  }
-
-  destroyed() {
-    EventBus.$off("copy-success");
-    EventBus.$off("copy-error");
-  }
-
-  onCopySuccess(e) {
-    let msg: string = typeof e === 'string' ? e : e.text;
-
-    this.setCopyMsg({
-      id: this.setCopyMsgId(),
-      msg,
-      status: "success",
-      timerStarted: false
-    });
-  }
-
-  onCopyError(e) {
-    this.setCopyMsg({
-      id: this.setCopyMsgId(),
-      msg: "Failed to copy to clipboard",
-      status: "error",
-      timerStarted: false
-    });
-  }
-
-  setCopyMsgId() {
-    return Math.ceil(Math.random() * 10000);
-  }
-
-  setCopyMsg({ id, msg, status, timerStarted }) {
-    const message: INotificationMsg = { id, msg, status, timerStarted };
-    this.messages.push(message);
-  }
-}
+  },
+  { deep: true, immediate: true },
+);
 </script>
 
 <style lang="less" scoped>
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .notifications {
   position: absolute;
@@ -112,6 +65,10 @@ export default class Icons extends Vue {
     margin-bottom: 0;
   }
 }
+</style>
+
+<style lang="less">
+@import (reference) './../styles/Imports';
 
 .night {
   .notification-msg {

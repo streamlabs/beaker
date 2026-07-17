@@ -1,89 +1,30 @@
 <template>
   <div class="s-selector">
-    <multiselect
-      v-bind="multiselectProps"
-      :style="styleObject"
+    <Multiselect
+      v-bind="$attrs"
       :options="options"
-      :max-height="200"
-      v-on="$listeners"
+      :style="styleObject"
     >
-      <template #selection="{ option, values, isOpen }">
-        <slot
-          name="selection"
-          :option="option"
-          :values="values"
-          :isOpen="isOpen"
-        />
+      <template v-for="(_, name) in $slots" #[name]="slotProps">
+        <slot :name="name" v-bind="slotProps ?? {}" />
       </template>
-      <template #singleLabel="{ option }">
-        <slot name="singleLabel" :option="option"></slot>
-      </template>
-      <template #option="{ option }">
-        <slot name="option" :option="option"></slot>
-      </template>
-      <template #beforeList>
-        <slot name="beforeList" />
-      </template>
-      <template #afterList>
-        <slot name="afterList" />
-      </template>
-      <template #noResult>
-        <slot name="noResult" />
-      </template>
-      <template #placeholder>
-        <slot name="placeholder" />
-      </template>
-    </multiselect>
+    </Multiselect>
   </div>
 </template>
 
-<script>
-import { Component, Vue } from "vue-property-decorator";
-import Selector from "vue-multiselect";
-Vue.component("multiselect", Selector);
+<script setup lang="ts">
+import { computed } from "vue";
+import Multiselect from "vue-multiselect";
 
-export default {
-  name: "Selector",
-  extends: Selector,
+const props = defineProps<{
+  width?: string;
+  multiple?: boolean;
+  options: unknown[];
+}>();
 
-  components: {
-    Selector
-  },
-
-  props: {
-    width: String
-  },
-
-  created() {
-    this.$on("input", this.setValue);
-  },
-
-  destroyed() {
-    this.$off("input", this.setValue);
-  },
-
-  computed: {
-    styleObject() {
-      return {
-        width: this.multiple ? "100%" : this.width ? this.width : "176px"
-      };
-    },
-
-    multiselectProps() {
-      return this.$props;
-    }
-  },
-
-  methods: {
-    emitInput(val) {
-      this.$emit("input", val);
-    },
-
-    setValue(val) {
-      this.mutableValue = val;
-    }
-  }
-};
+const styleObject = computed(() => ({
+  width: props.multiple ? "100%" : props.width ?? "176px"
+}));
 </script>
 
 <style lang="less">

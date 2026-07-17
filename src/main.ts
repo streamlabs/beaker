@@ -1,20 +1,41 @@
-/// <reference path="./../index.d.ts" />
-import Vue from "vue";
-import App from "./App.vue";
-import router from "./router";
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
 
-import VTooltip from "v-tooltip";
-import VueClipboard from "vue-clipboard2";
-import WhatInput from "./plugins/WhatInput/index";
+import FloatingVue from 'floating-vue';
+import 'floating-vue/dist/style.css';
+import 'vue-color/style.css';
 
-Vue.config.productionTip = false;
+import { createVfm, useVfm } from 'vue-final-modal';
+import 'vue-final-modal/style.css';
 
-Vue.use(VTooltip);
-Vue.use(VueClipboard);
-Vue.use(WhatInput);
+import VueAwesomePaginate from 'vue-awesome-paginate';
+import 'vue-awesome-paginate/dist/style.css';
 
-new Vue({
-  el: '#app',
-  router,
-  render: h => h(App)
-}).$mount("#app");
+const app = createApp(App);
+
+const vfm = createVfm();
+
+app.use(router);
+app.use(FloatingVue);
+app.use(vfm);
+app.use(VueAwesomePaginate);
+
+app.directive('focus', {
+  mounted(el, binding) {
+    if (binding.value) {
+      el.focus();
+    }
+  },
+  updated(el, binding) {
+    if (binding.value) {
+      el.focus();
+    }
+  },
+});
+
+router.beforeEach(() => {
+  useVfm().closeAll();
+});
+
+app.mount('#app');

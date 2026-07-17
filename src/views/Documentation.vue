@@ -1,39 +1,32 @@
 <template>
   <div class="documentation">
-    <left-navigation
+    <LeftNavigation
       @update-section="changeSection"
       :active-section="activeSection"
     />
 
     <div class="content">
-      <router-view />
+      <RouterView />
     </div>
-    <copy-notification />
+
+    <CopyNotification />
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import CopyNotification from "../components/CopyNotification.vue";
-import LeftNavigation from "../demos/LeftNavigation.vue";
+<script setup lang="ts">
+import { ref } from 'vue';
+import CopyNotification from '../components/CopyNotification.vue';
+import LeftNavigation from '../demos/LeftNavigation.vue';
 
-@Component({
-  components: {
-    CopyNotification,
-    LeftNavigation
-  }
-})
-export default class Documentation extends Vue {
-  activeSection = "installation";
+const activeSection = ref('installation');
 
-  changeSection(activeSection: string) {
-    this.activeSection = activeSection;
-  }
+function changeSection(newSection: string) {
+  activeSection.value = newSection;
 }
 </script>
 
 <style lang="less">
-@import (reference) "./../styles/Imports";
+@import (reference) './../styles/Imports';
 
 .documentation {
   display: grid;
@@ -64,16 +57,16 @@ export default class Documentation extends Vue {
 }
 
 .docs-table {
-  font-family: "Courier New", Courier, monospace;
+  font-family: 'Courier New', Courier, monospace;
 
   th {
-    font-family: "Roboto";
+    font-family: 'Roboto';
   }
 
   tr {
     td {
       &:last-child {
-        font-family: "Roboto";
+        font-family: 'Roboto';
       }
     }
   }
