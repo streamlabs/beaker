@@ -1,0 +1,58 @@
+name: Deploy Pages
+
+# Rebuilds the docs/demo site on every push to master and publishes it to
+# GitHub Pages. Decoupled from npm releases (release.yml) — docs content can
+# change without a version bump. Requires the repo's Settings > Pages source
+# to be set to "GitHub Actions" (not "Deploy from a branch").
+#
+# Uses `pnpm build` (vite.config.js, the docs-site config) — never
+# `pnpm build:publish` (vite-publish.config.js, the library config). Both
+# configs emit to ./dist by default, so they must never run in the same job.
+on:
+  push:
+    branches: [master]
+
+permissions:
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build docs site
+        run: pnpm build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
