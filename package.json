@@ -21,8 +21,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "build:publish": "vite build -c vite-publish.config.js",
-    "lint": "eslint src/components/ src/composables/ src/system.ts",
-    "deploy": "./deploy.sh"
+    "lint": "eslint src/components/ src/composables/ src/system.ts"
   },
   "files": [
     "dist"
