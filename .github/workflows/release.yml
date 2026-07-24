@@ -1,9 +1,12 @@
 name: Release
 
 # Manually-triggered "Release" button — pick a bump type in the Actions tab.
-# Bumps package.json's version, commits, tags, and pushes in one step. The
-# tag push triggers publish.yml (npm) and the master push triggers
-# deploy-pages.yml (GitHub Pages) — both already exist and are untouched.
+# Bumps package.json's version, commits it to a new release/vX.Y.Z branch,
+# and opens a PR into master. master has branch protection requiring all
+# changes go through a PR with a passing "ci" check, so this workflow can't
+# push directly to it — merging the generated PR is what actually lands the
+# bump. tag-release.yml (triggered by that merge) creates the git tag, which
+# in turn triggers publish.yml (npm) and deploy-pages.yml (GitHub Pages).
 on:
   workflow_dispatch:
     inputs:
@@ -18,6 +21,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   release:
@@ -36,10 +40,17 @@ jobs:
           npm version ${{ inputs.bump }} --no-git-tag-version
           echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 
-      - name: Commit, tag, and push
+      - name: Commit to release branch and open PR
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "release/v${{ steps.bump.outputs.version }}"
           git commit -am "chore: release v${{ steps.bump.outputs.version }}"
-          git tag "v${{ steps.bump.outputs.version }}"
-          git push --follow-tags
+          git push origin "release/v${{ steps.bump.outputs.version }}"
+          gh pr create \
+            --base master \
+            --head "release/v${{ steps.bump.outputs.version }}" \
+            --title "chore: release v${{ steps.bump.outputs.version }}" \
+            --body "Merging this PR bumps the published version to v${{ steps.bump.outputs.version }}. Once merged, tag-release.yml tags the commit, which triggers the npm publish and GitHub Pages deploy workflows automatically."
