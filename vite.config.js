@@ -13,5 +13,17 @@ export default defineConfig({
   build: {
     minify: false,
     sourcemap: true,
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: 'vue-vendor',
+              test: (id) => id.includes('/vue/') || id.includes('/vue-router/'),
+            },
+          ],
+        },
+      },
+    },
   },
 });
