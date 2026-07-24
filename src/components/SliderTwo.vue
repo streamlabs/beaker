@@ -1,16 +1,14 @@
 <template>
   <div ref="wrap" class="s-slider" @click="wrapClick">
     <div ref="elem" class="s-slider-bar">
-      <template>
-        <div ref="handle" class="s-slider-dot-cont" @mousedown="moveStart">
-          <div class="s-slider-dot">
-            <div class="s-slider-dot-handle"></div>
-          </div>
-          <div class="s-slider-dot-tooltip">
-            {{ prefix }}{{ displayValue }}{{ suffix }}
-          </div>
+      <div ref="handle" class="s-slider-dot-cont" @mousedown="moveStart">
+        <div class="s-slider-dot">
+          <div class="s-slider-dot-handle"></div>
         </div>
-      </template>
+        <div class="s-slider-dot-tooltip">
+          {{ prefix }}{{ displayValue }}{{ suffix }}
+        </div>
+      </div>
       <div
         ref="process"
         class="s-slider-process"
@@ -27,11 +25,11 @@
       >
         <div
           class="s-slider-tick"
-          v-if="marks && value != range[index]"
+          v-if="marks && modelValue != range[index]"
           key="tick_lines"
         ></div>
         <div
-          v-if="labels && value != range[index]"
+          v-if="labels && modelValue != range[index]"
           class="s-slider-label"
           key="tick_values"
         >
@@ -61,7 +59,7 @@ const props = withDefaults(
     steps?: number;
     data?: SliderValue[] | null;
     dataIndexing?: boolean;
-    value?: string | number;
+    modelValue?: string | number;
     min?: number;
     max?: number;
     tooltip?: 'always' | false;
@@ -78,7 +76,7 @@ const props = withDefaults(
     steps: 0,
     data: null,
     dataIndexing: true,
-    value: 0,
+    modelValue: 0,
     min: 0,
     max: 100,
     tooltip: 'always',
@@ -93,7 +91,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  input: [val: SliderValue];
+  'update:modelValue': [val: SliderValue];
   dragStart: [];
   dragEnd: [];
   callbackRange: [val: SliderValue];
@@ -192,7 +190,7 @@ const limit = computed(() => [0, size.value]);
 const valueLimit = computed(() => [minimum.value, maximum.value]);
 
 watch(
-  () => props.value,
+  () => props.modelValue,
   (newVal) => {
     setValue(newVal);
   },
@@ -323,11 +321,11 @@ function moving(e: MouseEvent) {
 function moveEnd() {
   if (isDragging.value && props.draggable) {
     emit('dragEnd');
-    setValue(limitValue(props.value));
+    setValue(limitValue(props.modelValue));
     setTransitionTime(0.125);
     setTransform(position.value);
     isDragging.value = false;
-    if (lazy.value && isDiff(val.value, props.value)) {
+    if (lazy.value && isDiff(val.value, props.modelValue)) {
       syncValue();
     }
   }
@@ -434,7 +432,7 @@ function syncValue() {
   if (range.value.length) {
     emit('callbackRange', range.value[currentIndex.value]);
   }
-  emit('input', v);
+  emit('update:modelValue', v);
 }
 
 function getValue() {
@@ -467,7 +465,7 @@ onMounted(() => {
     console.error('[ERROR]: Prop[steps] has been replaced with Prop[interval]');
   }
   getStaticData();
-  setValue(limitValue(props.value));
+  setValue(limitValue(props.modelValue));
   setTransform(position.value);
   if (props.marks) {
     createMarks();
@@ -623,7 +621,7 @@ onBeforeUnmount(() => {
   opacity: 0;
 }
 
-.s-slider--ani__ticks-enter {
+.s-slider--ani__ticks-enter-from {
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateY(-5px);
   opacity: 0;

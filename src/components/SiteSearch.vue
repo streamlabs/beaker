@@ -23,7 +23,7 @@
         @keyup.stop.prevent="keyEvent"
       />
     </div>
-    <transition-group name="s-sitesearch--fadeY">
+    <transition-group name="s-sitesearch--fadeY" tag="span">
       <div
         class="s-sitesearch-results__cont"
         :key="limitedResult.length"
@@ -56,7 +56,7 @@
         :key="limitedResult.length"
         v-if="phaseTwo && limitedResult.length >= 1"
       >
-        <transition-group name="s-sitesearch--fadeX">
+        <transition-group name="s-sitesearch--fadeX" tag="span">
           <a
             v-for="(searchResult, i) in limitedResult"
             :href="searchResult.item.route"
@@ -404,7 +404,7 @@ onMounted(() => {
     opacity: 0;
   }
 
-  .s-sitesearch--fadeX-enter {
+  .s-sitesearch--fadeX-enter-from {
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(10px);
     opacity: 0;
@@ -431,7 +431,7 @@ onMounted(() => {
     opacity: 0;
   }
 
-  .s-sitesearch--fadeY-enter {
+  .s-sitesearch--fadeY-enter-from {
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateY(-10px);
     opacity: 0;

@@ -107,6 +107,21 @@ import { ref, computed, watch, onMounted, useTemplateRef } from 'vue';
 
 // vue-focus mixin removed — v-focus directive is registered globally in main.ts
 
+type MediaControlEmit = 'link-media' | 'preview-media' | 'remove-media' | 'select-media';
+
+interface MediaControl {
+  key: string;
+  available: boolean;
+  class: string;
+  emit: MediaControlEmit;
+  title: string;
+  icon: string;
+}
+
+defineEmits<{
+  (e: MediaControlEmit): void;
+}>();
+
 const props = withDefaults(
   defineProps<{
     variation?: string;
@@ -156,7 +171,7 @@ const valueIsVideo = computed(() => {
   return videoTypes.some((t) => currentValue.value!.split('?')[0].endsWith(t));
 });
 
-const mediaControls = computed(() =>
+const mediaControls = computed<MediaControl[]>(() =>
   [
     {
       key: 'media-link',

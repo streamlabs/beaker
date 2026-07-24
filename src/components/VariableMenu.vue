@@ -21,7 +21,7 @@
         :style="calcTransform"
         ref="resultArea"
       >
-        <transition-group name="s-variablemenu--fadeX">
+        <transition-group name="s-variablemenu--fadeX" tag="span">
           <div
             class="s-variablemenu-results"
             v-for="(searchResult, i) in limitedResult"
@@ -379,7 +379,7 @@ onMounted(() => {
     opacity: 0;
   }
 
-  .s-variablemenu--fadeX-enter {
+  .s-variablemenu--fadeX-enter-from {
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
   }
@@ -399,7 +399,7 @@ onMounted(() => {
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
-.expand-enter,
+.expand-enter-from,
 .expand-leave-to {
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   height: 0;
