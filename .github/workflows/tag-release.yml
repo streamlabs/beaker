@@ -1,0 +1,49 @@
+name: Tag Release
+
+# Runs on every push to master. If package.json's version changed compared
+# to the previous commit (i.e. a release.yml PR was just merged), creates
+# and pushes a git tag for that version. This is a tag push only — not a
+# push to master itself — so it isn't blocked by master's branch protection
+# (which only restricts refs/heads/master, not refs/tags/*). That tag push
+# triggers the existing publish.yml (npm).
+on:
+  push:
+    branches: [master]
+    paths:
+      - package.json
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for a version change
+        id: check
+        run: |
+          PREV_VERSION=$(git show HEAD^:package.json | jq -r .version 2>/dev/null || echo "")
+          CURR_VERSION=$(jq -r .version package.json)
+          if [ "$PREV_VERSION" != "$CURR_VERSION" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "version=$CURR_VERSION" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Tag and push
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          TAG="v${{ steps.check.outputs.version }}"
+          if git ls-remote --tags origin "refs/tags/$TAG" | grep -q "$TAG"; then
+            echo "Tag $TAG already exists, skipping."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "$TAG"
+          git push origin "$TAG"

@@ -22,7 +22,7 @@ Publishing is tag-driven: pushing a git tag matching `v*` triggers `.github/work
 
 `next` will be promoted to `latest` once Vue 3 is stable enough to become the default install.
 
-**Vue 3 (`master`):** releases are cut with a button, not a manual tag push. Go to the repo's **Actions** tab → **Release** workflow → **Run workflow**, pick a bump type (`patch`/`minor`/`major`), and run it. It bumps `package.json`'s version, commits, tags, and pushes to `master` in one step — which triggers `publish.yml` above automatically. The docs site on GitHub Pages also redeploys automatically on every push to `master`, independent of releases.
+**Vue 3 (`master`):** releases are cut with a button, not a manual tag push. Go to the repo's **Actions** tab → **Release** workflow → **Run workflow**, pick a bump type (`patch`/`minor`/`major`), and run it. `master` requires all changes to go through a pull request, so the workflow opens a PR bumping `package.json`'s version rather than pushing to `master` directly — review and merge that PR to actually cut the release. Merging it triggers `.github/workflows/tag-release.yml`, which tags the commit and triggers `publish.yml` above automatically. The docs site on GitHub Pages also redeploys automatically on every push to `master`, independent of releases.
 
 **Vue 2 (`v0.x`):** stays fully manual — bump `package.json`'s version by hand, commit, then `git tag v0.x.y && git push --follow-tags` to trigger `publish.yml`.
 
