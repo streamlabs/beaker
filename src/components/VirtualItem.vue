@@ -6,7 +6,6 @@
     :selected="selected"
     :quantity="quantity"
     :value="value"
-    @click="$emit('click')"
   >
     <span v-if="selectionCount" class="s-virtual-item__selection-count">
       {{ selectionCount }}

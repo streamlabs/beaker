@@ -32,8 +32,7 @@ components: {
       <DemoSection title="Default Slider" :code="demoCode">
         <template #components>
           <slider
-            :value="value"
-            @input="value => updateValue(value)"
+            v-model="value"
             :max="100"
             :min="1"
             :interval="1"
@@ -53,8 +52,7 @@ components: {
       <DemoSection title="Simple Theme" :code="demoCode">
         <template #components>
           <slider
-            :value="value"
-            @input="value => updateValue(value)"
+            v-model="value"
             :max="100"
             :min="1"
             :interval="1"
@@ -161,8 +159,7 @@ components: {
         <p>Dont use this yet.</p>
         <div class="flex-row">
           <slider-two
-            :value="localValue"
-            @input="value => updateLocalValue(value)"
+            v-model="localValue"
             :min="0"
             :max="100"
             :dataIndexing="false"
@@ -174,8 +171,7 @@ components: {
     </div>
 
     <slider-two
-      :value="localValueTwo"
-      @input="value => updateLocalValueTwo(value)"
+      v-model="localValueTwo"
       :data="data"
       :marks="true"
     /> -->
@@ -195,18 +191,6 @@ const localValue = ref<number | string>(15);
 const localValueTwo = ref<number | string>(15);
 const value = ref(50);
 const data = ["one", "two", "three", "four", "five", "six"];
-
-function updateLocalValue(val: number | string) {
-  localValue.value = val;
-}
-
-function updateLocalValueTwo(val: number | string) {
-  localValueTwo.value = val;
-}
-
-function updateValue(val: number | string) {
-  console.log(val);
-}
 </script>
 
 <style lang="less">

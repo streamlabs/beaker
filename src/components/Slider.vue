@@ -14,7 +14,7 @@
     :min="min"
     :max="max"
     :interval="interval"
-    :value="displayValue"
+    :model-value="displayValue"
     :tooltip-formatter="prefix + '{value}' + suffix"
     :data="data"
     :disabled="disabled"
@@ -31,7 +31,7 @@ import "vue-slider-component/theme/default.css";
 const props = withDefaults(
   defineProps<{
     width?: number | string;
-    value?: number | string | Array<number> | Array<string>;
+    modelValue?: number | string | Array<number> | Array<string>;
     min?: number;
     max?: number;
     interval?: number;
@@ -43,7 +43,7 @@ const props = withDefaults(
     simpleTheme?: boolean;
   }>(),
   {
-    value: 1,
+    modelValue: 1,
     min: 0,
     max: 100,
     interval: 1,
@@ -56,14 +56,14 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  input: [val: number | string | Array<number> | Array<string>];
+  'update:modelValue': [val: number | string | Array<number> | Array<string>];
 }>();
 
 const slider = useTemplateRef<InstanceType<typeof VueSliderComponent>>("slider");
-const displayValue = ref<number | string | Array<number> | Array<string>>(1);
+const displayValue = ref<number | string | Array<number> | Array<string> | undefined>(1);
 
 watch(
-  () => props.value,
+  () => props.modelValue,
   (newVal) => {
     displayValue.value = newVal;
   }
@@ -71,11 +71,11 @@ watch(
 
 function emitInput(val: number | string | Array<number> | Array<string>) {
   displayValue.value = val;
-  emit("input", val);
+  emit("update:modelValue", val);
 }
 
 onMounted(() => {
-  displayValue.value = props.value;
+  displayValue.value = props.modelValue;
 });
 </script>
 

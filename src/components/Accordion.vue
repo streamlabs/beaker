@@ -279,7 +279,7 @@ onMounted(() => {
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
-.expand-enter,
+.expand-enter-from,
 .expand-leave-to {
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   height: 0;
@@ -292,7 +292,7 @@ onMounted(() => {
   transform: rotate(-90deg);
   opacity: 1;
 }
-.twist-h-enter,
+.twist-h-enter-from,
 .twist-h-leave-to {
   transition: all 0.25s ease-in-out;
   transform: rotate(-90deg);
@@ -305,7 +305,7 @@ onMounted(() => {
   transform: rotate(-180deg);
   opacity: 1;
 }
-.twist-v-enter,
+.twist-v-enter-from,
 .twist-v-leave-to {
   transition: all 0.25s ease-in-out;
   transform: rotate(-180deg);
