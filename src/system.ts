@@ -8,6 +8,13 @@
 // teleports overlay/content outside the component tree.
 import './styles/components/Modals.less';
 
+// vue-color ships its own CSS separately from its JS (gradient backgrounds, saturation/hue
+// slider handles, etc.) — ColorPicker.vue doesn't import it itself, and src/main.ts (the
+// local demo app) importing it only masked the gap here, since consumers of dist/beaker.es.js
+// never pull in anything main.ts imports. Without this, ColorPicker renders unstyled in any
+// consuming app.
+import 'vue-color/style.css';
+
 export { default as Accordion } from './components/Accordion.vue';
 export { default as Badge } from './components/Badge.vue';
 export { default as BannerDiscord } from './components/BannerDiscord.vue';
