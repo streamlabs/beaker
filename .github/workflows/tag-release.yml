@@ -6,6 +6,10 @@ name: Tag Release
 # push to master itself — so it isn't blocked by master's branch protection
 # (which only restricts refs/heads/master, not refs/tags/*). That tag push
 # triggers the existing publish.yml (npm).
+#
+# Uses RELEASE_TAG_PAT (not the default GITHUB_TOKEN) to push the tag:
+# GitHub doesn't let GITHUB_TOKEN-authored pushes trigger other workflow
+# runs, which would silently prevent publish.yml from ever firing.
 on:
   push:
     branches: [master]
@@ -22,6 +26,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 2
+          token: ${{ secrets.RELEASE_TAG_PAT }}
 
       - name: Check for a version change
         id: check
