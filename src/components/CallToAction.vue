@@ -59,6 +59,8 @@ import { computed } from 'vue';
 import { useMediaQuery } from '@vueuse/core';
 import Button from './../components/Button.vue';
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const props = withDefaults(
   defineProps<{
     bgColor?: string;

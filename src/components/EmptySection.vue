@@ -19,6 +19,8 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({ compatConfig: { MODE: 3 } });
+
 withDefaults(
   defineProps<{
     variation?: string;

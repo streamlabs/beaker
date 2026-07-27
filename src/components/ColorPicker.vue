@@ -69,7 +69,7 @@
 import { ref, computed, useTemplateRef } from "vue";
 import { ChromePicker, tinycolor } from "vue-color";
 
-defineOptions({ inheritAttrs: false });
+defineOptions({ compatConfig: { MODE: 3 }, inheritAttrs: false });
 
 // tinycolor2 (used internally by vue-color) ships no TypeScript types —
 // this captures only the members this component actually calls.

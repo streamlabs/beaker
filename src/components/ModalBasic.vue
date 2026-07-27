@@ -42,6 +42,8 @@
 import { VueFinalModal } from 'vue-final-modal';
 import Button from './../components/Button.vue';
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const show = defineModel<boolean>({ default: false });
 
 withDefaults(

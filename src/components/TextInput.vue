@@ -71,7 +71,7 @@
 import { computed, useAttrs, useTemplateRef } from 'vue';
 import { omit, isNil } from 'lodash-es';
 
-defineOptions({ inheritAttrs: false });
+defineOptions({ compatConfig: { MODE: 3 }, inheritAttrs: false });
 
 const model = defineModel<string | number>({ default: '' });
 

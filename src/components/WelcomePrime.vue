@@ -43,6 +43,8 @@
 import { ref, computed, onMounted, useSlots } from 'vue';
 import Button from './../components/Button.vue';
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 withDefaults(defineProps<{ primeButtonText?: string }>(), {
   primeButtonText: 'Continue',
 });

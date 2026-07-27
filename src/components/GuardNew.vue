@@ -25,6 +25,8 @@
 import { ref } from "vue";
 import TextInput from "./TextInput.vue";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 withDefaults(
   defineProps<{ value?: string; placeholder?: string }>(),
   { placeholder: "Click to show" }

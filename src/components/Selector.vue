@@ -16,6 +16,8 @@
 import { computed } from "vue";
 import Multiselect from "vue-multiselect";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const props = defineProps<{
   width?: string;
   multiple?: boolean;

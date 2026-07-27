@@ -87,6 +87,8 @@
 import { ref, computed, watch, onMounted, useTemplateRef } from "vue";
 import Fuse, { type FuseResult } from "fuse.js";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 interface SearchEntry {
   name: string;
   title: string;

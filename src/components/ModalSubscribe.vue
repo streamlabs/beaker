@@ -60,6 +60,8 @@ import { VueFinalModal } from "vue-final-modal";
 import Button from "./../components/Button.vue";
 import Badge from "./../components/Badge.vue";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const show = defineModel<boolean>({ default: false });
 
 withDefaults(

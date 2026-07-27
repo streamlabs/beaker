@@ -63,6 +63,8 @@
 import { ref, watch, nextTick, onMounted, useTemplateRef } from "vue";
 import whatInput from "what-input";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const props = withDefaults(
   defineProps<{
     bgImageNight?: string;

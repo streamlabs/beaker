@@ -93,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({ inheritAttrs: false });
+defineOptions({ compatConfig: { MODE: 3 }, inheritAttrs: false });
 
 import ModalBasic from './../components/ModalBasic.vue';
 import ModalSubscribe from './../components/ModalSubscribe.vue';

@@ -44,6 +44,8 @@ import Button from './Button.vue';
 import { validate } from 'vee-validate';
 import '../composables/useValidation';
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const props = withDefaults(
   defineProps<{
     name: string;

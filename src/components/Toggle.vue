@@ -18,6 +18,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const props = defineProps<{
   values: Record<string | number, string>;
   modelValue: string;
