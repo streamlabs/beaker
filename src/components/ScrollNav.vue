@@ -43,6 +43,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, useTemplateRef } from "vue";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 interface INavItem {
   name: string;
   value: string;

@@ -28,6 +28,8 @@ import { ref, watch, onMounted, useTemplateRef } from "vue";
 import VueSliderComponent from "vue-slider-component";
 import "vue-slider-component/theme/default.css";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const props = withDefaults(
   defineProps<{
     width?: number | string;

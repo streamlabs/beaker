@@ -14,6 +14,8 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({ compatConfig: { MODE: 3 } });
+
 defineProps<{
   label: string;
   id: string;

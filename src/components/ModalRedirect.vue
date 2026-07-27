@@ -21,6 +21,8 @@
 import { VueFinalModal } from "vue-final-modal";
 import Spinner from "./../components/Spinner.vue";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const show = defineModel<boolean>({ default: false });
 
 withDefaults(

@@ -72,6 +72,8 @@
 import { computed } from "vue";
 import Button from "./../components/Button.vue";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 interface IStep { name?: string; complete: boolean }
 
 const props = withDefaults(

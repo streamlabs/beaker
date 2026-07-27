@@ -23,6 +23,8 @@
 import { computed } from "vue";
 import Button from "./../components/Button.vue";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const props = withDefaults(
   defineProps<{
     bgColor?: string;

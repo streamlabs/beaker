@@ -5,6 +5,8 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({ compatConfig: { MODE: 3 } });
+
 defineProps<{ items?: object[] }>();
 </script>
 

@@ -32,6 +32,8 @@
 <script setup lang="ts">
 import { computed, useAttrs } from "vue";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const props = withDefaults(
   defineProps<{
     name?: string;

@@ -58,6 +58,8 @@ import { VueFinalModal } from "vue-final-modal";
 import { useMediaQuery } from "@vueuse/core";
 import Button from "./../components/Button.vue";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const show = defineModel<boolean>({ default: false });
 
 const props = withDefaults(

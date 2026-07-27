@@ -105,6 +105,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, useTemplateRef } from 'vue';
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 // vue-focus mixin removed — v-focus directive is registered globally in main.ts
 
 type MediaControlEmit = 'link-media' | 'preview-media' | 'remove-media' | 'select-media';

@@ -67,6 +67,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount, useTemplateRef } from "vue";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 interface ITab {
   name: string;
   value: string;

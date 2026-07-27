@@ -140,6 +140,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const props = withDefaults(
   defineProps<{ size?: string; swap?: boolean }>(),
   { size: "small", swap: false }

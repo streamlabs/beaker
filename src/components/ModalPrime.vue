@@ -18,6 +18,8 @@
 import { VueFinalModal } from "vue-final-modal";
 import WelcomePrime from "./../components/WelcomePrime.vue";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 const show = defineModel<boolean>({ default: false });
 
 withDefaults(

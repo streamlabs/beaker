@@ -19,6 +19,8 @@
 <script setup lang="ts">
 import Button from "./../components/Button.vue";
 
+defineOptions({ compatConfig: { MODE: 3 } });
+
 withDefaults(
   defineProps<{ title?: string }>(),
   { title: "Join the Streamlabs OBS Discussion on <span>Discord</span>" }
