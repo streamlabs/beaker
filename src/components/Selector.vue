@@ -4,6 +4,7 @@
       v-bind="$attrs"
       :options="options"
       :style="styleObject"
+      :multiple="multiple"
     >
       <template v-for="(_, name) in $slots" #[name]="slotProps">
         <slot :name="name" v-bind="slotProps ?? {}" />
