@@ -36,7 +36,7 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-vue": "10.10.0",
     "less": "4.8.0",
-    "moment": "^2.24.0",
+    "moment": "^2.31.0",
     "postcss": "^8.5.23",
     "prettier": "^3.9.6",
     "typescript": "^6.0.2",
@@ -48,7 +48,7 @@
   },
   "peerDependencies": {
     "fuse.js": "^7.3.0",
-    "moment": "^2.24.0",
+    "moment": "^2.31.0",
     "vue-final-modal": "^4.5.5",
     "vue-multiselect": "^3.5.0",
     "vue-router": "^5.0.4",
