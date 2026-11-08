@@ -1,8 +1,8 @@
 <template>
-  <div ref="paginationEl" class="pagination__container">
+  <div ref="paginationEl" class="pagination__container" v-bind="rootAttrs">
     <Paginate
       :class="{ 'pagination--bg': nightBg }"
-      v-bind="$attrs"
+      v-bind="paginateAttrs"
       :page-count="pageCount"
       :page-range="pageRange"
       :click-handler="selectPage"
@@ -24,8 +24,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, useTemplateRef } from "vue";
+import { ref, computed, onMounted, useAttrs, useTemplateRef } from "vue";
+import { omit } from "lodash-es";
 import Paginate from "vuejs-paginate-next";
+
+defineOptions({ inheritAttrs: false });
 
 const props = withDefaults(
   defineProps<{
@@ -41,6 +44,10 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{ "page-selected": [page: number] }>();
+
+const attrs = useAttrs();
+const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }));
+const paginateAttrs = computed(() => omit(attrs, ["class", "style"]));
 
 const paginationEl = useTemplateRef<HTMLDivElement>("paginationEl");
 const pageRange = ref(3);

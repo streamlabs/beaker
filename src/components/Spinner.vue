@@ -1,6 +1,6 @@
 <template>
   <div class="s-spinner">
-    <div class="s-bars" :size="size" :swap="swap">
+    <div class="s-bars" :size="size" :swap="swap || undefined">
       <svg
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"

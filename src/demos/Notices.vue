@@ -133,7 +133,7 @@ function closeTooltip() {
 </script>
 
 <style lang="less" scoped>
-::v-deep .s-demo-section__content {
+:deep(.s-demo-section__content) {
   height: 330px;
 
   .s-tooltip-notice {

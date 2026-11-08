@@ -8,7 +8,6 @@
         :placeholder="placeholder"
         type="text"
         :error="errorMessage"
-        @input="$emit('update:text', $event)"
         @keydown.enter.prevent="onAdd"
       />
       <Button
@@ -52,7 +51,6 @@ const props = withDefaults(
     buttonText?: string;
     buttonVariation?: string;
     modelValue?: string[];
-    text?: string;
     inputValidation?: string;
     prefix?: string;
     tagVariation?: string;
@@ -62,7 +60,6 @@ const props = withDefaults(
     buttonText: 'Add Tag',
     buttonVariation: 'default',
     modelValue: () => [],
-    text: '',
     tagVariation: 'default',
     maxItems: 25,
   },
@@ -72,28 +69,19 @@ const emit = defineEmits<{
   'update:modelValue': [tags: string[]];
   change: [tags: string[]];
   'update:value': [tags: string[]];
-  'update:text': [text: string];
   add: [tags: string[]];
   remove: [tags: string[]];
   error: [errors: string[], maxReached: boolean];
 }>();
 
 const tags = ref<string[]>([]);
-const textInput = ref('');
+const textInput = defineModel<string>('text', { default: '' });
 const errorMessage = ref<string | undefined>(undefined);
 
 watch(
   () => props.modelValue,
   (newValue) => {
-    tags.value = newValue ?? [];
-  },
-  { immediate: true },
-);
-
-watch(
-  () => props.text,
-  (newValue) => {
-    textInput.value = newValue ?? '';
+    tags.value = [...(newValue ?? [])];
   },
   { immediate: true },
 );

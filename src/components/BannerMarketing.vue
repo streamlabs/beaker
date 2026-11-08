@@ -17,7 +17,6 @@
     <div
       class="s-banner__body"
       :class="{ 's-banner__body--closed': closed }"
-      key="banner-open"
     >
       <div class="s-banner__wrapper">
         <div class="s-banner__label">{{ label }}</div>

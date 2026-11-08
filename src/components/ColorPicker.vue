@@ -6,6 +6,7 @@
       's-colorpicker-container__mini': isMini,
       's-colorpicker-container__mini-icon': isMini && icon
     }"
+    v-bind="rootAttrs"
   >
     <input
       v-if="!isMini"
@@ -56,7 +57,7 @@
           :value="modelValue"
           :placeholder="placeholder"
           @input="updateFromInput"
-          v-bind="$attrs"
+          v-bind="inputAttrs"
           class="s-colorpicker__input--mini"
           :class="{ 's-colorpicker__input--error': error }"
         />
@@ -66,7 +67,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, useTemplateRef } from "vue";
+import { ref, computed, useAttrs, useTemplateRef } from "vue";
+import { omit } from "lodash-es";
 import { ChromePicker, tinycolor } from "vue-color";
 
 defineOptions({ inheritAttrs: false });
@@ -92,6 +94,10 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{ 'update:modelValue': [val: string] }>();
+
+const attrs = useAttrs();
+const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }));
+const inputAttrs = computed(() => omit(attrs, ["class", "style"]));
 
 const colorpicker = useTemplateRef<HTMLElement>("colorpicker");
 const displayPicker = ref(false);

@@ -14,7 +14,7 @@
         :size="'fixed-width'"
         :variation="btnVariation"
         :title="btnTitle"
-        @click="'buttonClick'"
+        @click="emit('button-click')"
         :href="buttonHref"
         :to="buttonTo"
         :tag="buttonTag"
@@ -39,6 +39,8 @@ withDefaults(
   }>(),
   { btnVariation: 'default', btnTitle: 'Default', buttonTag: 'button' },
 );
+
+const emit = defineEmits<{ 'button-click': [] }>();
 
 const isMobile = useMediaQuery('(max-width: 899px)');
 

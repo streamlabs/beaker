@@ -199,13 +199,13 @@ watch(result, (val, oldVal) => {
 });
 
 function keyEvent(event: KeyboardEvent) {
-  if (event.keyCode === 38 && currentResult.value > 0) currentResult.value--;
+  if (event.key === "ArrowUp" && currentResult.value > 0) currentResult.value--;
   if (result.value.length === 0) {
-    if (event.keyCode === 40 && currentResult.value < 5) currentResult.value++;
+    if (event.key === "ArrowDown" && currentResult.value < 5) currentResult.value++;
   } else {
-    if (event.keyCode === 40 && currentResult.value < 6) currentResult.value++;
+    if (event.key === "ArrowDown" && currentResult.value < 6) currentResult.value++;
   }
-  if (event.keyCode === 13 && phaseOne.value) {
+  if (event.key === "Enter" && phaseOne.value) {
     if (result.value.length <= 0) {
       trackEvent(currentResult.value);
       window.location.href = props.jsonSearch[suggestedLinks.value[currentResult.value].jsonSearchIndex].route;
@@ -215,7 +215,7 @@ function keyEvent(event: KeyboardEvent) {
     }
     blurSearch();
   }
-  if (event.keyCode === 27 && phaseOne.value) blurSearch();
+  if (event.key === "Escape" && phaseOne.value) blurSearch();
 }
 
 function trackEvent(result: string | number) {
