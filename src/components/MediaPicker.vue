@@ -201,8 +201,8 @@ const valueIsVideo = computed(() => {
   return videoTypes.some((t) => currentValue.value!.split('?')[0].endsWith(t));
 });
 
-const mediaControls = computed<MediaControl[]>(() =>
-  [
+const mediaControls = computed<MediaControl[]>(() => {
+  const controls: MediaControl[] = [
     {
       key: 'media-link',
       available: !!props.mediaLink,
@@ -251,8 +251,12 @@ const mediaControls = computed<MediaControl[]>(() =>
       title: `Select ${variationTitle.value}`,
       icon: 'icon-upload-image',
     },
-  ].filter((c) => c.available && (props.canDelete || c.key !== 'media-remove')),
-);
+  ];
+
+  return controls.filter(
+    (c) => c.available && (props.canDelete || c.key !== 'media-remove'),
+  );
+});
 
 watch(currentValue, () => {
   mediaBroken.value = false;
