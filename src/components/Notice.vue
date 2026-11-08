@@ -21,8 +21,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const props = withDefaults(
   defineProps<{
     variation?: string;

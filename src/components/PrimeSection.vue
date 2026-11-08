@@ -27,8 +27,6 @@ import Badge from "./Badge.vue";
 import Button from "./Button.vue";
 import EmptySection from "./EmptySection.vue";
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 defineProps<{ subtitle?: string; href?: string }>();
 const emit = defineEmits<{ click: [] }>();
 </script>

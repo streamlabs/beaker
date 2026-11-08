@@ -25,8 +25,6 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted } from 'vue';
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 interface IOption {
   value: string;
   title: string;

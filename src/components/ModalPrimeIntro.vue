@@ -19,8 +19,6 @@
 import { VueFinalModal } from "vue-final-modal";
 import PrimeIntro from "./PrimeIntro.vue";
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const show = defineModel<boolean>({ default: false });
 
 withDefaults(

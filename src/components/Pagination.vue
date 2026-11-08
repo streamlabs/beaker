@@ -27,8 +27,6 @@
 import { ref, computed, onMounted, useTemplateRef } from "vue";
 import Paginate from "vuejs-paginate-next";
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const props = withDefaults(
   defineProps<{
     nightBg?: boolean;

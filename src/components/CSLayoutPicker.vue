@@ -21,8 +21,6 @@
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const addLayout = ref(true);
 const chooseLayout = ref(false);
 

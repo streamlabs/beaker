@@ -20,8 +20,6 @@
 import { ref, onMounted } from "vue";
 import Spinner from "./../components/Spinner.vue";
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const props = withDefaults(
   defineProps<{
     loadingStrs?: string[] | string;

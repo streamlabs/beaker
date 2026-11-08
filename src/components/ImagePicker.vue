@@ -43,8 +43,6 @@
 import { ref, useTemplateRef } from "vue";
 import Button from "./../components/Button.vue";
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const emit = defineEmits<{ upload: [data: File] }>();
 
 const fileInput = useTemplateRef<HTMLInputElement>("fileInput");

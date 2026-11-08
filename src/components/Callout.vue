@@ -26,8 +26,6 @@
 import { ref, computed } from "vue";
 import Badge from "./../components/Badge.vue";
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const props = withDefaults(
   defineProps<{
     variation?: string;

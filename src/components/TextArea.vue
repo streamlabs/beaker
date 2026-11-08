@@ -53,7 +53,7 @@
 import { computed, nextTick, onMounted, onUpdated, ref, useAttrs, useTemplateRef } from "vue";
 import { omit } from "lodash-es";
 
-defineOptions({ compatConfig: { MODE: 3 }, inheritAttrs: false });
+defineOptions({ inheritAttrs: false });
 
 const model = defineModel<string>({ default: "" });
 
