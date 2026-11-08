@@ -17,16 +17,29 @@
         @keydown.right.prevent="setTabOnKeyDown($event, tab.value)"
         @keydown.down.prevent="setTabOnKeyDown($event, tab.value)"
       >
-        <component
-          :is="tabLinkTag"
-          tag="button"
-          v-bind="tabLinkOptions(tab.value)"
+        <RouterLink
+          v-if="updateRoute"
+          :to="`#/${tab.value}`"
+          custom
+          v-slot="{ navigate }"
+        >
+          <button
+            class="s-tabs__link"
+            :tabindex="!tab.active ? '-1' : undefined"
+            @click="navigate"
+          >
+            <i v-if="tab.icon" :class="`icon-${tab.icon}`"></i>
+            <span class="s-tabs__title">{{ tab.name }}</span>
+          </button>
+        </RouterLink>
+        <button
+          v-else
           class="s-tabs__link"
           :tabindex="!tab.active ? '-1' : undefined"
         >
           <i v-if="tab.icon" :class="`icon-${tab.icon}`"></i>
           <span class="s-tabs__title">{{ tab.name }}</span>
-        </component>
+        </button>
       </div>
 
       <PaneDropdown
@@ -48,14 +61,27 @@
           @keydown.right.prevent="setTabOnKeyDown($event, tab.value)"
           @keydown.down.prevent="setTabOnKeyDown($event, tab.value)"
         >
-          <component
-            :is="tabLinkTag"
+          <RouterLink
+            v-if="updateRoute"
             :to="`#/${tab.value}`"
-            tag="button"
-            :tabindex="!tab.active ? '-1' : undefined"
-            class="s-tabs__link"
-            >{{ tab.name }}</component
+            custom
+            v-slot="{ navigate }"
           >
+            <button
+              class="s-tabs__link"
+              :tabindex="!tab.active ? '-1' : undefined"
+              @click="navigate"
+            >
+              {{ tab.name }}
+            </button>
+          </RouterLink>
+          <button
+            v-else
+            class="s-tabs__link"
+            :tabindex="!tab.active ? '-1' : undefined"
+          >
+            {{ tab.name }}
+          </button>
         </div>
       </PaneDropdown>
     </div>
@@ -124,10 +150,6 @@ const hiddenTabFocused = ref(false);
 const modifiedTabs = ref<IModifiedTab[]>([]);
 const dropdownIsActive = ref(false);
 const prevWidth = ref(0);
-
-const tabLinkTag = computed(() =>
-  props.updateRoute ? 'router-link' : 'button',
-);
 
 const tabSize = computed(() => (props.size === 'large' ? '16px' : '14px'));
 
@@ -272,11 +294,6 @@ function closePaneDropdown() {
   dropdownIsActive.value = false;
 }
 
-function tabLinkOptions(tabValue: string) {
-  return {
-    to: props.updateRoute ? `#/${tabValue}` : undefined,
-  };
-}
 
 function blurPaneDropDown() {
   nextTick(() => {
@@ -418,17 +435,17 @@ onBeforeUnmount(() => {
     cursor: pointer;
   }
 
-  ::v-deep .s-pane-dropdown {
+  :deep(.s-pane-dropdown__list > div) {
+    .margin-bottom();
+  }
+
+  :deep(.s-pane-dropdown__list > div:last-child) {
+    margin-bottom: 0;
+  }
+
+  :deep(.s-pane-dropdown) {
     padding-top: 4px;
     padding-bottom: 12px;
-
-    &__list > div {
-      .margin-bottom();
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
 
     .s-tabs__link {
       width: 100%;
@@ -481,7 +498,7 @@ onBeforeUnmount(() => {
       }
     }
 
-    ::v-deep .s-pane-dropdown {
+    .s-pane-dropdown {
       .s-tabs__link {
         &:hover {
           color: @white;

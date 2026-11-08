@@ -1,9 +1,7 @@
 <template>
   <div class="s-image-picker-input">
     <div
-      :value="option.value"
       :title="option.title"
-      :image="option.image"
       v-for="(option, index) in options"
       :key="option.value"
       class="s-image-picker-input__option"

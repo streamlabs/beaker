@@ -13,7 +13,6 @@
       @enter="(el) => open(el as HTMLElement)"
       @after-enter="(el) => afterOpen(el as HTMLElement)"
       @leave="(el) => close(el as HTMLElement)"
-      tag="div"
     >
       <div
         class="s-variablemenu-results__cont"

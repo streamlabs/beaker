@@ -65,9 +65,9 @@
               !mediaControlsVisible &&
               !controlsAlwaysVisible
             "
+            ref="addIcon"
             class="icon-add"
             :tabindex="mediaPickerSmall && !mediaControlsVisible ? 0 : -1"
-            v-focus="focused === -1"
             @focus="focused = -1"
             @keydown.space.prevent="showMediaControls"
             @keydown.enter.prevent="showMediaControls"
@@ -84,7 +84,7 @@
               :key="control.key"
               :class="control.class"
               :title="control.title"
-              v-focus="focused === index"
+              :ref="(el) => setControlEl(el, index)"
               :tabindex="focused === index ? 0 : -1"
               @focus="focused = index"
               @click.stop="$emit(control.emit)"
@@ -103,9 +103,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, useTemplateRef } from 'vue';
-
-// vue-focus mixin removed — v-focus directive is registered globally in main.ts
+import {
+  ref,
+  computed,
+  watch,
+  onMounted,
+  nextTick,
+  shallowReactive,
+  useTemplateRef,
+} from 'vue';
+import type { ComponentPublicInstance } from 'vue';
+import { useFocus } from '@vueuse/core';
 
 type MediaControlEmit = 'link-media' | 'preview-media' | 'remove-media' | 'select-media';
 
@@ -146,6 +154,28 @@ const mediaPickerSmall = ref(false);
 const mediaBroken = ref(false);
 const mediaControlsVisible = ref(false);
 const focused = ref(0);
+
+const addIcon = useTemplateRef<HTMLElement>('addIcon');
+const controlEls = shallowReactive<(HTMLElement | null)[]>([]);
+
+function setControlEl(
+  el: Element | ComponentPublicInstance | null,
+  index: number,
+) {
+  controlEls[index] = el as HTMLElement | null;
+}
+
+const focusTarget = computed(() =>
+  focused.value === -1 ? addIcon.value : (controlEls[focused.value] ?? null),
+);
+const { focused: targetFocused } = useFocus(focusTarget);
+
+async function focusIndex(index: number) {
+  targetFocused.value = false;
+  focused.value = index;
+  await nextTick();
+  targetFocused.value = true;
+}
 
 const variationTitle = computed(() =>
   props.variation === 'image' ? 'Image' : 'Audio',
@@ -243,16 +273,16 @@ function onTabOut() {
 }
 
 function moveRight() {
-  focused.value = Math.min(focused.value + 1, mediaControls.value.length - 1);
+  focusIndex(Math.min(focused.value + 1, mediaControls.value.length - 1));
 }
 
 function moveLeft() {
-  focused.value = Math.max(focused.value - 1, 0);
+  focusIndex(Math.max(focused.value - 1, 0));
 }
 
 function showMediaControls() {
   mediaControlsVisible.value = true;
-  focused.value = mediaControls.value.length - 1;
+  focusIndex(mediaControls.value.length - 1);
 }
 
 function handleControlVisibility(showControls: boolean) {

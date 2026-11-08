@@ -21,19 +21,6 @@ app.use(FloatingVue);
 app.use(vfm);
 app.use(VueAwesomePaginate);
 
-app.directive('focus', {
-  mounted(el, binding) {
-    if (binding.value) {
-      el.focus();
-    }
-  },
-  updated(el, binding) {
-    if (binding.value) {
-      el.focus();
-    }
-  },
-});
-
 router.beforeEach(() => {
   useVfm().closeAll();
 });

@@ -1,5 +1,5 @@
 <template>
-  <div class="s-loader" :swapMode="swapMode">
+  <div class="s-loader" :swapMode="swapMode || undefined">
     <div
       :class="{
         's-loader__bg--semi': semiOpaque,
