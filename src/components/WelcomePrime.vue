@@ -25,30 +25,29 @@
         </ul>
       </div>
       <div class="modal-prime__button">
-        <slot v-if="hasSlot"></slot>
-        <Button
-          v-else
-          size="large"
-          variation="prime"
-          icon="prime"
-          :title="primeButtonText"
-          @click="onPrimeButtonHandler"
-        ></Button>
+        <slot>
+          <Button
+            size="large"
+            variation="prime"
+            icon="prime"
+            :title="primeButtonText"
+            @click="onPrimeButtonHandler"
+          ></Button>
+        </slot>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, useSlots } from 'vue';
+import { ref, onMounted } from 'vue';
 import Button from './../components/Button.vue';
 
 withDefaults(defineProps<{ primeButtonText?: string }>(), {
   primeButtonText: 'Continue',
 });
 
-const emit = defineEmits<{ onClickPrime: [] }>();
-const slots = useSlots();
+const emit = defineEmits<{ 'click-prime': [] }>();
 
 const primeFeatureListDefault = [
   '100s of Stunning Themes',
@@ -59,10 +58,9 @@ const primeFeatureListDefault = [
 ];
 
 const isUserAgentEdge = ref(false);
-const hasSlot = computed(() => !!slots.default);
 
 function onPrimeButtonHandler() {
-  emit('onClickPrime');
+  emit('click-prime');
 }
 
 onMounted(() => {

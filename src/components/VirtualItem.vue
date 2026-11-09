@@ -3,9 +3,8 @@
     class="s-virtual-item"
     :class="[virtualItemClasses]"
     :rarity="rarity"
-    :selected="selected"
+    :selected="selected || undefined"
     :quantity="quantity"
-    :value="value"
   >
     <span v-if="selectionCount" class="s-virtual-item__selection-count">
       {{ selectionCount }}

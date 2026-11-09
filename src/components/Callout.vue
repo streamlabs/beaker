@@ -15,7 +15,7 @@
         class="icon-close s-callout__close-button"
         @click="closeCallout()"
       ></i>
-      <a v-if="isPrime" class="s-callout__more" @click="$emit('onClick')"
+      <a v-if="isPrime" class="s-callout__more" @click="$emit('learn-more')"
         >Learn more</a
       >
     </span>
@@ -37,7 +37,7 @@ const props = withDefaults(
   { variation: "success", icon: true, closeable: false }
 );
 
-defineEmits<{ onClick: [] }>();
+defineEmits<{ 'learn-more': [] }>();
 
 const closed = ref(false);
 const calloutClosedClass = ref("");

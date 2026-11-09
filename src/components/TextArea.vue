@@ -1,5 +1,9 @@
 <template>
-  <div class="s-form-area" :class="{ 's-form-area--with-label': label }">
+  <div
+    class="s-form-area"
+    :class="{ 's-form-area--with-label': label }"
+    v-bind="rootAttrs"
+  >
     <div class="s-form-area__container">
       <textarea
         :class="{
@@ -18,7 +22,7 @@
         @focus="onFocus"
         @click="onClick"
         @keyup="onKeyUp"
-        v-on="filteredListeners"
+        v-bind="textAreaAttrs"
       />
 
       <label
@@ -80,7 +84,8 @@ const attrs = useAttrs();
 const textAreaRef = useTemplateRef<HTMLTextAreaElement>("textArea");
 const hasScroll = ref(false);
 
-const filteredListeners = computed(() => omit(attrs, ["onInput"]));
+const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }));
+const textAreaAttrs = computed(() => omit(attrs, ["class", "style", "onInput"]));
 const currentLength = computed(() => model.value.length);
 
 onMounted(() => {

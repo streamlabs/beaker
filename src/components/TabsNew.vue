@@ -17,16 +17,29 @@
         @keydown.right.prevent="setTabOnKeyDown($event, tab.value)"
         @keydown.down.prevent="setTabOnKeyDown($event, tab.value)"
       >
-        <component
-          :is="tabLinkTag"
-          tag="button"
-          v-bind="tabLinkOptions(tab.value)"
+        <RouterLink
+          v-if="updateRoute"
+          :to="`#/${tab.value}`"
+          custom
+          v-slot="{ navigate }"
+        >
+          <button
+            class="s-tabs__link"
+            :tabindex="!tab.active ? '-1' : undefined"
+            @click="navigate"
+          >
+            <i v-if="tab.icon" :class="`icon-${tab.icon}`"></i>
+            <span class="s-tabs__title">{{ tab.name }}</span>
+          </button>
+        </RouterLink>
+        <button
+          v-else
           class="s-tabs__link"
           :tabindex="!tab.active ? '-1' : undefined"
         >
           <i v-if="tab.icon" :class="`icon-${tab.icon}`"></i>
           <span class="s-tabs__title">{{ tab.name }}</span>
-        </component>
+        </button>
       </div>
 
       <PaneDropdown
@@ -48,14 +61,27 @@
           @keydown.right.prevent="setTabOnKeyDown($event, tab.value)"
           @keydown.down.prevent="setTabOnKeyDown($event, tab.value)"
         >
-          <component
-            :is="tabLinkTag"
+          <RouterLink
+            v-if="updateRoute"
             :to="`#/${tab.value}`"
-            tag="button"
-            :tabindex="!tab.active ? '-1' : undefined"
-            class="s-tabs__link"
-            >{{ tab.name }}</component
+            custom
+            v-slot="{ navigate }"
           >
+            <button
+              class="s-tabs__link"
+              :tabindex="!tab.active ? '-1' : undefined"
+              @click="navigate"
+            >
+              {{ tab.name }}
+            </button>
+          </RouterLink>
+          <button
+            v-else
+            class="s-tabs__link"
+            :tabindex="!tab.active ? '-1' : undefined"
+          >
+            {{ tab.name }}
+          </button>
         </div>
       </PaneDropdown>
     </div>
@@ -124,10 +150,6 @@ const hiddenTabFocused = ref(false);
 const modifiedTabs = ref<IModifiedTab[]>([]);
 const dropdownIsActive = ref(false);
 const prevWidth = ref(0);
-
-const tabLinkTag = computed(() =>
-  props.updateRoute ? 'router-link' : 'button',
-);
 
 const tabSize = computed(() => (props.size === 'large' ? '16px' : '14px'));
 
@@ -226,7 +248,7 @@ function setTabOnKeyDown(
     modifiedTabs.value[newIndex].hidden,
   );
 
-  let newTab: HTMLSpanElement | HTMLAnchorElement | null = null;
+  let newTab: HTMLElement | null = null;
 
   if (modifiedTabs.value[newIndex].hidden) {
     const newHiddenIndex = hiddenTabs.value.findIndex(
@@ -234,17 +256,16 @@ function setTabOnKeyDown(
     );
 
     nextTick(() => {
-      const newHiddenList = hiddenTabsDropdown.value!.$el.querySelectorAll(
-        '.s-pane-dropdown__list .s-tabs__link',
-      );
+      const newHiddenList =
+        hiddenTabsDropdown.value!.el!.querySelectorAll<HTMLElement>(
+          '.s-pane-dropdown__list .s-tabs__link',
+        );
       newTab = newHiddenList[newHiddenIndex];
     });
   } else {
     const allTabElements =
       tabsNav.value!.querySelectorAll<HTMLDivElement>('.s-tabs__tab');
-    newTab = allTabElements[newIndex].querySelector('.s-tabs__link') as
-      | HTMLSpanElement
-      | HTMLAnchorElement;
+    newTab = allTabElements[newIndex].querySelector<HTMLElement>('.s-tabs__link');
   }
 
   nextTick(() => {
@@ -272,15 +293,10 @@ function closePaneDropdown() {
   dropdownIsActive.value = false;
 }
 
-function tabLinkOptions(tabValue: string) {
-  return {
-    to: props.updateRoute ? `#/${tabValue}` : undefined,
-  };
-}
 
 function blurPaneDropDown() {
   nextTick(() => {
-    const currentHiddenList = hiddenTabsDropdown.value!.$el.querySelectorAll(
+    const currentHiddenList = hiddenTabsDropdown.value!.el!.querySelectorAll(
       '.s-pane-dropdown__list .s-tabs__link',
     );
     if (
@@ -299,9 +315,10 @@ function focusActiveTab() {
     const activeTabIndex = hiddenTabs.value.findIndex((tab) => tab.active);
 
     nextTick(() => {
-      const currentHiddenList = hiddenTabsDropdown.value!.$el.querySelectorAll(
-        '.s-pane-dropdown__list .s-tabs__link',
-      );
+      const currentHiddenList =
+        hiddenTabsDropdown.value!.el!.querySelectorAll<HTMLElement>(
+          '.s-pane-dropdown__list .s-tabs__link',
+        );
       currentHiddenList[activeTabIndex]?.focus();
     });
   }
@@ -314,7 +331,7 @@ function showTab(tab: IModifiedTab) {
 }
 
 onMounted(() => {
-  hiddenTabsDropdown.value!.$el.addEventListener('focus', focusActiveTab);
+  hiddenTabsDropdown.value!.el!.addEventListener('focus', focusActiveTab);
   loadTabProperties();
   isMounted.value = true;
 
@@ -335,7 +352,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  hiddenTabsDropdown.value!.$el.removeEventListener('focus', focusActiveTab);
+  hiddenTabsDropdown.value!.el!.removeEventListener('focus', focusActiveTab);
 });
 </script>
 
@@ -418,17 +435,17 @@ onBeforeUnmount(() => {
     cursor: pointer;
   }
 
-  ::v-deep .s-pane-dropdown {
+  :deep(.s-pane-dropdown__list > div) {
+    .margin-bottom();
+  }
+
+  :deep(.s-pane-dropdown__list > div:last-child) {
+    margin-bottom: 0;
+  }
+
+  :deep(.s-pane-dropdown) {
     padding-top: 4px;
     padding-bottom: 12px;
-
-    &__list > div {
-      .margin-bottom();
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
 
     .s-tabs__link {
       width: 100%;
@@ -481,7 +498,7 @@ onBeforeUnmount(() => {
       }
     }
 
-    ::v-deep .s-pane-dropdown {
+    .s-pane-dropdown {
       .s-tabs__link {
         &:hover {
           color: @white;

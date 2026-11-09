@@ -1,5 +1,5 @@
 <template>
-  <div class="s-banner-discord">
+  <div class="s-banner-discord" v-bind="rootAttrs">
     <h2 class="s-banner-discord__title" v-html="title"></h2>
     <Button
       title="Open Discord"
@@ -8,7 +8,7 @@
       :variation="'custom'"
       :bgColor="'#FFFFFF'"
       :textColor="'#7289DA'"
-      v-bind="$attrs"
+      v-bind="buttonAttrs"
       :tag="'a'"
       :href="'https://discord.gg/stream'"
       :target="'_blank'"
@@ -17,12 +17,20 @@
 </template>
 
 <script setup lang="ts">
+import { computed, useAttrs } from "vue";
+import { omit } from "lodash-es";
 import Button from "./../components/Button.vue";
+
+defineOptions({ inheritAttrs: false });
 
 withDefaults(
   defineProps<{ title?: string }>(),
   { title: "Join the Streamlabs OBS Discussion on <span>Discord</span>" }
 );
+
+const attrs = useAttrs();
+const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }));
+const buttonAttrs = computed(() => omit(attrs, ["class", "style"]));
 </script>
 
 <style lang="less">

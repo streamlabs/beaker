@@ -4,7 +4,6 @@
     content-class="s-modal-wrapper"
     :content-style="{ maxWidth: width + 'px', minWidth: minWidth + 'px' }"
     :click-to-close="clickToClose"
-    v-bind="$attrs"
   >
     <div class="s-modal-container">
       <div class="s-modal-body">
@@ -17,7 +16,7 @@
       </div>
       <div
         class="s-modal-footer"
-        v-if="!hideActionButtons && hideActionButtons !== ''"
+        v-if="!hideActionButtons"
       >
         <div class="s-modal-footer-inner s-button-container">
           <Button
@@ -51,7 +50,7 @@ withDefaults(
     title?: string;
     subTitle?: string;
     text?: string;
-    hideActionButtons?: string;
+    hideActionButtons?: boolean;
     confirmButtonText?: string;
     clickToClose?: boolean;
   }>(),

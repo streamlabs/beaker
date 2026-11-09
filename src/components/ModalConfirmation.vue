@@ -3,7 +3,6 @@
     v-model="show"
     content-class="s-modal-wrapper"
     :content-style="{ maxWidth: width + 'px', minWidth: minWidth + 'px' }"
-    v-bind="$attrs"
   >
     <div class="s-modal-container">
       <div class="s-confirmation">
