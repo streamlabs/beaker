@@ -34,6 +34,7 @@
       :buttonPrice="buttonPrice"
       :buttonVariation="buttonVariation"
       :cancelTitle="cancelTitle"
+      :modal-id="resolvedModalId"
       v-bind="$attrs"
     >
       <template #preview>
@@ -49,6 +50,7 @@
       :text="text"
       :width="width"
       :minWidth="minWidth"
+      :modal-id="resolvedModalId"
       v-bind="$attrs"
     ></ModalRedirect>
 
@@ -61,6 +63,7 @@
       :minWidth="minWidth"
       :confirmButtonText="confirmButtonText"
       :buttonVariation="buttonVariation"
+      :modal-id="resolvedModalId"
       v-bind="$attrs"
     ></ModalConfirmation>
 
@@ -71,6 +74,7 @@
       :minWidth="minWidth"
       :primeButtonText="primeButtonText"
       :hasPrimeCloseButton="hasPrimeCloseButton"
+      :modal-id="resolvedModalId"
       v-bind="$attrs"
     >
       <slot></slot>
@@ -83,6 +87,7 @@
       :minWidth="minWidth"
       :primeButtonText="primeButtonText"
       :hasPrimeCloseButton="hasPrimeCloseButton"
+      :modal-id="resolvedModalId"
       v-bind="$attrs"
     >
       <template v-if="hasDefaultSlot">
@@ -101,10 +106,12 @@ import ModalRedirect from './../components/ModalRedirect.vue';
 import ModalConfirmation from './../components/ModalConfirmation.vue';
 import ModalPrime from './../components/ModalPrime.vue';
 import ModalPrimeIntro from './../components/ModalPrimeIntro.vue';
-import { Comment, computed, useSlots } from 'vue';
+import { Comment, computed, onMounted, useAttrs, useSlots, useId } from 'vue';
+import { useVfm } from 'vue-final-modal';
+
 const show = defineModel<boolean>({ default: false });
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     width?: number;
     minWidth?: number;
@@ -133,6 +140,28 @@ withDefaults(
     minWidth: 600,
   },
 );
+
+const attrs = useAttrs();
+const generatedId = useId();
+const resolvedModalId = computed(
+  () => attrs.modalId ?? attrs['modal-id'] ?? `${props.type}-${generatedId}`,
+);
+
+const vfm = useVfm();
+
+// Each instance in vfm.modals exposes its props through `modalExposed`, an
+// undocumented ref, so the id is at exposed.modalExposed.value.modalId.value.
+onMounted(() => {
+  const id = resolvedModalId.value;
+  const matches = vfm.modals.filter(
+    (instance) => instance.exposed?.modalExposed?.value?.modalId?.value === id,
+  );
+  if (matches.length > 1) {
+    console.warn(
+      `[ModalComp] Duplicate modal-id "${id}" -- ${matches.length} modals are currently mounted with this same id. useVfm().open()/close() can only reliably address one of them. Give each modal a unique modal-id.`,
+    );
+  }
+});
 
 const slots = useSlots();
 const hasDefaultSlot = computed(() =>
