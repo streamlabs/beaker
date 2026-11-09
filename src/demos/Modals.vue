@@ -12,7 +12,7 @@ import { ModalComp } from 'streamlabs-beaker';
       <DemoSection title="Modal Basic" :code="demoCode">
         <template #components>
           <ModalComp
-            modalId="modal-basic"
+            v-model="basicOpen"
             type="basic"
             title="UI Modal"
             subTitle="Subtitle"
@@ -28,11 +28,7 @@ import { ModalComp } from 'streamlabs-beaker';
       </DemoSection>
 
       <div class="s-button-container--left">
-        <Button
-          variation="default"
-          title="modal basic"
-          @click="open('modal-basic')"
-        />
+        <Button variation="default" title="modal basic" @click="openBasic" />
       </div>
     </div>
 
@@ -358,6 +354,7 @@ import { ModalComp } from 'streamlabs-beaker';
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { useVfm } from "vue-final-modal";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
@@ -370,4 +367,10 @@ const { open, close } = useVfm();
 function test() {
   console.log("test");
 }
+
+const basicOpen = ref(false);
+
+const openBasic = () => {
+  basicOpen.value = true;
+};
 </script>
