@@ -7,11 +7,9 @@
         message.
       </p>
 
-      <pre><code>import { CallToAction } from 'streamlabs-beaker';
-
-components: {
-  CallToAction
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { CallToAction } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
     <div class="section">
       <h2>Default Call to Action</h2>

@@ -4,14 +4,9 @@
       <h1>Onboarding</h1>
       <p>Onboarding component - now with all logic outside of component!</p>
 
-      <pre><code>import { Onboarding, OnboardingStep } from "streamlabs-beaker"
-
-@Component({
-  components: {
-    Onboarding,
-    OnboardingStep,
-  }
-})</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Onboarding, OnboardingStep } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">
@@ -160,7 +155,7 @@
           <td>Function to perform when <code>skip</code> is clicked</td>
         </tr>
         <tr>
-          <td>previousHandler</td>
+          <td>prevHandler</td>
           <td>Function</td>
           <td>null</td>
           <td>

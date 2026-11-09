@@ -3,11 +3,9 @@
     <div class="section">
       <h1>Accordions</h1>
 
-      <pre><code>Import { Accordion } from 'streamlabs-beaker';
-
-components: {
-  Accordion
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Accordion } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <!-- Default Settings -->

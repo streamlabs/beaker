@@ -9,11 +9,9 @@
         to avoid issues.
       </p>
 
-      <pre><code>import { Button } from 'streamlabs-beaker';
-
-components: {
-  Button
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Button } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">

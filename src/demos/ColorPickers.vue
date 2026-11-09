@@ -4,11 +4,9 @@
       <h1>Color Picker</h1>
       <p>This color picker uses a chrome style picker</p>
 
-      <pre><code>import { ColorPicker } from "streamlabs-beaker"
-
-components: {
-  ColorPicker
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { ColorPicker } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">
@@ -64,7 +62,7 @@ components: {
         </thead>
         <tbody>
           <tr>
-            <td>value</td>
+            <td>modelValue | v-model</td>
             <td>String</td>
             <td>#31c3a2</td>
             <td>Color to show up on a fresh color picker</td>

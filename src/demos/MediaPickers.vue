@@ -3,11 +3,9 @@
     <div class="section">
       <h1>Media Pickers</h1>
 
-      <pre><code>import { MediaPicker } from 'streamlabs-beaker';
-
-components: {
-  MediaPicker
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { MediaPicker } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">
@@ -96,10 +94,14 @@ components: {
             </td>
           </tr>
           <tr>
-            <td>value</td>
+            <td>modelValue | v-model</td>
             <td>string</td>
             <td>null</td>
-            <td>A URL string to the selected media.</td>
+            <td>
+              A URL string to the selected media. MediaPicker doesn't emit
+              <code>update:modelValue</code>, so update this value in your own
+              event handlers.
+            </td>
           </tr>
           <tr>
             <td>controlsAlwaysVisible</td>

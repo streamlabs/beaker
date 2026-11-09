@@ -10,13 +10,9 @@
         form fields and 24px margin between form groups.
       </p>
 
-      <pre><code>import { TextInput, TextArea, VariableMenu } from 'streamlabs-beaker';
-
-components: {
-  TextInput,
-  TextArea,
-  VariableMenu
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { TextInput, TextArea, VariableMenu } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <DemoSection title="Text Inputs" :code="demoCode">
         <template #components>
@@ -173,7 +169,7 @@ components: {
             </td>
           </tr>
           <tr>
-            <td>value</td>
+            <td>modelValue | v-model</td>
             <td>string</td>
             <td>null</td>
             <td>Input value using v-model.</td>
@@ -190,11 +186,9 @@ components: {
 
     <div class="section">
       <h2>Tagging Input</h2>
-      <pre><code>import { TaggingInput } from 'streamlabs-beaker';
-
-components: {
-  TaggingInput
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { TaggingInput } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <DemoSection title="Tagging Input" :code="demoCode">
         <template #components>
@@ -212,11 +206,9 @@ components: {
     <div class="section">
       <h2>Selector</h2>
 
-      <pre><code>import { Selector } from 'streamlabs-beaker';
-
-components: {
-  Selector
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Selector } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <DemoSection title="Selector" :code="demoCode">
         <template #components>
@@ -270,7 +262,7 @@ components: {
         </thead>
         <tbody>
           <tr>
-            <td>value</td>
+            <td>modelValue | v-model</td>
             <td>string</td>
             <td>null</td>
             <td>Current selected value.</td>
@@ -313,12 +305,9 @@ components: {
 
     <div class="section">
       <h2>Checkboxes and Radios</h2>
-      <pre><code>import { Checkbox, Radio } from 'streamlabs-beaker';
-
-components: {
-  Checkbox,
-  Radio
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Checkbox, Radio } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <div class="section">
         <h2>Single Checkbox</h2>
@@ -429,11 +418,9 @@ components: {
 
     <div class="section">
       <h2>Status Switch</h2>
-      <pre><code>import { StatusSwitch } from 'streamlabs-beaker';
-
-components: {
-  StatusSwitch
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { StatusSwitch } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <div class="section">
         <DemoSection title="Status Switch" :code="demoCode">
@@ -464,7 +451,7 @@ components: {
         </thead>
         <tbody>
           <tr>
-            <td>value</td>
+            <td>modelValue | v-model</td>
             <td>boolean</td>
             <td>false</td>
             <td>Available for v-model 2-way data binding.</td>
@@ -490,11 +477,9 @@ components: {
 
     <div class="section">
       <h2>Image Input Picker</h2>
-      <pre><code>import { ImagePickerInput } from 'streamlabs-beaker';
-
-components: {
-  ImagePickerInput
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { ImagePickerInput } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <div class="section">
         <h3>Default</h3>
