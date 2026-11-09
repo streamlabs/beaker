@@ -4,7 +4,6 @@
     content-class="s-modal-wrapper"
     :content-style="{ maxWidth: width + 'px', minWidth: minWidth + 'px' }"
     :click-to-close="clickToClose"
-    v-bind="$attrs"
   >
     <div class="s-modal-container">
       <div class="s-modal-body">

@@ -3,7 +3,6 @@
     v-model="show"
     overlay-class="s-overlay__vfm-overlay"
     content-class="s-overlay__wrapper"
-    v-bind="$attrs"
   >
     <div class="s-overlay__icon" @click="onDismiss">
       <span class="s-icon icon-close"></span>
