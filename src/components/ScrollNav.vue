@@ -23,7 +23,7 @@
           :key="item.value"
           @click="navigateItem(item.value)"
           class="s-app-tab"
-          :class="{ 's-is-active': item.value === modelValue }"
+          :class="{ 's-is-active': item.value === model }"
         >
           <span>{{ item.name }}</span>
         </span>
@@ -48,12 +48,9 @@ interface INavItem {
   value: string;
 }
 
-defineProps<{
-  items: INavItem[];
-  modelValue?: string;
-}>();
+defineProps<{ items: INavItem[] }>();
 
-const emit = defineEmits<{ 'update:modelValue': [item: string] }>();
+const model = defineModel<string>();
 
 const scrollableNav = useTemplateRef<HTMLDivElement>("scrollable_nav");
 
@@ -79,7 +76,7 @@ function calculateScrolls() {
 }
 
 function navigateItem(item: string) {
-  emit("update:modelValue", item);
+  model.value = item;
 }
 
 onMounted(() => {

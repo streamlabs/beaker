@@ -14,24 +14,22 @@
     :min="min"
     :max="max"
     :interval="interval"
-    :model-value="displayValue"
+    :model-value="model"
     :tooltip-formatter="prefix + '{value}' + suffix"
     :data="data"
     :disabled="disabled"
-    v-bind="$attrs"
     @change="(value) => emitInput(value)"
   />
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, useTemplateRef } from "vue";
+import { useTemplateRef } from "vue";
 import VueSliderComponent from "vue-slider-component";
 import "vue-slider-component/theme/default.css";
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     width?: number | string;
-    modelValue?: number | string | Array<number> | Array<string>;
     min?: number;
     max?: number;
     interval?: number;
@@ -43,7 +41,6 @@ const props = withDefaults(
     simpleTheme?: boolean;
   }>(),
   {
-    modelValue: 1,
     min: 0,
     max: 100,
     interval: 1,
@@ -55,28 +52,15 @@ const props = withDefaults(
   }
 );
 
-const emit = defineEmits<{
-  'update:modelValue': [val: number | string | Array<number> | Array<string>];
-}>();
+const model = defineModel<number | string | Array<number> | Array<string>>({
+  default: 1,
+});
 
 const slider = useTemplateRef<InstanceType<typeof VueSliderComponent>>("slider");
-const displayValue = ref<number | string | Array<number> | Array<string> | undefined>(1);
-
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    displayValue.value = newVal;
-  }
-);
 
 function emitInput(val: number | string | Array<number> | Array<string>) {
-  displayValue.value = val;
-  emit("update:modelValue", val);
+  model.value = val;
 }
-
-onMounted(() => {
-  displayValue.value = props.modelValue;
-});
 </script>
 
 <style lang="less">
