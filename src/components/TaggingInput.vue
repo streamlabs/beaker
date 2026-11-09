@@ -14,7 +14,7 @@
         :title="buttonText"
         type="button"
         :variation="buttonVariation"
-        :disabled="modelValue.length >= maxItems"
+        :disabled="model.length >= maxItems"
         @click="onAdd"
       />
     </div>
@@ -50,7 +50,6 @@ const props = withDefaults(
     placeholder?: string;
     buttonText?: string;
     buttonVariation?: string;
-    modelValue?: string[];
     inputValidation?: string;
     prefix?: string;
     tagVariation?: string;
@@ -59,14 +58,14 @@ const props = withDefaults(
   {
     buttonText: 'Add Tag',
     buttonVariation: 'default',
-    modelValue: () => [],
     tagVariation: 'default',
     maxItems: 25,
   },
 );
 
+const model = defineModel<string[]>({ default: () => [] });
+
 const emit = defineEmits<{
-  'update:modelValue': [tags: string[]];
   change: [tags: string[]];
   'update:value': [tags: string[]];
   add: [tags: string[]];
@@ -79,7 +78,7 @@ const textInput = defineModel<string>('text', { default: '' });
 const errorMessage = ref<string | undefined>(undefined);
 
 watch(
-  () => props.modelValue,
+  model,
   (newValue) => {
     tags.value = [...(newValue ?? [])];
   },
@@ -128,10 +127,12 @@ function onRemove(index: number) {
   emitTagEvents('remove');
 }
 
-function emitTagEvents(...events: string[]) {
-  ['update:modelValue', 'change', 'update:value', ...events].forEach((event) =>
-    emit(event as keyof typeof emit, tags.value),
-  );
+function emitTagEvents(event: 'add' | 'remove') {
+  model.value = [...tags.value];
+  emit('change', tags.value);
+  emit('update:value', tags.value);
+  if (event === 'add') emit('add', tags.value);
+  else emit('remove', tags.value);
 }
 </script>
 

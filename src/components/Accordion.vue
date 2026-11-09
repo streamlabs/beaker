@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, useSlots } from 'vue';
+import { computed, useSlots } from 'vue';
 
 const props = defineProps<{
   openedTitle?: string;
@@ -72,26 +72,14 @@ const props = defineProps<{
   isOpened?: boolean;
   noBorder?: boolean;
   leftNav?: boolean;
-  modelValue?: boolean | null;
 }>();
 
 const emit = defineEmits<{
-  'update:modelValue': [val: boolean];
   'content-opened': [payload: { isOpen: boolean; event: Event }];
 }>();
 
 const slots = useSlots();
-const isOpen = ref(false);
-
-watch(
-  () => props.modelValue,
-  (val) => {
-    isOpen.value = !!val;
-  },
-);
-watch(isOpen, (val) => {
-  emit('update:modelValue', val);
-});
+const isOpen = defineModel<boolean | null>({ default: false });
 
 const accordionTitle = computed(() => {
   if (props.title !== undefined) return props.title;
@@ -117,8 +105,9 @@ function openContent(event: Event) {
     )
   )
     return;
-  isOpen.value = !isOpen.value;
-  emit('content-opened', { isOpen: isOpen.value, event });
+  const nextOpen = !isOpen.value;
+  isOpen.value = nextOpen;
+  emit('content-opened', { isOpen: nextOpen, event });
 }
 
 function afterOpen(element: HTMLElement) {
@@ -150,10 +139,6 @@ function close(element: HTMLElement) {
     element.style.height = '0';
   });
 }
-
-onMounted(() => {
-  if (props.modelValue) isOpen.value = props.modelValue;
-});
 </script>
 
 <style lang="less">
