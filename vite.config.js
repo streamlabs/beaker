@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
-  base: '/beaker/',
+  base: process.env.BASE_PATH || '/beaker/',
   plugins: [vue()],
   css: {
     postcss: {
