@@ -51,8 +51,6 @@ import {
   useTemplateRef,
 } from 'vue';
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 type SliderValue = number | string;
 
 const props = withDefaults(

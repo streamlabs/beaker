@@ -21,8 +21,6 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({ compatConfig: { MODE: 3 } });
-
 defineProps<{ helpText?: string; tooltip?: string; title?: string }>();
 </script>
 

@@ -31,8 +31,6 @@
 import { computed } from "vue";
 import Button from "./Button.vue";
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const props = withDefaults(
   defineProps<{
     title: string;

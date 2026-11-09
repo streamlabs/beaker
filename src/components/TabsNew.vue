@@ -85,8 +85,6 @@ import { cloneDeep } from 'lodash-es';
 import whatInput from 'what-input';
 import PaneDropdown from './PaneDropdown.vue';
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 interface ITab {
   name: string;
   value: string;

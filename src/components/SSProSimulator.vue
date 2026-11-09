@@ -35,8 +35,6 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import UrlBar from "./../components/UrlBar.vue";
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 withDefaults(
   defineProps<{ username?: string; icon?: string; domain?: string }>(),
   {

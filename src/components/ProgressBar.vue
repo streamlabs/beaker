@@ -7,8 +7,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const props = defineProps<{ progressComplete?: number }>();
 const getProgress = computed(() => `width:${props.progressComplete}%`);
 </script>

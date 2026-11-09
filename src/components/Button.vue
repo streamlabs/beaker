@@ -74,8 +74,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const props = withDefaults(
   defineProps<{
     bgColor?: string;

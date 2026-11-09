@@ -13,8 +13,6 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({ compatConfig: { MODE: 3 } });
-
 defineProps<{ title?: string; desc?: string }>();
 </script>
 
