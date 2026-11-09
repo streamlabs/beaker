@@ -92,7 +92,7 @@ import { ModalComp } from 'streamlabs-beaker';
             modal-id="modal-welcome-prime"
             type="welcome-prime"
             :width="600"
-            @on-click-prime="testWelcomePrime"
+            @click-prime="testWelcomePrime"
             :has-prime-close-button="true"
           />
 
@@ -115,7 +115,7 @@ import { WelcomePrime } from 'streamlabs-beaker';
 
       <DemoSection title="Welcome Prime" :code="demoCode">
         <template #components>
-          <WelcomePrime class="welcome-prime" @on-click-prime="testClick" />
+          <WelcomePrime class="welcome-prime" @click-prime="testClick" />
         </template>
       </DemoSection>
     </div>
@@ -132,7 +132,7 @@ import { ModalComp } from 'streamlabs-beaker';
             modalId="modal-prime-intro"
             type="prime-intro"
             :width="680"
-            @onClickPrime="testPrimeIntro"
+            @click-prime="testPrimeIntro"
             :hasPrimeCloseButton="true"
           />
 

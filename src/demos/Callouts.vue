@@ -99,7 +99,7 @@ import { Callout } from 'streamlabs-beaker';
           <Callout
             variation="prime"
             :closeable="true"
-            @onClick="cookieCalloutClosed"
+            @learn-more="cookieCalloutClosed"
             :onClose="cookieCalloutClosed"
           >
             Themes, apps, website, merch and more. All included with Prime.

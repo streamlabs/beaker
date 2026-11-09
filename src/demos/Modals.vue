@@ -137,7 +137,7 @@ import { ModalComp } from 'streamlabs-beaker';
             type="welcome-prime"
             :width="600"
             :hasPrimeCloseButton="true"
-            @onClickPrime="test"
+            @click-prime="test"
           />
         </template>
       </DemoSection>
@@ -335,7 +335,7 @@ import { ModalComp } from 'streamlabs-beaker';
           <td>Set the close button right top (only in Modal Welcom Prime).</td>
         </tr>
         <tr>
-          <td>@onClickPrime</td>
+          <td>@click-prime</td>
           <td>Function</td>
           <td>null</td>
           <td>

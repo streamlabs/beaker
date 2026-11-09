@@ -3,12 +3,14 @@
     v-model="show"
     content-class="s-modal-wrapper"
     :content-style="{ maxWidth: width + 'px', minWidth: minWidth + 'px' }"
-    v-bind="$attrs"
   >
     <div class="modal-prime__close" v-if="hasPrimeCloseButton">
       <i class="icon-close" @click="show = false"></i>
     </div>
-    <welcome-prime :primeButtonText="primeButtonText" v-bind="$attrs">
+    <welcome-prime
+      :primeButtonText="primeButtonText"
+      @click-prime="emit('click-prime')"
+    >
       <slot></slot>
     </welcome-prime>
   </VueFinalModal>
@@ -19,6 +21,7 @@ import { VueFinalModal } from "vue-final-modal";
 import WelcomePrime from "./../components/WelcomePrime.vue";
 
 const show = defineModel<boolean>({ default: false });
+const emit = defineEmits<{ 'click-prime': [] }>();
 
 withDefaults(
   defineProps<{
