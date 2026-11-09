@@ -57,7 +57,7 @@ import { Callout } from 'streamlabs-beaker';
             Success callout. <a href="#0">Link</a>
           </Callout>
 
-          <Callout variation="warning strong" icon="warning">
+          <Callout variation="warning strong">
             Warning callout. <a href="#0">Link</a>
           </Callout>
 
@@ -78,7 +78,6 @@ import { Callout } from 'streamlabs-beaker';
         <template #components>
           <Callout
             variation="cookies"
-            icon="info"
             :closeable="true"
             :onClose="cookieCalloutClosed"
           >
@@ -130,24 +129,28 @@ import { Callout } from 'streamlabs-beaker';
       <div class="section">
         <h3>With Icon</h3>
         <p>
-          You can use the
-          <code>icon</code> prop to set it to 'success', 'warning', or 'info'
-          for most common cases. If you need a different icon you can simply use
-          it inline.
+          A callout shows an icon that matches its variation. Set
+          <code>:icon="false"</code> to hide it, or use the
+          <code>customIcon</code> prop to pass a different icon class. You can
+          also put an icon inline.
         </p>
 
         <DemoSection title="Icon Callouts" :code="demoCode">
           <template #components>
-            <Callout icon="success" variation="success" :closeable="true">
+            <Callout variation="success" :closeable="true">
               Success callout. <a href="#0">Link</a>
             </Callout>
 
-            <Callout icon="warning" variation="warning" :closeable="true">
+            <Callout variation="warning" :closeable="true">
               Warning callout. <a href="#0">Link</a>
             </Callout>
 
-            <Callout icon="info" variation="info" :closeable="true">
+            <Callout variation="info" :closeable="true">
               Info callout. <a href="#0">Link</a>
+            </Callout>
+
+            <Callout variation="info" :icon="false">
+              Info callout without an icon.
             </Callout>
 
             <Callout variation="info" :closeable="true">

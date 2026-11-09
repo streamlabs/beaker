@@ -92,7 +92,6 @@ import FormsCode from "./Forms.vue?raw";
 import FormGroup from "./../components/FormGroup.vue";
 import FormGroupH from "./../components/FormGroupH.vue";
 import FormGroupV from "./../components/FormGroupV.vue";
-import PaymentForm from "./../components/PaymentForm.vue";
 import TextInput from "./../components/TextInput.vue";
 
 const demoCode = FormsCode;

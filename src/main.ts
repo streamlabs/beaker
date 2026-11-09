@@ -9,9 +9,6 @@ import 'vue-color/style.css';
 import { createVfm, useVfm } from 'vue-final-modal';
 import 'vue-final-modal/style.css';
 
-import VueAwesomePaginate from 'vue-awesome-paginate';
-import 'vue-awesome-paginate/dist/style.css';
-
 const app = createApp(App);
 
 const vfm = createVfm();
@@ -19,7 +16,6 @@ const vfm = createVfm();
 app.use(router);
 app.use(FloatingVue);
 app.use(vfm);
-app.use(VueAwesomePaginate);
 
 router.beforeEach(() => {
   useVfm().closeAll();

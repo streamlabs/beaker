@@ -25,7 +25,7 @@
       </accordion>
 
       <div class="row">
-        <scroll-nav></scroll-nav>
+        <scroll-nav :items="navItems" v-model="selectedNav"></scroll-nav>
       </div>
 
       <table class="docs-table">
@@ -84,6 +84,15 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import Accordion from "./../components/Accordion.vue";
 import ScrollNav from "./../components/ScrollNav.vue";
+
+const navItems = [
+  { name: "Overlays", value: "overlays" },
+  { name: "Widgets", value: "widgets" },
+  { name: "Alerts", value: "alerts" },
+  { name: "Themes", value: "themes" },
+];
+const selectedNav = ref("overlays");
 </script>

@@ -180,7 +180,6 @@ import { Slider } from 'streamlabs-beaker';
 import { ref } from "vue";
 import Slider from "./../components/Slider.vue";
 import SliderTwo from "./../components/SliderTwo.vue";
-import Accordion from "./../components/Accordion.vue";
 import SlidersCode from "./Sliders.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 
