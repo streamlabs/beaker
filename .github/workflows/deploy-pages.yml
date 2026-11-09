@@ -5,6 +5,9 @@ name: Deploy Pages
 # change without a version bump. Requires the repo's Settings > Pages source
 # to be set to "GitHub Actions" (not "Deploy from a branch").
 #
+# Site layout: the archived Vue 2 docs (from the gh-pages branch) are served
+# at /beaker/, and the Vue 3 docs built from master are served at /beaker/v1/.
+#
 # Uses `pnpm build` (vite.config.js, the docs-site config) — never
 # `pnpm build:publish` (vite-publish.config.js, the library config). Both
 # configs emit to ./dist by default, so they must never run in the same job.
@@ -38,13 +41,31 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build docs site
+      - name: Build docs site (Vue 3, served from /beaker/v1/)
         run: pnpm build
+        env:
+          BASE_PATH: /beaker/v1/
+
+      # The Vue 2 docs site is a frozen build stored on the gh-pages branch.
+      # It already uses the /beaker/ base path, so it deploys as-is at the
+      # site root.
+      - name: Check out the archived Vue 2 site
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: gh-pages
+          path: vue2-site
+
+      - name: Assemble site
+        run: |
+          rm -rf vue2-site/.git
+          mkdir -p site/v1
+          cp -R vue2-site/. site/
+          cp -R dist/. site/v1/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
-          path: ./dist
+          path: ./site
 
   deploy:
     needs: build
