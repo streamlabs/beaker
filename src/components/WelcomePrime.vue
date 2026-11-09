@@ -47,7 +47,7 @@ withDefaults(defineProps<{ primeButtonText?: string }>(), {
   primeButtonText: 'Continue',
 });
 
-const emit = defineEmits<{ onClickPrime: [] }>();
+const emit = defineEmits<{ 'click-prime': [] }>();
 
 const primeFeatureListDefault = [
   '100s of Stunning Themes',
@@ -60,7 +60,7 @@ const primeFeatureListDefault = [
 const isUserAgentEdge = ref(false);
 
 function onPrimeButtonHandler() {
-  emit('onClickPrime');
+  emit('click-prime');
 }
 
 onMounted(() => {

@@ -93,7 +93,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  onChange: [value: string | number];
+  'value-change': [value: string | number];
   keyup: [event: Event];
   focus: [event: Event];
   click: [event: Event];
@@ -123,7 +123,7 @@ const isMinReached = computed(
 function handleInput(event: Event) {
   const target = event.target as HTMLInputElement;
   model.value = props.type === 'number' ? Number(target.value) : target.value;
-  emit('onChange', model.value);
+  emit('value-change', model.value);
 }
 
 function increment() {

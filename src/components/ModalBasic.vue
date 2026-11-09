@@ -16,7 +16,7 @@
       </div>
       <div
         class="s-modal-footer"
-        v-if="!hideActionButtons && hideActionButtons !== ''"
+        v-if="!hideActionButtons"
       >
         <div class="s-modal-footer-inner s-button-container">
           <Button
@@ -50,7 +50,7 @@ withDefaults(
     title?: string;
     subTitle?: string;
     text?: string;
-    hideActionButtons?: string;
+    hideActionButtons?: boolean;
     confirmButtonText?: string;
     clickToClose?: boolean;
   }>(),

@@ -9,7 +9,7 @@
     </div>
     <welcome-prime
       :primeButtonText="primeButtonText"
-      @on-click-prime="emit('onClickPrime')"
+      @click-prime="emit('click-prime')"
     >
       <slot></slot>
     </welcome-prime>
@@ -21,7 +21,7 @@ import { VueFinalModal } from "vue-final-modal";
 import WelcomePrime from "./../components/WelcomePrime.vue";
 
 const show = defineModel<boolean>({ default: false });
-const emit = defineEmits<{ onClickPrime: [] }>();
+const emit = defineEmits<{ 'click-prime': [] }>();
 
 withDefaults(
   defineProps<{
