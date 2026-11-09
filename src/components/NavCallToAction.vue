@@ -14,7 +14,7 @@
       :href="buttonHref"
       :to="buttonTo"
       :tag="buttonTag"
-      @click="$emit('click')"
+      @click="$emit('click', $event)"
     ></Button>
   </div>
 </template>
@@ -40,7 +40,7 @@ const props = withDefaults(
   }
 );
 
-defineEmits<{ click: [] }>();
+defineEmits<{ click: [event: MouseEvent] }>();
 
 const callToActionBg = computed(() => ({ backgroundColor: props.bgColor }));
 </script>

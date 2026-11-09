@@ -280,7 +280,7 @@ defineExpose({
     font-weight: 500;
   }
 
-  .s-form-field__input:not('.s-form-field__input--error'):focus + label {
+  .s-form-field__input:not(.s-form-field__input--error):focus + label {
     color: @day-title;
   }
 
@@ -338,7 +338,7 @@ defineExpose({
   .s-form-field--with-label {
     position: relative;
 
-    .s-form-field__input:not('[class*=__input--error]'):focus + label {
+    .s-form-field__input:not([class*='__input--error']):focus + label {
       color: @night-title;
     }
   }

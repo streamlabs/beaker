@@ -11,7 +11,7 @@
       </template>
       <template #link>
         <Button
-          @click="emit('click')"
+          @click="emit('click', $event)"
           :tag="'a'"
           :variation="'link'"
           :href="href"
@@ -28,7 +28,7 @@ import Button from "./Button.vue";
 import EmptySection from "./EmptySection.vue";
 
 defineProps<{ subtitle?: string; href?: string }>();
-const emit = defineEmits<{ click: [] }>();
+const emit = defineEmits<{ click: [event: MouseEvent] }>();
 </script>
 
 <style lang="less">

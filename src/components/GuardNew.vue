@@ -30,14 +30,14 @@ withDefaults(
   { placeholder: "Click to show" }
 );
 
-const emit = defineEmits<{ click: [] }>();
+const emit = defineEmits<{ click: [event: MouseEvent | KeyboardEvent] }>();
 const visible = ref(false);
 
 function showText(e: MouseEvent | KeyboardEvent) {
   if (!visible.value) {
     visible.value = true;
   } else {
-    emit("click");
+    emit("click", e);
   }
   if (e.type === "keydown") {
     setTimeout(() => (e.target as HTMLInputElement).select(), 200);

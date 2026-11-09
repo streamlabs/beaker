@@ -31,7 +31,7 @@ const props = withDefaults(
   { placeholder: "Click to show", showOnClick: true, variation: "normal", type: "text" }
 );
 
-const emit = defineEmits<{ click: [] }>();
+const emit = defineEmits<{ click: [event: MouseEvent] }>();
 const visible = ref(true);
 
 const prefix = computed(() =>
@@ -44,11 +44,11 @@ const guardClasses = computed(() => {
   return classes;
 });
 
-function showText() {
+function showText(e: MouseEvent) {
   if (props.showOnClick) {
     visible.value = false;
   } else {
-    emit("click");
+    emit("click", e);
   }
 }
 </script>
