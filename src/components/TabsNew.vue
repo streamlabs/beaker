@@ -248,7 +248,7 @@ function setTabOnKeyDown(
     modifiedTabs.value[newIndex].hidden,
   );
 
-  let newTab: HTMLSpanElement | HTMLAnchorElement | null = null;
+  let newTab: HTMLElement | null = null;
 
   if (modifiedTabs.value[newIndex].hidden) {
     const newHiddenIndex = hiddenTabs.value.findIndex(
@@ -256,17 +256,16 @@ function setTabOnKeyDown(
     );
 
     nextTick(() => {
-      const newHiddenList = hiddenTabsDropdown.value!.$el.querySelectorAll(
-        '.s-pane-dropdown__list .s-tabs__link',
-      );
+      const newHiddenList =
+        hiddenTabsDropdown.value!.el!.querySelectorAll<HTMLElement>(
+          '.s-pane-dropdown__list .s-tabs__link',
+        );
       newTab = newHiddenList[newHiddenIndex];
     });
   } else {
     const allTabElements =
       tabsNav.value!.querySelectorAll<HTMLDivElement>('.s-tabs__tab');
-    newTab = allTabElements[newIndex].querySelector('.s-tabs__link') as
-      | HTMLSpanElement
-      | HTMLAnchorElement;
+    newTab = allTabElements[newIndex].querySelector<HTMLElement>('.s-tabs__link');
   }
 
   nextTick(() => {
@@ -297,7 +296,7 @@ function closePaneDropdown() {
 
 function blurPaneDropDown() {
   nextTick(() => {
-    const currentHiddenList = hiddenTabsDropdown.value!.$el.querySelectorAll(
+    const currentHiddenList = hiddenTabsDropdown.value!.el!.querySelectorAll(
       '.s-pane-dropdown__list .s-tabs__link',
     );
     if (
@@ -316,9 +315,10 @@ function focusActiveTab() {
     const activeTabIndex = hiddenTabs.value.findIndex((tab) => tab.active);
 
     nextTick(() => {
-      const currentHiddenList = hiddenTabsDropdown.value!.$el.querySelectorAll(
-        '.s-pane-dropdown__list .s-tabs__link',
-      );
+      const currentHiddenList =
+        hiddenTabsDropdown.value!.el!.querySelectorAll<HTMLElement>(
+          '.s-pane-dropdown__list .s-tabs__link',
+        );
       currentHiddenList[activeTabIndex]?.focus();
     });
   }
@@ -331,7 +331,7 @@ function showTab(tab: IModifiedTab) {
 }
 
 onMounted(() => {
-  hiddenTabsDropdown.value!.$el.addEventListener('focus', focusActiveTab);
+  hiddenTabsDropdown.value!.el!.addEventListener('focus', focusActiveTab);
   loadTabProperties();
   isMounted.value = true;
 
@@ -352,7 +352,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  hiddenTabsDropdown.value!.$el.removeEventListener('focus', focusActiveTab);
+  hiddenTabsDropdown.value!.el!.removeEventListener('focus', focusActiveTab);
 });
 </script>
 
