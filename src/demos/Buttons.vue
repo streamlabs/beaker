@@ -713,7 +713,6 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Accordion from "./../components/Accordion.vue";
 import Button from "./../components/Button.vue";
 import DemoSection from "./../components/DemoSection.vue";
 import ButtonCode from "./Buttons.vue?raw";

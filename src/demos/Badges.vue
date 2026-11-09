@@ -206,7 +206,6 @@ components: {
 </template>
 
 <script setup lang="ts">
-import Accordion from "./../components/Accordion.vue";
 import Badge from "./../components/Badge.vue";
 import BadgesCode from "./Badges.vue?raw";
 import Callout from "./../components/Callout.vue";

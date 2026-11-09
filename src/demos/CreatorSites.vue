@@ -112,7 +112,6 @@ components: {
 </template>
 
 <script setup lang="ts">
-import Accordion from "./../components/Accordion.vue";
 import CreatorSitesCode from "./CreatorSites.vue?raw";
 import CSLayoutPicker from "./../components/CSLayoutPicker.vue";
 import DemoSection from "./../components/DemoSection.vue";
