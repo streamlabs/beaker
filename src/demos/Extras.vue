@@ -11,11 +11,9 @@
     <div class="section">
       <div class="section">
         <h2>Fake Alert</h2>
-        <pre><code>import { FakeAlert } from 'streamlabs-beaker';
-
-  components: {
-    FakeAlert
-  }</code></pre>
+        <pre><code>&lt;script setup lang="ts"&gt;
+import { FakeAlert } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
       </div>
 
       <DemoSection title="Fake Alert" :code="demoCode">

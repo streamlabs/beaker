@@ -6,13 +6,9 @@
 
     <div class="section">
       <h2>Standard Badges & Alt Badges</h2>
-      <pre><code>import { Badge } from "streamlabs-beaker"
-
-@Component({
-  components: {
-    Badge
-  }
-})</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Badge } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <DemoSection title="Badges" :code="demoCode">
         <template #components>
@@ -24,13 +20,9 @@
 
     <div class="section">
       <h2>Prime Feature Overlay</h2>
-      <pre><code>import { PrimeSection } from "streamlabs-beaker"
-
-@Component({
-  components: {
-    PrimeSection
-  }
-})</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { PrimeSection } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <DemoSection title="Prime Lock Overlay" :code="demoCode">
         <template #components>
@@ -56,13 +48,9 @@
 
     <div class="section">
       <h2>Prime Call to Action</h2>
-      <pre><code>import { NavCallToAction } from "streamlabs-beaker"
-
-@Component({
-  components: {
-    NavCallToAction
-  }
-})</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { NavCallToAction } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <DemoSection title="Prime Call to Action" :code="demoCode">
         <template #components>
@@ -94,13 +82,9 @@
 
     <div class="section">
       <h2>Modal Welcome Prime</h2>
-      <pre><code>import { ModalComp } from "streamlabs-beaker"
-
-@Component({
-  components: {
-    ModalComp
-  }
-})</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { ModalComp } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <DemoSection title="Welcome Prime Modal" :code="demoCode">
         <template #components>
@@ -125,13 +109,9 @@
 
     <div class="section">
       <h2>Welcome Prime</h2>
-      <pre><code>import { WelcomePrime } from "streamlabs-beaker"
-
-@Component({
-  components: {
-    WelcomePrime
-  }
-})</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { WelcomePrime } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <DemoSection title="Welcome Prime" :code="demoCode">
         <template #components>
@@ -142,13 +122,9 @@
 
     <div class="section">
       <h2>Modal Prime Intro</h2>
-      <pre><code>import { ModalComp } from "streamlabs-beaker"
-
-@Component({
-  components: {
-    ModalComp
-  }
-})</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { ModalComp } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <DemoSection title="Prime Intro Modal" :code="demoCode">
         <template #components>
