@@ -70,7 +70,13 @@ const props = withDefaults(
   },
 );
 
-const emit = defineEmits<{ (e: string, ...args: unknown[]): void }>();
+const emit = defineEmits<{
+  fuseResultsUpdated: [results: FuseResult<VariableEntry>[]];
+  fuseInputChanged: [value: string];
+  update: [value: string];
+}>();
+
+const emitCustom = emit as (event: string, ...args: unknown[]) => void;
 
 const resultArea = useTemplateRef<HTMLDivElement>('resultArea');
 const variableMenu = useTemplateRef<HTMLDivElement>('variableMenu');
@@ -112,7 +118,7 @@ const calcTransform = computed(
 watch(
   value,
   () => {
-    emit(props.inputChangeEventName, value.value);
+    emitCustom(props.inputChangeEventName, value.value);
     if (value.value.includes('{')) {
       getSearchString();
       if (noResults.value) playClosingSequence();
@@ -127,7 +133,7 @@ watch(result, (val, oldVal) => {
   if (noResults.value || value.value === '' || val.length !== oldVal.length) {
     currentResult.value = limitedResult.value.length - 1;
   }
-  emit(props.eventName, result.value);
+  emitCustom(props.eventName, result.value);
   if (noResults.value) {
     playClosingSequence();
   } else {

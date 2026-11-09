@@ -115,8 +115,12 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (e: string, ...args: unknown[]): void;
+  fuseResultsUpdated: [results: FuseResult<SearchEntry>[]];
+  fuseInputChanged: [value: string];
+  trackSearchNav: [result: string | number];
 }>();
+
+const emitCustom = emit as (event: string, ...args: unknown[]) => void;
 
 const searchInput = useTemplateRef<HTMLInputElement>("search_input");
 
@@ -187,7 +191,7 @@ watch(
 );
 
 watch(value, () => {
-  emit(props.inputChangeEventName, value.value);
+  emitCustom(props.inputChangeEventName, value.value);
   fuseSearch();
 });
 
@@ -195,7 +199,7 @@ watch(result, (val, oldVal) => {
   if (noResults.value || value.value === "" || val.length !== oldVal.length) {
     currentResult.value = 0;
   }
-  emit(props.eventName, result.value);
+  emitCustom(props.eventName, result.value);
 });
 
 function keyEvent(event: KeyboardEvent) {

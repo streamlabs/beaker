@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, useTemplateRef } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -109,7 +109,7 @@ const props = withDefaults(
 
 defineEmits<{ click: [] }>();
 
-const rootEl = ref<HTMLElement>();
+const rootEl = useTemplateRef<HTMLElement>('rootEl');
 
 const rippleStartX = ref(0);
 const rippleStartY = ref(0);
