@@ -67,7 +67,6 @@ const model = defineModel<string[]>({ default: () => [] });
 
 const emit = defineEmits<{
   change: [tags: string[]];
-  'update:value': [tags: string[]];
   add: [tags: string[]];
   remove: [tags: string[]];
   error: [errors: string[], maxReached: boolean];
@@ -130,7 +129,6 @@ function onRemove(index: number) {
 function emitTagEvents(event: 'add' | 'remove') {
   model.value = [...tags.value];
   emit('change', tags.value);
-  emit('update:value', tags.value);
   if (event === 'add') emit('add', tags.value);
   else emit('remove', tags.value);
 }

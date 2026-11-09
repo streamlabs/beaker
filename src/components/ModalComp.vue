@@ -125,7 +125,7 @@ withDefaults(
     cancelTitle?: string;
     primeButtonText?: string;
     hasPrimeCloseButton?: boolean;
-    hideActionButtons?: string;
+    hideActionButtons?: boolean;
     clickToClose?: boolean;
   }>(),
   {

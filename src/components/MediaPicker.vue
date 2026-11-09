@@ -136,7 +136,6 @@ const props = withDefaults(
     mediaLink?: boolean;
     mediaPreview?: boolean;
     title?: string;
-    value?: string;
     modelValue?: string;
     controlsAlwaysVisible?: boolean;
     canDelete?: boolean;
@@ -187,7 +186,7 @@ const mediaInputPlaceholder = computed(() =>
   props.variation === 'audio' ? 'Select Audio File' : 'Select Image/Video File',
 );
 
-const currentValue = computed(() => props.modelValue ?? props.value);
+const currentValue = computed(() => props.modelValue);
 
 const media = computed(() => ({
   selected: !!currentValue.value,

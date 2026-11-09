@@ -10,7 +10,7 @@
     </div>
     <PrimeIntro
       :primeButtonText="primeButtonText"
-      @on-click-prime="emit('onClickPrime')"
+      @click-prime="emit('click-prime')"
     >
       <slot></slot>
     </PrimeIntro>
@@ -22,7 +22,7 @@ import { VueFinalModal } from "vue-final-modal";
 import PrimeIntro from "./PrimeIntro.vue";
 
 const show = defineModel<boolean>({ default: false });
-const emit = defineEmits<{ onClickPrime: [] }>();
+const emit = defineEmits<{ 'click-prime': [] }>();
 
 withDefaults(
   defineProps<{

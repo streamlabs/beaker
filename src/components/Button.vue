@@ -13,7 +13,7 @@
     class="s-button ripple"
     :class="[buttonClasses, { 'ripple-animate': rippleAnimate }]"
     :disabled="state === 'disabled' || state === 'loading' || undefined"
-    @click="$emit('click')"
+    @click="$emit('click', $event)"
     :target="target"
     @mousedown="pressDown"
     :style="buttonStyle"
@@ -107,7 +107,7 @@ const props = withDefaults(
   },
 );
 
-defineEmits<{ click: [] }>();
+defineEmits<{ click: [event: MouseEvent] }>();
 
 const rootEl = useTemplateRef<HTMLElement>('rootEl');
 
