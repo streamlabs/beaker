@@ -5,10 +5,10 @@
       v-for="(val, key) in values"
       :key="key"
       :title="capitalize(key)"
-      @click="$emit('update:modelValue', key)"
+      @click="model = key"
       :class="[
         's-toggle__option',
-        { 's-toggle__option--active': modelValue === key },
+        { 's-toggle__option--active': model === key },
       ]"
       v-html="val"
     />
@@ -18,17 +18,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const props = defineProps<{
   values: Record<string | number, string>;
-  modelValue: string;
   variation?: string;
 }>();
 
-defineEmits<{
-  'update:modelValue': [key: string];
-}>();
+const model = defineModel<string>({ required: true });
 
 const toggleClass = computed(() =>
   props.variation ? `s-toggle--${props.variation}` : undefined,

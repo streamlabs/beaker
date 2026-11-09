@@ -4,11 +4,9 @@
       <h1>Toggles</h1>
       <p>Toggle between multiple custom options such as show and hide.</p>
 
-      <pre><code>import { Toggle } from 'streamlabs-beaker';
-
-components: {
-  Toggle
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Toggle } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">

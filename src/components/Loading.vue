@@ -1,5 +1,5 @@
 <template>
-  <div class="s-loader" :swapMode="swapMode">
+  <div class="s-loader" :swapMode="swapMode || undefined">
     <div
       :class="{
         's-loader__bg--semi': semiOpaque,
@@ -19,8 +19,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import Spinner from "./../components/Spinner.vue";
-
-defineOptions({ compatConfig: { MODE: 3 } });
 
 const props = withDefaults(
   defineProps<{

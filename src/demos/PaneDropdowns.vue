@@ -4,11 +4,9 @@
       <h1>Pane Dropdowns</h1>
       <p>Dropdown menu used on Streamlabs.com</p>
 
-      <pre><code>import { PaneDropdown } from 'streamlabs-beaker';
-
-components: {
-  PaneDropdown
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { PaneDropdown } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">
@@ -56,7 +54,7 @@ components: {
           </div>
 
           <div class="row">
-            <PaneDropdown open-above="top">
+            <PaneDropdown open-above>
               <template #title><span>Top Dropdown Menu</span></template>
               <a href="#">Hey I'm a longer link here</a>
               <a href="#">Let's see how this looks</a>

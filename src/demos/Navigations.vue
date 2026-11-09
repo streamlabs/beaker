@@ -18,14 +18,14 @@
   :min=&quot;0&quot;
   :max=&quot;100&quot;
   :interval=&quot;1&quot;
-  :value=&quot;50&quot;&gt;
+  v-model=&quot;value&quot;&gt;
 &lt;/slider&gt;</code></pre>
           </div>
         </template>
       </accordion>
 
       <div class="row">
-        <scroll-nav></scroll-nav>
+        <scroll-nav :items="navItems" v-model="selectedNav"></scroll-nav>
       </div>
 
       <table class="docs-table">
@@ -72,7 +72,7 @@
             <td>Show the tooltip or not. Options are 'always' or 'false'</td>
           </tr>
           <tr>
-            <td>value</td>
+            <td>modelValue | v-model</td>
             <td>Number, String, Array, Object</td>
             <td>1</td>
             <td>Initial value of the slider.</td>
@@ -84,6 +84,15 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import Accordion from "./../components/Accordion.vue";
 import ScrollNav from "./../components/ScrollNav.vue";
+
+const navItems = [
+  { name: "Overlays", value: "overlays" },
+  { name: "Widgets", value: "widgets" },
+  { name: "Alerts", value: "alerts" },
+  { name: "Themes", value: "themes" },
+];
+const selectedNav = ref("overlays");
 </script>

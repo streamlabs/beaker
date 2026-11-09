@@ -8,14 +8,13 @@
         :placeholder="placeholder"
         type="text"
         :error="errorMessage"
-        @input="$emit('update:text', $event)"
         @keydown.enter.prevent="onAdd"
       />
       <Button
         :title="buttonText"
         type="button"
         :variation="buttonVariation"
-        :disabled="modelValue.length >= maxItems"
+        :disabled="model.length >= maxItems"
         @click="onAdd"
       />
     </div>
@@ -44,8 +43,6 @@ import Button from './Button.vue';
 import { validate } from 'vee-validate';
 import '../composables/useValidation';
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const props = withDefaults(
   defineProps<{
     name: string;
@@ -53,8 +50,6 @@ const props = withDefaults(
     placeholder?: string;
     buttonText?: string;
     buttonVariation?: string;
-    modelValue?: string[];
-    text?: string;
     inputValidation?: string;
     prefix?: string;
     tagVariation?: string;
@@ -63,39 +58,28 @@ const props = withDefaults(
   {
     buttonText: 'Add Tag',
     buttonVariation: 'default',
-    modelValue: () => [],
-    text: '',
     tagVariation: 'default',
     maxItems: 25,
   },
 );
 
+const model = defineModel<string[]>({ default: () => [] });
+
 const emit = defineEmits<{
-  'update:modelValue': [tags: string[]];
   change: [tags: string[]];
-  'update:value': [tags: string[]];
-  'update:text': [text: string];
   add: [tags: string[]];
   remove: [tags: string[]];
   error: [errors: string[], maxReached: boolean];
 }>();
 
 const tags = ref<string[]>([]);
-const textInput = ref('');
+const textInput = defineModel<string>('text', { default: '' });
 const errorMessage = ref<string | undefined>(undefined);
 
 watch(
-  () => props.modelValue,
+  model,
   (newValue) => {
-    tags.value = newValue ?? [];
-  },
-  { immediate: true },
-);
-
-watch(
-  () => props.text,
-  (newValue) => {
-    textInput.value = newValue ?? '';
+    tags.value = [...(newValue ?? [])];
   },
   { immediate: true },
 );
@@ -142,10 +126,11 @@ function onRemove(index: number) {
   emitTagEvents('remove');
 }
 
-function emitTagEvents(...events: string[]) {
-  ['update:modelValue', 'change', 'update:value', ...events].forEach((event) =>
-    emit(event as keyof typeof emit, tags.value),
-  );
+function emitTagEvents(event: 'add' | 'remove') {
+  model.value = [...tags.value];
+  emit('change', tags.value);
+  if (event === 'add') emit('add', tags.value);
+  else emit('remove', tags.value);
 }
 </script>
 

@@ -22,8 +22,6 @@
 <script setup lang="ts">
 import Badge from './../components/Badge.vue';
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 withDefaults(
   defineProps<{
     title?: string;

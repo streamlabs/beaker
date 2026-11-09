@@ -4,17 +4,17 @@
       <h1>Loaders</h1>
       <p>
         These are animated with pure SVG, they will not be animated in Microsoft
-        Edge, or Opera, and will look different in firefox.
+        Edge, or Opera, and will look different in firefox. The full page
+        loaders in these demos close when you click them, or on their own
+        after five seconds.
       </p>
 
       <div class="section">
         <h2>Full Page Loading</h2>
 
-        <pre><code>import { Loading } from 'streamlabs-beaker';
-
-components: {
-  Loading
-}</code></pre>
+        <pre><code>&lt;script setup lang="ts"&gt;
+import { Loading } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
         <div class="section">
           <h2>Standard</h2>
@@ -25,7 +25,7 @@ components: {
                 <Loading
                   v-if="isLoading"
                   :loadingStrs="string"
-                  @closeLoading="isLoading = false"
+                  @click="isLoading = false"
                 />
               </template>
             </DemoSection>
@@ -35,7 +35,7 @@ components: {
             <Button
               variation="default"
               title="loading default"
-              @click="isLoading = true"
+              @click="showLoader('standard')"
             />
           </div>
         </div>
@@ -51,7 +51,7 @@ components: {
                   :semiOpaque="true"
                   :loadingStrs="array"
                   :isRandom="true"
-                  @closeLoading="isLoadingSemi = false"
+                  @click="isLoadingSemi = false"
                 />
               </template>
             </DemoSection>
@@ -61,7 +61,7 @@ components: {
             <Button
               variation="default"
               title="loading semi opaque"
-              @click="isLoadingSemi = true"
+              @click="showLoader('semi')"
             />
           </div>
         </div>
@@ -77,7 +77,7 @@ components: {
                   :loadingStrs="array"
                   :isRandom="true"
                   :swapMode="true"
-                  @closeLoading="isLoadingSwapped = false"
+                  @click="isLoadingSwapped = false"
                 />
               </template>
             </DemoSection>
@@ -87,7 +87,7 @@ components: {
             <Button
               variation="default"
               title="loading swapped option"
-              @click="isLoadingSwapped = true"
+              @click="showLoader('swapped')"
             />
           </div>
         </div>
@@ -155,11 +155,9 @@ components: {
     <div class="section">
       <h2>Section Loading Spinners</h2>
 
-      <pre><code>import { Spinner } from 'streamlabs-beaker';
-
-components: {
-  Spinner
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Spinner } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <h3>Loading Spinner</h3>
       <p>This is the standard size for sections within a page layout.</p>
@@ -218,7 +216,6 @@ components: {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Accordion from "./../components/Accordion.vue";
 import Button from "./../components/Button.vue";
 import LoadersCode from "./Loaders.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
@@ -229,6 +226,19 @@ const demoCode = LoadersCode;
 const isLoading = ref(false);
 const isLoadingSemi = ref(false);
 const isLoadingSwapped = ref(false);
+
+const loaders = {
+  standard: isLoading,
+  semi: isLoadingSemi,
+  swapped: isLoadingSwapped,
+};
+
+function showLoader(name: keyof typeof loaders) {
+  loaders[name].value = true;
+  setTimeout(() => {
+    loaders[name].value = false;
+  }, 5000);
+}
 
 const array = [
   "This loader is using an array of strings...",

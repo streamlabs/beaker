@@ -6,11 +6,12 @@
       's-colorpicker-container__mini': isMini,
       's-colorpicker-container__mini-icon': isMini && icon
     }"
+    v-bind="rootAttrs"
   >
     <input
       v-if="!isMini"
       type="text"
-      :value="modelValue"
+      :value="model"
       :placeholder="placeholder"
       @click="showPicker()"
       @focus="showPicker"
@@ -34,7 +35,7 @@
 
     <div
       class="s-colorpicker__preview"
-      :style="{ backgroundColor: modelValue }"
+      :style="{ backgroundColor: model }"
       @click="showPicker()"
     ></div>
     <div class="s-colorpicker__preview--alpha"></div>
@@ -53,10 +54,10 @@
         <input
           v-if="isMini"
           type="text"
-          :value="modelValue"
+          :value="model"
           :placeholder="placeholder"
           @input="updateFromInput"
-          v-bind="$attrs"
+          v-bind="inputAttrs"
           class="s-colorpicker__input--mini"
           :class="{ 's-colorpicker__input--error': error }"
         />
@@ -66,10 +67,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, useTemplateRef } from "vue";
+import { ref, computed, useAttrs, useTemplateRef } from "vue";
+import { omit } from "lodash-es";
 import { ChromePicker, tinycolor } from "vue-color";
 
-defineOptions({ compatConfig: { MODE: 3 }, inheritAttrs: false });
+defineOptions({ inheritAttrs: false });
 
 // tinycolor2 (used internally by vue-color) ships no TypeScript types —
 // this captures only the members this component actually calls.
@@ -81,7 +83,6 @@ interface TinyColorLike {
 
 const props = withDefaults(
   defineProps<{
-    modelValue?: string;
     placeholder?: string;
     hasAlpha?: boolean;
     isMini?: boolean;
@@ -91,11 +92,15 @@ const props = withDefaults(
   { placeholder: "#31c3a2", hasAlpha: false, isMini: false }
 );
 
-const emit = defineEmits<{ 'update:modelValue': [val: string] }>();
+const model = defineModel<string>();
+
+const attrs = useAttrs();
+const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }));
+const inputAttrs = computed(() => omit(attrs, ["class", "style"]));
 
 const colorpicker = useTemplateRef<HTMLElement>("colorpicker");
 const displayPicker = ref(false);
-const colors = ref<TinyColorLike>(tinycolor(props.modelValue));
+const colors = ref<TinyColorLike>(tinycolor(model.value));
 
 const alphaClass = computed(() => {
   if (!props.hasAlpha) return false;
@@ -104,13 +109,13 @@ const alphaClass = computed(() => {
 
 function updateFromPicker(value: TinyColorLike) {
   colors.value = value;
-  emit("update:modelValue", alphaClass.value === "alpha" ? value.toHex8String() : value.toHexString());
+  model.value = alphaClass.value === "alpha" ? value.toHex8String() : value.toHexString();
 }
 
 function updateFromInput(event: Event) {
   const val = (event.target as HTMLInputElement).value;
   colors.value = tinycolor(val);
-  emit("update:modelValue", val);
+  model.value = val;
 }
 
 function hidePicker() {

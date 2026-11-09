@@ -25,11 +25,11 @@
       >
         <div
           class="s-slider-tick"
-          v-if="marks && modelValue != range[index]"
+          v-if="marks && model != range[index]"
           key="tick_lines"
         ></div>
         <div
-          v-if="labels && modelValue != range[index]"
+          v-if="labels && model != range[index]"
           class="s-slider-label"
           key="tick_values"
         >
@@ -51,8 +51,6 @@ import {
   useTemplateRef,
 } from 'vue';
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 type SliderValue = number | string;
 
 const props = withDefaults(
@@ -61,7 +59,6 @@ const props = withDefaults(
     steps?: number;
     data?: SliderValue[] | null;
     dataIndexing?: boolean;
-    modelValue?: string | number;
     min?: number;
     max?: number;
     tooltip?: 'always' | false;
@@ -78,7 +75,6 @@ const props = withDefaults(
     steps: 0,
     data: null,
     dataIndexing: true,
-    modelValue: 0,
     min: 0,
     max: 100,
     tooltip: 'always',
@@ -92,8 +88,9 @@ const props = withDefaults(
   },
 );
 
+const model = defineModel<SliderValue>({ default: 0 });
+
 const emit = defineEmits<{
-  'update:modelValue': [val: SliderValue];
   dragStart: [];
   dragEnd: [];
   callbackRange: [val: SliderValue];
@@ -191,12 +188,9 @@ const limit = computed(() => [0, size.value]);
 
 const valueLimit = computed(() => [minimum.value, maximum.value]);
 
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    setValue(newVal);
-  },
-);
+watch(model, (newVal) => {
+  setValue(newVal);
+});
 
 function scheduleResize() {
   return new Promise<void>((resolve) => {
@@ -323,11 +317,11 @@ function moving(e: MouseEvent) {
 function moveEnd() {
   if (isDragging.value && props.draggable) {
     emit('dragEnd');
-    setValue(limitValue(props.modelValue));
+    setValue(limitValue(model.value));
     setTransitionTime(0.125);
     setTransform(position.value);
     isDragging.value = false;
-    if (lazy.value && isDiff(val.value, props.modelValue)) {
+    if (lazy.value && isDiff(val.value, model.value)) {
       syncValue();
     }
   }
@@ -434,7 +428,7 @@ function syncValue() {
   if (range.value.length) {
     emit('callbackRange', range.value[currentIndex.value]);
   }
-  emit('update:modelValue', v);
+  model.value = v;
 }
 
 function getValue() {
@@ -467,7 +461,7 @@ onMounted(() => {
     console.error('[ERROR]: Prop[steps] has been replaced with Prop[interval]');
   }
   getStaticData();
-  setValue(limitValue(props.modelValue));
+  setValue(limitValue(model.value));
   setTransform(position.value);
   if (props.marks) {
     createMarks();

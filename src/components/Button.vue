@@ -13,7 +13,7 @@
     class="s-button ripple"
     :class="[buttonClasses, { 'ripple-animate': rippleAnimate }]"
     :disabled="state === 'disabled' || state === 'loading' || undefined"
-    @click="$emit('click')"
+    @click="$emit('click', $event)"
     :target="target"
     @mousedown="pressDown"
     :style="buttonStyle"
@@ -72,9 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-
-defineOptions({ compatConfig: { MODE: 3 } });
+import { ref, computed, useTemplateRef } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -109,9 +107,9 @@ const props = withDefaults(
   },
 );
 
-defineEmits<{ click: [] }>();
+defineEmits<{ click: [event: MouseEvent] }>();
 
-const rootEl = ref<HTMLElement>();
+const rootEl = useTemplateRef<HTMLElement>('rootEl');
 
 const rippleStartX = ref(0);
 const rippleStartY = ref(0);

@@ -3,7 +3,6 @@
     v-model="show"
     overlay-class="s-overlay__vfm-overlay"
     content-class="s-overlay__wrapper"
-    v-bind="$attrs"
   >
     <div class="s-overlay__icon" @click="onDismiss">
       <span class="s-icon icon-close"></span>
@@ -57,8 +56,6 @@ import { ref, computed, onMounted } from "vue";
 import { VueFinalModal } from "vue-final-modal";
 import { useMediaQuery } from "@vueuse/core";
 import Button from "./../components/Button.vue";
-
-defineOptions({ compatConfig: { MODE: 3 } });
 
 const show = defineModel<boolean>({ default: false });
 

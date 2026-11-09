@@ -93,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({ compatConfig: { MODE: 3 }, inheritAttrs: false });
+defineOptions({ inheritAttrs: false });
 
 import ModalBasic from './../components/ModalBasic.vue';
 import ModalSubscribe from './../components/ModalSubscribe.vue';
@@ -125,7 +125,7 @@ withDefaults(
     cancelTitle?: string;
     primeButtonText?: string;
     hasPrimeCloseButton?: boolean;
-    hideActionButtons?: string;
+    hideActionButtons?: boolean;
     clickToClose?: boolean;
   }>(),
   {

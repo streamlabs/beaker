@@ -1,10 +1,10 @@
 <template>
   <div
     class="s-status-switch"
-    :class="{ enabled: !!modelValue }"
-    @click="$emit('update:modelValue', !modelValue)"
-    @keydown.prevent.space="$emit('update:modelValue', !modelValue)"
-    @keydown.prevent.enter="$emit('update:modelValue', !modelValue)"
+    :class="{ enabled: !!model }"
+    @click="toggle"
+    @keydown.prevent.space="toggle"
+    @keydown.prevent.enter="toggle"
     tabindex="0"
   >
     <div
@@ -17,14 +17,13 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({ compatConfig: { MODE: 3 } });
+defineProps<{ label?: string; size?: string }>();
 
-withDefaults(
-  defineProps<{ label?: string; size?: string; modelValue?: boolean }>(),
-  { modelValue: false },
-);
+const model = defineModel<boolean>({ default: false });
 
-defineEmits<{ 'update:modelValue': [val: boolean] }>();
+function toggle() {
+  model.value = !model.value;
+}
 </script>
 
 <style lang="less">

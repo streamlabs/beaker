@@ -3,7 +3,6 @@
     v-model="show"
     content-class="s-modal-wrapper"
     :content-style="{ maxWidth: width + 'px', minWidth: minWidth + 'px' }"
-    v-bind="$attrs"
   >
     <div class="s-modal-container">
       <div class="s-confirmation">
@@ -31,8 +30,6 @@
 <script setup lang="ts">
 import { VueFinalModal } from "vue-final-modal";
 import Button from "./../components/Button.vue";
-
-defineOptions({ compatConfig: { MODE: 3 } });
 
 const show = defineModel<boolean>({ default: false });
 

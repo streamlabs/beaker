@@ -3,9 +3,8 @@
     class="s-virtual-item"
     :class="[virtualItemClasses]"
     :rarity="rarity"
-    :selected="selected"
+    :selected="selected || undefined"
     :quantity="quantity"
-    :value="value"
   >
     <span v-if="selectionCount" class="s-virtual-item__selection-count">
       {{ selectionCount }}
@@ -31,8 +30,6 @@
 
 <script setup lang="ts">
 import { computed, useAttrs } from "vue";
-
-defineOptions({ compatConfig: { MODE: 3 } });
 
 const props = withDefaults(
   defineProps<{

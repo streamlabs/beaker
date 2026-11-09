@@ -14,6 +14,36 @@ pnpm add streamlabs-beaker
 pnpm add streamlabs-beaker@next
 ```
 
+### Using Beaker in a Vue 3 app
+
+Install the peer dependencies: `fuse.js`, `vue-final-modal`, `vue-multiselect`, `vue-router`, and `vue-slider-component`. `vue-final-modal` also needs `@vueuse/core`, `@vueuse/integrations`, and `focus-trap`.
+
+Import the Beaker styles and install the plugins that some components rely on. `vue-final-modal` provides the modals. `floating-vue` provides the `v-tooltip` directive that `FormGroupH` and `FormGroupV` use for their `tooltip` prop.
+
+```ts
+import { createApp } from 'vue';
+import { createVfm } from 'vue-final-modal';
+import FloatingVue from 'floating-vue';
+import App from './App.vue';
+
+import 'streamlabs-beaker/style.css';
+import 'vue-final-modal/style.css';
+import 'floating-vue/dist/style.css';
+
+createApp(App)
+  .use(createVfm())
+  .use(FloatingVue)
+  .mount('#app');
+```
+
+Then import the components you need. With `<script setup>`, you don't register them:
+
+```vue
+<script setup lang="ts">
+import { Accordion, Button, ProgressBar } from 'streamlabs-beaker';
+</script>
+```
+
 ### Releases
 
 Publishing is tag-driven: pushing a git tag matching `v*` triggers `.github/workflows/publish.yml`.

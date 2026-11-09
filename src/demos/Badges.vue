@@ -10,11 +10,9 @@
         the right side.
       </p>
 
-      <pre><code>import { Badge } from 'streamlabs-beaker';
-
-components: {
-  Badge
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Badge } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <div class="section">
         <h2>Standard Badges</h2>
@@ -206,7 +204,6 @@ components: {
 </template>
 
 <script setup lang="ts">
-import Accordion from "./../components/Accordion.vue";
 import Badge from "./../components/Badge.vue";
 import BadgesCode from "./Badges.vue?raw";
 import Callout from "./../components/Callout.vue";

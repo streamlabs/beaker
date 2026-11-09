@@ -3,11 +3,9 @@
     <div class="section">
       <h1>Guards</h1>
 
-      <pre><code>import { Guard } from 'streamlabs-beaker';
-
-components: {
-  Guard
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Guard } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">

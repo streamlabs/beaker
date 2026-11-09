@@ -3,17 +3,17 @@
     <div class="section">
       <h1>New Feature Overlay</h1>
       <p>
-        You can trigger this with a button like
-        <code>@click="$modal.show('new-feature')"</code> or call
-        <code>this.$modal.show('new-feature')"</code> on mounted. You may need
-        to set a few second delay on the trigger to prevent the modal closing
-        when the page refreshes.
+        Give the overlay a <code>modalId</code> and open it with
+        <code>open('new-feature')</code> from <code>useVfm()</code> in
+        <code>vue-final-modal</code>. For example, use
+        <code>@click="open('new-feature')"</code> on a button, or call it in
+        <code>onMounted</code>. You can also control it with
+        <code>v-model</code>. You may need to set a few second delay on the
+        trigger to prevent the modal closing when the page refreshes.
       </p>
-      <pre><code>import { NewFeatureOverlay } from 'streamlabs-beaker';
-
-components: {
-  NewFeatureOverlay
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { NewFeatureOverlay } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">
@@ -92,17 +92,17 @@ components: {
           <td>buttonTitle</td>
           <td>string</td>
           <td>null</td>
+          <td>Text displayed in the action button</td>
+        </tr>
+        <tr>
+          <td>buttonTag</td>
+          <td>string</td>
+          <td>router-link</td>
           <td>
             What type of element the button is,
             <code>button</code>, <code>a</code>,
             <code>router-link</code>
           </td>
-        </tr>
-        <tr>
-          <td>buttonTag</td>
-          <td>string</td>
-          <td>null</td>
-          <td>Text displayed in the action button</td>
         </tr>
         <tr>
           <td>buttonRoute</td>
@@ -135,7 +135,7 @@ components: {
           </td>
         </tr>
         <tr>
-          <td>dismissTitle</td>
+          <td>dismissText</td>
           <td>string</td>
           <td>Go to Dashboard</td>
           <td>

@@ -19,11 +19,9 @@
           >.
         </p>
       </div>
-      <pre><code>import { Slider } from 'streamlabs-beaker';
-
-components: {
-  Slider
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Slider } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <!-- Custom Data -->
@@ -83,7 +81,7 @@ components: {
             <td>The width of the component.</td>
           </tr>
           <tr>
-            <td>value</td>
+            <td>modelValue | v-model</td>
             <td>Number, String, Array</td>
             <td>1</td>
             <td>Initial value of the slider.</td>
@@ -182,7 +180,6 @@ components: {
 import { ref } from "vue";
 import Slider from "./../components/Slider.vue";
 import SliderTwo from "./../components/SliderTwo.vue";
-import Accordion from "./../components/Accordion.vue";
 import SlidersCode from "./Sliders.vue?raw";
 import DemoSection from "./../components/DemoSection.vue";
 

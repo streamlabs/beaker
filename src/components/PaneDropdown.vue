@@ -52,8 +52,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount, useTemplateRef } from "vue";
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 const props = withDefaults(
   defineProps<{
     dropdownIcon?: boolean;
@@ -96,15 +94,24 @@ const menuClasses = computed(() => {
   return classes;
 });
 
+let tabOutTarget: Element | null = null;
+
+function onTab(e: KeyboardEvent) {
+  if (e.key === "Tab" && !e.shiftKey) hide();
+}
+
+function removeTabOutListener() {
+  tabOutTarget?.removeEventListener("keydown", onTab as EventListener);
+  tabOutTarget = null;
+}
+
 watch(paneMenuOpen, (newVal) => {
+  removeTabOutListener();
   if (newVal && !props.custom) {
     const list = paneList.value;
     if (!list) return;
-    const lastSlotItem = list.lastElementChild as HTMLElement;
-    const onTab = (e: KeyboardEvent) => {
-      if (e.keyCode === 9 && !e.shiftKey) hide();
-    };
-    lastSlotItem.addEventListener("keydown", onTab);
+    tabOutTarget = list.lastElementChild;
+    tabOutTarget?.addEventListener("keydown", onTab as EventListener);
   }
 });
 
@@ -166,7 +173,10 @@ function show() {
 defineExpose({ show, hide, el: paneMenu });
 
 onMounted(() => document.addEventListener("click", documentClick));
-onBeforeUnmount(() => document.removeEventListener("click", documentClick));
+onBeforeUnmount(() => {
+  document.removeEventListener("click", documentClick);
+  removeTabOutListener();
+});
 </script>
 
 <style lang="less">

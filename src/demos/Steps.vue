@@ -4,11 +4,9 @@
       <h1>Step</h1>
       <p>step component</p>
 
-      <pre><code>import { Step } from 'streamlabs-beaker';
-
-components: {
-  Step
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Step } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">
@@ -96,7 +94,7 @@ components: {
             </td>
           </tr>
           <tr>
-            <td>isChecked</td>
+            <td>hasCheckmark</td>
             <td>Boolean</td>
             <td>false</td>
             <td>

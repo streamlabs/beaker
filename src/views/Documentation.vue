@@ -1,9 +1,6 @@
 <template>
   <div class="documentation">
-    <LeftNavigation
-      @update-section="changeSection"
-      :active-section="activeSection"
-    />
+    <LeftNavigation />
 
     <div class="content">
       <RouterView />
@@ -14,15 +11,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import CopyNotification from '../components/CopyNotification.vue';
 import LeftNavigation from '../demos/LeftNavigation.vue';
-
-const activeSection = ref('installation');
-
-function changeSection(newSection: string) {
-  activeSection.value = newSection;
-}
 </script>
 
 <style lang="less">

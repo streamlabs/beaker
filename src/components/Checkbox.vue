@@ -4,10 +4,7 @@
       type="checkbox"
       :id="id"
       :name="name"
-      :checked="modelValue"
-      @change="
-        $emit('update:modelValue', ($event.target as HTMLInputElement).checked)
-      "
+      v-model="model"
       tabindex="-1"
     />
     <label :for="id">{{ label }}</label>
@@ -15,21 +12,16 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({ compatConfig: { MODE: 3 } });
-
-const props = defineProps<{
+defineProps<{
   label: string;
   id: string;
   name?: string;
-  modelValue: boolean;
 }>();
 
-const emit = defineEmits<{
-  'update:modelValue': [checked: boolean];
-}>();
+const model = defineModel<boolean>({ required: true });
 
 function toggleCheck() {
-  emit('update:modelValue', !props.modelValue);
+  model.value = !model.value;
 }
 </script>
 

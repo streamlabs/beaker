@@ -1,7 +1,7 @@
 <template>
-  <div class="s-selector">
+  <div class="s-selector" v-bind="rootAttrs">
     <Multiselect
-      v-bind="$attrs"
+      v-bind="multiselectAttrs"
       :options="options"
       :style="styleObject"
       :multiple="multiple"
@@ -14,16 +14,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, useAttrs } from "vue";
+import { omit } from "lodash-es";
 import Multiselect from "vue-multiselect";
 
-defineOptions({ compatConfig: { MODE: 3 } });
+defineOptions({ inheritAttrs: false });
 
 const props = defineProps<{
   width?: string;
   multiple?: boolean;
   options: unknown[];
 }>();
+
+const attrs = useAttrs();
+const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }));
+const multiselectAttrs = computed(() => omit(attrs, ["class", "style"]));
 
 const styleObject = computed(() => ({
   width: props.multiple ? "100%" : props.width ?? "176px"
@@ -402,7 +407,7 @@ const styleObject = computed(() => ({
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .multiselect-enter,
+  .multiselect-enter-from,
   .multiselect-leave-active {
     opacity: 0;
   }

@@ -1,20 +1,18 @@
 <template>
   <div class="s-image-picker-input">
     <div
-      :value="option.value"
       :title="option.title"
-      :image="option.image"
       v-for="(option, index) in options"
       :key="option.value"
       class="s-image-picker-input__option"
-      :class="[modelValue === option.value ? 'active' : '']"
+      :class="[model === option.value ? 'active' : '']"
       :style="{ width: width, height: height }"
       @click="emitInput(option.value)"
       @keydown.up.prevent="setValueByKeyPress('UP')"
       @keydown.down.prevent="setValueByKeyPress('DOWN')"
       @keydown.left.prevent="setValueByKeyPress('LEFT')"
       @keydown.right.prevent="setValueByKeyPress('RIGHT')"
-      :tabindex="modelValue === option.value ? '0' : '-1'"
+      :tabindex="model === option.value ? '0' : '-1'"
       :ref="(el) => el && (imagePickerItems[index] = el as HTMLDivElement)"
     >
       <img :src="option.image" />
@@ -25,8 +23,6 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted } from 'vue';
 
-defineOptions({ compatConfig: { MODE: 3 } });
-
 interface IOption {
   value: string;
   title: string;
@@ -35,13 +31,11 @@ interface IOption {
 
 const props = withDefaults(
   defineProps<{
-    modelValue?: string;
     width?: string;
     height?: string;
     options?: IOption[];
   }>(),
   {
-    modelValue: 'above',
     options: () => [
       {
         value: 'above',
@@ -62,14 +56,14 @@ const props = withDefaults(
   },
 );
 
-const emit = defineEmits<{ 'update:modelValue': [val: string] }>();
+const model = defineModel<string>({ default: 'above' });
 
 // Array ref for v-for items
 const imagePickerItems = ref<HTMLDivElement[]>([]);
 const containerWidth = ref(0);
 
 const selectedItemIndex = computed(() =>
-  props.options.findIndex((o) => o.value === props.modelValue),
+  props.options.findIndex((o) => o.value === model.value),
 );
 
 const itemsPerRow = computed(() => {
@@ -102,7 +96,7 @@ const itemPosMatrix = computed(() => {
 });
 
 function emitInput(val: string) {
-  emit('update:modelValue', val);
+  model.value = val;
 }
 
 function setValueByKeyPress(direction: string) {

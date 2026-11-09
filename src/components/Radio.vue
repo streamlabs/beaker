@@ -4,9 +4,9 @@
       type="radio"
       :id="id"
       :name="name"
-      :checked="val == modelValue"
+      :checked="val == model"
       :value="val"
-      @input="$emit('update:modelValue', val)"
+      @input="model = val"
       @click="$emit('on-click')"
     />
     <label :for="id">{{ label }}</label>
@@ -14,20 +14,16 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({ compatConfig: { MODE: 3 } });
-
 defineProps<{
   label: string;
   id: string;
   name: string;
-  modelValue: string | boolean;
   val: string | boolean;
 }>();
 
-defineEmits<{
-  'update:modelValue': [val: string | boolean];
-  'on-click': [];
-}>();
+const model = defineModel<string | boolean>({ required: true });
+
+defineEmits<{ 'on-click': [] }>();
 </script>
 
 <style lang="less">

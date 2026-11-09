@@ -7,13 +7,9 @@
         layouts.
       </p>
 
-      <pre><code>import { FormGroup, FormGroupH, FormGroupV } from 'streamlabs-beaker';
-
-components: {
-  FormGroup,
-  FormGroupH,
-  FormGroupV
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { FormGroup, FormGroupH, FormGroupV } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">
@@ -96,7 +92,6 @@ import FormsCode from "./Forms.vue?raw";
 import FormGroup from "./../components/FormGroup.vue";
 import FormGroupH from "./../components/FormGroupH.vue";
 import FormGroupV from "./../components/FormGroupV.vue";
-import PaymentForm from "./../components/PaymentForm.vue";
 import TextInput from "./../components/TextInput.vue";
 
 const demoCode = FormsCode;

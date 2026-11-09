@@ -15,7 +15,7 @@
         class="icon-close s-callout__close-button"
         @click="closeCallout()"
       ></i>
-      <a v-if="isPrime" class="s-callout__more" @click="$emit('onClick')"
+      <a v-if="isPrime" class="s-callout__more" @click="$emit('learn-more')"
         >Learn more</a
       >
     </span>
@@ -25,8 +25,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import Badge from "./../components/Badge.vue";
-
-defineOptions({ compatConfig: { MODE: 3 } });
 
 const props = withDefaults(
   defineProps<{
@@ -39,7 +37,7 @@ const props = withDefaults(
   { variation: "success", icon: true, closeable: false }
 );
 
-defineEmits<{ onClick: [] }>();
+defineEmits<{ 'learn-more': [] }>();
 
 const closed = ref(false);
 const calloutClosedClass = ref("");
