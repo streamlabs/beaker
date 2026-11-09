@@ -7,11 +7,9 @@
         JSON structure example below.
       </p>
 
-      <pre><code>import { SiteSearch } from &quot;streamlabs-beaker&quot;;
-
-components: {
-  SiteSearch
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { SiteSearch } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <Accordion title="JSON Site Search Structure">
         <template #content>
@@ -41,15 +39,11 @@ components: {
           </div>
 
           <p>The JSON data and component can be imported normally</p>
-          <pre><code>import * as searchData from &quot;./../location&quot;;
+          <pre><code>&lt;script setup lang="ts"&gt;
+import searchData from './../location.json';
 
-export default {
-  data() {
-    return {
-      jsonSearch = searchData.data
-    };
-  }
-}</code></pre>
+const jsonSearch = searchData.data;
+&lt;/script&gt;</code></pre>
         </div>
         </template>
       </Accordion>

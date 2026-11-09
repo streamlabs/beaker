@@ -5,6 +5,7 @@
       's-form-field--with-label': label,
       's-form-field--disabled': disabled,
     }"
+    v-bind="rootAttrs"
   >
     <div v-if="type === 'number'" class="s-arrows">
       <div
@@ -46,8 +47,8 @@
         's-form-field__input--error': !!error,
         's-form-field__input--disabled': disabled,
       }"
-      v-on="filteredListeners"
-      @mousewheel="mouseWheel"
+      v-bind="inputAttrs"
+      @wheel="mouseWheel"
     />
     <label
       :class="{
@@ -92,7 +93,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  onChange: [value: string | number];
+  'value-change': [value: string | number];
   keyup: [event: Event];
   focus: [event: Event];
   click: [event: Event];
@@ -102,7 +103,8 @@ const emit = defineEmits<{
 const attrs = useAttrs();
 const inputRef = useTemplateRef<HTMLInputElement>('input');
 
-const filteredListeners = computed(() => omit(attrs, ['onInput']));
+const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }));
+const inputAttrs = computed(() => omit(attrs, ['class', 'style', 'onInput']));
 
 const isMaxReached = computed(
   () =>
@@ -121,7 +123,7 @@ const isMinReached = computed(
 function handleInput(event: Event) {
   const target = event.target as HTMLInputElement;
   model.value = props.type === 'number' ? Number(target.value) : target.value;
-  emit('onChange', model.value);
+  emit('value-change', model.value);
 }
 
 function increment() {

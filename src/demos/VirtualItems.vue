@@ -4,12 +4,9 @@
       <h1>Virtual Items</h1>
       <p>UI for face masks items and grid.</p>
 
-      <pre><code>import { ItemGrid, VirtualItem } from "streamlabs-beaker"
-
-components: {
-  ItemGrid,
-  VirtualItem
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { ItemGrid, VirtualItem } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <div class="section">
         <h2>Giveaway Items</h2>

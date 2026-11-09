@@ -3,11 +3,9 @@
     <h1>Tabs</h1>
     <p>Used for Tabs.</p>
 
-    <pre><code>import { Tabs } from 'streamlabs-beaker';
-
-components: {
-  Tabs
-}</code></pre>
+    <pre><code>&lt;script setup lang="ts"&gt;
+import { Tabs } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
     <div class="section">
       <DemoSection title="Default" :code="demoCode">

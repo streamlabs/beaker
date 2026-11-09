@@ -9,11 +9,9 @@
         to avoid issues.
       </p>
 
-      <pre><code>import { Button } from 'streamlabs-beaker';
-
-components: {
-  Button
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Button } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">
@@ -521,9 +519,9 @@ components: {
           <td>Function</td>
           <td>null</td>
           <td>
-            Emits a click function. If you are using an event modifier such as
-            <code>prevent</code>, use <code>native</code>. For example
-            <code>@click.native.prevent</code>.
+            Emits a click event with the <code>MouseEvent</code>. You can use
+            event modifiers such as <code>prevent</code>. For example
+            <code>@click.prevent</code>.
           </td>
         </tr>
         <tr>

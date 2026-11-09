@@ -3,12 +3,9 @@
     <div class="section">
       <h1>Creator Sites Components</h1>
 
-      <pre><code>import { SSProSimulator, UrlBar } from 'streamlabs-beaker';
-
-components: {
-  SSProSimulator,
-  UrlBar
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { SSProSimulator, UrlBar } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">

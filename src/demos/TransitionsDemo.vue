@@ -9,9 +9,12 @@
         is dynamically shown with <code>v-if</code>, <code>v-else</code>, or
         <code>v-show</code> by wrapping it with
         <code>&lt;transition&gt;</code> or
-        <code>&lt;transition-group&gt;</code>.
+        <code>&lt;transition-group&gt;</code>. In Vue 3,
+        <code>&lt;transition-group&gt;</code> doesn't render a wrapper element
+        unless you pass <code>tag</code>, for example
+        <code>tag="div"</code>.
       </p>
-      <pre><code>&lt;transition name="fadeY-from-left"&gt;
+      <pre><code>&lt;transition name="fadeY-from-top"&gt;
   &lt;div v-if="boolean"&gt;&lt;/div&gt;
 &lt;/transition&gt;</code></pre>
     </div>

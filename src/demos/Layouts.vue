@@ -2,11 +2,9 @@
   <div>
     <div class="section">
       <h1>Content Row</h1>
-      <pre><code>import { ContentRow } from 'streamlabs-beaker';
-
-components: {
-  ContentRow
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { ContentRow } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">

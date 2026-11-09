@@ -2,11 +2,9 @@
   <div>
     <div class="section">
       <h1>Modal</h1>
-      <pre><code>import { ModalComp } from 'streamlabs-beaker';
-
-components: {
-  ModalComp
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { ModalComp } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">
@@ -139,7 +137,7 @@ components: {
             type="welcome-prime"
             :width="600"
             :hasPrimeCloseButton="true"
-            @onClickPrime="test"
+            @click-prime="test"
           />
         </template>
       </DemoSection>
@@ -164,16 +162,25 @@ components: {
       </thead>
       <tbody>
         <tr>
-          <td>name</td>
+          <td>modelValue | v-model</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>
+            Controls whether the modal is open. Use <code>v-model</code> to open
+            and close it from your code.
+          </td>
+        </tr>
+        <tr>
+          <td>modalId</td>
           <td>string</td>
           <td>null</td>
           <td>
-            name is optional. if you need specific name for the modal, use name
-            prop. Also don't forget to change $modal.show() to the name you set
-            as prop.
+            Optional id for the modal. Set it to open the modal from anywhere
+            with <code>open(id)</code> from <code>useVfm()</code> in
+            <code>vue-final-modal</code>.
             <br />ex.
-            <code>:name="'modal-basic2'"</code>
-            <code>$modal.show('modal-basic2')</code>
+            <code>modalId="modal-basic2"</code>
+            <code>open('modal-basic2')</code>
           </td>
         </tr>
         <tr>
@@ -193,8 +200,8 @@ components: {
           <td>string</td>
           <td>null</td>
           <td>
-            Type of the modal. Options are basic, subscribe, redirect, and
-            confirmation
+            Type of the modal. Options are basic, subscribe, redirect,
+            confirmation, welcome-prime, and prime-intro
           </td>
         </tr>
         <tr>
@@ -298,7 +305,7 @@ components: {
             Allows for custom preview above modal text. Uses
             <code>preview</code> slot.
             <code>
-              &lt;template #preview&gt;Custom Preview HTML&lt;template&gt;
+              &lt;template #preview&gt;Custom Preview HTML&lt;/template&gt;
             </code>
             (only in Modal Subscribe).
           </td>
@@ -328,7 +335,7 @@ components: {
           <td>Set the close button right top (only in Modal Welcom Prime).</td>
         </tr>
         <tr>
-          <td>@onClickPrime</td>
+          <td>@click-prime</td>
           <td>Function</td>
           <td>null</td>
           <td>

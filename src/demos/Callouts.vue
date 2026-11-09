@@ -9,11 +9,9 @@
       <h4>Rules</h4>
       <ul></ul>
 
-      <pre><code>import { Callout } from 'streamlabs-beaker';
-
-components: {
-  Callout
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Callout } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">
@@ -100,7 +98,7 @@ components: {
           <Callout
             variation="prime"
             :closeable="true"
-            @onClick="cookieCalloutClosed"
+            @learn-more="cookieCalloutClosed"
             :onClose="cookieCalloutClosed"
           >
             Themes, apps, website, merch and more. All included with Prime.

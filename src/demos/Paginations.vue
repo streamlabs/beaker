@@ -7,13 +7,9 @@
         a dynamic page count or manually enter how many pages you want.
       </p>
 
-      <pre><code>import { Pagination } from "streamlabs-beaker"
-
-@Component({
-  components: {
-    Pagination
-  }
-})</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Pagination } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">
@@ -40,7 +36,7 @@
       </thead>
       <tbody>
         <tr>
-          <td>value | v-model</td>
+          <td>modelValue | v-model</td>
           <td>Number</td>
           <td>undefined</td>
           <td>Use to change page programmatically.</td>

@@ -12,11 +12,9 @@
       <div class="section">
         <h2>Full Page Loading</h2>
 
-        <pre><code>import { Loading } from 'streamlabs-beaker';
-
-components: {
-  Loading
-}</code></pre>
+        <pre><code>&lt;script setup lang="ts"&gt;
+import { Loading } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
         <div class="section">
           <h2>Standard</h2>
@@ -157,11 +155,9 @@ components: {
     <div class="section">
       <h2>Section Loading Spinners</h2>
 
-      <pre><code>import { Spinner } from 'streamlabs-beaker';
-
-components: {
-  Spinner
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { Spinner } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <h3>Loading Spinner</h3>
       <p>This is the standard size for sections within a page layout.</p>

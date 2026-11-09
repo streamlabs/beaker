@@ -2,11 +2,9 @@
   <div>
     <div class="section">
       <h1>Empty Sections</h1>
-      <pre><code>import { EmptySection } from 'streamlabs-beaker';
-
-components: {
-  EmptySection
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { EmptySection } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
     </div>
 
     <div class="section">

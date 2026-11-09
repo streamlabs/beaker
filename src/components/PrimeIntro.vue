@@ -59,10 +59,10 @@ withDefaults(defineProps<{ primeButtonText?: string }>(), {
   primeButtonText: 'Join Prime',
 });
 
-const emit = defineEmits<{ onClickPrime: [] }>();
+const emit = defineEmits<{ 'click-prime': [] }>();
 
 function onPrimeButtonHandler() {
-  emit('onClickPrime');
+  emit('click-prime');
 }
 </script>
 

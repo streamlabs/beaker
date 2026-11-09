@@ -3,11 +3,9 @@
     <div class="section">
       <h1>Progress Bars</h1>
 
-      <pre><code>import { ProgressBar } from "streamlabs-beaker"
-
-components: {
-  ProgressBar
-}</code></pre>
+      <pre><code>&lt;script setup lang="ts"&gt;
+import { ProgressBar } from 'streamlabs-beaker';
+&lt;/script&gt;</code></pre>
 
       <DemoSection title="Default" :code="demoCode">
         <template #components>
