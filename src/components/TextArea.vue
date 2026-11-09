@@ -295,7 +295,7 @@ defineExpose({
     }
 
     &__input {
-      &:not("[class*=__input--error]"):focus {
+      &:not([class*='__input--error']):focus {
         & + label {
           color: @night-title;
         }
